@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Les Lanternes de Nour</title>
+<meta name="description" content="Les histoires des prophètes racontées et chantées pour les enfants de 3 à 10 ans : Adam, Nouh (Noé), Youssouf, Younous. Sources du Coran et des hadiths dans chaque épisode.">
+<link rel="canonical" href="https://leslanternesdenour.github.io/">
+<link rel="icon" href="https://yt3.googleusercontent.com/YOIWLrvboPlviOsRbwgJVE8UC3BrUqyOLm6zNGXV7uqe_SaWU4TZwbpjp99PaXls27fnSVga5XY=s120-c-k-c0x00ffffff-no-rj">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Les Lanternes de Nour">
+<meta property="og:title" content="Les Lanternes de Nour : les histoires des prophètes pour les enfants">
+<meta property="og:description" content="Racontées et chantées pour les enfants de 3 à 10 ans. Nouvel épisode : Nouh (Noé) et la grande arche.">
+<meta property="og:url" content="https://leslanternesdenour.github.io/">
+<meta property="og:image" content="https://yt3.googleusercontent.com/6otGy7OdabaxaRN82KGSFwmTRqoCdf5agDqZsqooEgIYQjoeugb3KYTU3U46CHTvseKWOXAW4w=w1200-k-c0xffffffff-no-nd-rj">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&family=Nunito:wght@400;600;700&family=Amiri:wght@700&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* One visual world: the channel's night sky. Episodes hang like lanterns on one string, in the order of the prophets. */
+  --nuit: #191345;
+  --nuit-2: #241a5e;
+  --violet: #3a2a7d;
+  --or: #f5b942;
+  --or-doux: #ffe3a3;
+  --texte: #f4efff;
+  --texte-2: #c9bfe8;
+  --font-display: "Poppins", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Nunito", "Segoe UI", system-ui, sans-serif;
+  --font-ar: "Amiri", "Noto Naskh Arabic", serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--nuit);
+  color: var(--texte);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.55;
+}
+img { max-width: 100%; display: block; }
+a { color: var(--or-doux); }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--or); outline-offset: 3px; border-radius: 10px; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
+
+/* Hero: the banner, as the channel shows it */
+.hero { background: linear-gradient(180deg, #1a1450 0%, var(--nuit) 100%); }
+.hero-img { width: 100%; aspect-ratio: 16 / 7.2; object-fit: cover; object-position: center 42%; }
+.hero-body { display: grid; gap: 18px; padding-block: 8px 36px; justify-items: center; text-align: center; }
+.hero-body h1 { font-size: clamp(26px, 4.2vw, 40px); font-weight: 800; line-height: 1.15; max-width: 22ch; }
+.hero-body h1 span { color: var(--or); }
+.hero-body p { margin: 0; color: var(--texte-2); max-width: 60ch; }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+.btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 13px 22px; border-radius: 999px;
+  font-family: var(--font-display); font-weight: 600; font-size: 16px;
+  text-decoration: none; border: 2px solid transparent; cursor: pointer;
+}
+.btn-or { background: var(--or); color: #2a1d00; }
+.btn-or:hover { background: #ffc95c; }
+.btn-ligne { background: transparent; color: var(--texte); border-color: rgba(245, 185, 66, .55); }
+.btn-ligne:hover { border-color: var(--or); }
+
+/* The string of lanterns */
+.histoires { padding-block: 40px 28px; }
+.titre-section { display: grid; gap: 6px; margin-bottom: 8px; }
+.titre-section h2 { font-size: clamp(24px, 3.4vw, 32px); font-weight: 800; }
+.titre-section p { margin: 0; color: var(--texte-2); }
+.fil { position: relative; margin-top: 26px; }
+.episode::before {
+  content: ""; position: absolute; left: -11px; right: -11px; top: 4px; height: 3px;
+  background: var(--or); opacity: .5; border-radius: 3px;
+}
+.episodes { list-style: none; margin: 0; padding: 0; display: grid; gap: 22px; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+.episode { position: relative; padding-top: 46px; }
+.lanterne {
+  position: absolute; top: 5px; left: 50%; width: 26px; height: 36px; margin-left: -13px;
+  transform-origin: 50% 0; animation: balance 4.5s ease-in-out infinite;
+}
+.episode:nth-child(2n) .lanterne { animation-delay: -1.6s; }
+.episode:nth-child(3n) .lanterne { animation-delay: -3.1s; }
+@keyframes balance { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
+.carte {
+  height: 100%; display: grid; grid-template-rows: auto 1fr; overflow: hidden;
+  background: var(--nuit-2); border: 1px solid rgba(245, 185, 66, .22); border-radius: 18px;
+}
+.carte:hover { border-color: rgba(245, 185, 66, .6); }
+.vignette { position: relative; display: block; }
+.vignette img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+.duree {
+  position: absolute; right: 8px; bottom: 8px; padding: 2px 8px; border-radius: 6px;
+  background: rgba(10, 6, 30, .82); color: #fff; font-size: 13px; font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.nouveau {
+  position: absolute; left: 8px; top: 8px; padding: 3px 10px; border-radius: 999px;
+  background: var(--or); color: #2a1d00; font-family: var(--font-display); font-weight: 600; font-size: 13px;
+}
+.texte { display: grid; gap: 8px; align-content: start; padding: 14px 16px 18px; }
+.rang { font-family: var(--font-display); font-weight: 600; font-size: 13px; letter-spacing: .04em; text-transform: uppercase; color: var(--or); }
+.nom { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.nom h3 { font-size: 21px; font-weight: 800; line-height: 1.2; }
+.nom h3 small { display: block; font-family: var(--font-body); font-weight: 600; font-size: 15px; color: var(--texte-2); }
+.ar { font-family: var(--font-ar); font-size: 26px; color: var(--or-doux); line-height: 1; direction: rtl; }
+.lecon { margin: 0; font-size: 15.5px; }
+.sources { margin: 0; font-size: 13.5px; color: var(--texte-2); }
+.regarder { font-family: var(--font-display); font-weight: 600; font-size: 15px; text-decoration: none; color: var(--or); }
+.regarder:hover { text-decoration: underline; }
+
+/* Promises + coming soon */
+.engagements { padding-block: 28px; }
+.trio { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin-top: 18px; }
+.point { padding: 18px; border-left: 3px solid var(--or); background: rgba(58, 42, 125, .45); border-radius: 0 14px 14px 0; }
+.point h3 { font-size: 17px; font-weight: 600; margin-bottom: 4px; }
+.point p { margin: 0; color: var(--texte-2); font-size: 15.5px; }
+.bientot { margin-top: 26px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; color: var(--texte-2); }
+.bientot strong { color: var(--texte); font-family: var(--font-display); font-weight: 600; }
+.puce { padding: 6px 14px; border-radius: 999px; border: 1px dashed rgba(245, 185, 66, .5); color: var(--or-doux); font-weight: 700; }
+
+/* Share */
+.partage { padding-block: 34px 44px; }
+.boite {
+  display: grid; gap: 16px; padding: 26px; border-radius: 22px; text-align: center; justify-items: center;
+  background: radial-gradient(120% 140% at 50% 0%, var(--violet) 0%, var(--nuit-2) 70%);
+  border: 1px solid rgba(245, 185, 66, .3);
+}
+.boite h2 { font-size: clamp(22px, 3vw, 28px); font-weight: 800; }
+.boite p { margin: 0; color: var(--texte-2); max-width: 56ch; }
+#copie-etat { min-height: 1.4em; color: var(--or-doux); font-weight: 700; margin: 0; }
+
+footer { border-top: 1px solid rgba(245, 185, 66, .18); padding: 22px 0 30px; color: var(--texte-2); font-size: 14px; }
+.pied { display: flex; flex-wrap: wrap; gap: 10px 22px; justify-content: space-between; align-items: center; }
+.marque { display: flex; align-items: center; gap: 10px; color: var(--texte); font-family: var(--font-display); font-weight: 600; }
+.marque img { width: 36px; height: 36px; border-radius: 50%; }
+
+@media (max-width: 520px) {
+  body { font-size: 16px; }
+  .hero-img { aspect-ratio: 16 / 9; object-position: center 45%; }
+  .btn { width: 100%; justify-content: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lanterne { animation: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <img class="hero-img" src="https://yt3.googleusercontent.com/6otGy7OdabaxaRN82KGSFwmTRqoCdf5agDqZsqooEgIYQjoeugb3KYTU3U46CHTvseKWOXAW4w=w1920-k-c0xffffffff-no-nd-rj" alt="Les Lanternes de Nour : les histoires des prophètes, chantées pour les enfants">
+  <div class="wrap hero-body">
+    <h1>Les histoires des prophètes, <span>racontées et chantées</span> pour les enfants de 3 à 10 ans</h1>
+    <p>Dans chaque épisode, Aylan, Ismaïl, Naël, Ayline et Nelya ouvrent le grand livre et découvrent une histoire du Coran, avec une chanson à chanter ensemble et une leçon à retenir.</p>
+    <div class="actions">
+      <a class="btn btn-or" href="https://www.youtube.com/playlist?list=PLdVIhxA8i064">▶ Regarder les histoires</a>
+      <a class="btn btn-ligne" href="https://www.youtube.com/@LesLanternesdeNour?sub_confirmation=1">S'abonner à la chaîne (gratuit)</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="histoires wrap" aria-labelledby="t-histoires">
+    <div class="titre-section">
+      <h2 id="t-histoires">Les histoires, dans l'ordre des prophètes</h2>
+      <p>Chaque épisode dure environ 4 minutes. Les sources du Coran et des hadiths sont dans la description de chaque vidéo.</p>
+    </div>
+
+    <div class="fil">
+      <ol class="episodes">
+        <li class="episode">
+          <svg class="lanterne" viewBox="0 0 26 36" aria-hidden="true"><use href="#lanterne"/></svg>
+          <article class="carte">
+            <a class="vignette" href="https://youtu.be/7u_30yO-y5Q"><img src="https://i.ytimg.com/vi/7u_30yO-y5Q/maxresdefault.jpg" alt="Miniature : l'histoire du prophète Adam" loading="lazy"><span class="duree">4:19</span></a>
+            <div class="texte">
+              <span class="rang">1er prophète</span>
+              <div class="nom"><h3>Adam<small>le premier homme</small></h3><span class="ar" lang="ar">آدَم</span></div>
+              <p class="lecon">Quand on se trompe, on reconnaît son erreur et on demande pardon à Allah.</p>
+              <p class="sources">Coran 2:30-37 ; 7:11-25 · Boukhari 3326</p>
+              <a class="regarder" href="https://youtu.be/7u_30yO-y5Q">Regarder l'épisode →</a>
+            </div>
+          </article>
+        </li>
+        <li class="episode">
+          <svg class="lanterne" viewBox="0 0 26 36" aria-hidden="true"><use href="#lanterne"/></svg>
+          <article class="carte">
+            <a class="vignette" href="https://youtu.be/cfK1wAKY0JQ"><img src="https://i.ytimg.com/vi/cfK1wAKY0JQ/maxresdefault.jpg" alt="Miniature : Nouh et la grande arche" loading="lazy"><span class="nouveau">Nouveau</span><span class="duree">4:28</span></a>
+            <div class="texte">
+              <span class="rang">Le premier messager</span>
+              <div class="nom"><h3>Nouh (Noé)<small>et la grande arche</small></h3><span class="ar" lang="ar">نُوح</span></div>
+              <p class="lecon">Dire « Bismillah », rester patient et dire merci à Allah.</p>
+              <p class="sources">Coran 11:25-48 ; 71:5-11 ; 54:11-14 · Boukhari 3340</p>
+              <a class="regarder" href="https://youtu.be/cfK1wAKY0JQ">Regarder l'épisode →</a>
+            </div>
+          </article>
+        </li>
+        <li class="episode">
+          <svg class="lanterne" viewBox="0 0 26 36" aria-hidden="true"><use href="#lanterne"/></svg>
+          <article class="carte">
+            <a class="vignette" href="https://youtu.be/jk1Z5yyM09A"><img src="https://i.ytimg.com/vi/jk1Z5yyM09A/maxresdefault.jpg" alt="Miniature : Youssouf, partie 1, le puits" loading="lazy"><span class="duree">3:34</span></a>
+            <div class="texte">
+              <span class="rang">Partie 1</span>
+              <div class="nom"><h3>Youssouf<small>le puits</small></h3><span class="ar" lang="ar">يُوسُف</span></div>
+              <p class="lecon">La belle patience : Allah est avec les patients, même au fond du puits.</p>
+              <p class="sources">Coran, sourate 12 (Youssouf)</p>
+              <a class="regarder" href="https://youtu.be/jk1Z5yyM09A">Regarder l'épisode →</a>
+            </div>
+          </article>
+        </li>
+        <li class="episode">
+          <svg class="lanterne" viewBox="0 0 26 36" aria-hidden="true"><use href="#lanterne"/></svg>
+          <article class="carte">
+            <a class="vignette" href="https://youtu.be/jshS5xhka2Q"><img src="https://i.ytimg.com/vi/jshS5xhka2Q/maxresdefault.jpg" alt="Miniature : Youssouf, partie 2, le grand pardon" loading="lazy"><span class="duree">4:12</span></a>
+            <div class="texte">
+              <span class="rang">Partie 2</span>
+              <div class="nom"><h3>Youssouf<small>le grand pardon</small></h3><span class="ar" lang="ar">يُوسُف</span></div>
+              <p class="lecon">Ne jamais désespérer de la miséricorde d'Allah, et savoir pardonner.</p>
+              <p class="sources">Coran, sourate 12 (Youssouf)</p>
+              <a class="regarder" href="https://youtu.be/jshS5xhka2Q">Regarder l'épisode →</a>
+            </div>
+          </article>
+        </li>
+        <li class="episode">
+          <svg class="lanterne" viewBox="0 0 26 36" aria-hidden="true"><use href="#lanterne"/></svg>
+          <article class="carte">
+            <a class="vignette" href="https://youtu.be/5TBx2VC013Y"><img src="https://i.ytimg.com/vi/5TBx2VC013Y/maxresdefault.jpg" alt="Miniature : Younous et la grande baleine" loading="lazy"><span class="duree">3:48</span></a>
+            <div class="texte">
+              <span class="rang">L'invocation dans la nuit</span>
+              <div class="nom"><h3>Younous<small>et la grande baleine</small></h3><span class="ar" lang="ar">يُونُس</span></div>
+              <p class="lecon">Allah entend toujours, même au fond de l'océan : on ne perd jamais espoir.</p>
+              <p class="sources">Coran 37:139-148 ; 21:87-88</p>
+              <a class="regarder" href="https://youtu.be/5TBx2VC013Y">Regarder l'épisode →</a>
+            </div>
+          </article>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="engagements wrap" aria-labelledby="t-engagements">
+    <div class="titre-section">
+      <h2 id="t-engagements">Ce que les parents peuvent attendre</h2>
+    </div>
+    <div class="trio">
+      <div class="point"><h3>Des sources vérifiées</h3><p>Chaque histoire suit le Coran et les hadiths authentiques. Les versets sont cités dans la description de chaque vidéo, en traduction Hamidullah.</p></div>
+      <div class="point"><h3>Aucun prophète représenté</h3><p>On ne montre ni les prophètes ni les anges : seulement des décors, des animaux, de la lumière et des mots.</p></div>
+      <div class="point"><h3>Pour regarder en famille</h3><p>Des épisodes courts, à la maison ou à l'école coranique, pour apprendre en chantant avec les enfants.</p></div>
+    </div>
+    <div class="bientot">
+      <strong>Bientôt, in shâ Allah :</strong>
+      <span class="puce">Ibrahim</span><span class="puce">Moussa</span><span class="puce">et les autres prophètes</span>
+    </div>
+  </section>
+
+  <section class="partage wrap" aria-labelledby="t-partage">
+    <div class="boite">
+      <h2 id="t-partage">Aidez-nous à faire connaître les histoires</h2>
+      <p>Partager la chaîne avec la famille, les amis ou le groupe de l'école coranique, c'est gratuit et ça nous aide beaucoup.</p>
+      <div class="actions">
+        <a class="btn btn-or" id="whatsapp" href="#">Partager sur WhatsApp</a>
+        <a class="btn btn-ligne" id="facebook" href="#">Partager sur Facebook</a>
+        <button class="btn btn-ligne" id="copier" type="button">Copier le lien du site</button>
+      </div>
+      <p id="copie-etat" role="status" aria-live="polite"></p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap pied">
+    <span class="marque"><img src="https://yt3.googleusercontent.com/YOIWLrvboPlviOsRbwgJVE8UC3BrUqyOLm6zNGXV7uqe_SaWU4TZwbpjp99PaXls27fnSVga5XY=s120-c-k-c0x00ffffff-no-rj" alt="">Les Lanternes de Nour</span>
+    <span>youtube.com/@LesLanternesdeNour · Contenus conçus pour les enfants · © Les Lanternes de Nour 2026</span>
+  </div>
+</footer>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <radialGradient id="halo" cx="50%" cy="60%" r="60%">
+      <stop offset="0%" stop-color="#fff2c4"/>
+      <stop offset="100%" stop-color="#f5b942"/>
+    </radialGradient>
+    <symbol id="lanterne" viewBox="0 0 26 36">
+      <line x1="13" y1="0" x2="13" y2="6" stroke="#f5b942" stroke-width="1.6"/>
+      <path d="M7 8 h12 l2 4 h-16 z" fill="#d9952a"/>
+      <rect x="5" y="12" width="16" height="17" rx="3" fill="url(#halo)"/>
+      <path d="M9 12 v17 M13 12 v17 M17 12 v17" stroke="#d9952a" stroke-width="1.3"/>
+      <path d="M6 29 h14 l-3 5 h-8 z" fill="#d9952a"/>
+    </symbol>
+  </defs>
+</svg>
+
+<script>
+(function () {
+  var chaine = "https://www.youtube.com/@LesLanternesdeNour";
+  var site = "https://leslanternesdenour.github.io";
+  var message = "As-salâmou ‘alaykoum 🌙 Les Lanternes de Nour : les histoires des prophètes racontées et chantées pour les enfants de 3 à 10 ans. Nouvel épisode : Nouh (Noé) et la grande arche ⛵ " + site;
+  document.getElementById("whatsapp").href = "https://wa.me/?text=" + encodeURIComponent(message);
+  document.getElementById("facebook").href = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(site);
+  var etat = document.getElementById("copie-etat");
+  document.getElementById("copier").addEventListener("click", function () {
+    try {
+      navigator.clipboard.writeText(site).then(function () {
+        etat.textContent = "Lien copié : " + site;
+      }, function () {
+        etat.textContent = "Copie impossible ici. Le lien : " + site;
+      });
+    } catch (e) {
+      etat.textContent = "Copie impossible ici. Le lien : " + site;
+    }
+  });
+})();
+</script>
+</body>
+</html>
