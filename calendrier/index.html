@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Nunito:wght@400;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=3">
+<link rel="stylesheet" href="style.css?v=4">
 </head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <symbol id="lt" viewBox="0 0 100 128"><path d="M50 0v16" style="stroke:var(--ls)" stroke-width="3"/><g style="fill:var(--lb);stroke:var(--ls)" stroke-width="3"><path d="M30 32 38 16h24l8 16z"/><rect x="26" y="32" width="48" height="8" rx="2"/><rect x="28" y="40" width="44" height="60" rx="3"/><rect x="24" y="100" width="52" height="8" rx="2"/><path d="M34 108 40 120h20l6-12z"/></g><g style="fill:var(--lw)"><path d="M40 96V66a10 10 0 0 1 20 0v30z"/><path d="m50 50 2 4 4.5.6-3.3 3 .8 4.5L50 60l-4 2.1.8-4.5-3.3-3 4.5-.6z"/></g></symbol>
@@ -15,7 +15,7 @@
 </defs></svg>
 <div class="sky"></div>
 <div class="app" id="app">
- <div class="top"><div class="kids" id="kids"></div><div class="tb"><button class="ico" id="add" title="Ajouter un enfant">＋</button><button class="ico" id="set" title="Réglages">⚙</button></div></div>
+ <div class="top"><div class="kids" id="kids"></div><div class="tb"><button class="ico" id="aide" title="Comment ça marche">?</button><button class="ico" id="add" title="Ajouter un enfant">＋</button><button class="ico" id="set" title="Réglages">⚙</button></div></div>
  <div class="garland" aria-hidden="true"><svg viewBox="0 0 360 74" preserveAspectRatio="xMidYMin meet"><path d="M0 4 Q180 34 360 4" fill="none" stroke="#f5b94288" stroke-width="1.5"/><g class="gl" style="animation-delay:0.0s;transform-origin:22px 11px"><path d="M22 11v14" stroke="#f5b94299" stroke-width="1"/><use href="#lt" x="13.5" y="23" width="17.0" height="21.8" class="on"/></g><g class="gl" style="animation-delay:-0.4s;transform-origin:72px 23px"><path d="M72 23v26" stroke="#f5b94299" stroke-width="1"/><use href="#lt" x="62.0" y="47" width="20.0" height="25.6" class=""/></g><g class="gl" style="animation-delay:-0.8s;transform-origin:124px 31px"><path d="M124 31v18" stroke="#f5b94299" stroke-width="1"/><use href="#lt" x="115.0" y="47" width="18.0" height="23.0" class="on"/></g><g class="gl" style="animation-delay:-1.2s;transform-origin:180px 33px"><path d="M180 33v32" stroke="#f5b94299" stroke-width="1"/><use href="#lt" x="167.0" y="63" width="26.0" height="33.3" class=""/></g><g class="gl" style="animation-delay:-1.6s;transform-origin:236px 31px"><path d="M236 31v18" stroke="#f5b94299" stroke-width="1"/><use href="#lt" x="227.0" y="47" width="18.0" height="23.0" class="on"/></g><g class="gl" style="animation-delay:-2.0s;transform-origin:288px 23px"><path d="M288 23v26" stroke="#f5b94299" stroke-width="1"/><use href="#lt" x="278.0" y="47" width="20.0" height="25.6" class=""/></g><g class="gl" style="animation-delay:-2.4s;transform-origin:338px 11px"><path d="M338 11v14" stroke="#f5b94299" stroke-width="1"/><use href="#lt" x="329.5" y="23" width="17.0" height="21.8" class="on"/></g></svg></div>
  <header><small>Le calendrier musulman du Ramadan</small><h1>Allume ta lanterne</h1><div class="hello" id="hello"></div></header>
  <div class="lvl"><button id="lv1">Petite lanterne · 3-5 ans</button><button id="lv2">Grande lanterne · 6-10 ans</button></div>
@@ -28,7 +28,7 @@
   <p class="note">Touche une lanterne pour lire la mission. Mission réussie : allume ta lanterne !<br>L'étoile surprise sert seulement si le Ramadan dure 30 jours.</p>
  </section>
  <section id="v-jeux" class="view" hidden>
-  <div class="seg2"><button data-t="dev">Devinettes</button><button data-t="qr">Questions-réponses</button></div>
+  <div class="seg2"><button data-t="dev">Devinettes</button><button data-t="qr">Questions</button><button data-t="mem">Memory</button></div>
   <p class="stars" id="jstars"></p>
   <div id="jcard"></div>
  </section>
@@ -39,7 +39,7 @@
  </section>
  <section id="v-video" class="view" hidden></section>
  </main>
- <div class="skyline" aria-hidden="true"><svg viewBox="0 0 600 90" preserveAspectRatio="xMidYMax meet"><g fill="#3a2a7d" opacity="1"><rect x="0" y="84" width="600" height="6"/><rect x="118" y="34" width="14" height="52"/><path d="M116 34 125 10 134 34z"/><rect x="113" y="44" width="24" height="4"/><rect x="468" y="34" width="14" height="52"/><path d="M466 34 475 10 484 34z"/><rect x="463" y="44" width="24" height="4"/><rect x="220" y="56" width="160" height="30"/><path d="M236 58Q236 18 300 10Q364 18 364 58z"/><rect x="298" y="-2" width="4" height="14"/><path d="M148 66Q148 42 180 38Q212 42 212 66z"/><rect x="142" y="64" width="76" height="22"/><path d="M388 66Q388 42 420 38Q452 42 452 66z"/><rect x="382" y="64" width="76" height="22"/><path d="M20 86V70Q20 60 40 56Q60 60 60 70V86z"/><path d="M540 86V70Q540 60 560 56Q580 60 580 70V86z"/></g></svg></div>
+ <div class="skyline" aria-hidden="true"><svg viewBox="0 -22 600 122" preserveAspectRatio="xMidYMax meet" aria-hidden="true"><path fill="#3a2a7d" opacity="1" d="M0 96h600v4H0zM110 100V34h16v66zM104 46h28v5h-28zM106 70h24v4h-24zM108 30h20v4h-20zM108 30C104.5 20.1 112.5 13.5 118 8C123.5 13.5 131.5 20.1 128 30zM117.1 9v-9h1.8v9zM118 -2m-2.4 0a2.4 2.4 0 1 1 4.8 0a2.4 2.4 0 1 1-4.8 0M119 -14a4.5 4.5 0 1 0 0 9.0a5.9 5.9 0 0 1 0-9.0zM474 100V34h16v66zM468 46h28v5h-28zM470 70h24v4h-24zM472 30h20v4h-20zM472 30C468.5 20.1 476.5 13.5 482 8C487.5 13.5 495.5 20.1 492 30zM481.1 9v-9h1.8v9zM482 -2m-2.4 0a2.4 2.4 0 1 1 4.8 0a2.4 2.4 0 1 1-4.8 0M483 -14a4.5 4.5 0 1 0 0 9.0a5.9 5.9 0 0 1 0-9.0zM206 100V60h188v40z M314 100V82a14 14 0 0 0-28 0v18z M248 92V80a7 7 0 0 0-14 0v12z M366 92V80a7 7 0 0 0-14 0v12zM226 54h148v6h-148zM234 54C210.89999999999998 31.5 263.7 16.5 300 4C336.3 16.5 389.1 31.5 366 54zM299 5v-8h2v8zM300 -5m-2.6 0a2.6 2.6 0 1 1 5.2 0a2.6 2.6 0 1 1-5.2 0M302 -20a6 6 0 1 0 0 12a7.8 7.8 0 0 1 0-12zM132 100V72h68v28z M173 100V88a7 7 0 0 0-14 0v12zM140 72C130.9 59.4 151.7 51.0 166 44C180.3 51.0 201.1 59.4 192 72zM165.2 45v-7h1.6v7zM167 31a3.5 3.5 0 1 0 0 7.0a4.5 4.5 0 0 1 0-7.0zM400 100V72h68v28z M441 100V88a7 7 0 0 0-14 0v12zM408 72C398.9 59.4 419.7 51.0 434 44C448.3 51.0 469.1 59.4 460 72zM433.2 45v-7h1.6v7zM435 31a3.5 3.5 0 1 0 0 7.0a4.5 4.5 0 0 1 0-7.0zM18 100V82h44v18zM23 82C17.049999999999997 73.0 30.65 67.0 40 62C49.35 67.0 62.95 73.0 57 82zM538 100V82h44v18zM543 82C537.05 73.0 550.65 67.0 560 62C569.35 67.0 582.95 73.0 577 82z"/></svg></div>
 </div>
 <nav class="nav" id="nav">
  <a href="#lanternes" data-v="cal"><svg viewBox="0 0 100 128"><use href="#lt"/></svg>Lanternes</a>
@@ -47,5 +47,5 @@
  <a href="#histoires" data-v="hist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><rect x="2.5" y="4.5" width="19" height="15" rx="3"/><path d="M10 9v6l5-3z" fill="currentColor"/></svg>Histoires</a>
 </nav>
 <div class="ov" id="ov"></div><div class="toast" id="toast"></div><canvas id="fx"></canvas>
-<script src="data.js?v=3"></script><script src="app.js?v=3"></script>
+<script src="data.js?v=3"></script><script src="app.js?v=4"></script>
 </body></html>
