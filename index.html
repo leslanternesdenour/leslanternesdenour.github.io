@@ -146,6 +146,24 @@ footer { border-top: 1px solid rgba(245, 185, 66, .18); padding: 22px 0 30px; co
 @media (prefers-reduced-motion: reduce) {
   .lanterne { animation: none; }
 }
+
+/* Calendrier du Ramadan */
+.calendrier { padding-block: 34px 10px; }
+.cal-boite { display: grid; grid-template-columns: 1fr auto; gap: 26px; align-items: center; padding: 28px; border-radius: 22px;
+  background: radial-gradient(120% 140% at 0% 0%, var(--violet) 0%, var(--nuit-2) 70%); border: 1px solid rgba(245, 185, 66, .45); }
+.cal-boite .sur { margin: 0 0 6px; color: var(--or-doux); font-weight: 800; letter-spacing: .12em; text-transform: uppercase; font-size: 13px; }
+.cal-boite h2 { font-size: clamp(24px, 3.4vw, 34px); font-weight: 800; margin: 0 0 10px; }
+.cal-boite h2 span { color: var(--or); }
+.cal-boite p { margin: 0 0 12px; color: var(--texte-2); max-width: 62ch; }
+.cal-liste { margin: 0 0 18px; padding: 0; list-style: none; display: grid; gap: 8px; color: var(--texte); }
+.cal-liste li { padding-left: 28px; position: relative; }
+.cal-liste li::before { content: "☾"; position: absolute; left: 4px; color: var(--or); }
+.cal-lanternes { display: grid; grid-template-columns: repeat(3, 44px); gap: 10px; }
+.cal-lanternes svg { width: 44px; height: 60px; animation: balance 3s ease-in-out infinite; transform-origin: top center; }
+.cal-lanternes svg:nth-child(2n) { animation-delay: -1.5s; }
+@keyframes balance { 0%,100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
+@media (max-width: 720px) { .cal-boite { grid-template-columns: 1fr; } .cal-lanternes { display: none; } }
+@media (prefers-reduced-motion: reduce) { .cal-lanternes svg { animation: none; } }
 </style>
 </head>
 <body>
@@ -158,6 +176,7 @@ footer { border-top: 1px solid rgba(245, 185, 66, .18); padding: 22px 0 30px; co
     <div class="actions">
       <a class="btn btn-or" href="https://www.youtube.com/playlist?list=PLdVIhxA8i064">▶ Regarder les histoires</a>
       <a class="btn btn-ligne" href="https://www.youtube.com/@LesLanternesdeNour?sub_confirmation=1">S'abonner à la chaîne (gratuit)</a>
+      <a class="btn btn-ligne" href="#calendrier">🌙 Calendrier du Ramadan</a>
     </div>
   </div>
 </header>
@@ -252,6 +271,27 @@ footer { border-top: 1px solid rgba(245, 185, 66, .18); padding: 22px 0 30px; co
     <div class="bientot">
       <strong>Bientôt, in shâ Allah :</strong>
       <span class="puce">Ibrahim</span><span class="puce">Moussa</span><span class="puce">et les autres prophètes</span>
+    </div>
+  </section>
+
+  <section class="calendrier wrap" id="calendrier" aria-labelledby="t-calendrier">
+    <div class="cal-boite">
+      <div>
+        <p class="sur">Nouveau · gratuit · pour le Ramadan</p>
+        <h2 id="t-calendrier">Le calendrier musulman du Ramadan : <span>Allume ta lanterne</span></h2>
+        <p>Un calendrier du Ramadan pour les enfants musulmans de 3 à 10 ans. Chaque soir du mois béni, l'enfant découvre une petite mission (une bonne action, une invocation, un verset, une histoire de prophète) et allume sa lanterne quand il l'a réussie.</p>
+        <ul class="cal-liste">
+          <li>L'enfant indique son prénom, son âge et s'il est un garçon ou une fille : les missions s'adaptent (3-5 ans ou 6-10 ans).</li>
+          <li>30 missions avec leurs sources (Coran et hadiths authentiques), sans rien à acheter.</li>
+          <li>Plusieurs enfants dans la même famille, chacun avec ses lanternes.</li>
+          <li>À la 30e lanterne : une fête de félicitations et un diplôme personnalisé à imprimer.</li>
+        </ul>
+        <div class="actions">
+          <a class="btn btn-or" href="calendrier/">🌙 Ouvrir le calendrier</a>
+        </div>
+        <p style="margin-top:12px;font-size:14px">Astuce : sur téléphone, utilisez « Ajouter à l'écran d'accueil » pour l'avoir comme une application.</p>
+      </div>
+      <div class="cal-lanternes"><svg viewBox="0 0 26 36" aria-hidden="true"><use href="#lanterne"/></svg><svg viewBox="0 0 26 36" aria-hidden="true"><use href="#lanterne"/></svg><svg viewBox="0 0 26 36" aria-hidden="true"><use href="#lanterne"/></svg><svg viewBox="0 0 26 36" aria-hidden="true"><use href="#lanterne"/></svg><svg viewBox="0 0 26 36" aria-hidden="true"><use href="#lanterne"/></svg><svg viewBox="0 0 26 36" aria-hidden="true"><use href="#lanterne"/></svg></div>
     </div>
   </section>
 
