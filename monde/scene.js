@@ -1,7 +1,7 @@
 // Le village 3D : sol, fontaine, maisons, jardins, rempart, ciel selon l'heure, Nour.
 // Tout est construit par code (pas de modèle à télécharger) pour rester léger.
 import * as THREE from 'three';
-import { BATIMENTS } from './batiments.js';
+import { BATIMENTS } from './batiments.js?v=2';
 
 const R_MAISONS = 20;          // rayon du cercle des maisons
 const R_REMPART = 31;
@@ -419,12 +419,17 @@ export function creerVillage(canvas, opts) {
   });
   scene.add(mVerre);
 
-  // ---------- Nour, la goutte de lumière ----------
+  // ---------- le guide du village : une petite lanterne volante ----------
+  // (Nour reste la mascotte des ablutions, Sajjadou celle de la prière)
   const nour = new THREE.Group();
-  const prof = [];
-  for (let i = 0; i <= 10; i++) { const a = -Math.PI / 2 + i / 10 * Math.PI / 2; prof.push(new THREE.Vector2(Math.cos(a) * 0.36, Math.sin(a) * 0.36)); }
-  for (let i = 1; i <= 6; i++) { const t = i / 6; prof.push(new THREE.Vector2(0.36 * (1 - t) * (1 - t * 0.25), t * 0.42)); }
-  const corps = new THREE.Mesh(new THREE.LatheGeometry(prof, 20), new THREE.MeshBasicMaterial({ color: 0xffd45e }));
+  const corps = new THREE.Group();
+  const verreGuide = new THREE.MeshBasicMaterial({ color: 0xfff1b8 });
+  const orGuide = new THREE.MeshLambertMaterial({ color: 0xf5b942, emissive: 0x6b4a10 });
+  corps.add(new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.26, 0.5, 6), verreGuide));
+  const chapeau = new THREE.Mesh(new THREE.ConeGeometry(0.34, 0.26, 6), orGuide); chapeau.position.y = 0.38; corps.add(chapeau);
+  const anneauG = new THREE.Mesh(new THREE.TorusGeometry(0.08, 0.025, 6, 12), orGuide); anneauG.position.y = 0.56; corps.add(anneauG);
+  const socleG = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.22, 0.1, 6), orGuide); socleG.position.y = -0.3; corps.add(socleG);
+  for (let k = 0; k < 6; k++) { const m = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.5, 0.03), orGuide); const a = k / 6 * Math.PI * 2; m.position.set(Math.cos(a) * 0.26, 0, Math.sin(a) * 0.26); corps.add(m); }
   const haloNour = new THREE.Sprite(new THREE.SpriteMaterial({ map: halo, color: 0xffd36a, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0.85 }));
   haloNour.scale.setScalar(3.2);
   nour.add(corps, haloNour);

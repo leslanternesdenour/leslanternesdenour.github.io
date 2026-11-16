@@ -1,35 +1,36 @@
 // Les bâtiments du village. Chaque bâtiment ouvre une activité.
 // emplacement : place sur le cercle (0 = porte d'entrée du village, 1 à 9 = maisons).
+// univers : l'ambiance graphique de l'activité (voir univers/univers.css).
 // etat : 'ouvert' (lien actif) | 'bientot' (maison qui se prépare).
 // Les jeux déjà en ligne restent à leur adresse ; le Parcours des ablutions
 // passera à sa version 3D (jeux/ablutions/) à la phase 3.
 
 export const BATIMENTS = [
-  { id: 'ablutions', emplacement: 5, forme: 'dome', couleur: '#2bb3c0', icone: '💧',
+  { id: 'ablutions', univers: 'ablutions', emplacement: 5, forme: 'dome', couleur: '#2bb3c0', icone: '💧',
     nom: 'Parcours des ablutions', texte: 'Apprends les gestes des ablutions, pas à pas.',
     etat: 'ouvert', lien: '../ablutions/' },
-  { id: 'priere', emplacement: 4, forme: 'mosquee', couleur: '#f5b942', icone: '🕌',
+  { id: 'priere', univers: 'priere', emplacement: 4, forme: 'mosquee', couleur: '#f5b942', icone: '🕌',
     nom: 'Construis ta prière', texte: 'Mets les gestes de la prière dans le bon ordre.',
     etat: 'ouvert', lien: '../priere/' },
-  { id: 'ramadan', emplacement: 6, forme: 'lanternes', couleur: '#ff8a3d', icone: '🏮',
+  { id: 'ramadan', univers: 'histoires', emplacement: 6, forme: 'lanternes', couleur: '#ff8a3d', icone: '🏮',
     nom: 'Les 30 lanternes du Ramadan', texte: 'Allume une lanterne chaque jour du Ramadan.',
     etat: 'ouvert', lien: '../calendrier/' },
-  { id: 'sons', emplacement: 3, forme: 'tour', couleur: '#8a6cf0', icone: '👂',
+  { id: 'sons', univers: 'sourates', emplacement: 3, forme: 'tour', couleur: '#8a6cf0', icone: '👂',
     nom: 'Laboratoire des sons', texte: 'Écoute et répète les sons des lettres arabes.',
     etat: 'bientot' },
-  { id: 'jardin', emplacement: 7, forme: 'jardin', couleur: '#3fbf7f', icone: '🌱',
+  { id: 'jardin', univers: 'jeux', emplacement: 7, forme: 'jardin', couleur: '#3fbf7f', icone: '🌱',
     nom: 'Jardin des bonnes actions', texte: 'Fais pousser ton jardin avec tes bonnes actions.',
     etat: 'bientot' },
-  { id: 'mots', emplacement: 2, forme: 'large', couleur: '#4a90e2', icone: '🔎',
+  { id: 'mots', univers: 'quiz', emplacement: 2, forme: 'large', couleur: '#4a90e2', icone: '🔎',
     nom: 'Chasse aux mots', texte: 'Retrouve les mots cachés dans le village.',
     etat: 'bientot' },
-  { id: 'cinq', emplacement: 8, forme: 'plat', couleur: '#e5677b', icone: '🌅',
+  { id: 'cinq', univers: 'quiz', emplacement: 8, forme: 'plat', couleur: '#e5677b', icone: '🌅',
     nom: 'Défi des cinq prières', texte: 'Retrouve les cinq prières de la journée.',
     etat: 'bientot' },
-  { id: 'etoiles', emplacement: 1, forme: 'dome', couleur: '#5b4bc4', icone: '⭐',
+  { id: 'etoiles', univers: 'jeux', emplacement: 1, forme: 'dome', couleur: '#5b4bc4', icone: '⭐',
     nom: 'Fabrique des étoiles', texte: 'Transforme tes réussites en étoiles.',
     etat: 'bientot' },
-  { id: 'desert', emplacement: 9, forme: 'tente', couleur: '#c8664a', icone: '🐪',
+  { id: 'desert', univers: 'histoires', emplacement: 9, forme: 'tente', couleur: '#c8664a', icone: '🐪',
     nom: 'Voyage dans le désert', texte: 'Pars en voyage à travers le désert.',
     etat: 'bientot' }
 ];

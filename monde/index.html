@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-univers="jeux">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
@@ -9,10 +9,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="monde.css?v=3">
+<link rel="stylesheet" href="monde.css?v=4">
 <script type="importmap">
 { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js" } }
 </script>
+<link rel="stylesheet" href="../univers/univers.css?v=1">
 </head>
 <body>
 <canvas id="scene" aria-label="Le village des lanternes en 3D"></canvas>
@@ -123,6 +124,7 @@
 
 <noscript><p style="padding:2em;color:#fff">Active JavaScript pour ouvrir le village. <a href="../" style="color:#f5b942">Retour à l'accueil</a></p></noscript>
 
-<script type="module" src="village.js?v=6"></script>
+<script type="module" src="village.js?v=7"></script>
+<script src="../univers/univers.js?v=1" defer></script>
 </body>
 </html>

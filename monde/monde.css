@@ -128,3 +128,32 @@ input[type=range]:disabled{opacity:.45}
 #jeu iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}
 #jeu-retour{position:absolute;z-index:2;left:12px;bottom:calc(14px + var(--bas));width:58px;height:58px;font-size:30px;opacity:.95}
 @media (max-width:400px){#panneau-son{top:calc(72px + var(--haut))}.rond{width:50px;height:50px;font-size:25px}.groupe-droite{gap:8px}.compteur{padding:6px 12px;font-size:19px}}
+
+/* ---------- Chaque maison ouvre son univers (palette, décor, mascotte) ---------- */
+#panneau{overflow:hidden;transition:background .3s}
+#panneau[data-univers]{background:var(--u-fond);box-shadow:0 14px 40px rgba(0,0,0,.4),inset 0 0 0 3px var(--u-ombre)}
+#panneau>*:not(.u-deco){position:relative;z-index:1}
+#panneau .fermer{position:absolute}
+#panneau[data-univers] h2{color:var(--u-primaire2)}
+#panneau[data-univers] p{color:var(--u-texte2)}
+#panneau[data-univers] .bientot{background:var(--u-puce);color:var(--u-texte)}
+#panneau[data-univers] .fermer{background:var(--u-puce);color:var(--u-texte)}
+#panneau[data-univers] .gros-bouton.vert{background:var(--u-primaire);box-shadow:0 6px 0 var(--u-primaire2),0 10px 24px rgba(0,0,0,.3)}
+#panneau[data-univers="histoires"] h2{color:var(--u-accent)}
+.pan-icone.avec-mascotte{width:96px;height:112px;margin-top:-8px}
+.pan-icone svg{width:100%;height:100%;display:block;overflow:visible;animation:hop-m 2.2s ease-in-out infinite}
+@keyframes hop-m{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+/* animations de Sajjadou (mêmes que dans l'univers prière) */
+.sj .ph{transform-box:fill-box;transform-origin:50% 100%;animation:pompon 2.4s ease-in-out infinite alternate}
+.sj .pb{transform-box:fill-box;transform-origin:50% 0%;animation:pompon 2.4s ease-in-out infinite alternate-reverse}
+@keyframes pompon{from{transform:rotate(-12deg)}to{transform:rotate(12deg)}}
+.sj .yeux{transform-box:fill-box;transform-origin:center;animation:cligne 4.6s infinite}
+@keyframes cligne{0%,93%,100%{transform:scaleY(1)}96%{transform:scaleY(.12)}}
+.sj .tapis{transform-box:view-box;transform-origin:60px 138px}
+.sj.accueil .tapis{animation:salue 2.8s ease-in-out .4s 1}
+@keyframes salue{0%,100%{transform:none}20%{transform:rotate(6deg)}40%{transform:rotate(-6deg)}60%{transform:rotate(3deg)}}
+/* entrée et sortie douces des activités */
+#jeu[data-univers]{background:var(--u-fond)}
+#jeu{transition:opacity .28s ease}
+#jeu.sortie{opacity:0}
+@media (max-height:620px){.pan-icone.avec-mascotte{width:70px;height:82px}}

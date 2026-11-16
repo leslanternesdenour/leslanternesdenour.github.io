@@ -5,7 +5,8 @@ import { prechargerMusique, jouerMusique, arreterMusique, musiqueIndisponible } 
 import { demarrerAmbiance, goutte, majAmbiance } from './socle/ambiance.js?v=2';
 import { chargerVoix } from './socle/voix.js?v=2';
 import { qualiteAuto, reglages, surveillerFluidite } from './socle/qualite.js?v=2';
-import { BATIMENTS } from './batiments.js';
+import { BATIMENTS } from './batiments.js?v=2';
+import { mascotte } from './mascottes.js?v=1';
 
 const $ = id => document.getElementById(id);
 const S = sauvegarde.get();
@@ -56,7 +57,7 @@ async function init() {
   try { await Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 2500))]); } catch (e) {}
 
   let mod;
-  try { mod = await import('./scene.js?v=5'); }
+  try { mod = await import('./scene.js?v=6'); }
   catch (e) { return montrerErreur(e); }
 
   try {
@@ -110,7 +111,14 @@ function ouvrirPanneau(b) {
   choisi = b;
   village.selectionner(b.id);
   fermerPanneauSon();
-  $('pan-icone').textContent = b.icone;
+  // Chaque maison ouvre son univers : couleurs, décor et mascotte de l'activité
+  const pan = $('panneau');
+  pan.dataset.univers = b.univers || 'jeux';
+  pan.querySelectorAll('.u-deco').forEach(d => d.remove());
+  if (window.decorerUnivers) window.decorerUnivers(pan, pan.dataset.univers);
+  const m = mascotte(b.univers);
+  $('pan-icone').classList.toggle('avec-mascotte', !!m);
+  if (m) $('pan-icone').innerHTML = m; else $('pan-icone').textContent = b.icone;
   $('pan-nom').textContent = b.nom;
   $('pan-texte').textContent = b.texte;
   const n = sauvegarde.jeu(b.id).etoiles || 0;
@@ -153,7 +161,8 @@ function ouvrirJeu(b) {
   cadre.allow = 'autoplay';
   cadre.addEventListener('load', surChargementJeu);
   $('jeu').prepend(cadre);
-  $('jeu').classList.remove('cache');
+  $('jeu').dataset.univers = b.univers || 'jeux'; // le fond de l'univers apparaît pendant le chargement
+  $('jeu').classList.remove('cache', 'sortie');
   ['hud', 'bulle', 'panneau'].forEach(id => $(id).classList.add('cache'));
   fermerPanneauSon();
   village.pause(true);
@@ -201,13 +210,15 @@ function brancherJeu(w) {
 
 function fermerJeu(rendreLeVillage = true) {
   if (!cadre) return;
-  try { cadre.remove(); } catch (e) {}
+  const ancien = cadre;
   cadre = null;
   mediasJeu.clear();
   ['jeu', 'jeu-voix', 'jeu-tts'].forEach(k => retirer('musique', k, 1));
   retirer('effets', 'jeu', 1);
-  $('jeu').classList.add('cache');
-  if (!rendreLeVillage) return;
+  if (!rendreLeVillage) { try { ancien.remove(); } catch (e) {} $('jeu').classList.add('cache'); return; }
+  // sortie douce : le jeu s'efface et laisse réapparaître le village
+  $('jeu').classList.add('sortie');
+  setTimeout(() => { try { ancien.remove(); } catch (e) {} if (!cadre) $('jeu').classList.add('cache'); $('jeu').classList.remove('sortie'); }, 280);
   $('hud').classList.remove('cache');
   $('bulle').classList.remove('cache');
   choisi = null;
