@@ -2,7 +2,7 @@
 import { sauvegarde } from './socle/sauvegarde.js';
 import { demarrerAmbiance, goutte, majAmbiance, sonActif } from './socle/ambiance.js';
 import { chargerVoix, voixActive } from './socle/voix.js';
-import { qualiteAuto, reglages, surveillerFluidite } from './socle/qualite.js';
+import { qualiteAuto, reglages, surveillerFluidite } from './socle/qualite.js?v=2';
 
 const $ = id => document.getElementById(id);
 const S = sauvegarde.get();
@@ -41,7 +41,7 @@ async function init() {
   try { await Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 2500))]); } catch (e) {}
 
   let mod;
-  try { mod = await import('./scene.js?v=3'); }
+  try { mod = await import('./scene.js?v=4'); }
   catch (e) { return montrerErreur(e); }
 
   try {

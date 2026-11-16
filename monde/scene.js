@@ -448,10 +448,11 @@ export function creerVillage(canvas, opts) {
 
   // ---------- caméra : tourner, zoomer, toucher ----------
   const portrait = () => innerWidth / innerHeight < 0.85;
-  const rDefaut = () => portrait() ? 64 : 50;
+  const rDefaut = () => portrait() ? 58 : 50;
   const PHI = 0.85;
+  const phiDefaut = () => portrait() ? 0.72 : PHI;
   const cam = { theta: 0.5, phi: 1.1, r: 80, cible: new THREE.Vector3() };
-  const but = { theta: 0, phi: PHI, r: rDefaut(), cible: new THREE.Vector3() };
+  const but = { theta: 0, phi: phiDefaut(), r: rDefaut(), cible: new THREE.Vector3() };
   let choisie = null, inactif = 0;
 
   const pointeurs = new Map();
@@ -514,7 +515,7 @@ export function creerVillage(canvas, opts) {
   }
   function deselectionner() {
     choisie = null;
-    but.cible.set(0, 0, 0); but.r = rDefaut(); but.phi = PHI;
+    but.cible.set(0, 0, 0); but.r = rDefaut(); but.phi = phiDefaut();
     nourBut.copy(nourRepos);
   }
 
@@ -603,9 +604,9 @@ export function creerVillage(canvas, opts) {
     // icônes qui respirent
     maisons.forEach(m => {
       const actif = m === choisie;
-      const s = (actif ? 4 : 3.2) + Math.sin(tTotal * (actif ? 4 : 1.6) + m.phase) * (actif ? 0.25 : 0.08);
+      const s = (actif ? 4.6 : 4) + Math.sin(tTotal * (actif ? 4 : 1.6) + m.phase) * (actif ? 0.25 : 0.1);
       m.icone.scale.set(s, s, 1);
-      m.icone.position.y = m.hTot + 2.4 + Math.sin(tTotal * 1.3 + m.phase) * 0.15;
+      m.icone.position.y = m.hTot + 2.8 + Math.sin(tTotal * 1.3 + m.phase) * 0.15;
     });
     anneau.material.opacity += ((choisie ? 0.55 + Math.sin(tTotal * 4) * 0.2 : 0) - anneau.material.opacity) * k;
 
@@ -622,7 +623,7 @@ export function creerVillage(canvas, opts) {
     camera.fov = portrait() ? 62 : 50;
     camera.updateProjectionMatrix();
     renderer.setSize(innerWidth, innerHeight, false);
-    if (!choisie) but.r = rDefaut();
+    if (!choisie) { but.r = rDefaut(); but.phi = phiDefaut(); }
   }
   addEventListener('resize', redim);
   redim();

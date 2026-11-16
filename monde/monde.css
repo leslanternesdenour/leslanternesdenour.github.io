@@ -56,7 +56,8 @@ h1,h2,.titre-ecran{font-family:Poppins,system-ui,sans-serif;font-weight:800;marg
 #bulle{position:fixed;left:50%;bottom:calc(22px + var(--bas));transform:translateX(-50%);z-index:9;
   display:flex;align-items:center;gap:10px;padding:12px 22px;border-radius:30px;max-width:92vw;
   background:rgba(255,248,231,.95);color:var(--tx);font:700 19px Nunito,sans-serif;
-  box-shadow:0 8px 24px rgba(0,0,0,.3);pointer-events:none}
+  box-shadow:0 8px 24px rgba(0,0,0,.3);pointer-events:none;white-space:nowrap}
+@media (max-width:400px){#bulle{font-size:16px;padding:10px 16px}}
 #bulle .main{font-size:30px;animation:tape 1.2s ease-in-out infinite}
 @keyframes tape{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 
