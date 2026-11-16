@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="monde.css?v=2">
+<link rel="stylesheet" href="monde.css?v=3">
 <script type="importmap">
 { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js" } }
 </script>
@@ -53,7 +53,43 @@
     <span class="compteur" title="Étoiles"><span aria-hidden="true">⭐</span><b id="nb-etoiles">0</b></span>
     <span class="compteur" title="Lanternes"><span aria-hidden="true">🏮</span><b id="nb-lanternes">0</b></span>
   </div>
-  <button class="rond" id="btn-reglages" aria-label="Réglages">⚙️</button>
+  <div class="groupe-droite">
+    <button class="rond" id="btn-son" aria-label="Sons et musique" aria-haspopup="dialog">🔊</button>
+    <button class="rond" id="btn-reglages" aria-label="Réglages">⚙️</button>
+  </div>
+</div>
+
+<!-- Sons : musique, voix, effets (volumes indépendants, mémorisés) -->
+<div id="panneau-son" class="cache" role="dialog" aria-label="Réglages des sons">
+  <button class="fermer" id="son-fermer" aria-label="Fermer">✕</button>
+  <h2>Sons</h2>
+  <div class="piste">
+    <button class="interrupteur" id="musique-bascule" aria-pressed="true" aria-label="Couper ou remettre la musique"><span aria-hidden="true">🎵</span></button>
+    <div class="piste-corps">
+      <label for="vol-musique">Musique <b id="val-musique">50 %</b></label>
+      <input type="range" id="vol-musique" min="0" max="100" step="1" value="50">
+    </div>
+  </div>
+  <p class="note-son cache" id="musique-absente">La musique n'a pas pu être chargée. Le village reste calme.</p>
+  <div class="piste">
+    <span class="pastille" aria-hidden="true">🗣️</span>
+    <div class="piste-corps">
+      <label for="vol-voix">Voix de la maîtresse <b id="val-voix">100 %</b></label>
+      <input type="range" id="vol-voix" min="0" max="100" step="1" value="100">
+    </div>
+  </div>
+  <div class="piste">
+    <span class="pastille" aria-hidden="true">💧</span>
+    <div class="piste-corps">
+      <label for="vol-effets">Effets et nature <b id="val-effets">70 %</b></label>
+      <input type="range" id="vol-effets" min="0" max="100" step="1" value="70">
+    </div>
+  </div>
+</div>
+
+<!-- Jeu ouvert dans le village (la musique continue) -->
+<div id="jeu" class="cache">
+  <button class="rond" id="jeu-retour" aria-label="Retour au village">🏘️</button>
 </div>
 
 <!-- Bulle de Nour -->
@@ -76,7 +112,7 @@
     <button class="fermer" id="reg-fermer" aria-label="Fermer">✕</button>
     <h2>Réglages</h2>
     <div class="ligne-reg"><span>Sons</span>
-      <div class="bascule"><button data-son="1">🔊 Oui</button><button data-son="0">🔇 Non</button></div></div>
+      <button class="bouton-doux" id="reg-sons">🔊 Musique, voix, effets</button></div>
     <div class="ligne-reg"><span>Âge</span>
       <div class="bascule"><button data-age="petits">🧸 3–5</button><button data-age="grands">🎒 6–10</button></div></div>
     <div class="ligne-reg"><span>Graphismes</span>
@@ -87,6 +123,6 @@
 
 <noscript><p style="padding:2em;color:#fff">Active JavaScript pour ouvrir le village. <a href="../" style="color:#f5b942">Retour à l'accueil</a></p></noscript>
 
-<script type="module" src="village.js?v=4"></script>
+<script type="module" src="village.js?v=5"></script>
 </body>
 </html>

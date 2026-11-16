@@ -564,7 +564,7 @@ export function creerVillage(canvas, opts) {
 
   // ---------- boucle ----------
   const horloge = new THREE.Clock();
-  let tTotal = 0, enMarche = true;
+  let tTotal = 0, enMarche = true, enPause = false;
   function image() {
     if (!enMarche) return;
     requestAnimationFrame(image);
@@ -629,13 +629,17 @@ export function creerVillage(canvas, opts) {
   redim();
   image();
 
+  function relancer() {
+    if (!enMarche && !enPause && !document.hidden) { enMarche = true; horloge.getDelta(); image(); }
+  }
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) enMarche = false;
-    else if (!enMarche) { enMarche = true; horloge.getDelta(); image(); }
+    if (document.hidden) enMarche = false; else relancer();
   });
 
   return {
     selectionner, deselectionner,
+    // Pause du rendu 3D pendant qu'un jeu est ouvert par-dessus (économise la batterie)
+    pause(oui) { enPause = !!oui; if (enPause) enMarche = false; else relancer(); },
     noms(oui) { maisons.forEach(m => { m.nom.visible = !!oui; }); },
     ecran(id) {
       const m = maisons.find(x => x.b.id === id);

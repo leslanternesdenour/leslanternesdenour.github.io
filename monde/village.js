@@ -1,8 +1,11 @@
-// Démarrage du Monde des Lanternes : écrans, réglages, panneaux, liaison avec la scène 3D.
-import { sauvegarde } from './socle/sauvegarde.js';
-import { demarrerAmbiance, goutte, majAmbiance, sonActif } from './socle/ambiance.js';
-import { chargerVoix, voixActive } from './socle/voix.js';
+// Démarrage du Monde des Lanternes : écrans, réglages, sons, panneaux, jeux, liaison avec la scène 3D.
+import { sauvegarde } from './socle/sauvegarde.js?v=2';
+import { reveiller, reglerVolume, retirer } from './socle/audio.js?v=1';
+import { prechargerMusique, jouerMusique, arreterMusique, musiqueIndisponible } from './socle/musique.js?v=1';
+import { demarrerAmbiance, goutte, majAmbiance } from './socle/ambiance.js?v=2';
+import { chargerVoix } from './socle/voix.js?v=2';
 import { qualiteAuto, reglages, surveillerFluidite } from './socle/qualite.js?v=2';
+import { BATIMENTS } from './batiments.js';
 
 const $ = id => document.getElementById(id);
 const S = sauvegarde.get();
@@ -10,6 +13,7 @@ const qualite = S.qualite || qualiteAuto();
 const R = reglages(qualite);
 let village = null;
 let choisi = null;
+let dansLeVillage = false;
 
 function webglOK() {
   try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); }
@@ -34,14 +38,25 @@ const image = (!S.qualite && qualite === 'beau')
   ? surveillerFluidite(() => sauvegarde.regler('qualite', 'leger'))
   : null;
 
+// ---------- sons : réglages mémorisés, appliqués dès le départ ----------
+const sons = () => sauvegarde.get().sons;
+function appliquerVolumes() {
+  const s = sons();
+  reglerVolume('musique', s.musique);
+  reglerVolume('voix', s.voix);
+  reglerVolume('effets', s.effets);
+}
+appliquerVolumes();
+
 async function init() {
   majCompteurs();
   sauvegarde.abonner(majCompteurs);
+  majPanneauSon();
   if (!webglOK()) return montrerErreur();
   try { await Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 2500))]); } catch (e) {}
 
   let mod;
-  try { mod = await import('./scene.js?v=4'); }
+  try { mod = await import('./scene.js?v=5'); }
   catch (e) { return montrerErreur(e); }
 
   try {
@@ -60,7 +75,14 @@ async function init() {
   $('chargement').classList.add('cache');
   document.querySelectorAll('#accueil [data-age]').forEach(b => b.classList.toggle('dernier', b.dataset.age === S.age));
   $('accueil').classList.remove('cache');
+
+  // Préchargement discret de la musique, une fois le village affiché (seulement si elle est active)
+  const plusTard = window.requestIdleCallback || (f => setTimeout(f, 1200));
+  plusTard(() => { if (sons().musiqueActive) prechargerMusique().then(majPanneauSon); });
 }
+
+// Tout toucher réveille le son si le navigateur l'avait mis en veille
+addEventListener('pointerdown', () => { if (dansLeVillage) reveiller(); }, { capture: true, passive: true });
 
 // ---------- accueil : qui joue ? (ce toucher débloque aussi le son) ----------
 document.querySelectorAll('#accueil [data-age]').forEach(btn => btn.addEventListener('click', () => {
@@ -69,9 +91,10 @@ document.querySelectorAll('#accueil [data-age]').forEach(btn => btn.addEventList
   $('accueil').classList.add('cache');
   $('hud').classList.remove('cache');
   $('bulle').classList.remove('cache');
+  dansLeVillage = true;
+  reveiller();
   demarrerAmbiance();
-  sonActif(sauvegarde.get().son);
-  voixActive(sauvegarde.get().son);
+  if (sons().musiqueActive) jouerMusique().then(majPanneauSon);
   chargerVoix('voix/');
   goutte();
 }));
@@ -86,6 +109,7 @@ function surTap(b) {
 function ouvrirPanneau(b) {
   choisi = b;
   village.selectionner(b.id);
+  fermerPanneauSon();
   $('pan-icone').textContent = b.icone;
   $('pan-nom').textContent = b.nom;
   $('pan-texte').textContent = b.texte;
@@ -111,28 +135,151 @@ $('pan-fermer').addEventListener('click', () => { goutte(0.8); fermerPanneau(); 
 $('pan-entrer').addEventListener('click', e => {
   if (!choisi) return;
   e.preventDefault();
-  const lien = choisi.lien;
   sauvegarde.gagner(choisi.id, 'visite', 1);
   goutte(1.4);
-  setTimeout(() => { location.href = lien; }, 180);
+  ouvrirJeu(choisi);
 });
-addEventListener('keydown', e => { if (e.key === 'Escape') { fermerPanneau(); fermerReglages(); } });
+
+// ---------- jeux ouverts DANS le village : la page reste chargée, la musique continue ----------
+const CHEMINS_JEUX = BATIMENTS.filter(b => b.lien).map(b => new URL(b.lien, location.href).pathname);
+let cadre = null;
+const mediasJeu = new Set();
+
+function ouvrirJeu(b) {
+  fermerJeu(false);
+  cadre = document.createElement('iframe'); // un cadre neuf à chaque fois : pas d'historique parasite
+  cadre.src = b.lien;
+  cadre.title = b.nom;
+  cadre.allow = 'autoplay';
+  cadre.addEventListener('load', surChargementJeu);
+  $('jeu').prepend(cadre);
+  $('jeu').classList.remove('cache');
+  ['hud', 'bulle', 'panneau'].forEach(id => $(id).classList.add('cache'));
+  fermerPanneauSon();
+  village.pause(true);
+  retirer('musique', 'jeu', 0.55); // la musique accompagne le jeu, plus bas
+  retirer('effets', 'jeu', 0);     // la nature du village se tait dans les jeux
+  try { history.pushState({ monde: 'jeu' }, ''); } catch (e) {}
+}
+
+function surChargementJeu() {
+  let w, chemin;
+  try { w = cadre.contentWindow; chemin = w.location.pathname; } catch (e) { return fermerJeu(); }
+  // Le jeu renvoie vers l'accueil du site (bouton maison) : on revient au village
+  if (!CHEMINS_JEUX.some(c => chemin.startsWith(c))) return fermerJeu();
+  brancherJeu(w);
+}
+
+// Les voix des jeux : la musique s'efface pendant qu'elles parlent, et leur volume suit le réglage « voix »
+function brancherJeu(w) {
+  try {
+    if (w.__mondeBranche) return;
+    w.__mondeBranche = true;
+    const P = w.HTMLMediaElement.prototype, jouer = P.play;
+    P.play = function () {
+      try { this.volume = sons().voix; } catch (e) {}
+      mediasJeu.add(this);
+      retirer('musique', 'jeu-voix', 0.3);
+      const fini = () => { mediasJeu.delete(this); if (!mediasJeu.size) retirer('musique', 'jeu-voix', 1); };
+      this.addEventListener('ended', fini, { once: true });
+      this.addEventListener('pause', fini, { once: true });
+      return jouer.apply(this, arguments);
+    };
+    const ss = w.speechSynthesis;
+    if (ss && ss.speak) {
+      const parler = ss.speak.bind(ss);
+      ss.speak = u => {
+        try { u.volume = sons().voix; } catch (e) {}
+        retirer('musique', 'jeu-tts', 0.3);
+        const fin = () => retirer('musique', 'jeu-tts', 1);
+        u.addEventListener('end', fin); u.addEventListener('error', fin);
+        parler(u);
+      };
+    }
+  } catch (e) { /* jeu inaccessible : la musique reste simplement plus basse */ }
+}
+
+function fermerJeu(rendreLeVillage = true) {
+  if (!cadre) return;
+  try { cadre.remove(); } catch (e) {}
+  cadre = null;
+  mediasJeu.clear();
+  ['jeu', 'jeu-voix', 'jeu-tts'].forEach(k => retirer('musique', k, 1));
+  retirer('effets', 'jeu', 1);
+  $('jeu').classList.add('cache');
+  if (!rendreLeVillage) return;
+  $('hud').classList.remove('cache');
+  $('bulle').classList.remove('cache');
+  choisi = null;
+  village.deselectionner();
+  village.pause(false);
+  goutte(0.9);
+}
+$('jeu-retour').addEventListener('click', () => fermerJeu());
+addEventListener('popstate', () => { if (cadre) fermerJeu(); });
+
+// ---------- panneau des sons ----------
+const curseurs = { musique: $('vol-musique'), voix: $('vol-voix'), effets: $('vol-effets') };
+
+function majPanneauSon() {
+  const s = sons();
+  for (const k in curseurs) {
+    const v = Math.round(s[k] * 100);
+    curseurs[k].value = v;
+    curseurs[k].style.setProperty('--pct', v + '%');
+    $('val-' + k).textContent = v + ' %';
+  }
+  const on = !!s.musiqueActive;
+  $('musique-bascule').setAttribute('aria-pressed', String(on));
+  $('btn-son').textContent = on && s.musique > 0 ? '🔊' : '🔇';
+  $('btn-son').setAttribute('aria-label', on ? 'Sons et musique (musique activée)' : 'Sons et musique (musique coupée)');
+  $('musique-absente').classList.toggle('cache', !musiqueIndisponible());
+}
+
+function ouvrirPanneauSon() { majPanneauSon(); $('panneau-son').classList.remove('cache'); }
+function fermerPanneauSon() { $('panneau-son').classList.add('cache'); }
+
+$('btn-son').addEventListener('click', () => {
+  goutte();
+  $('panneau-son').classList.contains('cache') ? ouvrirPanneauSon() : fermerPanneauSon();
+});
+$('son-fermer').addEventListener('click', fermerPanneauSon);
+
+for (const k in curseurs) {
+  curseurs[k].addEventListener('input', () => {
+    const v = curseurs[k].value / 100;
+    reglerVolume(k, v);
+    curseurs[k].style.setProperty('--pct', curseurs[k].value + '%');
+    $('val-' + k).textContent = curseurs[k].value + ' %';
+    if (k === 'voix') mediasJeu.forEach(m => { try { m.volume = v; } catch (e) {} });
+  });
+  // mémorisé quand le doigt lâche le curseur
+  curseurs[k].addEventListener('change', () => {
+    sauvegarde.regler('sons', Object.assign({}, sons(), { [k]: curseurs[k].value / 100 }));
+    majPanneauSon();
+    if (k === 'effets') goutte();
+  });
+}
+
+$('musique-bascule').addEventListener('click', () => {
+  const on = !sons().musiqueActive;
+  sauvegarde.regler('sons', Object.assign({}, sons(), { musiqueActive: on }));
+  reveiller();
+  if (on) jouerMusique().then(majPanneauSon); else arreterMusique();
+  majPanneauSon();
+});
 
 // ---------- réglages (pour les parents) ----------
 function majBascules() {
   const s = sauvegarde.get();
-  document.querySelectorAll('#reglages [data-son]').forEach(b => b.classList.toggle('actif', (b.dataset.son === '1') === !!s.son));
   document.querySelectorAll('#reglages [data-age]').forEach(b => b.classList.toggle('actif', b.dataset.age === s.age));
   document.querySelectorAll('#reglages [data-qualite]').forEach(b => b.classList.toggle('actif', b.dataset.qualite === qualite));
 }
 function fermerReglages() { $('reglages').classList.add('cache'); }
-$('btn-reglages').addEventListener('click', () => { goutte(); majBascules(); $('reglages').classList.remove('cache'); });
+$('btn-reglages').addEventListener('click', () => { goutte(); fermerPanneauSon(); majBascules(); $('reglages').classList.remove('cache'); });
 $('reg-fermer').addEventListener('click', fermerReglages);
 $('reglages').addEventListener('click', e => { if (e.target.id === 'reglages') fermerReglages(); });
-document.querySelectorAll('#reglages [data-son]').forEach(b => b.addEventListener('click', () => {
-  const oui = b.dataset.son === '1';
-  sauvegarde.regler('son', oui); sonActif(oui); voixActive(oui); majBascules(); goutte();
-}));
+$('reg-sons').addEventListener('click', () => { fermerReglages(); ouvrirPanneauSon(); });
 document.querySelectorAll('#reglages [data-age]').forEach(b => b.addEventListener('click', () => {
   sauvegarde.regler('age', b.dataset.age); village && village.noms(b.dataset.age === 'grands'); majBascules(); goutte();
 }));
@@ -141,5 +288,11 @@ document.querySelectorAll('#reglages [data-qualite]').forEach(b => b.addEventLis
   sauvegarde.regler('qualite', b.dataset.qualite);
   location.reload();
 }));
+
+addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  if (cadre) return fermerJeu();
+  fermerPanneauSon(); fermerPanneau(); fermerReglages();
+});
 
 init();
