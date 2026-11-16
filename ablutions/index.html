@@ -139,8 +139,15 @@ const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],A=$
 let sound=true,prog={};try{prog=JSON.parse(localStorage.getItem('ablutions'))||{}}catch(e){}
 try{if(localStorage.getItem('ablutions_son')==='0')sound=false}catch(e){}
 const save=()=>{try{localStorage.setItem('ablutions',JSON.stringify(prog))}catch(e){}};
-function say(t){if(!sound)return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(String(t).replace(/<[^>]+>/g,'').replace(/[؀-ۿً-ٟ]+/g,''));u.lang='fr-FR';u.rate=.92;u.pitch=1.15;speechSynthesis.speak(u)}catch(e){}}
-let T=[];const later=(f,ms)=>T.push(setTimeout(f,ms));const stopAll=()=>{T.forEach(clearTimeout);T=[];try{speechSynthesis.cancel()}catch(e){}};
+let VX=null;try{fetch('voix/voix.json',{cache:'no-cache'}).then(r=>r.ok?r.json():null).then(j=>{VX=j}).catch(()=>{})}catch(e){}
+const AU=new Audio();AU.preload='auto';let AUt=0;
+function stopVoice(){clearTimeout(AUt);try{AU.pause()}catch(e){}try{speechSynthesis.cancel()}catch(e){}}
+function say(t,id){if(!sound)return;stopVoice();const c=id&&VX&&VX[id];
+ if(c){const go=()=>{try{AU.currentTime=c[1]}catch(e){}const p=AU.play();if(p&&p.catch)p.catch(()=>tts(t));AUt=setTimeout(()=>AU.pause(),(c[2]-c[1])*1000+120)};
+  if(AU.dataset.f!==c[0]){AU.dataset.f=c[0];AU.src='voix/'+c[0];AU.addEventListener('loadedmetadata',go,{once:true});AU.load()}else go();return}
+ tts(t)}
+function tts(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(String(t).replace(/<[^>]+>/g,'').replace(/[؀-ۿً-ٟ]+/g,''));u.lang='fr-FR';u.rate=.92;u.pitch=1.15;speechSynthesis.speak(u)}catch(e){}}
+let T=[];const later=(f,ms)=>T.push(setTimeout(f,ms));const stopAll=()=>{T.forEach(clearTimeout);T=[];stopVoice()};
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 
 /* ---------- décor ---------- */
@@ -229,8 +236,8 @@ function learn(i){const s=ST[i];
  ${bubble(s.tip)}
  <div class="nav"><button class="p" id="pv" aria-label="Avant">◀</button><button class="r" id="rp" aria-label="Revoir">🔁</button><button class="n" id="nx">${i<8?'Suivant ▶':'Terminer ⭐'}</button></div>`;
  wire();$('#pv').onclick=()=>i?go('learn',i-1):go('home');$('#nx').onclick=()=>i<8?go('learn',i+1):go('done');
- $('#rd').onclick=()=>say(s.t+'. '+s.txt);$('#rp').onclick=()=>{stopAll();anim(s)};
- say(`Étape ${i+1}. ${s.t}. ${s.txt} ${s.c}.`);anim(s)}
+ $('#rd').onclick=()=>say(s.t+'. '+s.txt,'s'+i);$('#bul').style.cursor='pointer';$('#bul').onclick=()=>say(s.tip,'t'+i);$('#rp').onclick=()=>{stopAll();anim(s)};
+ say(`Étape ${i+1}. ${s.t}. ${s.txt} ${s.c}.`,'s'+i);anim(s)}
 function anim(s){if(!s.ph.length)return;const sv=$('#art svg');let pi=0,k=0;
  const reset=()=>$$('#cnt .dr').forEach(d=>d.classList.remove('on'));
  const tick=()=>{if(pi>=s.ph.length){later(()=>{reset();pi=0;k=0;tick()},2600);return}
@@ -246,7 +253,7 @@ function done(){prog.learned=1;save();burst(120,1);
  <div class="fr">« J'atteste qu'il n'y a de divinité qu'Allah, Seul, sans associé, et j'atteste que Mouhammad est Son serviteur et Son messager. »</div><div class="src">Mouslim 234</div></div>
  <button class="go2" id="gj">🎮 Jouer aux jeux</button><button class="go2" style="background:#fff;color:var(--tx);box-shadow:0 5px 0 #b7e3ec" id="rv">🔁 Revoir les étapes</button>`;
  wire();$('#gj').onclick=()=>go('games');$('#rv').onclick=()=>go('learn',0);
- say("Machâ'Allah ! Tu connais maintenant les ablutions. Après les ablutions, on dit l'attestation de foi. Demande à tes parents de la répéter avec toi.")}
+ say("Machâ'Allah ! Tu connais maintenant les ablutions. Après les ablutions, on dit l'attestation de foi. Demande à tes parents de la répéter avec toi.",'done')}
 
 /* ---------- pourquoi ---------- */
 function why(){A.innerHTML=topbar('Pourquoi les ablutions ?')+bubble("Pourquoi on fait les ablutions avant la prière ? Je t'explique !")+`<div class="why">
@@ -257,7 +264,7 @@ function why(){A.innerHTML=topbar('Pourquoi les ablutions ?')+bubble("Pourquoi o
  <div class="wc"><span class="ic">3️⃣</span><div><b>1 fois ou 3 fois ?</b><p>Laver 3 fois, c'est la sunna (ce que faisait le Prophète, paix sur lui). Mais si tu as bien lavé une seule fois, c'est déjà valable. La tête, elle, on la passe une seule fois avec les mains mouillées.</p><small>Boukhârî 157, 158, 159 · la tête : Boukhârî 185</small></div></div>
  <div class="wc"><span class="ic">🔁</span><div><b>Quand faut-il les refaire ?</b><p>Après être allé aux toilettes, après avoir dormi profondément ou si un vent est sorti, il faut refaire ses ablutions avant de prier.</p><small>Boukhârî 135, Abû Dâwoud 203</small></div></div></div>
  <button class="go2" id="gl">▶ Apprendre les étapes</button>`;
- wire();$('#gl').onclick=()=>go('learn',0);say("Pourquoi on fait les ablutions ? Parce qu'Allah nous le demande avant la prière. Sans ablutions, la prière n'est pas acceptée. Et l'eau emporte les petites fautes. Laver trois fois, c'est la sunna, mais une fois bien lavé, c'est déjà valable. La tête, on la passe une seule fois.")}
+ wire();$('#gl').onclick=()=>go('learn',0);say("Pourquoi on fait les ablutions ? Parce qu'Allah nous le demande avant la prière. Sans ablutions, la prière n'est pas acceptée. Et l'eau emporte les petites fautes. Laver trois fois, c'est la sunna, mais une fois bien lavé, c'est déjà valable. La tête, on la passe une seule fois.",'why')}
 
 /* ---------- accueil ---------- */
 function home(){const st=k=>'★'.repeat(prog[k]||0)+'☆'.repeat(3-(prog[k]||0));
@@ -266,7 +273,7 @@ function home(){const st=k=>'★'.repeat(prog[k]||0)+'☆'.repeat(3-(prog[k]||0)
  <button class="big b2" id="m2"><span class="ic">🎮</span><span>Jouer<small>4 petits jeux · ${['g1','g2','g3','g4'].reduce((a,k)=>a+(prog[k]||0),0)} / 12 étoiles</small></span></button>
  <button class="big b3" id="m3"><span class="ic">🌙</span><span>Pourquoi ?<small>Pourquoi on fait les ablutions</small></span></button></div>
  ${bubble("Assalâmou ‘alaykoum ! Je suis Nour. Tu viens avec moi apprendre les ablutions ?")}`;
- wire();$('#m1').onclick=()=>go('learn',0);$('#m2').onclick=()=>go('games');$('#m3').onclick=()=>go('why')}
+ wire();$('#bul').style.cursor='pointer';$('#bul').onclick=()=>say($('#bul').textContent,'home');$('#m1').onclick=()=>go('learn',0);$('#m2').onclick=()=>go('games');$('#m3').onclick=()=>go('why')}
 
 /* ---------- menu des jeux ---------- */
 function games(){const st=k=>`<span class="stars">${'★'.repeat(prog[k]||0)}${'☆'.repeat(3-(prog[k]||0))}</span>`;
@@ -276,12 +283,12 @@ function games(){const st=k=>`<span class="stars">${'★'.repeat(prog[k]||0)}${'
  <button class="big b3" id="g3"><span class="ic">👉</span><span>Montre-moi la bonne partie<small>${st('g3')}</small></span></button>
  <button class="big b3" id="g4"><span class="ic">🔎</span><span>Les erreurs à éviter<small>${st('g4')}</small></span></button></div>
  ${['g1','g2','g3','g4'].every(k=>prog[k]===3)?bubble("Tu as toutes les étoiles ! Tu es un vrai champion des ablutions !","ok"):bubble("Choisis un jeu ! Gagne les 12 étoiles !")}`;
- wire();['g1','g2','g3','g4'].forEach(k=>$('#'+k).onclick=()=>go(k));say('Choisis un jeu !')}
+ wire();['g1','g2','g3','g4'].forEach(k=>$('#'+k).onclick=()=>go(k));say('Choisis un jeu !','games')}
 function result(k,ok,tot){const s=ok>=tot?3:ok>=tot*.6?2:1;if(!prog[k]||s>prog[k])prog[k]=s;save();burst(s===3?140:60,1);
  const msg=s===3?"Parfait ! Tu as toutes les étoiles !":s===2?"Très bien ! Encore un petit effort pour la 3e étoile.":"Bravo d'avoir essayé ! On rejoue ?";
  A.innerHTML=topbar('Résultat')+`<div class="win">${nour('wow')}<h2>${s===3?"Machâ'Allah !":'Bravo !'}</h2><div class="stars">${'★'.repeat(s)}${'☆'.repeat(3-s)}</div><p class="txt">${msg}</p></div>
  <button class="go2" id="ag">🔁 Rejouer</button><button class="go2" style="background:#fff;color:var(--tx);box-shadow:0 5px 0 #b7e3ec" id="og">🎮 Les autres jeux</button>`;
- wire();$('#ag').onclick=()=>go(k);$('#og').onclick=()=>go('games');say(msg)}
+ wire();$('#ag').onclick=()=>go(k);$('#og').onclick=()=>go('games');say(msg,'r'+s)}
 
 /* JEU 1 : l'ordre */
 const HINT=["Tout commence dans ton cœur…","Avant de toucher l'eau, on dit une petite phrase avec le nom d'Allah.","D'abord, on lave ce qui va porter l'eau…","Maintenant, ce qui sert à manger et à parler.","Juste au-dessus de la bouche, ce qui sert à sentir les fleurs…","Tout ce qu'on voit dans le miroir, du front au menton !","De la main jusqu'au coude, en commençant par la droite.","On passe les mains mouillées une seule fois en haut… et derrière les joues !","On termine tout en bas, avec ce qui sert à marcher !"];
@@ -290,48 +297,48 @@ function g1(){const order=ST.map(s=>s.k);let placed=0,err=0;const pool=shuffle(o
   <div class="slots">${order.map((k,i)=>i<placed?`<div class="slot f">${svg(k)}</div>`:`<div class="slot">${i+1}</div>`).join('')}</div>
   ${bubble(msg,c)}<div class="pool">${pool.map(k=>order.indexOf(k)<placed?'':`<button class="pc" data-k="${k}">${svg(k)}${LBL[k]}</button>`).join('')}</div>`;
   wire();$$('.pc').forEach(b=>b.onclick=()=>{const k=b.dataset.k;if(k===order[placed]){placed++;burst(20);if(placed===9)return later(()=>result('g1',err===0?9:err<=2?6:3,9),500);
-    const m=["Bravo !","Oui !","C'est ça !","Super !"][placed%4]+` Et maintenant, l'étape ${placed+1} ?`;draw(m,'ok');say(m)}
-   else{err++;b.classList.add('sh');const m='Pas encore ! Petit indice : '+HINT[placed];$('#bul').textContent=m;$('#bul').className='bul ko';say(m);later(()=>b.classList.remove('sh'),500)}})};
- draw("Touche les cartes dans le bon ordre, de la 1re à la 9e étape !");say("Touche les cartes dans le bon ordre, de la première à la neuvième étape !")}
+    const m=["Bravo !","Oui !","C'est ça !","Super !"][placed%4]+` Et maintenant, l'étape ${placed+1} ?`;draw(m,'ok');say(m,'g1ok')}
+   else{err++;b.classList.add('sh');const m='Pas encore ! Petit indice : '+HINT[placed];$('#bul').textContent=m;$('#bul').className='bul ko';say(m,'h'+placed);later(()=>b.classList.remove('sh'),500)}})};
+ draw("Touche les cartes dans le bon ordre, de la 1re à la 9e étape !");say("Touche les cartes dans le bon ordre, de la première à la neuvième étape !",'g1i')}
 
 /* JEU 2 : combien de fois */
 function g2(){const Q=shuffle([['mains',3],['bouche',3],['nez',3],['visage',3],['bras',3],['tete',1],['oreilles',1],['pieds',3]]);let i=0,ok=0;
  const ask=()=>{const[k,n]=Q[i];A.innerHTML=topbar('Combien de fois ?')+`<div class="gh"><h2>Combien de fois ?</h2><span class="badge">Question ${i+1} / ${Q.length}</span></div>
   <div class="qart">${svg(k)}</div><div class="gh ql">${LBL[k]}${k==='bras'||k==='pieds'?' (chaque côté)':''}</div>
   <div class="nums">${[1,2,3].map(x=>`<button data-n="${x}">${x}</button>`).join('')}</div><div id="fb"></div>`;
-  wire();const q=`Combien de fois on lave ${LBL[k].toLowerCase()} ? Un, deux, ou trois ?`.replace('on lave la tête','on passe les mains sur la tête').replace('on lave les oreilles','on essuie les oreilles');say(q);
+  wire();const q=`Combien de fois on lave ${LBL[k].toLowerCase()} ? Un, deux, ou trois ?`.replace('on lave la tête','on passe les mains sur la tête').replace('on lave les oreilles','on essuie les oreilles');say(q,'q2_'+k);
   $$('.nums button').forEach(b=>b.onclick=()=>{if($('#fb').innerHTML)return;const x=+b.dataset.n,good=x===n;if(good)ok++;b.classList.add(good?'okk':'bad');if(!good)$(`.nums button[data-n="${n}"]`).classList.add('okk');
    const ex=n===1?(k==='tete'?"La tête, on passe les mains mouillées une seule fois.":"Les oreilles, on les essuie une seule fois, avec la tête."):"3 fois, c'est la sunna. Mais une fois bien lavé, c'est déjà valable !";
-   const m=(good?'Bravo ! ':'Presque ! ')+ex;if(good)burst(25);$('#fb').innerHTML=bubble(m,good?'ok':'ko')+`<button class="go2" id="nq">${i<Q.length-1?'Suivant ▶':'Voir mes étoiles ⭐'}</button>`;say(m);
+   const m=(good?'Bravo ! ':'Presque ! ')+ex;if(good)burst(25);$('#fb').innerHTML=bubble(m,good?'ok':'ko')+`<button class="go2" id="nq">${i<Q.length-1?'Suivant ▶':'Voir mes étoiles ⭐'}</button>`;say(m,(good?'g2ok':'g2ko')+(n===3?'3':k==='tete'?'t':'e'));
    $('#nq').onclick=()=>{i++;i<Q.length?ask():result('g2',ok,Q.length)}})};
  ask()}
 
 /* JEU 3 : montre-moi */
 function g3(){const W=['mains','bouche','nez','visage','bras','tete','pieds'];
- const R=shuffle([['Par quoi commence-t-on à laver ?','mains'],...W.slice(0,-1).map((w,j)=>[`Quelle partie lave-t-on après ${LBL[w].toLowerCase()} ?`.replace('lave-t-on après la tête','lave-t-on après la tête et les oreilles'),W[j+1]])]);let i=0,ok=0;
+ const R=shuffle([['Par quoi commence-t-on à laver ?','mains','q3_start'],...W.slice(0,-1).map((w,j)=>[`Quelle partie lave-t-on après ${LBL[w].toLowerCase()} ?`.replace('lave-t-on après la tête','lave-t-on après la tête et les oreilles'),W[j+1],'q3_'+w])]);let i=0,ok=0;
  const ask=()=>{const[q,a]=R[i];const opts=shuffle([a,...shuffle(W.filter(x=>x!==a)).slice(0,2)]);
   A.innerHTML=topbar('Montre-moi la bonne partie')+`<div class="gh"><span class="badge">Question ${i+1} / ${R.length}</span></div>${bubble(q)}<div class="opts">${opts.map(k=>`<button class="pc" data-k="${k}">${svg(k)}${LBL[k]}</button>`).join('')}</div><div id="fb"></div>`;
-  wire();say(q);$$('.pc').forEach(b=>b.onclick=()=>{if($('#fb').innerHTML)return;const good=b.dataset.k===a;if(good)ok++;b.classList.add(good?'okk':'bad');if(!good)$(`.pc[data-k="${a}"]`).classList.add('okk');
-   const m=good?'Oui, bravo !':`Non, c'est ${LBL[a].toLowerCase()} !`;if(good)burst(25);$('#fb').innerHTML=bubble(m,good?'ok':'ko')+`<button class="go2" id="nq">${i<R.length-1?'Suivant ▶':'Voir mes étoiles ⭐'}</button>`;say(m);
+  wire();say(q,R[i][2]);$$('.pc').forEach(b=>b.onclick=()=>{if($('#fb').innerHTML)return;const good=b.dataset.k===a;if(good)ok++;b.classList.add(good?'okk':'bad');if(!good)$(`.pc[data-k="${a}"]`).classList.add('okk');
+   const m=good?'Oui, bravo !':`Non, c'est ${LBL[a].toLowerCase()} !`;if(good)burst(25);$('#fb').innerHTML=bubble(m,good?'ok':'ko')+`<button class="go2" id="nq">${i<R.length-1?'Suivant ▶':'Voir mes étoiles ⭐'}</button>`;say(m,good?'g3ok':'g3ko_'+a);
    $('#nq').onclick=()=>{i++;i<R.length?ask():result('g3',ok,R.length)}})};
  ask()}
 
 /* JEU 4 : les erreurs à éviter */
 function g4(){const full=['mains','bouche','nez','visage','bras','tete','pieds'];
  const S=shuffle([
-  {seq:full.filter(x=>x!=='nez'),a:"Il a oublié le nez",o:["Il a oublié les pieds","Tout est juste"]},
-  {seq:['mains','bouche','nez','visage',['bras','G'],['bras','D'],'tete','pieds'],a:"Il a commencé par le bras gauche",o:["Il a oublié la bouche","Tout est juste"]},
-  {seq:full.filter(x=>x!=='pieds'),a:"Il a oublié les pieds",o:["Il a oublié le visage","Tout est juste"]},
-  {seq:['mains','bouche','nez','visage','bras','pieds','tete'],a:"Il a lavé les pieds avant la tête",o:["Il a oublié les mains","Tout est juste"]},
-  {seq:['mains','bouche','nez','visage','bras',['tete','sans oreilles'],'pieds'],a:"Il a oublié les oreilles",o:["Il a oublié le nez","Tout est juste"]},
-  {seq:full,a:"Tout est juste !",o:["Il a oublié le nez","Il a commencé par les pieds"]},
-  {seq:['visage','mains','bouche','nez','bras','tete','pieds'],a:"Il a lavé le visage avant les mains",o:["Il a oublié la tête","Tout est juste"]}]);let i=0,ok=0;
+  {id:'nez',seq:full.filter(x=>x!=='nez'),a:"Il a oublié le nez",o:["Il a oublié les pieds","Tout est juste"]},
+  {id:'bras',seq:['mains','bouche','nez','visage',['bras','G'],['bras','D'],'tete','pieds'],a:"Il a commencé par le bras gauche",o:["Il a oublié la bouche","Tout est juste"]},
+  {id:'pieds',seq:full.filter(x=>x!=='pieds'),a:"Il a oublié les pieds",o:["Il a oublié le visage","Tout est juste"]},
+  {id:'ordre',seq:['mains','bouche','nez','visage','bras','pieds','tete'],a:"Il a lavé les pieds avant la tête",o:["Il a oublié les mains","Tout est juste"]},
+  {id:'oreilles',seq:['mains','bouche','nez','visage','bras',['tete','sans oreilles'],'pieds'],a:"Il a oublié les oreilles",o:["Il a oublié le nez","Tout est juste"]},
+  {id:'juste',seq:full,a:"Tout est juste !",o:["Il a oublié le nez","Il a commencé par les pieds"]},
+  {id:'visage',seq:['visage','mains','bouche','nez','bras','tete','pieds'],a:"Il a lavé le visage avant les mains",o:["Il a oublié la tête","Tout est juste"]}]);let i=0,ok=0;
  const ask=()=>{const s=S[i],opts=shuffle([s.a,...s.o]);
   A.innerHTML=topbar('Les erreurs à éviter')+`<div class="gh"><span class="badge">Mission ${i+1} / ${S.length}</span></div>${bubble("Regarde bien les ablutions de ce petit. Qu'est-ce qui ne va pas ?")}
   <div class="seq">${s.seq.map(x=>{const[k,t]=Array.isArray(x)?x:[x,''];return `<div class="sq">${svg(k)}${LBL[k]}${t?`<b>${t}</b>`:''}</div>`}).join('')}</div>
   <div class="ans">${opts.map(o=>`<button data-o="${o}">${o}</button>`).join('')}</div><div id="fb"></div>`;
-  wire();say("Regarde bien. Qu'est-ce qui ne va pas ?");$$('.ans button').forEach(b=>b.onclick=()=>{if($('#fb').innerHTML)return;const good=b.dataset.o===s.a;if(good)ok++;b.classList.add(good?'okk':'bad');if(!good)$$('.ans button').find(x=>x.dataset.o===s.a).classList.add('okk');
-   const m=good?'Bien vu, détective !':`La bonne réponse : ${s.a.replace(' !','')}.`;if(good)burst(25);$('#fb').innerHTML=bubble(m,good?'ok':'ko')+`<button class="go2" id="nq">${i<S.length-1?'Suivant ▶':'Voir mes étoiles ⭐'}</button>`;say(m);
+  wire();say("Regarde bien les ablutions de ce petit. Qu'est-ce qui ne va pas ?",'g4i');$$('.ans button').forEach(b=>b.onclick=()=>{if($('#fb').innerHTML)return;const good=b.dataset.o===s.a;if(good)ok++;b.classList.add(good?'okk':'bad');if(!good)$$('.ans button').find(x=>x.dataset.o===s.a).classList.add('okk');
+   const m=good?'Bien vu, détective !':`La bonne réponse : ${s.a.replace(' !','')}.`;if(good)burst(25);$('#fb').innerHTML=bubble(m,good?'ok':'ko')+`<button class="go2" id="nq">${i<S.length-1?'Suivant ▶':'Voir mes étoiles ⭐'}</button>`;say(m,good?'g4ok':'g4ko_'+s.id);
    $('#nq').onclick=()=>{i++;i<S.length?ask():result('g4',ok,S.length)}})};
  ask()}
 
