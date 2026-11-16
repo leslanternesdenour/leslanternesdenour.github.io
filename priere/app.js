@@ -27,16 +27,37 @@ let T=[];const later=(f,ms)=>T.push(setTimeout(f,ms));const stopAll=()=>{T.forEa
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
-/* ---------- décor + Nour ---------- */
+/* ---------- décor ---------- */
 $('#deco').innerHTML=[[6,12],[88,8],[18,40],[94,34],[4,70],[90,62],[50,4],[70,88],[12,90]].map(([x,y],i)=>`<span class="st" style="left:${x}%;top:${y}%;font-size:${12+i%3*6}px;animation-delay:${-i*.5}s">${i%4===3?'☾':'✦'}</span>`).join('');
 $('#guir').innerHTML='<svg viewBox="0 0 400 58" preserveAspectRatio="xMidYMin meet"><path d="M0 4Q200 34 400 4" fill="none" stroke="#d9952a88" stroke-width="1.5"/>'+[30,95,160,240,305,370].map((x,i)=>{const u=x/400,y=4+60*u*(1-u),l=[10,18,12,12,18,10][i];return `<g class="gl" style="animation-delay:${-i*.6}s"><line x1="${x}" y1="${y}" x2="${x}" y2="${y+l}" stroke="#d9952a" stroke-width="1.5"/><g transform="translate(${x-9} ${y+l}) scale(.18)"><path d="M30 32 38 16h24l8 16z" fill="#f5b942"/><rect x="26" y="32" width="48" height="8" rx="2" fill="#d9952a"/><rect x="28" y="40" width="44" height="60" rx="3" fill="${['#fff2c4','#ffd3e0','#c9f1f7'][i%3]}" stroke="#d9952a" stroke-width="4"/><rect x="24" y="100" width="52" height="8" rx="2" fill="#d9952a"/></g></g>`}).join('')+'</svg>';
-function nour(m){const mouth=m==='wow'?'<ellipse cx="60" cy="106" rx="9" ry="10" fill="#7a2c3b"/><ellipse cx="60" cy="110" rx="5" ry="4" fill="#ff8fa3"/>':m==='oh'?'<ellipse cx="60" cy="106" rx="5" ry="6" fill="#7a2c3b"/>':'<path d="M47 101q13 14 26 0" fill="#7a2c3b"/><path d="M52 106q8 5 16 0" fill="#ff8fa3"/>';
- return `<svg class="nour" viewBox="0 0 120 150" role="img" aria-label="Nour"><defs><linearGradient id="ng${m||''}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8be3ef"/><stop offset="1" stop-color="#1fa3c9"/></linearGradient></defs>
- <ellipse cx="60" cy="144" rx="30" ry="5" fill="#1d8f9c" opacity=".18"/><path d="M60 6C55 18 16 62 16 94a44 44 0 0 0 88 0C104 62 65 18 60 6z" fill="url(#ng${m||''})" stroke="#1784a8" stroke-width="3"/>
- <path d="M38 70c4-12 10-22 16-30" stroke="#fff" stroke-width="7" stroke-linecap="round" opacity=".55" fill="none"/>
- <ellipse cx="45" cy="86" rx="8" ry="10" fill="#173a5e"/><ellipse cx="75" cy="86" rx="8" ry="10" fill="#173a5e"/><circle cx="48" cy="82" r="3" fill="#fff"/><circle cx="78" cy="82" r="3" fill="#fff"/>
- <circle cx="34" cy="100" r="6" fill="#ff9fb2" opacity=".7"/><circle cx="86" cy="100" r="6" fill="#ff9fb2" opacity=".7"/>${mouth}<path d="M84 34a10 10 0 1 0 0 14a12 12 0 0 1 0-14z" fill="#f5b942"/></svg>`}
-const bubble=(t,c='',id='')=>`<div class="nb">${nour(c==='ok'?'wow':c==='ko'?'oh':'')}<div class="bul ${c}" id="bul" data-id="${id}">${t}</div></div>`;
+/* ---------- Sajjadou, le petit tapis de prière (mascotte de l'univers prière) ---------- */
+// Humeurs : '' sourire · 'clin' clin d'œil (accueil) · 'wow' joie + scintillement · 'oh' « pas grave » (il s'incline pour encourager)
+let SJn=0;
+function sajjadou(m='',cls=''){const u=++SJn;
+ const pomp=(x,y,haut,i)=>`<g class="pp ${haut?'ph':'pb'}" style="animation-delay:${-i*.4}s"><line x1="${x}" y1="${haut?y:y}" x2="${x}" y2="${haut?y-7:y+7}" stroke="#d9952a" stroke-width="2" stroke-linecap="round"/><circle cx="${x}" cy="${haut?y-9:y+9}" r="3.4" fill="#f5b942" stroke="#d9952a" stroke-width="1"/></g>`;
+ const xs=[33,46.5,60,73.5,87];
+ const oeilD=m==='clin'?'<path d="M64 59q5-5 10 0" stroke="#173a5e" stroke-width="3" fill="none" stroke-linecap="round"/>':'<ellipse cx="69" cy="58" rx="5.2" ry="6.8" fill="#173a5e"/><circle cx="71" cy="55" r="2" fill="#fff"/>';
+ const oeilG='<ellipse cx="51" cy="58" rx="5.2" ry="6.8" fill="#173a5e"/><circle cx="53" cy="55" r="2" fill="#fff"/>';
+ const bouche=m==='wow'?'<path d="M52 69q8 13 16 0z" fill="#7a2c3b"/><path d="M55 74q5 4 10 0" fill="#ff8fa3"/>'
+  :m==='oh'?'<ellipse cx="60" cy="72" rx="3.6" ry="4.2" fill="#7a2c3b"/>'
+  :'<path d="M52 69q8 9 16 0" fill="#7a2c3b"/><path d="M55 72q5 3 10 0" fill="#ff8fa3"/>';
+ const sourcils=m==='oh'?'<path d="M45 50.5l8-2.5M75 50.5l-8-2.5" stroke="#1d8f9c" stroke-width="2.4" stroke-linecap="round"/>':'';
+ const etin=(m==='wow'||cls.includes('brille'))?`<g class="etin">${[[12,34,1],[108,28,.8],[8,98,.7],[110,96,1]].map(([x,y,s],i)=>`<path d="M${x} ${y-7*s}L${x+2*s} ${y-2*s}L${x+7*s} ${y}L${x+2*s} ${y+2*s}L${x} ${y+7*s}L${x-2*s} ${y+2*s}L${x-7*s} ${y}L${x-2*s} ${y-2*s}Z" fill="#f5b942" style="animation-delay:${-i*.3}s"/>`).join('')}</g>`:'';
+ return `<svg class="sj ${m==='oh'?'incline':''} ${cls}" viewBox="0 0 120 152" role="img" aria-label="Sajjadou, le petit tapis de prière"><defs><linearGradient id="sjc${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c9f1f7"/><stop offset="1" stop-color="#8fd8ef"/></linearGradient></defs>
+ <ellipse cx="60" cy="148" rx="34" ry="4" fill="#1d8f9c" opacity=".18"/>${etin}
+ <g class="tapis">${xs.map((x,i)=>pomp(x,13,1,i)).join('')}${xs.map((x,i)=>pomp(x,137,0,i)).join('')}
+ <rect x="23" y="12" width="74" height="126" rx="8" fill="#2bb3c0" stroke="#1d8f9c" stroke-width="2.5"/>
+ <rect x="28.5" y="17.5" width="63" height="115" rx="5" fill="#fff8e7"/>
+ <rect x="31.2" y="20.2" width="57.6" height="109.6" rx="4" fill="none" stroke="#f5b942" stroke-width="2.6" stroke-dasharray="1.5 4.2" stroke-linecap="round"/>
+ <rect x="34.5" y="23.5" width="51" height="103" rx="3" fill="url(#sjc${u})" stroke="#2bb3c0" stroke-width="1.2"/>
+ <path d="M39 88V53C39 42 52 35 60 27C68 35 81 42 81 53V88Z" fill="#fff8e7" stroke="#f5b942" stroke-width="2.4" stroke-linejoin="round"/>
+ <path d="M60 27v6" stroke="#d9952a" stroke-width="1.4"/><circle cx="60" cy="35" r="2" fill="#f5b942"/>
+ <g class="visage">${sourcils}<g class="yeux">${oeilG}${oeilD}</g>
+ <circle cx="44.5" cy="68" r="4.3" fill="#ff9fb2" opacity=".7"/><circle cx="75.5" cy="68" r="4.3" fill="#ff9fb2" opacity=".7"/>${bouche}</g>
+ <g transform="translate(60 107)"><rect x="-8" y="-8" width="16" height="16" fill="#f5b942" stroke="#d9952a" stroke-width="1.2"/><rect x="-8" y="-8" width="16" height="16" fill="#f5b942" stroke="#d9952a" stroke-width="1.2" transform="rotate(45)"/><circle r="4.2" fill="#2bb3c0"/><circle r="1.6" fill="#fff8e7"/></g>
+ <path d="M42 107l3-3.5 3 3.5-3 3.5zM72 107l3-3.5 3 3.5-3 3.5z" fill="#1d8f9c"/>
+ <path d="M38 121h44" stroke="#f5b942" stroke-width="2" stroke-dasharray="3 3"/></g></svg>`}
+const bubble=(t,c='',id='',m)=>`<div class="nb">${sajjadou(m!=null?m:c==='ok'?'wow':c==='ko'?'oh':'')}<div class="bul ${c}" id="bul" data-id="${id}">${t}</div></div>`;
 const topbar=t=>`<div class="bar"><button class="rb" id="home" aria-label="Accueil">🏠</button><div class="ttl">${t}</div><button class="rb" id="snd" aria-label="Voix">${sound?'🔊':'🔇'}</button></div>`;
 function wire(){const h=$('#home');if(h)h.onclick=()=>go('home');const s=$('#snd');if(s)s.onclick=()=>{sound=!sound;try{localStorage.setItem('ablutions_son',sound?'1':'0')}catch(e){}s.textContent=sound?'🔊':'🔇';if(!sound)stopVoice()};
  const b=$('#bul');if(b){b.style.cursor='pointer';b.onclick=()=>say(b.textContent,b.dataset.id)}}
@@ -121,25 +142,31 @@ const lanterns=()=>{const done=[!!prog.learn,...GAMES.map(k=>(prog[k]||0)>0)];re
 const canDip=()=>prog.learn&&GAMES.every(k=>(prog[k]||0)>0);
 function home(){
  A.innerHTML=`<div class="bar"><a class="rb" href="../ablutions/" aria-label="Ablutions" style="text-decoration:none">💧</a><span></span><button class="rb" id="snd" aria-label="Voix">${sound?'🔊':'🔇'}</button></div>
- <div class="hero">${nour()}<h1>J'apprends <span>ma prière</span></h1><p>Avec Nour, découvre la salât étape par étape : les gestes, les paroles et leur sens.</p></div>
+ <div class="hero">${sajjadou('','accueil')}<h1>J'apprends <span>ma prière</span></h1><p>Avec Sajjadou, ton petit tapis de prière, découvre la salât étape par étape : les gestes, les paroles et leur sens.</p></div>
  ${lanterns()}
  <div class="menu"><button class="big b1" id="m1"><span class="ic">🕌</span><span>Apprendre<small>Les ${ST.length} étapes de la prière${prog.learn?' · ✔':''}</small></span></button>
  <button class="big b2" id="m2"><span class="ic">🎮</span><span>Jouer<small>3 jeux · ${GAMES.reduce((a,k)=>a+(prog[k]||0),0)} / 9 étoiles</small></span></button>
  <button class="big b3" id="m3"><span class="ic">📜</span><span>Mon diplôme<small>${canDip()?'Il est prêt !':'Allume les 4 lanternes'}</small></span></button></div>
  <div class="parc"><b>Mon parcours</b><a href="../ablutions/">1 · Mes ablutions ✔</a><span class="here">2 · Ma prière</span><span class="soon">3 · Les sourates (bientôt)</span><span class="soon">4 · Le grand quiz (bientôt)</span></div>
- ${bubble("Assalâmou ‘alaykoum ! Après les ablutions, on apprend la prière. Tu viens avec moi ?",'','home')}`;
+ ${bubble("Assalâmou ‘alaykoum ! Après les ablutions, on apprend la prière. Tu viens avec moi ?",'','home','clin')}`;
  wire();$('#m1').onclick=()=>go('learn',0);$('#m2').onclick=()=>go('games');$('#m3').onclick=()=>go('dip')}
 function learn(i){const s=ST[i];
  A.innerHTML=topbar(`Étape ${i+1} / ${ST.length}`)+`<div class="card"><div class="num">${i+1}</div><h2>${s.t}</h2><div class="pbox">${pose(s.p,'big')}</div><p class="txt">${s.x}</p>
  ${s.d?dhBlock(s.d):''}${s.d2?dhBlock(s.d2):''}${s.s?surBlock(s.s):''}<div class="src">Source : ${s.src}</div></div>
  <div class="nav"><button class="go2 sm" id="pv" ${i?'':'disabled'}>←</button><button class="go2" id="nx">${i<ST.length-1?'Étape suivante →':'J\'ai fini !'}</button></div>
+ ${compagnon(i)}
  ${i===ST.length-1?`<div class="note"><b>Bon à savoir.</b> Il existe de petites différences entre les écoles (par exemple la place des mains debout, ou lever les mains au roukoû‘). Elles sont toutes valables : fais comme on t'a appris à la maison ou à la mosquée.</div>`:''}`;
  wire();wireDh();if(s.s)wireSur(s.s);
  $('#pv').onclick=()=>i&&go('learn',i-1);$('#nx').onclick=()=>{if(i<ST.length-1)go('learn',i+1);else{prog.learn=1;save();go('done')}};
  say(s.t+'. '+s.x,'e_'+s.k)}
-function done(){burst(140,1);A.innerHTML=topbar('Bravo !')+`<div class="win">${nour('wow')}<h2>Machâ'Allah !</h2><p class="txt">Tu connais toutes les étapes de la prière ! Une lanterne s'allume.</p></div>${lanterns()}
+// Sajjadou accompagne chaque étape (il n'explique pas : il encourage). Il scintille quand on passe une étape.
+const ENC=["Bravo, tu avances bien !","Prends ton temps, je suis avec toi.","Regarde bien le geste, puis écoute.","Super ! On continue ensemble ?","Tu apprends vite, machâ'Allah !"];
+function compagnon(i){const der=i===ST.length-1;
+ const t=i===0?"Je suis Sajjadou, ton petit tapis de prière. On apprend ensemble, étape par étape !":der?"Dernière étape ! Tu y es presque.":ENC[(i-1)%ENC.length];
+ return `<div class="nb comp">${sajjadou(i===0?'clin':der?'wow':'',i>0?'brille':'')}<div class="bul">${t}</div></div>`}
+function done(){burst(140,1);A.innerHTML=topbar('Bravo !')+`<div class="win">${sajjadou('wow')}<h2>Machâ'Allah !</h2><p class="txt">Tu connais toutes les étapes de la prière ! Une lanterne s'allume.</p></div>${lanterns()}
  <button class="go2" id="gj">🎮 Maintenant, on joue !</button>`;wire();$('#gj').onclick=()=>go('games');say("Machâ'Allah ! Tu connais toutes les étapes de la prière ! Maintenant, on joue ?",'done')}
-function games(){A.innerHTML=topbar('Les jeux de Nour')+`<div class="menu">
+function games(){A.innerHTML=topbar('Les jeux de Sajjadou')+`<div class="menu">
  <button class="big b3" id="g1"><span class="ic">🔢</span><span>Remets la prière dans l'ordre<small>${stars('g1')}</small></span></button>
  <button class="big b3" id="g3"><span class="ic">❓</span><span>Quelle position ?<small>${stars('g3')}</small></span></button>
  <button class="big b3" id="g4"><span class="ic">🧱</span><span>Construis ta prière<small>${stars('g4')}</small></span></button></div>
@@ -147,7 +174,7 @@ function games(){A.innerHTML=topbar('Les jeux de Nour')+`<div class="menu">
  wire();GAMES.forEach(k=>$('#'+k).onclick=()=>go(k));say('Choisis un jeu !','games')}
 function result(k,ok,tot){const s=ok>=tot?3:ok>=tot*.6?2:1;if(!prog[k]||s>prog[k])prog[k]=s;save();burst(s===3?140:60,1);
  const msg=s===3?"Parfait ! Tu as toutes les étoiles !":s===2?"Très bien ! Encore un petit effort pour la 3e étoile.":"Bravo d'avoir essayé ! On rejoue ?";
- A.innerHTML=topbar('Résultat')+`<div class="win">${nour('wow')}<h2>${s===3?"Machâ'Allah !":'Bravo !'}</h2><div class="stars">${'★'.repeat(s)}${'☆'.repeat(3-s)}</div><p class="txt">${msg}</p></div>${lanterns()}
+ A.innerHTML=topbar('Résultat')+`<div class="win">${sajjadou(s===1?'':'wow')}<h2>${s===3?"Machâ'Allah !":'Bravo !'}</h2><div class="stars">${'★'.repeat(s)}${'☆'.repeat(3-s)}</div><p class="txt">${msg}</p></div>${lanterns()}
  <button class="go2" id="ag">🔁 Rejouer</button><button class="go2 w" id="og">🎮 Les autres jeux</button>${canDip()?'<button class="go2 w" id="dg">📜 Mon diplôme</button>':''}`;
  wire();$('#ag').onclick=()=>go(k);$('#og').onclick=()=>go('games');if($('#dg'))$('#dg').onclick=()=>go('dip');say(msg,'r'+s)}
 
@@ -192,7 +219,7 @@ function dip(){if(!canDip()){A.innerHTML=topbar('Mon diplôme')+`${lanterns()}${
   wire();$('#gl').onclick=()=>go('learn',0);$('#gg').onclick=()=>go('games');say($('#bul').textContent,'dip_no');return}
  const nm=prog.name||'';const d=new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
  A.innerHTML=topbar('Mon diplôme')+`<label class="nmf">Ton prénom <input id="nm" maxlength="20" value="${esc(nm)}" placeholder="Prénom"></label>
- <div class="dipl" id="dipl"><div class="dl">${'✦ ☾ ✦'}</div><div class="dt">Diplôme de lumière</div><div class="dn" id="dn">${esc(nm)||'…'}</div><div class="dx">Je connais les étapes de ma prière</div>
+ <div class="dipl" id="dipl"><div class="dm">${sajjadou('wow')}</div><div class="dl">${'✦ ☾ ✦'}</div><div class="dt">Diplôme de lumière</div><div class="dn" id="dn">${esc(nm)||'…'}</div><div class="dx">Je connais les étapes de ma prière</div>
  <div class="dp">${['takbir','roukou','soujoud','assis'].map(p=>pose(p)).join('')}</div><div class="dd">Le ${d} · Les Lanternes de Nour</div><div class="dv">« La prière est la lumière » · Mouslim 223</div></div>
  <button class="go2" id="pr">🖨 Imprimer mon diplôme</button>`;
  wire();$('#nm').oninput=e=>{prog.name=e.target.value.trim();save();$('#dn').textContent=prog.name||'…'};$('#pr').onclick=()=>window.print();burst(120,1);say("Félicitations ! Tu connais les étapes de ta prière. Voici ton diplôme !",'dip')}
