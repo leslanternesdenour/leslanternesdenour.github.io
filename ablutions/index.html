@@ -146,7 +146,8 @@ function say(t,id){if(!sound)return;stopVoice();const c=id&&VX&&VX[id];
  if(c){const go=()=>{try{AU.currentTime=c[1]}catch(e){}const p=AU.play();if(p&&p.catch)p.catch(()=>tts(t));AUt=setTimeout(()=>AU.pause(),(c[2]-c[1])*1000+120)};
   if(AU.dataset.f!==c[0]){AU.dataset.f=c[0];AU.src='voix/'+c[0];AU.addEventListener('loadedmetadata',go,{once:true});AU.load()}else go();return}
  tts(t)}
-function tts(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(String(t).replace(/<[^>]+>/g,'').replace(/[؀-ۿً-ٟ]+/g,''));u.lang='fr-FR';u.rate=.92;u.pitch=1.15;speechSynthesis.speak(u)}catch(e){}}
+const ISL=/[âîûÂÎÛ‘ʿʾ]|\b(allah|bismi|ramadan|coran|a[iï]d\b|zak|sourate|f[aâ]tiha|nouh|adam|ibrahim|youss?ouf|younous|mouss?a|ftour|kaaba|qibla|sal[aâ]t|rak|soujou|roukou|takb|tachah|tasl|wudu|mach|inch|assal|soubh|rabb|alhamd|akbar|astagh|jibr|hajj|chah[aâ]da|fajr|dhohr|asr\b|maghrib|icha|sahour|adh[aâ]n)/i;
+function tts(t){if(ISL.test(String(t)))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(String(t).replace(/<[^>]+>/g,'').replace(/[؀-ۿً-ٟ]+/g,''));u.lang='fr-FR';u.rate=.92;u.pitch=1.15;speechSynthesis.speak(u)}catch(e){}}
 let T=[];const later=(f,ms)=>T.push(setTimeout(f,ms));const stopAll=()=>{T.forEach(clearTimeout);T=[];stopVoice()};
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 
