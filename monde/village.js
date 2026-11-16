@@ -157,7 +157,7 @@ function ouvrirJeu(b) {
   ['hud', 'bulle', 'panneau'].forEach(id => $(id).classList.add('cache'));
   fermerPanneauSon();
   village.pause(true);
-  retirer('musique', 'jeu', 0.55); // la musique accompagne le jeu, plus bas
+  arreterMusique(1); // silence dans les jeux : on entend bien la prière, les explications et les questions
   retirer('effets', 'jeu', 0);     // la nature du village se tait dans les jeux
   try { history.pushState({ monde: 'jeu' }, ''); } catch (e) {}
 }
@@ -213,6 +213,7 @@ function fermerJeu(rendreLeVillage = true) {
   choisi = null;
   village.deselectionner();
   village.pause(false);
+  if (sons().musiqueActive) jouerMusique().then(majPanneauSon); // reprend là où elle s'était arrêtée
   goutte(0.9);
 }
 $('jeu-retour').addEventListener('click', () => fermerJeu());
