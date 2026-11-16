@@ -15,7 +15,8 @@ function playId(id,done){const c=VX&&VX[id];if(!c)return false;const n=AUn;
  const go=()=>{if(n!==AUn)return;try{AU.currentTime=c[1]}catch(e){}const p=AU.play();if(p&&p.catch)p.catch(()=>{});AUt=setTimeout(()=>{AU.pause();if(n===AUn&&done)done()},(c[2]-c[1])*1000+120)};
  if(AU.dataset.f!==c[0]){AU.dataset.f=c[0];AU.src='voix/'+c[0];AU.addEventListener('loadedmetadata',go,{once:true});AU.load()}else go();return true}
 function say(ids,txt){stopV();const q=[].concat(ids).filter(i=>VX&&VX[i]);if(!q.length){if(txt)speak(txt);return}const n=AUn;const run=()=>{const i=q.shift();if(i&&n===AUn)playId(i,()=>setTimeout(run,300))};run()}
-function speak(t){try{const s=speechSynthesis;s.cancel();const u=new SpeechSynthesisUtterance(t.replace(/[؀-ۿ]+/g,''));u.lang='fr-FR';u.rate=.9;s.speak(u)}catch(e){toast('La lecture à voix haute n\'est pas disponible ici')}}
+const ISL=/[âîûÂÎÛ‘ʿʾ]|\b(allah|bismi|ramadan|coran|a[iï]d\b|zak|sourate|f[aâ]tiha|nouh|adam|ibrahim|youss?ouf|younous|mouss?a|ftour|kaaba|qibla|sal[aâ]t|rak|soujou|roukou|takb|tachah|tasl|wudu|mach|inch|assal|soubh|rabb|alhamd|akbar|astagh|jibr|hajj|chah[aâ]da|fajr|dhohr|asr\b|maghrib|icha|sahour|adh[aâ]n)/i;
+function speak(t){if(ISL.test(String(t)))return;try{const s=speechSynthesis;s.cancel();const u=new SpeechSynthesisUtterance(t.replace(/[؀-ۿ]+/g,''));u.lang='fr-FR';u.rate=.9;s.speak(u)}catch(e){toast('La lecture à voix haute n\'est pas disponible ici')}}
 function qrSvg(q){const[n,rows]=q;let d='';rows.forEach((h,y)=>{const b=BigInt('0x'+h).toString(2).padStart(n,'0');for(let x=0;x<n;x++)if(b[x]==='1')d+=`M${x} ${y}h1v1h-1z`});
  return `<svg viewBox="-2 -2 ${n+4} ${n+4}" shape-rendering="crispEdges" role="img" aria-label="QR code"><rect x="-2" y="-2" width="${n+4}" height="${n+4}" fill="#fff"/><path d="${d}" fill="#191345"/></svg>`}
 function today(){if(!st.start)return 0;const d=Math.floor((new Date().setHours(12)-new Date(st.start+'T12:00').getTime())/864e5)+1;return d>=1&&d<=30?d:0}
