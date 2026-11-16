@@ -32,7 +32,8 @@ export function surveillerFluidite(surLent) {
     const t = performance.now();
     if (t - debut >= 2000) {
       const ips = images * 1000 / (t - debut);
-      lentes = ips < 24 ? lentes + 1 : 0;
+      // moins de 5 images/s = onglet en arrière-plan ou ralenti par le système : on ne compte pas
+      lentes = ips >= 5 && ips < 24 && document.visibilityState === 'visible' ? lentes + 1 : 0;
       images = 0; debut = t;
       if (lentes >= 3) { fini = true; surLent(ips); }
     }
