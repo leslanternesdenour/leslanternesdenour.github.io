@@ -9,7 +9,8 @@ function defauts() {
   return {
     v: VERSION,
     age: null,            // 'petits' (3–5) | 'grands' (6–10)
-    son: true,
+    son: true,            // ancien réglage général (gardé pour compatibilité)
+    sons: { musique: 0.5, musiqueActive: true, voix: 1, effets: 0.7 },
     qualite: null,        // 'leger' | 'beau' | null = automatique
     etoiles: 0,
     lanternes: 0,
@@ -28,7 +29,8 @@ function charger() {
     const brut = localStorage.getItem(CLE);
     if (!brut) return defauts();
     const lu = JSON.parse(brut);
-    return Object.assign(defauts(), lu, { v: VERSION });
+    const d = defauts();
+    return Object.assign(d, lu, { v: VERSION, sons: Object.assign(d.sons, lu.sons) });
   } catch (e) {
     return defauts();
   }

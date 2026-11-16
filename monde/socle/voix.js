@@ -2,57 +2,64 @@
 // Même système que le reste du site : quelques mp3 + un voix.json
 // { id: [fichier, debut, fin] }. Les textes islamiques sont générés à partir
 // de l'alphabet arabe et vérifiés avant d'être mis en ligne.
+// Les voix passent par leur propre piste : baisser la musique ne les baisse pas,
+// et pendant qu'elles parlent, la musique et les effets s'effacent.
 // Règle : aucune synthèse vocale du téléphone n'est jamais utilisée ici.
 // Si une phrase n'existe pas encore, on ne dit rien : l'image guide l'enfant.
+import { contexte, sortie, retirer } from './audio.js?v=1';
 
-let table = null;
-const fichiers = new Map();
+let table = null, base = 'voix/';
+const tampons = new Map(); // fichier -> Promise<AudioBuffer>
 let enCours = null;
-let actif = true;
 
-export async function chargerVoix(base = 'voix/') {
+export async function chargerVoix(dossier = 'voix/') {
+  base = dossier;
   try {
     const r = await fetch(base + 'voix.json', { cache: 'no-cache' });
     if (!r.ok) return false;
     table = await r.json();
-    for (const id in table) {
-      const f = table[id][0];
-      if (!fichiers.has(f)) {
-        const a = new Audio(base + f);
-        a.preload = 'auto';
-        fichiers.set(f, a);
-      }
-    }
     return true;
-  } catch (e) {
-    table = null;
-    return false;
-  }
+  } catch (e) { table = null; return false; }
 }
 
-export function voixActive(oui) { actif = !!oui; if (!actif) arreterVoix(); }
+function tampon(fichier) {
+  if (!tampons.has(fichier)) {
+    const ctx = contexte();
+    tampons.set(fichier, fetch(base + fichier).then(r => r.arrayBuffer())
+      .then(ab => new Promise((ok, ko) => { const p = ctx.decodeAudioData(ab, ok, ko); if (p && p.then) p.then(ok, ko); })));
+  }
+  return tampons.get(fichier);
+}
 
 export function existe(id) { return !!(table && table[id]); }
 
-export function dire(id, fini) {
-  if (!actif || !existe(id)) { fini && fini(false); return false; }
+export async function dire(id, fini) {
+  if (!existe(id) || !contexte()) { fini && fini(false); return false; }
   arreterVoix();
-  const [f, debut, fin] = table[id];
-  const a = fichiers.get(f);
-  if (!a) { fini && fini(false); return false; }
+  const [f, debut, finPhrase] = table[id];
   const jeton = {};
   enCours = jeton;
-  a.currentTime = debut;
-  const surveiller = () => {
-    if (enCours !== jeton) return;
-    if (a.currentTime >= fin || a.ended) { a.pause(); enCours = null; fini && fini(true); return; }
-    requestAnimationFrame(surveiller);
+  let b;
+  try { b = await tampon(f); } catch (e) { enCours = null; fini && fini(false); return false; }
+  if (enCours !== jeton) return false;
+  const ctx = contexte();
+  const s = ctx.createBufferSource();
+  s.buffer = b;
+  s.connect(sortie('voix'));
+  retirer('musique', 'voix', 0.3);
+  retirer('effets', 'voix', 0.45);
+  s.onended = () => {
+    if (enCours === jeton) { enCours = null; retirer('musique', 'voix', 1); retirer('effets', 'voix', 1); }
+    fini && fini(true);
   };
-  a.play().then(surveiller).catch(() => { enCours = null; fini && fini(false); });
+  jeton.source = s;
+  s.start(ctx.currentTime + 0.02, debut, Math.max(0.05, finPhrase - debut));
   return true;
 }
 
 export function arreterVoix() {
+  if (enCours && enCours.source) { try { enCours.source.stop(); } catch (e) {} }
   enCours = null;
-  fichiers.forEach(a => { try { a.pause(); } catch (e) {} });
+  retirer('musique', 'voix', 1);
+  retirer('effets', 'voix', 1);
 }
