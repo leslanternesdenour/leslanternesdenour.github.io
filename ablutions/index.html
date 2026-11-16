@@ -1,0 +1,347 @@
+<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>La mission des petites ablutions · Les Lanternes de Nour</title>
+<meta name="description" content="Jeu éducatif pour apprendre les ablutions (wudû) aux enfants musulmans de 3 à 10 ans, avec Nour la petite goutte d'eau.">
+<meta name="theme-color" content="#2bb3c0">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Nunito:wght@600;800;900&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{--tq:#2bb3c0;--tq2:#1d8f9c;--ciel:#8fd8ef;--cr:#fff8e7;--or:#f5b942;--or2:#d9952a;--tx:#1b3a57;--t2:#4f6b80;--ok:#3fbf7f;--ko:#ef6b6b}
+*{box-sizing:border-box}html,body{margin:0}
+body{min-height:100vh;background:linear-gradient(180deg,#bfeaf5 0%,#e3f6fa 45%,#fff8e7 100%);color:var(--tx);font-family:Nunito,"Segoe UI",system-ui,sans-serif;-webkit-tap-highlight-color:transparent}
+h1,h2,h3{font-family:Poppins,"Segoe UI",system-ui,sans-serif;margin:0}
+button{font:inherit;cursor:pointer;color:inherit}
+.deco{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.deco .st{position:absolute;color:var(--or);opacity:.55;animation:tw 3s ease-in-out infinite alternate}
+@keyframes tw{to{opacity:.15;transform:scale(.8)}}
+.app{position:relative;z-index:1;max-width:580px;margin:0 auto;padding:0 14px 30px}
+.guir{height:58px;margin:0 -14px;pointer-events:none}.guir svg{width:100%;height:58px}
+.gl{transform-box:fill-box;transform-origin:top center;animation:bal 4s ease-in-out infinite}
+@keyframes bal{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+.bar{display:flex;justify-content:space-between;align-items:center;margin-top:-6px}
+.rb{width:52px;height:52px;border-radius:50%;border:0;background:#fff;box-shadow:0 4px 0 #9bd4e0;font-size:24px;display:flex;align-items:center;justify-content:center}
+.rb:active{transform:translateY(3px);box-shadow:0 1px 0 #9bd4e0}
+.ttl{font-family:Poppins,system-ui;font-weight:800;color:var(--tq2);font-size:15px;text-align:center;line-height:1.1}
+/* accueil */
+.hero{text-align:center;margin-top:6px}
+.hero .nour{width:150px;margin:0 auto;animation:hop 2.2s ease-in-out infinite}
+@keyframes hop{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.hero h1{font-size:clamp(26px,7.4vw,38px);color:var(--tq2);line-height:1.1;margin-top:6px}
+.hero h1 span{display:block;color:var(--or2)}
+.hero p{margin:10px auto 0;max-width:42ch;color:var(--t2);font-weight:700}
+.menu{display:grid;gap:14px;margin-top:20px}
+.big{display:flex;align-items:center;gap:14px;width:100%;border:0;border-radius:24px;padding:14px 18px;text-align:left;font-weight:900;font-size:21px;box-shadow:0 6px 0 rgba(0,0,0,.12);text-decoration:none}
+.big:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(0,0,0,.12)}
+.big .ic{flex:none;width:58px;height:58px;border-radius:18px;background:#ffffffaa;display:flex;align-items:center;justify-content:center;font-size:30px}
+.big small{display:block;font-size:14px;font-weight:700;opacity:.85}
+.b1{background:var(--tq);color:#fff}.b2{background:var(--or);color:#3a2600}.b3{background:#fff;color:var(--tx)}
+/* Nour qui parle */
+.nb{display:flex;align-items:flex-end;gap:8px;margin-top:14px}
+.nb .nour{flex:none;width:64px}
+.bul{position:relative;background:#fff;border-radius:20px;padding:12px 14px;font-weight:800;font-size:17px;line-height:1.35;box-shadow:0 3px 0 #b7e3ec;flex:1}
+.bul:before{content:"";position:absolute;left:-9px;bottom:16px;border:9px solid transparent;border-right-color:#fff;border-left:0}
+.bul.ok{background:#e6f8ee}.bul.ok:before{border-right-color:#e6f8ee}.bul.ko{background:#fff0ea}.bul.ko:before{border-right-color:#fff0ea}
+.say{border:0;background:var(--ciel);border-radius:99px;padding:4px 10px;font-weight:900;font-size:14px;margin-left:6px;vertical-align:middle}
+/* étapes */
+.dots{display:flex;justify-content:center;gap:6px;margin:10px 0}
+.dots i{width:12px;height:12px;border-radius:50%;background:#ffffff;box-shadow:inset 0 0 0 2px #9bd4e0}
+.dots i.d{background:var(--tq);box-shadow:none}.dots i.c{background:var(--or);box-shadow:0 0 0 4px #f5b94255;width:16px;height:16px;margin-top:-2px}
+.card{position:relative;background:var(--cr);border-radius:28px;padding:16px 16px 14px;box-shadow:0 8px 0 #e8d6a7,0 0 0 3px var(--or) inset;text-align:center}
+.card .num{position:absolute;left:14px;top:12px;width:44px;height:44px;border-radius:50%;background:var(--or);color:#3a2600;font:800 24px Poppins,system-ui;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 0 var(--or2)}
+.card h2{font-size:clamp(22px,6.4vw,28px);color:var(--tq2);padding:4px 40px 0}
+.art{position:relative;margin:8px auto 0;max-width:340px;background:radial-gradient(circle at 50% 45%,#ffffff,#e3f6fa 70%);border-radius:24px}
+.art svg{display:block;width:100%;height:auto}
+.pop{position:absolute;right:12px;top:8px;width:56px;height:56px;border-radius:50%;background:var(--tq);color:#fff;font:800 32px Poppins,system-ui;display:flex;align-items:center;justify-content:center;opacity:0;transform:scale(.4)}
+.pop.on{animation:pp .9s ease}
+@keyframes pp{0%{opacity:0;transform:scale(.4)}30%{opacity:1;transform:scale(1.15)}70%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1)}}
+.cnt{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 16px;margin-top:10px}
+.ph{display:flex;align-items:center;gap:6px;font-weight:900;font-size:15px;background:#fff;border-radius:99px;padding:5px 12px 5px 14px}
+.dr{width:22px;height:28px;transition:transform .3s}.dr path{fill:#d8eef4}.dr.on path{fill:#3cb6e3}.dr.on{transform:scale(1.2)}
+.fois{display:inline-block;margin-top:10px;background:var(--tq);color:#fff;font:800 18px Poppins,system-ui;padding:6px 16px;border-radius:99px}
+.txt{font-size:19px;line-height:1.45;font-weight:800;margin:12px 4px 0}
+.ar{font-family:Amiri,"Noto Naskh Arabic","Geeza Pro",serif;direction:rtl;font-weight:700}
+.src{font-size:12px;color:var(--t2);margin-top:8px;font-weight:700}
+.nav{display:flex;gap:10px;margin-top:16px}
+.nav button{border:0;border-radius:20px;padding:16px;font-weight:900;font-size:20px;box-shadow:0 5px 0 rgba(0,0,0,.12)}
+.nav .p{background:#fff;width:72px}.nav .r{background:#fff;width:72px}.nav .n{flex:1;background:var(--tq);color:#fff}
+.nav button:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.12)}
+.dua{margin-top:14px;background:#fff;border-radius:20px;padding:14px;text-align:center;box-shadow:0 0 0 2px var(--or) inset}
+.dua .ar{font-size:24px;line-height:1.7}.dua .tr{font-weight:800;margin-top:6px}.dua .fr{color:var(--t2);font-weight:700;margin-top:6px}
+/* animations des dessins */
+.wv{opacity:0;transform-box:fill-box}
+.go .wv.vy{animation:sy 1.25s ease-in-out}.go .wv.vx{animation:sx 1.25s ease-in-out}.go .wv.vxr{animation:sxr 1.25s ease-in-out}
+@keyframes sy{0%{opacity:0;transform:translateY(-100%)}15%,85%{opacity:1}100%{opacity:0;transform:translateY(100%)}}
+@keyframes sx{0%{opacity:0;transform:translateX(-100%)}15%,85%{opacity:1}100%{opacity:0;transform:translateX(100%)}}
+@keyframes sxr{0%{opacity:0;transform:translateX(100%)}15%,85%{opacity:1}100%{opacity:0;transform:translateX(-100%)}}
+.go .rub1{animation:rb1 .3s ease-in-out 4 alternate}.go .rub2{animation:rb2 .3s ease-in-out 4 alternate}
+@keyframes rb1{to{transform:translateX(7px)}}@keyframes rb2{to{transform:translateX(-7px)}}
+.drops circle,.drops path{animation:fall 1.1s linear infinite;opacity:0}
+.drops :nth-child(2){animation-delay:.37s}.drops :nth-child(3){animation-delay:.74s}
+@keyframes fall{0%{opacity:0;transform:translateY(0)}10%{opacity:1}100%{opacity:0;transform:translateY(34px)}}
+.glow{animation:gp 1.4s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes gp{0%,100%{opacity:.35;transform:scale(.92)}50%{opacity:1;transform:scale(1.06)}}
+.bub{opacity:0}.go .bub{animation:bb 1.2s ease-out}.go .bub:nth-of-type(2){animation-delay:.2s}.go .bub:nth-of-type(3){animation-delay:.4s}
+@keyframes bb{0%{opacity:0;transform:translate(0,0)}20%{opacity:1}100%{opacity:0;transform:translate(var(--dx,10px),-26px)}}
+.go .nzd{animation:nz 1.25s ease-in-out}.nzd{opacity:0;transform-box:fill-box}
+@keyframes nz{0%{opacity:0;transform:translateY(18px)}40%{opacity:1;transform:translateY(0)}60%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(22px)}}
+.hh{opacity:0;transform-box:fill-box}.go .hh{animation:hd 1.3s ease-in-out}
+@keyframes hd{0%{opacity:0;transform:translateY(16px)}15%{opacity:1}50%{opacity:1;transform:translateY(-12px)}85%{opacity:1;transform:translateY(16px)}100%{opacity:0;transform:translateY(16px)}}
+.ef{opacity:0;transform-box:fill-box;transform-origin:center}.go .ef{animation:ef 1.3s ease-in-out}
+@keyframes ef{0%{opacity:0;transform:rotate(0)}20%,80%{opacity:1}100%{opacity:0;transform:rotate(360deg)}}
+.beat{animation:beat 1.2s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes beat{0%,100%{transform:scale(1)}15%{transform:scale(1.12)}30%{transform:scale(1)}45%{transform:scale(1.08)}}
+.spark{animation:tw 1.2s ease-in-out infinite alternate}
+.pc .glow,.sq .glow,.slot .glow,.qart .glow{animation:none;opacity:1;stroke-width:7;stroke-dasharray:none;fill:rgba(245,185,66,.28)}
+/* jeux */
+.gh{text-align:center;margin-top:8px}.gh h2{color:var(--tq2);font-size:24px}
+.stars{color:var(--or);font-size:20px;letter-spacing:2px}
+.slots{display:grid;grid-template-columns:repeat(9,1fr);gap:4px;margin-top:12px}
+.slot{aspect-ratio:1;border-radius:12px;background:#ffffffaa;border:2px dashed #9bd4e0;display:flex;align-items:center;justify-content:center;font-weight:900;color:#9bd4e0;font-size:14px;overflow:hidden}
+.slot.f{border:2px solid var(--ok);background:#fff;animation:pop2 .4s}.slot svg{width:100%;height:100%}
+@keyframes pop2{0%{transform:scale(.5)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
+.pool{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.pc{border:0;background:#fff;border-radius:18px;padding:6px 4px 8px;box-shadow:0 4px 0 #b7e3ec;font-weight:900;font-size:13px;line-height:1.15}
+.pc svg{width:100%;height:auto;display:block}
+.pc:active{transform:translateY(3px);box-shadow:0 1px 0 #b7e3ec}
+.pc.sh{animation:sh .45s}.pc.okk{box-shadow:0 0 0 4px var(--ok),0 4px 0 #b7e3ec}.pc.bad{box-shadow:0 0 0 4px var(--ko),0 4px 0 #b7e3ec}
+@keyframes sh{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+.qart{max-width:230px;margin:12px auto 0;background:#fff;border-radius:24px;box-shadow:0 0 0 3px var(--or) inset}
+.qart svg{width:100%;display:block}.ql{font:800 22px Poppins,system-ui;color:var(--tq2);margin-top:8px}
+.nums{display:flex;gap:12px;justify-content:center;margin-top:14px}
+.nums button{width:84px;height:84px;border:0;border-radius:24px;background:#fff;font:800 40px Poppins,system-ui;color:var(--tq2);box-shadow:0 6px 0 #b7e3ec}
+.nums button.okk{background:var(--ok);color:#fff}.nums button.bad{background:var(--ko);color:#fff}
+.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.seq{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:12px}
+.sq{width:62px;background:#fff;border-radius:14px;padding:3px;font-size:11px;font-weight:900;line-height:1.1;box-shadow:0 3px 0 #b7e3ec;position:relative}
+.sq svg{width:100%;display:block}.sq b{position:absolute;top:-6px;right:-6px;background:var(--or);border-radius:99px;font-size:11px;padding:1px 6px}
+.ans{display:grid;gap:10px;margin-top:14px}
+.ans button{border:0;border-radius:18px;background:#fff;padding:14px;font-weight:900;font-size:17px;text-align:left;box-shadow:0 4px 0 #b7e3ec}
+.ans button.okk{background:var(--ok);color:#fff}.ans button.bad{background:var(--ko);color:#fff}
+.go2{display:block;width:100%;margin-top:14px;border:0;border-radius:20px;padding:16px;background:var(--tq);color:#fff;font-weight:900;font-size:20px;box-shadow:0 5px 0 var(--tq2)}
+.win{text-align:center;margin-top:10px}.win .nour{width:170px;margin:0 auto;animation:hop 1s ease-in-out infinite}
+.win h2{color:var(--tq2);font-size:30px;margin-top:8px}.win .stars{font-size:46px;margin-top:6px}
+.why{display:grid;gap:12px;margin-top:12px}
+.wc{display:flex;gap:12px;align-items:flex-start;background:#fff;border-radius:20px;padding:14px;box-shadow:0 4px 0 #b7e3ec;text-align:left}
+.wc .ic{flex:none;width:48px;height:48px;border-radius:14px;background:#e3f6fa;display:flex;align-items:center;justify-content:center;font-size:26px}
+.wc b{display:block;font-size:17px;color:var(--tq2)}.wc p{margin:3px 0 0;font-weight:700;line-height:1.4}.wc small{display:block;color:var(--t2);font-weight:700;margin-top:4px}
+.badge{display:inline-flex;align-items:center;gap:6px;background:#fff;border-radius:99px;padding:4px 12px;font-weight:900;font-size:14px;margin-top:8px}
+canvas#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:30}
+.foot{text-align:center;margin-top:22px;font-size:13px;color:var(--t2);font-weight:700}.foot a{color:var(--tq2)}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;animation-iteration-count:1!important}}
+</style></head><body>
+<div class="deco" id="deco"></div>
+<div class="app"><div class="guir" id="guir"></div><div id="app"></div>
+<div class="foot">Les Lanternes de Nour · <a href="../">le site</a> · <a href="../calendrier/">le calendrier du Ramadan</a></div></div>
+<canvas id="fx"></canvas>
+<script>
+(function(){
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],A=$('#app');
+let sound=true,prog={};try{prog=JSON.parse(localStorage.getItem('ablutions'))||{}}catch(e){}
+try{if(localStorage.getItem('ablutions_son')==='0')sound=false}catch(e){}
+const save=()=>{try{localStorage.setItem('ablutions',JSON.stringify(prog))}catch(e){}};
+function say(t){if(!sound)return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(String(t).replace(/<[^>]+>/g,'').replace(/[؀-ۿً-ٟ]+/g,''));u.lang='fr-FR';u.rate=.92;u.pitch=1.15;speechSynthesis.speak(u)}catch(e){}}
+let T=[];const later=(f,ms)=>T.push(setTimeout(f,ms));const stopAll=()=>{T.forEach(clearTimeout);T=[];try{speechSynthesis.cancel()}catch(e){}};
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+
+/* ---------- décor ---------- */
+$('#deco').innerHTML=[[6,12],[88,8],[18,40],[94,34],[4,70],[90,62],[50,4],[70,88],[12,90]].map(([x,y],i)=>`<span class="st" style="left:${x}%;top:${y}%;font-size:${12+i%3*6}px;animation-delay:${-i*.5}s">${i%4===3?'☾':'✦'}</span>`).join('');
+const LT=(f,w)=>`<g fill="${f}" stroke="#d9952a" stroke-width="2.5"><path d="M30 32 38 16h24l8 16z"/><rect x="26" y="32" width="48" height="8" rx="2"/><rect x="28" y="40" width="44" height="60" rx="3"/><rect x="24" y="100" width="52" height="8" rx="2"/><path d="M34 108 40 120h20l6-12z"/></g><path d="M40 96V66a10 10 0 0 1 20 0v30z" fill="${w}"/>`;
+$('#guir').innerHTML='<svg viewBox="0 0 400 58" preserveAspectRatio="xMidYMin meet"><path d="M0 4Q200 34 400 4" fill="none" stroke="#d9952a88" stroke-width="1.5"/>'+[30,95,160,240,305,370].map((x,i)=>{const u=x/400,y=4+2*u*(1-u)*30*2*.5*2,l=[10,18,12,12,18,10][i];return `<g class="gl" style="animation-delay:${-i*.5}s"><path d="M${x} ${y.toFixed(0)}v${l}" stroke="#d9952a" stroke-width="1"/><svg x="${x-9}" y="${(y+l-2).toFixed(0)}" width="18" height="23" viewBox="0 0 100 128">${LT(i%2?'#8fd8ef':'#f5b942',i%2?'#e3f6fa':'#fff2c4')}</svg></g>`}).join('')+'</svg>';
+
+/* ---------- Nour, la petite goutte ---------- */
+function nour(m){const mouth=m==='wow'?'<ellipse cx="60" cy="106" rx="9" ry="10" fill="#7a2c3b"/><ellipse cx="60" cy="110" rx="5" ry="4" fill="#ff8fa3"/>':m==='oh'?'<ellipse cx="60" cy="106" rx="5" ry="6" fill="#7a2c3b"/>':'<path d="M47 101q13 14 26 0" fill="#7a2c3b"/><path d="M52 106q8 5 16 0" fill="#ff8fa3"/>';
+ return `<svg class="nour" viewBox="0 0 120 150" role="img" aria-label="Nour la petite goutte"><defs><linearGradient id="ng${m||''}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8be3ef"/><stop offset="1" stop-color="#1fa3c9"/></linearGradient></defs>
+ <ellipse cx="60" cy="144" rx="30" ry="5" fill="#1d8f9c" opacity=".18"/>
+ <path d="M60 6C55 18 16 62 16 94a44 44 0 0 0 88 0C104 62 65 18 60 6z" fill="url(#ng${m||''})" stroke="#1784a8" stroke-width="3"/>
+ <path d="M38 70c4-12 10-22 16-30" stroke="#fff" stroke-width="7" stroke-linecap="round" opacity=".55" fill="none"/>
+ <ellipse cx="45" cy="86" rx="8" ry="10" fill="#173a5e"/><ellipse cx="75" cy="86" rx="8" ry="10" fill="#173a5e"/><circle cx="48" cy="82" r="3" fill="#fff"/><circle cx="78" cy="82" r="3" fill="#fff"/>
+ <circle cx="34" cy="100" r="6" fill="#ff9fb2" opacity=".7"/><circle cx="86" cy="100" r="6" fill="#ff9fb2" opacity=".7"/>${mouth}
+ <path d="M84 34a10 10 0 1 0 0 14a12 12 0 0 1 0-14z" fill="#f5b942"/></svg>`}
+const bubble=(t,c='')=>`<div class="nb">${nour(c==='ok'?'wow':c==='ko'?'oh':'')}<div class="bul ${c}" id="bul">${t}</div></div>`;
+const topbar=(t)=>`<div class="bar"><button class="rb" id="home" aria-label="Accueil">🏠</button><div class="ttl">${t}</div><button class="rb" id="snd" aria-label="Son">${sound?'🔊':'🔇'}</button></div>`;
+function wire(){const h=$('#home');if(h)h.onclick=()=>go('home');const s=$('#snd');if(s)s.onclick=()=>{sound=!sound;try{localStorage.setItem('ablutions_son',sound?'1':'0')}catch(e){}s.textContent=sound?'🔊':'🔇';if(!sound)try{speechSynthesis.cancel()}catch(e){}}}
+
+/* ---------- dessins ---------- */
+const SK='#f3c9a4',SKD='#cf916b',HAIR='#3b2a20',SL='#7fd0e3';
+let uid=0;
+const hand=(x,y,s,m,f=SK,k=SKD)=>`<g transform="translate(${x} ${y}) scale(${s*m} ${s})"><g fill="${f}" stroke="${k}" stroke-width="2"><rect x="-24" y="2" width="8" height="20" rx="4" transform="rotate(30 -20 12)"/><rect x="-13" y="-20" width="7" height="26" rx="3.5"/><rect x="-5" y="-25" width="7" height="30" rx="3.5"/><rect x="3" y="-23" width="7" height="28" rx="3.5"/><rect x="11" y="-17" width="6.5" height="22" rx="3.2"/><rect x="-15" y="-4" width="33" height="36" rx="12"/></g></g>`;
+const drops=(x,y)=>`<g class="drops" fill="#3cb6e3"><path d="M${x} ${y}c-3 5-4 7-4 9a4 4 0 0 0 8 0c0-2-1-4-4-9z"/><path d="M${x-8} ${y+4}c-2 4-3 5-3 7a3 3 0 0 0 6 0c0-2-1-3-3-7z"/><path d="M${x+8} ${y+2}c-2 4-3 5-3 7a3 3 0 0 0 6 0c0-2-1-3-3-7z"/></g>`;
+const grad=()=>`<defs><linearGradient id="wy" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3cb6e3" stop-opacity="0"/><stop offset=".5" stop-color="#3cb6e3" stop-opacity=".8"/><stop offset="1" stop-color="#3cb6e3" stop-opacity="0"/></linearGradient><linearGradient id="wx" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3cb6e3" stop-opacity="0"/><stop offset=".5" stop-color="#3cb6e3" stop-opacity=".8"/><stop offset="1" stop-color="#3cb6e3" stop-opacity="0"/></linearGradient></defs>`;
+const tap=()=>`<rect x="70" y="0" width="60" height="10" rx="4" fill="#b7c9d6"/><rect x="92" y="8" width="16" height="12" rx="3" fill="#9fb3c1"/>`;
+function face(z,anim){const id='f'+(uid++);
+ const ring=(cx,cy,r)=>`<circle class="glow" cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#f5b942" stroke-width="4" stroke-dasharray="6 5"/>`;
+ let extra='';
+ if(z==='m')extra=ring(100,110,17)+`<g data-z="m">${[0,1,2].map(i=>`<circle class="bub" style="--dx:${[-14,0,14][i]}px" cx="${92+i*8}" cy="108" r="${4+i%2*2}" fill="#bfeaf5" stroke="#3cb6e3" stroke-width="1.5"/>`).join('')}</g>`;
+ if(z==='n')extra=ring(100,92,13)+`<g data-z="n"><path class="nzd" d="M100 98c-3 5-4 7-4 9a4 4 0 0 0 8 0c0-2-1-4-4-9z" fill="#3cb6e3"/></g>`;
+ if(z==='f')extra=`<mask id="${id}"><circle cx="100" cy="80" r="48" fill="#fff"/></mask><g data-z="f"><g mask="url(#${id})"><rect class="wv vy" x="50" y="30" width="100" height="100" fill="url(#wy)"/></g></g>`+ring(100,80,52);
+ if(z==='h')extra=`<ellipse class="glow" cx="100" cy="44" rx="42" ry="20" fill="none" stroke="#f5b942" stroke-width="4" stroke-dasharray="6 5"/><mask id="${id}"><path d="M52 74Q54 30 100 28Q146 30 148 74Q134 52 100 50Q66 52 52 74z" fill="#fff"/></mask><g data-z="h"><g mask="url(#${id})"><rect class="wv vy" x="50" y="26" width="100" height="50" fill="url(#wy)"/></g><g class="hh"><ellipse cx="82" cy="44" rx="15" ry="9" fill="${SK}" stroke="${SKD}" stroke-width="2"/><ellipse cx="118" cy="44" rx="15" ry="9" fill="${SK}" stroke="${SKD}" stroke-width="2"/></g></g>`;
+ if(z==='e'||z==='he')extra+=ring(52,85,15)+ring(148,85,15)+`<g data-z="e"><circle class="ef" cx="52" cy="85" r="9" fill="none" stroke="#3cb6e3" stroke-width="3" stroke-dasharray="10 6"/><circle class="ef" cx="148" cy="85" r="9" fill="none" stroke="#3cb6e3" stroke-width="3" stroke-dasharray="10 6"/></g>`;
+ if(z==='he')extra=face('h',1).inner+extra;
+ const base=`<path d="M58 160q0-26 42-28q42 2 42 28z" fill="${SL}"/><rect x="88" y="120" width="24" height="16" fill="${SK}"/><circle cx="52" cy="85" r="12" fill="${SK}" stroke="${SKD}" stroke-width="2"/><circle cx="148" cy="85" r="12" fill="${SK}" stroke="${SKD}" stroke-width="2"/><circle cx="100" cy="80" r="48" fill="${SK}" stroke="${SKD}" stroke-width="2"/><path d="M52 74Q54 30 100 28Q146 30 148 74Q134 52 100 50Q66 52 52 74z" fill="${HAIR}"/><path d="M76 82q8-7 16 0M108 82q8-7 16 0" stroke="#4a3426" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="74" cy="98" r="7" fill="#f7a1a8" opacity=".6"/><circle cx="126" cy="98" r="7" fill="#f7a1a8" opacity=".6"/><path d="M100 86q-6 10 0 12" stroke="${SKD}" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M88 106q12 13 24 0z" fill="#c9575a"/>`;
+ return {inner:extra,svg:grad()+base+extra}}
+const ART={
+ intention:()=>`${grad()}<circle cx="100" cy="82" r="58" fill="#fff2c4" opacity=".7" class="glow"/><path class="beat" d="M100 128C60 100 46 80 46 62a26 26 0 0 1 54-12a26 26 0 0 1 54 12c0 18-14 38-54 66z" fill="#f28aa3" stroke="#d65f7f" stroke-width="3"/><path d="M68 60a12 12 0 0 1 14-10" stroke="#fff" stroke-width="5" stroke-linecap="round" fill="none" opacity=".7"/>${[[38,30],[160,36],[150,120],[44,118]].map(([x,y],i)=>`<text class="spark" style="animation-delay:${-i*.3}s" x="${x}" y="${y}" font-size="18" fill="#f5b942">✦</text>`).join('')}`,
+ bismillah:()=>`<path d="M28 30h144a14 14 0 0 1 14 14v52a14 14 0 0 1-14 14H96l-18 18 2-18H28a14 14 0 0 1-14-14V44a14 14 0 0 1 14-14z" fill="#fff" stroke="#f5b942" stroke-width="3"/><text class="ar" x="100" y="78" text-anchor="middle" font-size="34" fill="#1d8f9c" font-family="Amiri,serif" font-weight="700">بِسْمِ اللَّهِ</text><text x="100" y="100" text-anchor="middle" font-size="11.5" font-weight="900" fill="#4f6b80" font-family="Nunito,sans-serif">Bismillâh · au nom d'Allah</text>${[[20,20],[178,22],[186,130]].map(([x,y],i)=>`<text class="spark" style="animation-delay:${-i*.4}s" x="${x}" y="${y}" font-size="16" fill="#f5b942">✦</text>`).join('')}`,
+ mains:()=>{const id='h'+(uid++);return `${grad()}${tap()}${drops(100,26)}<mask id="${id}"><rect x="0" y="0" width="200" height="124" fill="#000"/>${hand(76,92,1,1,'#fff','#fff')}${hand(124,92,1,-1,'#fff','#fff')}<rect x="0" y="124" width="200" height="40" fill="#000"/></mask><rect x="58" y="122" width="34" height="34" rx="6" fill="${SL}"/><rect x="108" y="122" width="34" height="34" rx="6" fill="${SL}"/><g data-z="all"><g class="rub1">${hand(76,92,1,1)}</g><g class="rub2">${hand(124,92,1,-1)}</g><g mask="url(#${id})"><rect class="wv vy" x="40" y="62" width="120" height="62" fill="url(#wy)"/></g></g><path d="M56 124h40M104 124h40" stroke="#f5b942" stroke-width="3" stroke-dasharray="5 4"/><text x="100" y="152" text-anchor="middle" font-size="11" font-weight="900" fill="#d9952a" font-family="Nunito,sans-serif">poignets</text>`},
+ bouche:()=>face('m').svg,
+ nez:()=>face('n').svg,
+ visage:()=>face('f').svg,
+ bras:()=>{const arm=(y,z,l)=>{const id='a'+(uid++);const sh=`<ellipse cx="34" cy="${y}" rx="22" ry="15"/><ellipse cx="38" cy="${y-13}" rx="6" ry="9" transform="rotate(-30 38 ${y-13})"/><rect x="44" y="${y-12}" width="116" height="24" rx="12"/>`;
+   return `<text x="100" y="${y-21}" text-anchor="middle" font-size="12" font-weight="900" fill="#1d8f9c" font-family="Nunito,sans-serif">${l}</text><rect x="152" y="${y-17}" width="48" height="34" rx="10" fill="${SL}"/><g fill="${SK}" stroke="${SKD}" stroke-width="2">${sh}</g><mask id="${id}"><g fill="#fff">${sh}</g></mask><g data-z="${z}"><g mask="url(#${id})"><rect class="wv vx" x="10" y="${y-20}" width="152" height="40" fill="url(#wx)"/></g></g><circle cx="152" cy="${y}" r="9" fill="none" stroke="#f5b942" stroke-width="3" stroke-dasharray="4 3"/>`};
+   return grad()+arm(54,'R','1 · Le bras droit')+arm(124,'L','2 · Le bras gauche')+`<text x="160" y="152" font-size="10" font-weight="900" fill="#d9952a" font-family="Nunito,sans-serif">coude</text>`},
+ tete:()=>face('he').svg,
+ oreilles:()=>face('e').svg,
+ pieds:()=>{const foot=(x,z,l)=>{const id='p'+(uid++);const sh=`<rect x="${x+10}" y="40" width="24" height="56" rx="8"/><path d="M${x+6} 86h30q34 6 44 26q3 12-9 14h-64q-6-20-1-40z"/>`;
+   return `<rect x="${x+4}" y="20" width="36" height="34" rx="6" fill="#3e6fa8"/><g fill="${SK}" stroke="${SKD}" stroke-width="2">${sh}</g>${[0,1,2,3,4].map(i=>`<circle cx="${x+74-i*1}" cy="${117+i*0}" r="0" fill="none"/>`).join('')}<path d="M${x+60} 114q6-4 12 2M${x+52} 112q5-4 10 1" stroke="${SKD}" stroke-width="1.6" fill="none"/><mask id="${id}"><rect x="${x}" y="0" width="100" height="160" fill="#000"/><g fill="#fff"><rect x="${x+10}" y="78" width="24" height="18" rx="4"/><path d="M${x+6} 86h30q34 6 44 26q3 12-9 14h-64q-6-20-1-40z"/></g></mask><g data-z="${z}"><g mask="url(#${id})"><rect class="wv vxr" x="${x}" y="74" width="86" height="56" fill="url(#wx)"/></g></g><circle cx="${x+30}" cy="88" r="9" fill="none" stroke="#f5b942" stroke-width="3" stroke-dasharray="4 3"/><text x="${x+40}" y="148" text-anchor="middle" font-size="12" font-weight="900" fill="#1d8f9c" font-family="Nunito,sans-serif">${l}</text>`};
+   return grad()+foot(4,'R','1 · Droit')+foot(102,'L','2 · Gauche')+`<text x="100" y="12" text-anchor="middle" font-size="10" font-weight="900" fill="#d9952a" font-family="Nunito,sans-serif">jusqu'aux chevilles</text>`}
+};
+const svg=(k,cls='')=>`<svg viewBox="0 0 200 160" class="${cls}">${ART[k]()}</svg>`;
+
+/* ---------- les 9 étapes ---------- */
+const ST=[
+ {k:'intention',t:"L'intention",c:"Dans ton cœur",ph:[],
+  txt:"Dans ton cœur, tu décides : « Je fais mes ablutions pour prier Allah. » Pas besoin de le dire à voix haute.",tip:"L'intention, c'est dans le cœur. Allah sait ce qu'il y a dans ton cœur !",src:"« Les actes ne valent que par les intentions » · Boukhârî 1"},
+ {k:'bismillah',t:"Dire Bismillâh",c:"On le dit 1 fois",ph:[],
+  txt:"Avant de toucher l'eau, dis : « Bismillâh » (au nom d'Allah).",tip:"Répète avec moi : Bismillâh !",src:"Abû Dâwoud 101"},
+ {k:'mains',t:"Les mains",c:"3 fois",ph:[{z:'all',k:3,l:'Les 2 mains'}],
+  txt:"Lave tes deux mains jusqu'aux poignets. Frotte bien entre les doigts !",tip:"N'oublie pas entre les doigts, c'est là que les petites saletés se cachent !",src:"Boukhârî 159, Mouslim 226"},
+ {k:'bouche',t:"La bouche",c:"3 fois",ph:[{z:'m',k:3,l:'La bouche'}],
+  txt:"Prends un peu d'eau avec ta main droite, fais-la tourner dans ta bouche, puis recrache-la.",tip:"On recrache l'eau, on ne l'avale pas !",src:"Boukhârî 159, Mouslim 226"},
+ {k:'nez',t:"Le nez",c:"3 fois",ph:[{z:'n',k:3,l:'Le nez'}],
+  txt:"Fais entrer doucement un peu d'eau dans ton nez, puis souffle pour la faire sortir.",tip:"Tout doucement, sans aspirer trop fort !",src:"Boukhârî 159, Mouslim 226"},
+ {k:'visage',t:"Le visage",c:"3 fois",ph:[{z:'f',k:3,l:'Le visage'}],
+  txt:"Lave tout ton visage : du haut du front jusqu'au menton, et d'une oreille à l'autre.",tip:"Ferme bien les yeux, et l'eau coule partout sur le visage !",src:"Coran 5:6"},
+ {k:'bras',t:"Les bras",c:"3 fois chaque bras",ph:[{z:'R',k:3,l:'Bras droit'},{z:'L',k:3,l:'Bras gauche'}],
+  txt:"Lave ton bras droit, du bout des doigts jusqu'au coude (le coude aussi !). Puis le bras gauche.",tip:"On commence toujours par la droite !",src:"Coran 5:6 · commencer par la droite : Boukhârî 168"},
+ {k:'tete',t:"La tête et les oreilles",c:"1 seule fois",ph:[{z:'h',k:1,l:'La tête'},{z:'e',k:1,l:'Les oreilles'}],
+  txt:"Mouille tes mains et passe-les sur ta tête, de l'avant vers l'arrière, puis de l'arrière vers l'avant. Ensuite, essuie tes oreilles : les index à l'intérieur, les pouces derrière.",tip:"La tête, on ne la lave pas : on passe juste les mains mouillées, une seule fois. Et n'oublie pas les oreilles !",src:"Boukhârî 185 · les oreilles : Tirmidhî 36"},
+ {k:'pieds',t:"Les pieds",c:"3 fois chaque pied",ph:[{z:'R',k:3,l:'Pied droit'},{z:'L',k:3,l:'Pied gauche'}],
+  txt:"Lave ton pied droit jusqu'à la cheville (la cheville aussi !), sans oublier entre les orteils. Puis le pied gauche.",tip:"Encore la droite d'abord ! Et entre les orteils aussi.",src:"Coran 5:6"}
+];
+const LBL={intention:"L'intention",bismillah:'Bismillâh',mains:'Les mains',bouche:'La bouche',nez:'Le nez',visage:'Le visage',bras:'Les bras',tete:'La tête',oreilles:'Les oreilles',pieds:'Les pieds'};
+const dropI='<svg class="dr" viewBox="0 0 20 26"><path d="M10 1C7 7 2 12 2 17a8 8 0 0 0 16 0C18 12 13 7 10 1z"/></svg>';
+
+function learn(i){const s=ST[i];
+ A.innerHTML=topbar('Apprendre les ablutions')+`<div class="dots">${ST.map((x,j)=>`<i class="${j<i?'d':j===i?'c':''}"></i>`).join('')}</div>
+ <div class="card"><div class="num">${i+1}</div><h2>${s.t}</h2><div class="art" id="art">${svg(s.k)}<div class="pop" id="pop"></div></div>
+ ${s.ph.length?`<div class="cnt" id="cnt">${s.ph.map(p=>`<span class="ph">${p.l} ${dropI.repeat(p.k)}</span>`).join('')}</div>`:''}
+ <span class="fois">${s.c}</span><p class="txt">${s.txt} <button class="say" id="rd">🔊</button></p><div class="src">Source : ${s.src}</div></div>
+ ${bubble(s.tip)}
+ <div class="nav"><button class="p" id="pv" aria-label="Avant">◀</button><button class="r" id="rp" aria-label="Revoir">🔁</button><button class="n" id="nx">${i<8?'Suivant ▶':'Terminer ⭐'}</button></div>`;
+ wire();$('#pv').onclick=()=>i?go('learn',i-1):go('home');$('#nx').onclick=()=>i<8?go('learn',i+1):go('done');
+ $('#rd').onclick=()=>say(s.t+'. '+s.txt);$('#rp').onclick=()=>{stopAll();anim(s)};
+ say(`Étape ${i+1}. ${s.t}. ${s.txt} ${s.c}.`);anim(s)}
+function anim(s){if(!s.ph.length)return;const sv=$('#art svg');let pi=0,k=0;
+ const reset=()=>$$('#cnt .dr').forEach(d=>d.classList.remove('on'));
+ const tick=()=>{if(pi>=s.ph.length){later(()=>{reset();pi=0;k=0;tick()},2600);return}
+  const p=s.ph[pi],z=sv.querySelector(`[data-z="${p.z}"]`);if(z){z.classList.remove('go');void z.getBoundingClientRect();z.classList.add('go')}
+  const d=$$('#cnt .ph')[pi].querySelectorAll('.dr')[k];d.classList.add('on');
+  const pop=$('#pop');pop.textContent=k+1;pop.classList.remove('on');void pop.offsetWidth;pop.classList.add('on');
+  k++;if(k>=p.k){pi++;k=0}later(tick,1500)};
+ later(tick,700)}
+function done(){prog.learned=1;save();burst(120,1);
+ A.innerHTML=topbar('Bravo !')+`<div class="win">${nour('wow')}<h2>Machâ'Allah !</h2><p class="txt">Tu connais maintenant les ablutions. Tu es tout propre et prêt pour la prière !</p></div>
+ <div class="dua"><b>Après les ablutions, on dit :</b><div class="ar" lang="ar">أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ</div>
+ <div class="tr">Ach-hadou an lâ ilâha illa Llâh, wahdahou lâ charîka lah, wa ach-hadou anna Mouhammadan ‘abdouhou wa rasoûlouh.</div>
+ <div class="fr">« J'atteste qu'il n'y a de divinité qu'Allah, Seul, sans associé, et j'atteste que Mouhammad est Son serviteur et Son messager. »</div><div class="src">Mouslim 234</div></div>
+ <button class="go2" id="gj">🎮 Jouer aux jeux</button><button class="go2" style="background:#fff;color:var(--tx);box-shadow:0 5px 0 #b7e3ec" id="rv">🔁 Revoir les étapes</button>`;
+ wire();$('#gj').onclick=()=>go('games');$('#rv').onclick=()=>go('learn',0);
+ say("Machâ'Allah ! Tu connais maintenant les ablutions. Après les ablutions, on dit l'attestation de foi. Demande à tes parents de la répéter avec toi.")}
+
+/* ---------- pourquoi ---------- */
+function why(){A.innerHTML=topbar('Pourquoi les ablutions ?')+bubble("Pourquoi on fait les ablutions avant la prière ? Je t'explique !")+`<div class="why">
+ <div class="wc"><span class="ic">🤲</span><div><b>Allah nous le demande</b><p>Avant de prier, on se lave avec les ablutions. C'est Allah qui nous l'a appris dans le Coran.</p><small>Coran 5:6</small></div></div>
+ <div class="wc"><span class="ic">🕌</span><div><b>Pour que la prière compte</b><p>Sans ablutions, la prière n'est pas acceptée. Les ablutions, c'est la clé de la prière.</p><small>Mouslim 224</small></div></div>
+ <div class="wc"><span class="ic">💧</span><div><b>L'eau emporte les petits péchés</b><p>Quand tu fais bien tes ablutions, tes petites fautes partent avec les gouttes d'eau.</p><small>Mouslim 244</small></div></div>
+ <div class="wc"><span class="ic">✨</span><div><b>Propre dehors et dedans</b><p>On est tout propre et on se prépare dans son cœur pour parler à Allah.</p></div></div>
+ <div class="wc"><span class="ic">3️⃣</span><div><b>1 fois ou 3 fois ?</b><p>Laver 3 fois, c'est la sunna (ce que faisait le Prophète, paix sur lui). Mais si tu as bien lavé une seule fois, c'est déjà valable. La tête, elle, on la passe une seule fois avec les mains mouillées.</p><small>Boukhârî 157, 158, 159 · la tête : Boukhârî 185</small></div></div>
+ <div class="wc"><span class="ic">🔁</span><div><b>Quand faut-il les refaire ?</b><p>Après être allé aux toilettes, après avoir dormi profondément ou si un vent est sorti, il faut refaire ses ablutions avant de prier.</p><small>Boukhârî 135, Abû Dâwoud 203</small></div></div></div>
+ <button class="go2" id="gl">▶ Apprendre les étapes</button>`;
+ wire();$('#gl').onclick=()=>go('learn',0);say("Pourquoi on fait les ablutions ? Parce qu'Allah nous le demande avant la prière. Sans ablutions, la prière n'est pas acceptée. Et l'eau emporte les petites fautes. Laver trois fois, c'est la sunna, mais une fois bien lavé, c'est déjà valable. La tête, on la passe une seule fois.")}
+
+/* ---------- accueil ---------- */
+function home(){const st=k=>'★'.repeat(prog[k]||0)+'☆'.repeat(3-(prog[k]||0));
+ A.innerHTML=`<div class="bar"><span></span><span></span><button class="rb" id="snd" aria-label="Son">${sound?'🔊':'🔇'}</button></div><div class="hero">${nour()}<h1>La mission des <span>petites ablutions</span></h1><p>Apprends à faire tes ablutions (le wudû) avec Nour, la petite goutte d'eau !</p></div>
+ <div class="menu"><button class="big b1" id="m1"><span class="ic">💧</span><span>Apprendre<small>Les 9 étapes avec Nour</small></span></button>
+ <button class="big b2" id="m2"><span class="ic">🎮</span><span>Jouer<small>4 petits jeux · ${['g1','g2','g3','g4'].reduce((a,k)=>a+(prog[k]||0),0)} / 12 étoiles</small></span></button>
+ <button class="big b3" id="m3"><span class="ic">🌙</span><span>Pourquoi ?<small>Pourquoi on fait les ablutions</small></span></button></div>
+ ${bubble("Assalâmou ‘alaykoum ! Je suis Nour. Tu viens avec moi apprendre les ablutions ?")}`;
+ wire();$('#m1').onclick=()=>go('learn',0);$('#m2').onclick=()=>go('games');$('#m3').onclick=()=>go('why')}
+
+/* ---------- menu des jeux ---------- */
+function games(){const st=k=>`<span class="stars">${'★'.repeat(prog[k]||0)}${'☆'.repeat(3-(prog[k]||0))}</span>`;
+ A.innerHTML=topbar('Les jeux de Nour')+`<div class="menu">
+ <button class="big b3" id="g1"><span class="ic">🔢</span><span>Remets dans l'ordre<small>${st('g1')}</small></span></button>
+ <button class="big b3" id="g2"><span class="ic">✋</span><span>Combien de fois ?<small>${st('g2')}</small></span></button>
+ <button class="big b3" id="g3"><span class="ic">👉</span><span>Montre-moi la bonne partie<small>${st('g3')}</small></span></button>
+ <button class="big b3" id="g4"><span class="ic">🔎</span><span>Les erreurs à éviter<small>${st('g4')}</small></span></button></div>
+ ${['g1','g2','g3','g4'].every(k=>prog[k]===3)?bubble("Tu as toutes les étoiles ! Tu es un vrai champion des ablutions !","ok"):bubble("Choisis un jeu ! Gagne les 12 étoiles !")}`;
+ wire();['g1','g2','g3','g4'].forEach(k=>$('#'+k).onclick=()=>go(k));say('Choisis un jeu !')}
+function result(k,ok,tot){const s=ok>=tot?3:ok>=tot*.6?2:1;if(!prog[k]||s>prog[k])prog[k]=s;save();burst(s===3?140:60,1);
+ const msg=s===3?"Parfait ! Tu as toutes les étoiles !":s===2?"Très bien ! Encore un petit effort pour la 3e étoile.":"Bravo d'avoir essayé ! On rejoue ?";
+ A.innerHTML=topbar('Résultat')+`<div class="win">${nour('wow')}<h2>${s===3?"Machâ'Allah !":'Bravo !'}</h2><div class="stars">${'★'.repeat(s)}${'☆'.repeat(3-s)}</div><p class="txt">${msg}</p></div>
+ <button class="go2" id="ag">🔁 Rejouer</button><button class="go2" style="background:#fff;color:var(--tx);box-shadow:0 5px 0 #b7e3ec" id="og">🎮 Les autres jeux</button>`;
+ wire();$('#ag').onclick=()=>go(k);$('#og').onclick=()=>go('games');say(msg)}
+
+/* JEU 1 : l'ordre */
+const HINT=["Tout commence dans ton cœur…","Avant de toucher l'eau, on dit une petite phrase avec le nom d'Allah.","D'abord, on lave ce qui va porter l'eau…","Maintenant, ce qui sert à manger et à parler.","Juste au-dessus de la bouche, ce qui sert à sentir les fleurs…","Tout ce qu'on voit dans le miroir, du front au menton !","De la main jusqu'au coude, en commençant par la droite.","On passe les mains mouillées une seule fois en haut… et derrière les joues !","On termine tout en bas, avec ce qui sert à marcher !"];
+function g1(){const order=ST.map(s=>s.k);let placed=0,err=0;const pool=shuffle(order);
+ const draw=(msg,c)=>{A.innerHTML=topbar('Remets dans l\'ordre')+`<div class="gh"><h2>Dans quel ordre ?</h2></div>
+  <div class="slots">${order.map((k,i)=>i<placed?`<div class="slot f">${svg(k)}</div>`:`<div class="slot">${i+1}</div>`).join('')}</div>
+  ${bubble(msg,c)}<div class="pool">${pool.map(k=>order.indexOf(k)<placed?'':`<button class="pc" data-k="${k}">${svg(k)}${LBL[k]}</button>`).join('')}</div>`;
+  wire();$$('.pc').forEach(b=>b.onclick=()=>{const k=b.dataset.k;if(k===order[placed]){placed++;burst(20);if(placed===9)return later(()=>result('g1',err===0?9:err<=2?6:3,9),500);
+    const m=["Bravo !","Oui !","C'est ça !","Super !"][placed%4]+` Et maintenant, l'étape ${placed+1} ?`;draw(m,'ok');say(m)}
+   else{err++;b.classList.add('sh');const m='Pas encore ! Petit indice : '+HINT[placed];$('#bul').textContent=m;$('#bul').className='bul ko';say(m);later(()=>b.classList.remove('sh'),500)}})};
+ draw("Touche les cartes dans le bon ordre, de la 1re à la 9e étape !");say("Touche les cartes dans le bon ordre, de la première à la neuvième étape !")}
+
+/* JEU 2 : combien de fois */
+function g2(){const Q=shuffle([['mains',3],['bouche',3],['nez',3],['visage',3],['bras',3],['tete',1],['oreilles',1],['pieds',3]]);let i=0,ok=0;
+ const ask=()=>{const[k,n]=Q[i];A.innerHTML=topbar('Combien de fois ?')+`<div class="gh"><h2>Combien de fois ?</h2><span class="badge">Question ${i+1} / ${Q.length}</span></div>
+  <div class="qart">${svg(k)}</div><div class="gh ql">${LBL[k]}${k==='bras'||k==='pieds'?' (chaque côté)':''}</div>
+  <div class="nums">${[1,2,3].map(x=>`<button data-n="${x}">${x}</button>`).join('')}</div><div id="fb"></div>`;
+  wire();const q=`Combien de fois on lave ${LBL[k].toLowerCase()} ? Un, deux, ou trois ?`.replace('on lave la tête','on passe les mains sur la tête').replace('on lave les oreilles','on essuie les oreilles');say(q);
+  $$('.nums button').forEach(b=>b.onclick=()=>{if($('#fb').innerHTML)return;const x=+b.dataset.n,good=x===n;if(good)ok++;b.classList.add(good?'okk':'bad');if(!good)$(`.nums button[data-n="${n}"]`).classList.add('okk');
+   const ex=n===1?(k==='tete'?"La tête, on passe les mains mouillées une seule fois.":"Les oreilles, on les essuie une seule fois, avec la tête."):"3 fois, c'est la sunna. Mais une fois bien lavé, c'est déjà valable !";
+   const m=(good?'Bravo ! ':'Presque ! ')+ex;if(good)burst(25);$('#fb').innerHTML=bubble(m,good?'ok':'ko')+`<button class="go2" id="nq">${i<Q.length-1?'Suivant ▶':'Voir mes étoiles ⭐'}</button>`;say(m);
+   $('#nq').onclick=()=>{i++;i<Q.length?ask():result('g2',ok,Q.length)}})};
+ ask()}
+
+/* JEU 3 : montre-moi */
+function g3(){const W=['mains','bouche','nez','visage','bras','tete','pieds'];
+ const R=shuffle([['Par quoi commence-t-on à laver ?','mains'],...W.slice(0,-1).map((w,j)=>[`Quelle partie lave-t-on après ${LBL[w].toLowerCase()} ?`.replace('lave-t-on après la tête','lave-t-on après la tête et les oreilles'),W[j+1]])]);let i=0,ok=0;
+ const ask=()=>{const[q,a]=R[i];const opts=shuffle([a,...shuffle(W.filter(x=>x!==a)).slice(0,2)]);
+  A.innerHTML=topbar('Montre-moi la bonne partie')+`<div class="gh"><span class="badge">Question ${i+1} / ${R.length}</span></div>${bubble(q)}<div class="opts">${opts.map(k=>`<button class="pc" data-k="${k}">${svg(k)}${LBL[k]}</button>`).join('')}</div><div id="fb"></div>`;
+  wire();say(q);$$('.pc').forEach(b=>b.onclick=()=>{if($('#fb').innerHTML)return;const good=b.dataset.k===a;if(good)ok++;b.classList.add(good?'okk':'bad');if(!good)$(`.pc[data-k="${a}"]`).classList.add('okk');
+   const m=good?'Oui, bravo !':`Non, c'est ${LBL[a].toLowerCase()} !`;if(good)burst(25);$('#fb').innerHTML=bubble(m,good?'ok':'ko')+`<button class="go2" id="nq">${i<R.length-1?'Suivant ▶':'Voir mes étoiles ⭐'}</button>`;say(m);
+   $('#nq').onclick=()=>{i++;i<R.length?ask():result('g3',ok,R.length)}})};
+ ask()}
+
+/* JEU 4 : les erreurs à éviter */
+function g4(){const full=['mains','bouche','nez','visage','bras','tete','pieds'];
+ const S=shuffle([
+  {seq:full.filter(x=>x!=='nez'),a:"Il a oublié le nez",o:["Il a oublié les pieds","Tout est juste"]},
+  {seq:['mains','bouche','nez','visage',['bras','G'],['bras','D'],'tete','pieds'],a:"Il a commencé par le bras gauche",o:["Il a oublié la bouche","Tout est juste"]},
+  {seq:full.filter(x=>x!=='pieds'),a:"Il a oublié les pieds",o:["Il a oublié le visage","Tout est juste"]},
+  {seq:['mains','bouche','nez','visage','bras','pieds','tete'],a:"Il a lavé les pieds avant la tête",o:["Il a oublié les mains","Tout est juste"]},
+  {seq:['mains','bouche','nez','visage','bras',['tete','sans oreilles'],'pieds'],a:"Il a oublié les oreilles",o:["Il a oublié le nez","Tout est juste"]},
+  {seq:full,a:"Tout est juste !",o:["Il a oublié le nez","Il a commencé par les pieds"]},
+  {seq:['visage','mains','bouche','nez','bras','tete','pieds'],a:"Il a lavé le visage avant les mains",o:["Il a oublié la tête","Tout est juste"]}]);let i=0,ok=0;
+ const ask=()=>{const s=S[i],opts=shuffle([s.a,...s.o]);
+  A.innerHTML=topbar('Les erreurs à éviter')+`<div class="gh"><span class="badge">Mission ${i+1} / ${S.length}</span></div>${bubble("Regarde bien les ablutions de ce petit. Qu'est-ce qui ne va pas ?")}
+  <div class="seq">${s.seq.map(x=>{const[k,t]=Array.isArray(x)?x:[x,''];return `<div class="sq">${svg(k)}${LBL[k]}${t?`<b>${t}</b>`:''}</div>`}).join('')}</div>
+  <div class="ans">${opts.map(o=>`<button data-o="${o}">${o}</button>`).join('')}</div><div id="fb"></div>`;
+  wire();say("Regarde bien. Qu'est-ce qui ne va pas ?");$$('.ans button').forEach(b=>b.onclick=()=>{if($('#fb').innerHTML)return;const good=b.dataset.o===s.a;if(good)ok++;b.classList.add(good?'okk':'bad');if(!good)$$('.ans button').find(x=>x.dataset.o===s.a).classList.add('okk');
+   const m=good?'Bien vu, détective !':`La bonne réponse : ${s.a.replace(' !','')}.`;if(good)burst(25);$('#fb').innerHTML=bubble(m,good?'ok':'ko')+`<button class="go2" id="nq">${i<S.length-1?'Suivant ▶':'Voir mes étoiles ⭐'}</button>`;say(m);
+   $('#nq').onclick=()=>{i++;i<S.length?ask():result('g4',ok,S.length)}})};
+ ask()}
+
+/* ---------- confettis ---------- */
+let parts=[],raf=0;const cv=$('#fx'),cx=cv.getContext('2d');
+function burst(n,big){cv.width=innerWidth;cv.height=innerHeight;for(let i=0;i<n;i++)parts.push({x:big?Math.random()*cv.width:cv.width/2,y:big?-20-Math.random()*cv.height*.5:cv.height*.45,vx:big?(Math.random()-.5)*1.5:(Math.random()-.5)*9,vy:big?2+Math.random()*3:-3-Math.random()*7,r:3+Math.random()*5,c:['#f5b942','#8fd8ef','#2bb3c0','#fff','#ffb3c1'][i%5],d:Math.random()<.5,l:big?240:80});if(!raf)loop()}
+function loop(){cx.clearRect(0,0,cv.width,cv.height);parts=parts.filter(p=>p.l-->0&&p.y<cv.height+30);parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.12;cx.fillStyle=p.c;cx.beginPath();if(p.d){cx.moveTo(p.x,p.y-p.r*1.6);cx.quadraticCurveTo(p.x+p.r,p.y,p.x,p.y+p.r);cx.quadraticCurveTo(p.x-p.r,p.y,p.x,p.y-p.r*1.6)}else cx.arc(p.x,p.y,p.r,0,7);cx.fill()});raf=parts.length?requestAnimationFrame(loop):0;if(!raf)cx.clearRect(0,0,cv.width,cv.height)}
+
+const SCR={home,learn,done,why,games,g1,g2,g3,g4};
+function go(s,...a){stopAll();SCR[s](...a);window.scrollTo(0,0)}
+window.__go=go;home();
+})();
+</script></body></html>
