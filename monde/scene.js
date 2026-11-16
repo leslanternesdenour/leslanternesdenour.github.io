@@ -424,9 +424,9 @@ export function creerVillage(canvas, opts) {
   const prof = [];
   for (let i = 0; i <= 10; i++) { const a = -Math.PI / 2 + i / 10 * Math.PI / 2; prof.push(new THREE.Vector2(Math.cos(a) * 0.36, Math.sin(a) * 0.36)); }
   for (let i = 1; i <= 6; i++) { const t = i / 6; prof.push(new THREE.Vector2(0.36 * (1 - t) * (1 - t * 0.25), t * 0.42)); }
-  const corps = new THREE.Mesh(new THREE.LatheGeometry(prof, 20), new THREE.MeshBasicMaterial({ color: 0xfff3c4 }));
+  const corps = new THREE.Mesh(new THREE.LatheGeometry(prof, 20), new THREE.MeshBasicMaterial({ color: 0xffd45e }));
   const haloNour = new THREE.Sprite(new THREE.SpriteMaterial({ map: halo, color: 0xffd36a, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0.85 }));
-  haloNour.scale.setScalar(2.6);
+  haloNour.scale.setScalar(3.2);
   nour.add(corps, haloNour);
   const etincelles = [];
   for (let i = 0; i < 3; i++) {
@@ -448,8 +448,8 @@ export function creerVillage(canvas, opts) {
 
   // ---------- caméra : tourner, zoomer, toucher ----------
   const portrait = () => innerWidth / innerHeight < 0.85;
-  const rDefaut = () => portrait() ? 56 : 42;
-  const PHI = 0.9;
+  const rDefaut = () => portrait() ? 64 : 50;
+  const PHI = 0.85;
   const cam = { theta: 0.5, phi: 1.1, r: 80, cible: new THREE.Vector3() };
   const but = { theta: 0, phi: PHI, r: rDefaut(), cible: new THREE.Vector3() };
   let choisie = null, inactif = 0;
@@ -457,7 +457,7 @@ export function creerVillage(canvas, opts) {
   const pointeurs = new Map();
   let depart = null, distPince = 0;
   canvas.addEventListener('pointerdown', e => {
-    canvas.setPointerCapture?.(e.pointerId);
+    try { canvas.setPointerCapture(e.pointerId); } catch (err) { /* pointeur simulé */ }
     pointeurs.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (pointeurs.size === 1) depart = { x: e.clientX, y: e.clientY, t: performance.now(), bouge: 0 };
     else { depart = null; distPince = ecart(); }
@@ -474,7 +474,7 @@ export function creerVillage(canvas, opts) {
       but.phi = THREE.MathUtils.clamp(but.phi - dy * 0.004, 0.55, 1.32);
     } else if (pointeurs.size === 2) {
       const d = ecart();
-      if (distPince > 0) but.r = THREE.MathUtils.clamp(but.r * distPince / d, 12, 64);
+      if (distPince > 0) but.r = THREE.MathUtils.clamp(but.r * distPince / d, 12, 75);
       distPince = d;
     }
     inactif = 0;
@@ -488,7 +488,7 @@ export function creerVillage(canvas, opts) {
   };
   canvas.addEventListener('pointerup', fin);
   canvas.addEventListener('pointercancel', e => { pointeurs.delete(e.pointerId); depart = null; });
-  canvas.addEventListener('wheel', e => { e.preventDefault(); but.r = THREE.MathUtils.clamp(but.r * (1 + e.deltaY * 0.001), 12, 64); inactif = 0; }, { passive: false });
+  canvas.addEventListener('wheel', e => { e.preventDefault(); but.r = THREE.MathUtils.clamp(but.r * (1 + e.deltaY * 0.001), 12, 75); inactif = 0; }, { passive: false });
   function ecart() { const [a, b] = [...pointeurs.values()]; return Math.hypot(a.x - b.x, a.y - b.y) || 1; }
 
   const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
@@ -504,12 +504,12 @@ export function creerVillage(canvas, opts) {
     const m = maisons.find(x => x.b.id === id);
     if (!m) return;
     choisie = m;
-    but.cible.copy(m.pos).multiplyScalar(0.8).setY(2);
+    but.cible.copy(m.pos).multiplyScalar(0.62).setY(0.5);
     let t = m.a + Math.PI;
     while (t - but.theta > Math.PI) t -= Math.PI * 2;
     while (t - but.theta < -Math.PI) t += Math.PI * 2;
-    but.theta = t; but.phi = 1.12; but.r = portrait() ? 24 : 17;
-    nourBut.copy(m.pos).multiplyScalar(0.8).setY(3.4);
+    but.theta = t; but.phi = 1.0; but.r = portrait() ? 30 : 22;
+    nourBut.copy(m.pos).multiplyScalar(0.74).setY(3.2).add(new THREE.Vector3(Math.cos(m.a) * 2.6, 0, -Math.sin(m.a) * 2.6));
     anneau.position.x = m.pos.x * 0.86; anneau.position.z = m.pos.z * 0.86;
   }
   function deselectionner() {
@@ -537,6 +537,7 @@ export function creerVillage(canvas, opts) {
     facteurNuit = THREE.MathUtils.clamp((0.62 - lum) / 0.4, 0, 1);
     facteurJour = THREE.MathUtils.clamp((lum - 0.45) / 0.5, 0, 1);
     scene.fog.color.copy(u.hor.value);
+    u.bas.value.copy(u.hor.value);
     hemi.color.copy(u.hor.value).lerp(ca.set('#ffffff'), 0.3);
     hemi.intensity = 0.55 + 1.25 * lum;
     // soleil ou lune
