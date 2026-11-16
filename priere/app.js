@@ -12,7 +12,8 @@ function clip(id,rate,done){const c=VX&&VX[id];if(!c)return false;const n=AUn;ra
  const go=()=>{if(n!==AUn)return;AU.playbackRate=rate;try{AU.preservesPitch=true}catch(e){}try{AU.currentTime=c[1]}catch(e){}const p=AU.play();if(p&&p.catch)p.catch(()=>{});AUt=setTimeout(()=>{AU.pause();if(n===AUn&&done)done()},(c[2]-c[1])*1000/rate+150)};
  if(AU.dataset.f!==c[0]){AU.dataset.f=c[0];AU.src='voix/'+c[0];AU.addEventListener('loadedmetadata',go,{once:true});AU.load()}else go();return true}
 function url(u,rate,done){const n=AUn;AU.dataset.f='';AU.src=u;AU.playbackRate=rate||1;try{AU.preservesPitch=true}catch(e){}AU.onended=()=>{AU.onended=null;if(n===AUn&&done)done()};const p=AU.play();if(p&&p.catch)p.catch(()=>{done&&done()})}
-function tts(t,done){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(String(t).replace(/<[^>]+>/g,'').replace(/[؀-ۿً-ٟ]+/g,''));u.lang='fr-FR';u.rate=.92;u.pitch=1.1;if(done)u.onend=done;speechSynthesis.speak(u)}catch(e){done&&done()}}
+const ISL=/[âîûÂÎÛ‘ʿʾ]|\b(allah|bismi|ramadan|coran|a[iï]d\b|zak|sourate|f[aâ]tiha|nouh|adam|ibrahim|youss?ouf|younous|mouss?a|ftour|kaaba|qibla|sal[aâ]t|rak|soujou|roukou|takb|tachah|tasl|wudu|mach|inch|assal|soubh|rabb|alhamd|akbar|astagh|jibr|hajj|chah[aâ]da|fajr|dhohr|asr\b|maghrib|icha|sahour|adh[aâ]n)/i;
+function tts(t,done){if(ISL.test(String(t))){done&&done();return}try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(String(t).replace(/<[^>]+>/g,'').replace(/[؀-ۿً-ٟ]+/g,''));u.lang='fr-FR';u.rate=.92;u.pitch=1.1;if(done)u.onend=done;speechSynthesis.speak(u)}catch(e){done&&done()}}
 /* say : texte français + identifiant de clip */
 function say(t,id,done){if(!sound){done&&done();return}stopVoice();if(id&&clip(id,1,done))return;tts(t,done)}
 /* suite d'étapes audio : [{id,t,rate}|{url,rate}|{wait:ms}] */
