@@ -41,7 +41,7 @@ async function init() {
   try { await Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 2500))]); } catch (e) {}
 
   let mod;
-  try { mod = await import('./scene.js?v=1'); }
+  try { mod = await import('./scene.js?v=2'); }
   catch (e) { return montrerErreur(e); }
 
   try {

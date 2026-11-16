@@ -435,8 +435,9 @@ export function creerVillage(canvas, opts) {
   }
   const lumNour = R.leger ? null : new THREE.PointLight(0xffd36a, 6, 9, 1.6);
   if (lumNour) nour.add(lumNour);
+  nour.scale.setScalar(1.6);
   scene.add(nour);
-  const nourRepos = new THREE.Vector3(0, 4.2, 5.5);
+  const nourRepos = new THREE.Vector3(0, 5, 6.5);
   const nourBut = nourRepos.clone();
   nour.position.copy(nourRepos);
 
@@ -447,9 +448,10 @@ export function creerVillage(canvas, opts) {
 
   // ---------- caméra : tourner, zoomer, toucher ----------
   const portrait = () => innerWidth / innerHeight < 0.85;
-  const rDefaut = () => portrait() ? 50 : 36;
-  const cam = { theta: 0.35, phi: 1.02, r: 70, cible: new THREE.Vector3() };
-  const but = { theta: 0.35, phi: 1.02, r: rDefaut(), cible: new THREE.Vector3() };
+  const rDefaut = () => portrait() ? 56 : 42;
+  const PHI = 0.9;
+  const cam = { theta: 0.5, phi: 1.1, r: 80, cible: new THREE.Vector3() };
+  const but = { theta: 0, phi: PHI, r: rDefaut(), cible: new THREE.Vector3() };
   let choisie = null, inactif = 0;
 
   const pointeurs = new Map();
@@ -512,7 +514,7 @@ export function creerVillage(canvas, opts) {
   }
   function deselectionner() {
     choisie = null;
-    but.cible.set(0, 0, 0); but.r = rDefaut(); but.phi = 1.02;
+    but.cible.set(0, 0, 0); but.r = rDefaut(); but.phi = PHI;
     nourBut.copy(nourRepos);
   }
 
@@ -568,7 +570,7 @@ export function creerVillage(canvas, opts) {
     tTotal += dt;
     inactif += dt;
 
-    if (!choisie && inactif > 9 && pointeurs.size === 0) but.theta += dt * 0.035;
+    if (!choisie && inactif > 15 && pointeurs.size === 0) but.theta += dt * 0.035;
     const k = Math.min(1, dt * 4.5);
     cam.theta += (but.theta - cam.theta) * k;
     cam.phi += (but.phi - cam.phi) * k;
@@ -633,6 +635,12 @@ export function creerVillage(canvas, opts) {
   return {
     selectionner, deselectionner,
     noms(oui) { maisons.forEach(m => { m.nom.visible = !!oui; }); },
+    ecran(id) {
+      const m = maisons.find(x => x.b.id === id);
+      if (!m) return null;
+      const v = m.mesh.geometry.boundingSphere.center.clone().project(camera);
+      return { x: (v.x + 1) / 2 * innerWidth, y: (1 - v.y) / 2 * innerHeight };
+    },
     infos: () => ({ appels: renderer.info.render.calls, triangles: renderer.info.render.triangles, maisons: maisons.length })
   };
 }
