@@ -7,13 +7,21 @@ const save=()=>{try{localStorage.setItem('lanternes2',JSON.stringify(st))}catch(
 const K=()=>st.kids[st.cur],F=()=>K()&&K().g==='f';
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),3200)}
+/* ---------- voix enregistrées (voix/voix.json : id -> [fichier, début, fin]) ---------- */
+let VX=null;try{fetch('voix/voix.json',{cache:'no-cache'}).then(r=>r.ok?r.json():null).then(j=>{VX=j}).catch(()=>{})}catch(e){}
+const AU=new Audio();AU.preload='auto';let AUt=0,AUn=0;
+function stopV(){clearTimeout(AUt);AUn++;try{AU.pause()}catch(e){}try{speechSynthesis.cancel()}catch(e){}}
+function playId(id,done){const c=VX&&VX[id];if(!c)return false;const n=AUn;
+ const go=()=>{if(n!==AUn)return;try{AU.currentTime=c[1]}catch(e){}const p=AU.play();if(p&&p.catch)p.catch(()=>{});AUt=setTimeout(()=>{AU.pause();if(n===AUn&&done)done()},(c[2]-c[1])*1000+120)};
+ if(AU.dataset.f!==c[0]){AU.dataset.f=c[0];AU.src='voix/'+c[0];AU.addEventListener('loadedmetadata',go,{once:true});AU.load()}else go();return true}
+function say(ids,txt){stopV();const q=[].concat(ids).filter(i=>VX&&VX[i]);if(!q.length){if(txt)speak(txt);return}const n=AUn;const run=()=>{const i=q.shift();if(i&&n===AUn)playId(i,()=>setTimeout(run,300))};run()}
 function speak(t){try{const s=speechSynthesis;s.cancel();const u=new SpeechSynthesisUtterance(t.replace(/[؀-ۿ]+/g,''));u.lang='fr-FR';u.rate=.9;s.speak(u)}catch(e){toast('La lecture à voix haute n\'est pas disponible ici')}}
 function qrSvg(q){const[n,rows]=q;let d='';rows.forEach((h,y)=>{const b=BigInt('0x'+h).toString(2).padStart(n,'0');for(let x=0;x<n;x++)if(b[x]==='1')d+=`M${x} ${y}h1v1h-1z`});
  return `<svg viewBox="-2 -2 ${n+4} ${n+4}" shape-rendering="crispEdges" role="img" aria-label="QR code"><rect x="-2" y="-2" width="${n+4}" height="${n+4}" fill="#fff"/><path d="${d}" fill="#191345"/></svg>`}
 function today(){if(!st.start)return 0;const d=Math.floor((new Date().setHours(12)-new Date(st.start+'T12:00').getTime())/864e5)+1;return d>=1&&d<=30?d:0}
 
 /* ---------- navigation ---------- */
-function route(){const h=location.hash.slice(1)||'lanternes';close();
+function route(){const h=location.hash.slice(1)||'lanternes';close();stopV();
  const v=h.startsWith('video/')?'video':{lanternes:'cal',jeux:'jeux',histoires:'hist'}[h]||'cal';
  ['cal','jeux','hist','video'].forEach(x=>$('v-'+x).hidden=x!==v);
  document.querySelectorAll('.nav a').forEach(a=>a.classList.toggle('on',a.dataset.v===v||(v==='video'&&a.dataset.v==='hist')));
@@ -38,13 +46,13 @@ function card(m){const k=K(),c=C[m[1]],on=!!k.lit[m[0]];
  const vids=(MV[m[0]]||[]).map(v=>`<a class="vb" href="#video/${v}">▶ Regarder : ${V[v].t}</a>`).join('');
  $('ov').innerHTML=`<div class="card"><div class="ch"><div class="med">${m[0]}</div><span class="tag" style="background:${c[1]}"><svg viewBox="0 0 24 24" fill="none" stroke="#191345" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${c[2]}</svg>${c[0]}</span><h2>${m[2]}</h2></div>
  <div class="cb"><h3>${k.lv==='s'?'Petite lanterne · 3-5 ans':'Grande lanterne · 6-10 ans'}</h3><p>${k.lv==='s'?m[3]:m[4]}</p>${vids}${m[5]?`<div class="src">Source : ${m[5]}</div>`:''}
- <div class="acts"><button class="ok" id="lit">${on?'Éteindre':'J\'ai réussi, j\'allume !'}</button><button class="no" id="cl">Fermer</button></div></div></div>`;
- $('ov').classList.add('on');$('cl').onclick=close;$('lit').onclick=()=>{k.lit[m[0]]=!on;save();close();render();if(!on)lit(m[0])}}
-function close(){$('ov').classList.remove('on','print');$('ov').innerHTML=''}
+ <button class="say" id="cs">🔊 Écouter</button><div class="acts"><button class="ok" id="lit">${on?'Éteindre':'J\'ai réussi, j\'allume !'}</button><button class="no" id="cl">Fermer</button></div></div></div>`;
+ $('ov').classList.add('on');const vid=(k.lv==='s'?'ms':'mb')+(m[0]==='★'?'star':m[0]);$('cs').onclick=()=>say(vid,m[2]+'. '+(k.lv==='s'?m[3]:m[4]));say(vid);$('cl').onclick=close;$('lit').onclick=()=>{k.lit[m[0]]=!on;save();close();render();if(!on)lit(m[0])}}
+function close(){stopV();$('ov').classList.remove('on','print');$('ov').innerHTML=''}
 const CHEERS=['Bravo !','Machâ\'Allah !','Ta lanterne brille !','Super, continue !','Bârak Allâhou fîk !'];
 function lit(n){const k=K(),c=M.filter(m=>k.lit[m[0]]).length;burst(40);
  if(c===30)return setTimeout(fin,600);
- if(c===10)toast(`Déjà 10 lanternes allumées, ${k.name} ! Machâ'Allah !`);else if(c===20)toast(`20 lanternes ! Plus que 10, ${F()?'tu es presque arrivée':'tu es presque arrivé'} !`);else if(c===29)toast('Plus qu\'une lanterne avant ton diplôme !');
+ say(c===10?'l10':c===20?'l20':c===29?'l29':n==='★'?[]:'cheer'+(c%CHEERS.length));if(c===10)toast(`Déjà 10 lanternes allumées, ${k.name} ! Machâ'Allah !`);else if(c===20)toast(`20 lanternes ! Plus que 10, ${F()?'tu es presque arrivée':'tu es presque arrivé'} !`);else if(c===29)toast('Plus qu\'une lanterne avant ton diplôme !');
  else if(n!=='★')toast(CHEERS[c%CHEERS.length])}
 
 /* ---------- confettis ---------- */
@@ -56,8 +64,8 @@ function star5(x,y,r){cx.beginPath();for(let i=0;i<10;i++){const a=Math.PI/5*i-M
 /* ---------- fin + diplôme ---------- */
 function fin(){const k=K();let w=0;const rain=setInterval(()=>{burst(60,true);if(++w>5)clearInterval(rain)},500);
  $('ov').innerHTML=`<div class="form" style="text-align:center"><div class="big">${LT}</div><h2>Félicitations ${esc(k.name)} !</h2><p>Tu as allumé tes 30 lanternes pendant le Ramadan. Tu es une vraie lanterne de lumière !</p><button class="ok" id="sd">Voir mon diplôme</button></div>`;
- $('ov').classList.add('on');$('sd').onclick=dip}
-function dip(){const k=K(),d=new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
+ $('ov').classList.add('on');say('fin');$('sd').onclick=dip}
+function dip(){say('diplome');const k=K(),d=new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
  $('ov').innerHTML=`<div class="dw"><div class="dip">${DIP}<div class="dc"><small>Les Lanternes de Nour</small><h2>Diplôme de lumière</h2>${ORN}
  <p>${F()?'Bravo à notre petite musulmane':'Bravo à notre petit musulman'}</p><div class="who">${esc(k.name)}</div>
  <p>qui a allumé ses <b>30 lanternes</b> pendant le Ramadan ${new Date().getFullYear()}, à l'âge de ${k.age} ans.<br>${F()?'Tu as été courageuse, généreuse et patiente':'Tu as été courageux, généreux et patient'} !</p>
@@ -82,9 +90,10 @@ function jeux(){const k=K();if(!k)return;k.jeux=k.jeux||{};
   <div class="rep">🗣 Répète le mot arabe avec tes parents, puis dis-le en français !</div>${x.src?`<div class="src">Source : ${x.src}</div>`:''}</div>
   <div class="jn"><button class="ok" id="jf">${found?'⭐ Déjà trouvée':'⭐ On a trouvé !'}</button><button class="no" id="jx">Suivante →</button></div>`
  :`<div class="jn"><button class="no" id="jp">← Avant</button><button class="ok" id="jr">Voir la réponse</button></div>`}</div></div>`;
- $('sq').onclick=()=>speak(x.q+(shown?'. Réponse : '+x.a:''));
- if(shown){$('jx').onclick=()=>{ji[jt]++;shown=false;jeux()};$('jf').onclick=()=>{if(!found){k.jeux[x.id]=true;save();burst(30);const n2=nf+1;toast(n2===all.length?`Machâ'Allah ${k.name}, tu as tout trouvé !`:CHEERS[n2%CHEERS.length])}ji[jt]++;shown=false;jeux()}}
- else{$('jr').onclick=()=>{shown=true;jeux()};$('jp').onclick=()=>{ji[jt]--;jeux()}}}
+ const pre=(jt==='dev'?'d':'q')+(k.lv==='s'?'p':'g')+i;window.__jq=()=>say(pre+'q');
+ $('sq').onclick=()=>say(shown?[pre+'q',pre+'a']:[pre+'q'],x.q+(shown?'. Réponse : '+x.a:''));
+ if(shown){$('jx').onclick=()=>{ji[jt]++;shown=false;jeux();window.__jq()};$('jf').onclick=()=>{if(!found){k.jeux[x.id]=true;save();burst(30);const n2=nf+1;toast(n2===all.length?`Machâ'Allah ${k.name}, tu as tout trouvé !`:CHEERS[n2%CHEERS.length]);say('cheer'+(n2%CHEERS.length))}ji[jt]++;shown=false;jeux()}}
+ else{$('jr').onclick=()=>{shown=true;jeux();say(pre+'a')};$('jp').onclick=()=>{ji[jt]--;jeux()}}}
 
 
 /* ---------- memory ---------- */
@@ -100,14 +109,14 @@ function memory(){const k=K();if(!mem||mem.key!==st.cur+k.lv)memNew();k.mem=k.me
  <div class="mfound" id="mfound"></div><button class="ok mre" id="mre">Nouvelle partie</button>`;
  Object.keys(mem.found).forEach(p=>chip(mem.pick[p]));memUpd();
  document.querySelectorAll('.mc').forEach(b=>b.onclick=()=>flip(+b.dataset.i,b));
- $('mre').onclick=()=>{memNew();memory()}}
+ $('mre').onclick=()=>{memNew();memory()};if(!mem.moves)say(k.lv==='s'?'mem_s':'mem_b')}
 function memUpd(){const k=K(),best=k.mem[k.lv];$('jstars').textContent=`🃏 ${Object.keys(mem.found).length} / ${mem.pick.length} paires · ${mem.moves} coup${mem.moves>1?"s":""}`+(best?` · record : ${best}`:'')}
 function chip(m){$('mfound').insertAdjacentHTML('beforeend',`<span class="chip"><span class="ar" lang="ar">${m.ar}</span>${m.tr} = ${m.fr}</span>`)}
 function flip(i,b){const c=mem.cards[i];if(mem.lock||mem.found[c.p]||mem.open.includes(i))return;b.classList.add('on');mem.open.push(i);
  if(mem.open.length<2)return;mem.moves++;const[a,z]=mem.open,ca=mem.cards[a],cz=mem.cards[z],btn=x=>document.querySelector(`.mc[data-i="${x}"]`);
- if(ca.p===cz.p){mem.found[ca.p]=1;mem.open=[];[a,z].forEach(x=>btn(x).classList.add('ok'));const m=mem.pick[ca.p];chip(m);burst(25);speak(m.fr);memUpd();
+ if(ca.p===cz.p){mem.found[ca.p]=1;mem.open=[];[a,z].forEach(x=>btn(x).classList.add('ok'));const m=mem.pick[ca.p];chip(m);burst(25);say('w_'+m.k,m.fr);memUpd();
   if(Object.keys(mem.found).length===mem.pick.length){const k=K();if(!k.mem[k.lv]||mem.moves<k.mem[k.lv])k.mem[k.lv]=mem.moves;save();memUpd();
-   setTimeout(()=>{let w=0;const r=setInterval(()=>{burst(50,true);if(++w>3)clearInterval(r)},400);toast(`Machâ'Allah ${k.name} ! Toutes les paires en ${mem.moves} coups !`)},500)}}
+   setTimeout(()=>{let w=0;const r=setInterval(()=>{burst(50,true);if(++w>3)clearInterval(r)},400);toast(`Machâ'Allah ${k.name} ! Toutes les paires en ${mem.moves} coups !`);say('mem_win')},500)}}
  else{memUpd();mem.lock=true;setTimeout(()=>{[a,z].forEach(x=>btn(x).classList.remove('on'));mem.open=[];mem.lock=false},1000)}}
 
 /* ---------- histoires ---------- */
@@ -138,8 +147,8 @@ function guide(first){
  <h3>Comment ça marche</h3><ol class="steps">${st1.map(s=>`<li><b>${s[0]}</b>${s[1]}</li>`).join('')}</ol>
  <h3>Pourquoi c'est bien</h3><ul class="why">${st2.map(s=>`<li>${s}</li>`).join('')}</ul>
  <div class="tip"><b>Conseil aux parents</b>10 minutes par soir suffisent. On encourage, on ne gronde pas : une mission oubliée se fait le lendemain. Les petits ne sont jamais obligés de jeûner.</div>
- <button class="ok" id="gok">${first?'C\'est parti !':'J\'ai compris'}</button></div>`;
- $('ov').classList.add('on');$('ov').scrollTop=0;$('gok').onclick=()=>{close();if(first&&!st.kids.length)form(false)}}
+ <button class="say" id="gsay">🔊 Écouter l'explication</button><button class="ok" id="gok">${first?'C\'est parti !':'J\'ai compris'}</button></div>`;
+ $('ov').classList.add('on');$('ov').scrollTop=0;$('gsay').onclick=()=>say(['guide','guide2','guide3','guide4']);$('gok').onclick=()=>{close();if(first&&!st.kids.length)form(false)}}
 
 /* ---------- profils ---------- */
 function form(edit){const k=edit?K():{name:'',age:'',g:''};
@@ -149,12 +158,12 @@ function form(edit){const k=edit?K():{name:'',age:'',g:''};
  <label>Tu es<div class="seg"><button data-g="g" class="${k.g==='g'?'on':''}">Un garçon</button><button data-g="f" class="${k.g==='f'?'on':''}">Une fille</button></div></label>
  <label>Premier soir du Ramadan (pour les parents, facultatif)<input id="fd" type="date" value="${st.start||''}"></label>
  <button class="ok" id="go">${edit?'Enregistrer':'Commencer'}</button>${edit?'<button class="link" id="del">Supprimer cet enfant</button><button class="link" id="rz">Éteindre toutes ses lanternes</button>':''}${st.kids.length&&!edit?'<button class="link" id="cl3">Annuler</button>':''}</div>`;
- $('ov').classList.add('on');let g=k.g;
+ $('ov').classList.add('on');if(!edit)say('inscription');let g=k.g;
  document.querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{g=b.dataset.g;document.querySelectorAll('.seg button').forEach(x=>x.classList.toggle('on',x===b))});
  $('go').onclick=()=>{const name=$('fn').value.trim(),age=+$('fa').value;if(!name||!age||!g){toast('Remplis ton prénom, ton âge et garçon ou fille');return}
   st.start=$('fd').value||st.start||'';
   if(edit){Object.assign(k,{name,age,g})}else{st.kids.push({name,age,g,lv:age<=5?'s':'b',lit:{},jeux:{}});st.cur=st.kids.length-1}
-  save();close();render();if(!$('v-jeux').hidden)jeux();if(!edit)toast(`Ramadan moubârak ${name} ! Allume ta première lanterne ce soir.`)};
+  save();close();render();if(!$('v-jeux').hidden)jeux();if(!edit){toast(`Ramadan moubârak ${name} ! Allume ta première lanterne ce soir.`);say('debut')}};
  if(edit){$('del').onclick=()=>{if(confirm('Supprimer '+k.name+' ?')){st.kids.splice(st.cur,1);st.cur=0;save();close();st.kids.length?render():form()}};
   $('rz').onclick=()=>{if(confirm('Éteindre toutes les lanternes de '+k.name+' ?')){k.lit={};save();close();render()}}}
  if($('cl3'))$('cl3').onclick=close}
