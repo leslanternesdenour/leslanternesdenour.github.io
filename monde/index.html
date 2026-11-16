@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Le Monde des Lanternes — Les Lanternes de Nour</title>
+<meta name="description" content="Un village 3D pour apprendre l'islam en jouant, pour les enfants de 3 à 10 ans. Gratuit, sans publicité, sans compte.">
+<meta name="theme-color" content="#191345">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="monde.css?v=1">
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js" } }
+</script>
+</head>
+<body>
+<canvas id="scene" aria-label="Le village des lanternes en 3D"></canvas>
+
+<!-- Chargement -->
+<div id="chargement" class="ecran">
+  <div class="lanterne-anim" aria-hidden="true"><span></span></div>
+  <p class="titre-ecran">Le village s'allume…</p>
+</div>
+
+<!-- Accueil : qui joue ? -->
+<div id="accueil" class="ecran cache">
+  <h1>Le Monde des Lanternes</h1>
+  <p class="sous-titre">Qui joue ?</p>
+  <div class="choix-age">
+    <button class="gros-bouton" data-age="petits"><span class="ico">🧸</span><span>3 à 5 ans</span></button>
+    <button class="gros-bouton" data-age="grands"><span class="ico">🎒</span><span>6 à 10 ans</span></button>
+  </div>
+  <p class="note-parents">Gratuit · sans publicité · sans compte. La progression reste sur cet appareil.</p>
+</div>
+
+<!-- Erreur 3D -->
+<div id="erreur" class="ecran cache">
+  <p class="titre-ecran">Le village 3D ne peut pas s'ouvrir sur cet appareil.</p>
+  <p class="sous-titre">Les jeux restent accessibles ici :</p>
+  <div class="liens-secours">
+    <a class="gros-bouton" href="../ablutions/"><span class="ico">💧</span><span>Les ablutions</span></a>
+    <a class="gros-bouton" href="../priere/"><span class="ico">🕌</span><span>La prière</span></a>
+    <a class="gros-bouton" href="../calendrier/"><span class="ico">🏮</span><span>Le Ramadan</span></a>
+    <a class="gros-bouton" href="../"><span class="ico">🏠</span><span>Accueil</span></a>
+  </div>
+</div>
+
+<!-- Barre du haut -->
+<div id="hud" class="cache">
+  <a class="rond" href="../" aria-label="Retour à l'accueil du site">🏠</a>
+  <div class="compteurs" aria-label="Ta progression">
+    <span class="compteur" title="Étoiles"><span aria-hidden="true">⭐</span><b id="nb-etoiles">0</b></span>
+    <span class="compteur" title="Lanternes"><span aria-hidden="true">🏮</span><b id="nb-lanternes">0</b></span>
+  </div>
+  <button class="rond" id="btn-reglages" aria-label="Réglages">⚙️</button>
+</div>
+
+<!-- Bulle de Nour -->
+<div id="bulle" class="cache" role="status"><span class="main" aria-hidden="true">👆</span><span id="bulle-texte">Touche une maison pour jouer !</span></div>
+
+<!-- Panneau d'un bâtiment -->
+<div id="panneau" class="cache" role="dialog" aria-modal="false" aria-labelledby="pan-nom">
+  <button class="fermer" id="pan-fermer" aria-label="Fermer">✕</button>
+  <div class="pan-icone" id="pan-icone" aria-hidden="true"></div>
+  <h2 id="pan-nom"></h2>
+  <p id="pan-texte"></p>
+  <div id="pan-etoiles" class="pan-etoiles" aria-label="Étoiles gagnées dans ce jeu"></div>
+  <a id="pan-entrer" class="gros-bouton vert" href="#"><span class="ico">▶</span><span>Entrer</span></a>
+  <div id="pan-bientot" class="bientot"><span class="ico" aria-hidden="true">⏳</span><span>Bientôt ! Cette maison se prépare.</span></div>
+</div>
+
+<!-- Réglages -->
+<div id="reglages" class="cache" role="dialog" aria-modal="true" aria-label="Réglages">
+  <div class="carte">
+    <button class="fermer" id="reg-fermer" aria-label="Fermer">✕</button>
+    <h2>Réglages</h2>
+    <div class="ligne-reg"><span>Sons</span>
+      <div class="bascule"><button data-son="1">🔊 Oui</button><button data-son="0">🔇 Non</button></div></div>
+    <div class="ligne-reg"><span>Âge</span>
+      <div class="bascule"><button data-age="petits">🧸 3–5</button><button data-age="grands">🎒 6–10</button></div></div>
+    <div class="ligne-reg"><span>Graphismes</span>
+      <div class="bascule"><button data-qualite="leger">🐢 Léger</button><button data-qualite="beau">✨ Beau</button></div></div>
+    <p class="note-parents">Le mode léger est fait pour les téléphones anciens. Le changement recharge le village.</p>
+  </div>
+</div>
+
+<noscript><p style="padding:2em;color:#fff">Active JavaScript pour ouvrir le village. <a href="../" style="color:#f5b942">Retour à l'accueil</a></p></noscript>
+
+<script type="module" src="village.js?v=1"></script>
+</body>
+</html>

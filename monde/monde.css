@@ -1,0 +1,93 @@
+:root{
+  --nuit:#191345; --violet:#3a2a7d; --or:#f5b942; --or2:#d9952a; --texte:#f4efff;
+  --tq:#2bb3c0; --cr:#fff8e7; --tx:#1b3a57; --ok:#3fbf7f;
+  --haut:env(safe-area-inset-top,0px); --bas:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--nuit);color:var(--texte);
+  font-family:Nunito,system-ui,sans-serif;touch-action:none;user-select:none;-webkit-user-select:none}
+#scene{position:fixed;inset:0;width:100%;height:100%;display:block;outline:none}
+.cache{display:none!important}
+h1,h2,.titre-ecran{font-family:Poppins,system-ui,sans-serif;font-weight:800;margin:0}
+
+/* Écrans plein */
+.ecran{position:fixed;inset:0;z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:18px;padding:24px;text-align:center;
+  background:radial-gradient(ellipse at 50% 30%,#3a2a7d 0%,#191345 70%)}
+.ecran h1{font-size:clamp(28px,7vw,52px);color:var(--or);text-shadow:0 0 24px rgba(245,185,66,.45)}
+.titre-ecran{font-size:clamp(20px,5vw,30px);max-width:640px}
+.sous-titre{font-size:clamp(18px,4.5vw,26px);font-weight:700;margin:0}
+.note-parents{font-size:14px;opacity:.75;max-width:520px;margin:0}
+#accueil{background:radial-gradient(ellipse at 50% 30%,rgba(58,42,125,.88) 0%,rgba(25,19,69,.92) 70%)}
+
+.lanterne-anim{width:70px;height:96px;position:relative}
+.lanterne-anim span{position:absolute;inset:14px 8px 0;border-radius:18px 18px 26px 26px;background:var(--or);
+  box-shadow:0 0 30px 10px rgba(245,185,66,.55);animation:lueur 1.4s ease-in-out infinite alternate}
+.lanterne-anim::before{content:"";position:absolute;left:30px;top:0;width:10px;height:16px;border-radius:4px;background:#8a6a2a}
+@keyframes lueur{from{opacity:.55;transform:scale(.96)}to{opacity:1;transform:scale(1.03)}}
+
+/* Gros boutons (utilisables sans savoir lire : l'icône porte le sens) */
+.gros-bouton{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  min-width:150px;min-height:130px;padding:14px 18px;border:0;border-radius:26px;cursor:pointer;
+  background:var(--cr);color:var(--tx);font:700 20px Nunito,system-ui,sans-serif;text-decoration:none;
+  box-shadow:0 6px 0 #d8c9a6,0 10px 24px rgba(0,0,0,.35);transition:transform .12s}
+.gros-bouton:active{transform:translateY(4px);box-shadow:0 2px 0 #d8c9a6,0 4px 12px rgba(0,0,0,.35)}
+.gros-bouton .ico{font-size:52px;line-height:1}
+.gros-bouton.vert{background:var(--ok);color:#fff;box-shadow:0 6px 0 #2a8e5c,0 10px 24px rgba(0,0,0,.35);
+  flex-direction:row;min-height:auto;min-width:220px;font-size:24px}
+.gros-bouton.vert .ico{font-size:30px}
+.choix-age,.liens-secours{display:flex;gap:18px;flex-wrap:wrap;justify-content:center}
+.liens-secours .gros-bouton{min-width:130px;min-height:110px;font-size:17px}
+
+/* Barre du haut */
+#hud{position:fixed;left:0;right:0;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;
+  padding:calc(10px + var(--haut)) 12px 0;pointer-events:none}
+#hud>*{pointer-events:auto}
+.rond{width:56px;height:56px;border-radius:50%;border:0;display:flex;align-items:center;justify-content:center;
+  font-size:28px;text-decoration:none;cursor:pointer;background:rgba(255,248,231,.92);
+  box-shadow:0 4px 0 #d8c9a6,0 6px 16px rgba(0,0,0,.3)}
+.rond:active{transform:translateY(3px)}
+.compteurs{display:flex;gap:10px}
+.compteur{display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:30px;font-size:22px;
+  background:rgba(25,19,69,.72);color:#fff;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+.compteur b{font-family:Poppins,sans-serif;font-weight:800;min-width:1ch;text-align:center}
+
+/* Bulle de Nour */
+#bulle{position:fixed;left:50%;bottom:calc(22px + var(--bas));transform:translateX(-50%);z-index:9;
+  display:flex;align-items:center;gap:10px;padding:12px 22px;border-radius:30px;max-width:92vw;
+  background:rgba(255,248,231,.95);color:var(--tx);font:700 19px Nunito,sans-serif;
+  box-shadow:0 8px 24px rgba(0,0,0,.3);pointer-events:none}
+#bulle .main{font-size:30px;animation:tape 1.2s ease-in-out infinite}
+@keyframes tape{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+/* Panneau d'un bâtiment */
+#panneau{position:fixed;left:50%;bottom:calc(16px + var(--bas));transform:translateX(-50%);z-index:12;
+  width:min(440px,94vw);padding:22px 20px 22px;border-radius:30px;text-align:center;
+  background:var(--cr);color:var(--tx);box-shadow:0 14px 40px rgba(0,0,0,.45);
+  display:flex;flex-direction:column;align-items:center;gap:10px;animation:monte .28s ease-out}
+@keyframes monte{from{transform:translate(-50%,40px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
+#panneau h2{font-size:clamp(20px,5vw,26px);color:var(--tx)}
+#panneau p{margin:0;font-size:17px;color:#4f6b80}
+.pan-icone{font-size:64px;line-height:1;margin-top:-4px}
+.pan-etoiles{font-size:24px;letter-spacing:3px;min-height:4px}
+.bientot{display:flex;align-items:center;gap:10px;padding:12px 18px;border-radius:20px;background:#efe3c4;font-weight:700;font-size:17px}
+.bientot .ico{font-size:30px}
+.fermer{position:absolute;top:10px;right:10px;width:46px;height:46px;border-radius:50%;border:0;cursor:pointer;
+  background:#efe3c4;color:var(--tx);font-size:22px;font-weight:700}
+
+/* Réglages */
+#reglages{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;background:rgba(10,8,30,.55);padding:16px}
+#reglages .carte{position:relative;width:min(460px,100%);padding:24px 20px;border-radius:28px;background:var(--cr);color:var(--tx);
+  display:flex;flex-direction:column;gap:16px}
+#reglages h2{font-size:24px}
+.ligne-reg{display:flex;align-items:center;justify-content:space-between;gap:12px;font-weight:700;font-size:18px;flex-wrap:wrap}
+.bascule{display:flex;border-radius:18px;overflow:hidden;box-shadow:inset 0 0 0 2px #d8c9a6}
+.bascule button{border:0;padding:12px 14px;min-height:50px;font:700 16px Nunito,sans-serif;background:transparent;color:var(--tx);cursor:pointer}
+.bascule button.actif{background:var(--tq);color:#fff}
+#reglages .note-parents{color:#4f6b80;opacity:1}
+
+@media (max-height:520px){
+  .gros-bouton{min-height:100px;min-width:130px}.gros-bouton .ico{font-size:40px}
+  #panneau{padding:14px;gap:6px}.pan-icone{font-size:44px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
