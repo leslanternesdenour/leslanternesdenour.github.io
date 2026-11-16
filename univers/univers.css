@@ -1,0 +1,114 @@
+/* =========================================================================
+   Les Lanternes de Nour — système de thèmes par univers
+   Chaque page déclare son univers : <html data-univers="priere">.
+   Une même base (polices Poppins/Nunito, boutons ronds, cartes crème,
+   lanternes dorées) garde l'identité du site ; chaque univers a sa palette,
+   son fond et ses petites décorations.
+   ========================================================================= */
+
+[data-univers]{
+  --u-or:#f5b942; --u-or2:#d9952a; --u-creme:#fff8e7; --u-texte:#1b3a57; --u-texte2:#4f6b80;
+}
+/* 1. Ablutions : aquatique, bleu ciel et turquoise — mascotte Nour */
+[data-univers="ablutions"]{
+  --u-fond:radial-gradient(120% 60% at 50% 0%,#a9e4f4 0%,rgba(169,228,244,0) 70%),linear-gradient(180deg,#c3edf8 0%,#e4f7fb 55%,#f4fcfd 100%);
+  --u-primaire:#2bb3c0; --u-primaire2:#1d8f9c; --u-accent:#5fc8e8; --u-accent2:#2f9fc6;
+  --u-carte:#ffffff; --u-ombre:#a6dcea; --u-puce:#d6f3fa; --u-deco:#5fc8e8;
+}
+/* 2. Prière : crème, turquoise et doré, chaleureux — mascotte Sajjadou */
+[data-univers="priere"]{
+  --u-fond:radial-gradient(110% 50% at 50% 0%,rgba(143,216,239,.45) 0%,rgba(143,216,239,0) 65%),linear-gradient(180deg,#fff6e4 0%,#fdf0d6 55%,#fae6c2 100%);
+  --u-primaire:#2bb3c0; --u-primaire2:#1d8f9c; --u-accent:#f5b942; --u-accent2:#d9952a;
+  --u-carte:#fffaf0; --u-ombre:#ead7a8; --u-puce:#fdebc4; --u-deco:#e0a93a;
+}
+/* 3. Sourates : vert sauge, crème, inspiré des livres */
+[data-univers="sourates"]{
+  --u-fond:radial-gradient(110% 50% at 50% 0%,rgba(168,197,170,.45) 0%,rgba(168,197,170,0) 65%),linear-gradient(180deg,#eef4ec 0%,#f6f5ea 55%,#fbf6e8 100%);
+  --u-primaire:#6f9f7e; --u-primaire2:#557f63; --u-accent:#c9a95c; --u-accent2:#a8873d;
+  --u-carte:#fffdf5; --u-ombre:#cfdcc8; --u-puce:#e3eedf; --u-deco:#8fb79a;
+}
+/* 4. Quiz : lavande et bleu pastel, ludique */
+[data-univers="quiz"]{
+  --u-fond:radial-gradient(110% 50% at 50% 0%,rgba(190,180,245,.55) 0%,rgba(190,180,245,0) 65%),linear-gradient(180deg,#ece8fc 0%,#e8effd 55%,#f3f6ff 100%);
+  --u-primaire:#8f82dc; --u-primaire2:#6e61c2; --u-accent:#7fbdf0; --u-accent2:#4f9ad8;
+  --u-carte:#ffffff; --u-ombre:#d3ccf4; --u-puce:#e6e1fb; --u-deco:#a99cf0;
+}
+/* 5. Histoires : bleu nuit, violet doux, lanternes — l'accueil du site */
+[data-univers="histoires"]{
+  --u-fond:radial-gradient(100% 60% at 50% 0%,#3a2a7d 0%,rgba(58,42,125,0) 70%),linear-gradient(180deg,#1d1652 0%,#191345 100%);
+  --u-primaire:#8f7fd6; --u-primaire2:#6c5bc0; --u-accent:#f5b942; --u-accent2:#d9952a;
+  --u-carte:#2a2166; --u-ombre:#120d33; --u-puce:#3a2a7d; --u-deco:#f5b942;
+  --u-texte:#f4efff; --u-texte2:#c9bfe8;
+}
+/* 6. Jeux : jaune pastel et pêche, joyeux — le Monde des Lanternes */
+[data-univers="jeux"]{
+  --u-fond:radial-gradient(110% 55% at 50% 0%,rgba(255,226,140,.7) 0%,rgba(255,226,140,0) 65%),linear-gradient(180deg,#fff4cf 0%,#ffe9d6 55%,#ffdcc8 100%);
+  --u-primaire:#f39b5b; --u-primaire2:#d97a37; --u-accent:#ffd04f; --u-accent2:#e6ad1f;
+  --u-carte:#fffaf2; --u-ombre:#f3cfae; --u-puce:#ffe7c9; --u-deco:#f6a46a;
+}
+
+/* ---------- fond de page ---------- */
+html[data-univers] body{background:var(--u-fond)}
+html[data-univers="histoires"] body{background:var(--u-fond)}
+
+/* ---------- composants des pages d'apprentissage (ablutions, prière, puis sourates et quiz) ---------- */
+html[data-univers] .rb{box-shadow:0 4px 0 var(--u-ombre)}
+html[data-univers] .rb:active{box-shadow:0 1px 0 var(--u-ombre)}
+html[data-univers] .ttl{color:var(--u-primaire2)}
+html[data-univers] .hero h1{color:var(--u-primaire2)}
+html[data-univers] .hero h1 span{color:var(--u-accent2)}
+html[data-univers] .b1{background:var(--u-primaire)}
+html[data-univers] .b2{background:var(--u-accent)}
+html[data-univers] .go2{background:var(--u-primaire);box-shadow:0 5px 0 var(--u-primaire2)}
+html[data-univers] .go2.w{background:#fff;color:var(--u-primaire2);box-shadow:0 5px 0 var(--u-ombre)}
+html[data-univers] .bul{box-shadow:0 3px 0 var(--u-ombre)}
+html[data-univers] .card{background:var(--u-carte)}
+html[data-univers] .parc b{color:var(--u-primaire2)}
+html[data-univers] .parc .here{background:var(--u-accent)}
+
+/* « Mon parcours » : chaque étape porte la couleur de son univers */
+.parc a[href*="ablutions"]{background:#d6f3fa!important;color:#1d6f7a!important}
+.parc a[href*="priere"]{background:#fdebc4!important;color:#7a5410!important}
+.parc .soon:nth-of-type(n){opacity:.7}
+.parc span.soon:nth-last-of-type(2){background:#e3eedf;color:#557f63}
+.parc span.soon:nth-last-of-type(1){background:#e6e1fb;color:#6e61c2}
+
+/* ---------- petites décorations (légères : seulement opacité et transform) ---------- */
+.u-deco{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.u-deco>*{position:absolute;display:block;will-change:transform,opacity}
+.u-deco svg{display:block;width:100%;height:100%}
+html[data-univers] .deco .st{display:none}   /* les anciennes étoiles laissent place au décor de l'univers */
+@keyframes u-flotte{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-14px) rotate(4deg)}}
+@keyframes u-scintille{0%,100%{opacity:.25;transform:scale(.85)}50%{opacity:.85;transform:scale(1.08)}}
+@keyframes u-monte{0%{transform:translateY(0);opacity:0}10%{opacity:.6}90%{opacity:.5}100%{transform:translateY(-105vh);opacity:0}}
+@keyframes u-saute{0%,100%{transform:translateY(0) scale(1)}40%{transform:translateY(-10px) scale(1.08)}60%{transform:translateY(-6px) scale(1.04)}}
+@keyframes u-lueur{0%,100%{opacity:.55;transform:translateY(0)}50%{opacity:1;transform:translateY(-6px)}}
+@keyframes u-tourne{0%{transform:translateY(0) rotate(0)}50%{transform:translateY(10px) rotate(160deg)}100%{transform:translateY(0) rotate(360deg)}}
+
+/* ---------- transition douce entre les univers ---------- */
+@view-transition{navigation:auto}
+::view-transition-old(root){animation:u-sortie .22s ease both}
+::view-transition-new(root){animation:u-entree .38s ease both}
+@keyframes u-sortie{to{opacity:0;transform:scale(.985)}}
+@keyframes u-entree{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+html.u-part body{animation:u-sortie .22s ease both}
+html.u-arrive body{animation:u-entree .38s ease both}
+
+@media (prefers-reduced-motion:reduce){
+  .u-deco>*{animation:none!important}
+  ::view-transition-old(root),::view-transition-new(root){animation:none}
+  html.u-part body,html.u-arrive body{animation:none}
+}
+.u-deco.locale{position:absolute;border-radius:inherit}
+
+/* ---------- Jeux : le Monde des Lanternes (village 3D) ---------- */
+html[data-univers="jeux"]{--tq:#f39b5b}
+html[data-univers="jeux"] #chargement,html[data-univers="jeux"] #erreur{background:var(--u-fond)}
+html[data-univers="jeux"] #accueil{background:linear-gradient(180deg,rgba(255,244,207,.9) 0%,rgba(255,233,214,.9) 55%,rgba(255,220,200,.94) 100%)}
+html[data-univers="jeux"] .ecran h1{color:var(--u-primaire2);text-shadow:0 2px 0 #fff,0 0 24px rgba(255,208,79,.6)}
+html[data-univers="jeux"] .ecran .titre-ecran,html[data-univers="jeux"] .ecran .sous-titre{color:#7a4a22}
+html[data-univers="jeux"] .ecran .note-parents{color:#8a6040;opacity:1}
+html[data-univers="jeux"] .compteur{background:rgba(217,122,55,.88)}
+html[data-univers="jeux"] .interrupteur{box-shadow:0 4px 0 var(--u-primaire2)}
+html[data-univers="jeux"] .piste-corps label b{color:var(--u-primaire2)}
+html[data-univers="jeux"] #jeu iframe{animation:u-entree .38s ease both}

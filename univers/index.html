@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Les univers · Les Lanternes de Nour</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="univers.css?v=1">
+<style>
+*{box-sizing:border-box}html,body{margin:0}
+body{background:#191345;color:#f4efff;font-family:Nunito,system-ui,sans-serif;padding:24px 16px 40px}
+h1{font:800 clamp(24px,5vw,34px) Poppins,system-ui;text-align:center;margin:0;color:#f5b942}
+.intro{text-align:center;color:#c9bfe8;max-width:60ch;margin:8px auto 22px;font-weight:600}
+.grille{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:18px;max-width:1100px;margin:0 auto}
+.carte-univers{position:relative;overflow:hidden;border-radius:28px;padding:20px 18px 18px;background:var(--u-fond);color:var(--u-texte);min-height:330px;display:flex;flex-direction:column;gap:12px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.carte-univers>*:not(.u-deco){position:relative;z-index:1}
+.tete{display:flex;align-items:center;gap:12px}
+.masc{width:62px;height:72px;flex:none;display:flex;align-items:center;justify-content:center;font-size:44px}
+.masc svg{width:100%;height:100%}
+.tete h2{margin:0;font:800 22px Poppins,system-ui;color:var(--u-primaire2)}
+.tete small{display:block;font-weight:800;color:var(--u-texte2)}
+.bulle{background:var(--u-carte);border-radius:18px;padding:10px 12px;font-weight:800;box-shadow:0 3px 0 var(--u-ombre)}
+.btns{display:grid;gap:10px;margin-top:auto}
+.btn1,.btn2{border:0;border-radius:18px;padding:13px;font:900 18px Nunito,system-ui;color:#fff;background:var(--u-primaire);box-shadow:0 5px 0 var(--u-primaire2);text-align:left}
+.btn2{background:var(--u-accent);color:#2a1d00;box-shadow:0 5px 0 var(--u-accent2)}
+.puces{display:flex;gap:6px;flex-wrap:wrap}.puces span{width:26px;height:26px;border-radius:50%;box-shadow:0 0 0 2px #fff}
+[data-univers="histoires"] .bulle{color:#f4efff}
+[data-univers="histoires"] .tete h2{color:#f5b942}
+.etat{font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;color:var(--u-texte2)}
+</style>
+</head>
+<body>
+<h1>Les univers des Lanternes de Nour</h1>
+<p class="intro">Chaque apprentissage a son ambiance, ses couleurs et ses décorations, avec la même famille de boutons, de cartes et de lanternes.</p>
+<div class="grille" id="grille"></div>
+<script src="univers.js?v=1"></script>
+<script>
+const U=[
+ ['ablutions','Les ablutions','Nour, la goutte d\'eau','en ligne','💧','Aquatique : bleu ciel, turquoise, petites gouttes.'],
+ ['priere','La prière','Sajjadou, le petit tapis de prière','en ligne','🕌','Chaleureux : crème, turquoise et doré.'],
+ ['sourates','Les sourates','mascotte à venir','bientôt','📖','Élégant : vert sauge, crème, étoiles et petits livres.'],
+ ['quiz','Le grand quiz','mascotte à venir','bientôt','❓','Ludique : lavande, bleu pastel, étoiles qui sautent.'],
+ ['histoires','Les histoires','l\'accueil du site','en ligne','🏮','Conte : bleu nuit, violet doux, lanternes lumineuses.'],
+ ['jeux','Les jeux','le Monde des Lanternes','en ligne','🎮','Joyeux : jaune pastel, pêche, confettis.']];
+const G=document.getElementById('grille');
+for(const [u,t,m,e,ic,d] of U){const c=document.createElement('section');c.className='carte-univers';c.dataset.univers=u;
+ c.innerHTML=`<div class="tete"><div class="masc">${ic}</div><div><h2>${t}</h2><small>${m}</small></div></div>
+ <div class="etat">${e}</div><div class="bulle">${d}</div>
+ <div class="puces">${['--u-primaire','--u-primaire2','--u-accent','--u-carte','--u-puce'].map(v=>`<span style="background:var(${v})"></span>`).join('')}</div>
+ <div class="btns"><button class="btn1">▶ Apprendre</button><button class="btn2">🎮 Jouer</button></div>`;
+ G.appendChild(c);window.decorerUnivers&&decorerUnivers(c,u)}
+</script>
+</body>
+</html>
