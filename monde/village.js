@@ -141,8 +141,8 @@ function fermerPanneau() {
 
 $('pan-fermer').addEventListener('click', () => { goutte(0.8); fermerPanneau(); });
 $('pan-entrer').addEventListener('click', e => {
+  e.preventDefault(); // l'activité s'ouvre toujours dans le village, jamais en quittant la page
   if (!choisi) return;
-  e.preventDefault();
   sauvegarde.gagner(choisi.id, 'visite', 1);
   goutte(1.4);
   ouvrirJeu(choisi);
