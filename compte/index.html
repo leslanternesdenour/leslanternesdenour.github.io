@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="fr" data-univers="histoires">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Espace famille · Les Lanternes de Nour</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../univers/univers.css?v=1">
+<style>
+*{box-sizing:border-box}html,body{margin:0}
+body{min-height:100vh;color:#f4efff;font-family:Nunito,system-ui,sans-serif;padding:24px 16px 40px}
+main{max-width:520px;margin:0 auto;display:grid;gap:18px;position:relative;z-index:1}
+h1{font:800 clamp(24px,6vw,32px) Poppins,system-ui;margin:0;color:#f5b942;text-align:center}
+p{margin:0;color:#c9bfe8;line-height:1.5}
+.carte{background:#2a2166;border-radius:24px;padding:20px;display:grid;gap:12px;box-shadow:0 8px 0 #120d33}
+.carte h2{margin:0;font:800 20px Poppins,system-ui;color:#fff}
+.onglets{display:flex;gap:6px;background:#191345;border-radius:999px;padding:5px}
+.onglets button{flex:1;background:none;box-shadow:none;color:#c9bfe8;font:800 15px Nunito,system-ui;padding:10px 6px;border-radius:999px}
+.onglets button[aria-selected=true]{background:#f5b942;color:#2a1d00}
+label{display:grid;gap:6px;font-weight:800;color:#fff}
+input[type=email],input[type=password]{width:100%;border-radius:14px;border:2px solid #3a2a7d;background:#191345;color:#fff;font:700 17px Nunito,system-ui;padding:12px 14px}
+input:focus{outline:none;border-color:#f5b942}
+.case{display:flex;gap:10px;align-items:flex-start;font-weight:600;color:#e9e2ff;font-size:15px}
+.case input{width:22px;height:22px;flex:none;margin-top:2px;accent-color:#f5b942}
+button{border:0;border-radius:18px;padding:14px 16px;font:900 18px Nunito,system-ui;cursor:pointer;background:#f5b942;color:#2a1d00;box-shadow:0 5px 0 #d9952a}
+button:active{transform:translateY(3px);box-shadow:0 2px 0 #d9952a}
+button:disabled{opacity:.6;cursor:wait}
+button.doux{background:#3a2a7d;color:#fff;box-shadow:0 5px 0 #191345}
+button.danger{background:none;box-shadow:none;color:#ff9fb2;font-size:15px;padding:6px;text-decoration:underline}
+.lien{background:none;box-shadow:none;color:#ffe3a3;font:700 15px Nunito,system-ui;padding:4px;text-decoration:underline;justify-self:start}
+.etat{font-weight:800;color:#8fdcc1;min-height:1.4em}
+.etat.ko{color:#ff9fb2}
+.cache{display:none!important}
+a{color:#ffe3a3}
+.petit{font-size:14px}
+.choix{display:grid;gap:10px}
+</style>
+</head>
+<body>
+<div id="deco" aria-hidden="true"></div>
+<main>
+  <h1>🏮 Espace famille</h1>
+
+  <!-- Comptes pas encore activés : on le dit clairement, sans faux formulaire -->
+  <section class="carte cache" id="v-inactif">
+    <h2>Les comptes familiaux arrivent bientôt</h2>
+    <p>Pour l'instant, tout fonctionne sans compte : la progression de vos enfants (étoiles, lanternes, étapes) reste gardée <b>sur cet appareil</b>.</p>
+    <p>Pour la retrouver sur un autre appareil, utilisez la page <a href="../transfert/">Transférer ma progression</a>.</p>
+    <button onclick="location.href='../monde/'">✨ Entrer dans le monde</button>
+  </section>
+
+  <!-- Connexion / inscription / mot de passe oublié -->
+  <section class="carte cache" id="v-acces">
+    <div class="onglets" role="tablist">
+      <button role="tab" id="o-connexion" aria-selected="true">Se connecter</button>
+      <button role="tab" id="o-inscription" aria-selected="false">Créer un compte</button>
+    </div>
+
+    <form id="f-connexion" class="choix" novalidate>
+      <label>Adresse e-mail du parent<input type="email" id="c-email" autocomplete="email" required></label>
+      <label>Mot de passe<input type="password" id="c-mdp" autocomplete="current-password" required></label>
+      <button type="submit">Se connecter</button>
+      <button type="button" class="lien" id="vers-oubli">Mot de passe oublié ?</button>
+    </form>
+
+    <form id="f-inscription" class="choix cache" novalidate>
+      <p class="petit">Le compte est créé par un parent. Les enfants n'ont rien à saisir.</p>
+      <label>Adresse e-mail du parent<input type="email" id="i-email" autocomplete="email" required></label>
+      <label>Mot de passe (8 caractères minimum)<input type="password" id="i-mdp" autocomplete="new-password" minlength="8" required></label>
+      <label>Confirmer le mot de passe<input type="password" id="i-mdp2" autocomplete="new-password" minlength="8" required></label>
+      <label class="case"><input type="checkbox" id="i-parent" required> <span>Je suis le parent ou le responsable légal des enfants qui joueront.</span></label>
+      <label class="case"><input type="checkbox" id="i-conf" required> <span>J'ai lu <a href="../decouvrir/#confidentialite" target="_blank">ce que le site garde et pourquoi</a>.</span></label>
+      <button type="submit">Créer mon compte famille</button>
+    </form>
+
+    <form id="f-oubli" class="choix cache" novalidate>
+      <p>Indiquez l'adresse du compte : vous recevrez un lien pour choisir un nouveau mot de passe.</p>
+      <label>Adresse e-mail du parent<input type="email" id="o-email" autocomplete="email" required></label>
+      <button type="submit">Recevoir le lien</button>
+      <button type="button" class="lien" id="retour-connexion">← Retour à la connexion</button>
+    </form>
+  </section>
+
+  <!-- Connecté -->
+  <section class="carte cache" id="v-espace">
+    <h2>Bonjour !</h2>
+    <p>Connecté avec <b id="e-email"></b>. La progression de cet appareil est gardée dans votre compte et vous la retrouvez sur vos autres appareils.</p>
+    <p class="petit" id="e-verif"></p>
+    <div id="e-conflit" class="choix cache">
+      <p><b>Cet appareil et votre compte n'ont pas la même progression.</b> Laquelle garder ?</p>
+      <button class="doux" id="garder-compte">☁️ Celle du compte</button>
+      <button class="doux" id="garder-appareil">📱 Celle de cet appareil</button>
+    </div>
+    <button id="entrer">✨ Entrer dans le monde</button>
+    <button class="doux" id="synchro">🔄 Synchroniser maintenant</button>
+    <button class="doux" id="deconnexion">Se déconnecter</button>
+    <button class="danger" id="supprimer">Supprimer mon compte et ses données</button>
+  </section>
+
+  <p class="etat" id="etat" role="status" aria-live="polite"></p>
+  <p style="text-align:center"><a href="../decouvrir/">Découvrir le Monde de Nour</a> · <a href="../">Retour au site</a></p>
+</main>
+
+<script type="module">
+import { actif, charger, synchroniser, supprimerDonnees, messageErreur } from './comptes.js?v=1';
+const $ = id => document.getElementById(id);
+const voir = id => ['v-inactif', 'v-acces', 'v-espace'].forEach(v => $(v).classList.toggle('cache', v !== id));
+const etat = (t, ko) => { $('etat').textContent = t || ''; $('etat').className = 'etat' + (ko ? ' ko' : ''); };
+const formulaire = f => ['f-connexion', 'f-inscription', 'f-oubli'].forEach(x => $(x).classList.toggle('cache', x !== f));
+const occupe = async (btn, f) => { btn.disabled = true; try { await f(); } finally { btn.disabled = false; } };
+const ENTREE = '../monde/?ouverture=1';
+
+if (!actif) { voir('v-inactif'); }
+else {
+  etat('Chargement…');
+  const c = await charger().catch(() => null);
+  if (!c) { etat("Le service de comptes ne répond pas. Vérifiez votre connexion internet.", true); voir('v-inactif'); }
+  else {
+    etat('');
+    const { au, auth } = c;
+
+    function onglet(n) {
+      $('o-connexion').setAttribute('aria-selected', n === 'connexion');
+      $('o-inscription').setAttribute('aria-selected', n === 'inscription');
+      formulaire('f-' + n); etat('');
+    }
+    $('o-connexion').onclick = () => onglet('connexion');
+    $('o-inscription').onclick = () => onglet('inscription');
+    $('vers-oubli').onclick = () => { formulaire('f-oubli'); $('o-email').value = $('c-email').value; etat(''); };
+    $('retour-connexion').onclick = () => onglet('connexion');
+
+    async function apresAcces(u, premiere) {
+      const r = await synchroniser(c, u.uid);
+      if (r.conflits.length) { montrerEspace(u); montrerConflit(); return; }
+      location.href = ENTREE; // ouverture magique après l'inscription ou la connexion
+    }
+
+    $('f-connexion').onsubmit = e => { e.preventDefault(); occupe(e.submitter, async () => {
+      try { const r = await au.signInWithEmailAndPassword(auth, $('c-email').value.trim(), $('c-mdp').value); await apresAcces(r.user, false); }
+      catch (err) { etat(messageErreur(err), true); }
+    }); };
+
+    $('f-inscription').onsubmit = e => { e.preventDefault(); occupe(e.submitter, async () => {
+      if ($('i-mdp').value.length < 8) return etat('Le mot de passe doit contenir au moins 8 caractères.', true);
+      if ($('i-mdp').value !== $('i-mdp2').value) return etat('Les deux mots de passe ne sont pas identiques.', true);
+      if (!$('i-parent').checked || !$('i-conf').checked) return etat('Merci de cocher les deux cases.', true);
+      try {
+        const r = await au.createUserWithEmailAndPassword(auth, $('i-email').value.trim(), $('i-mdp').value);
+        au.sendEmailVerification(r.user).catch(() => {});
+        await apresAcces(r.user, true);
+      } catch (err) { etat(messageErreur(err), true); }
+    }); };
+
+    $('f-oubli').onsubmit = e => { e.preventDefault(); occupe(e.submitter, async () => {
+      try { await au.sendPasswordResetEmail(auth, $('o-email').value.trim()); etat('Si un compte existe avec cette adresse, un e-mail vient d\'être envoyé. Pensez à regarder dans les indésirables.'); }
+      catch (err) { etat(messageErreur(err), true); }
+    }); };
+
+    function montrerEspace(u) {
+      voir('v-espace');
+      $('e-email').textContent = u.email;
+      $('e-verif').textContent = u.emailVerified ? '' : "Pensez à confirmer votre adresse grâce à l'e-mail reçu.";
+    }
+    function montrerConflit() { $('e-conflit').classList.remove('cache'); etat(''); }
+    async function resoudre(choix) {
+      const r = await synchroniser(c, auth.currentUser.uid, { choix });
+      $('e-conflit').classList.add('cache');
+      etat(r.change ? 'Progression mise à jour sur cet appareil.' : 'Progression enregistrée dans votre compte.');
+    }
+    $('garder-compte').onclick = e => occupe(e.target, () => resoudre('compte').catch(err => etat(messageErreur(err), true)));
+    $('garder-appareil').onclick = e => occupe(e.target, () => resoudre('appareil').catch(err => etat(messageErreur(err), true)));
+    $('entrer').onclick = () => location.href = '../monde/';
+    $('synchro').onclick = e => occupe(e.target, async () => {
+      try { const r = await synchroniser(c, auth.currentUser.uid); r.conflits.length ? montrerConflit() : etat('Tout est à jour ✔'); }
+      catch (err) { etat(messageErreur(err), true); }
+    });
+    $('deconnexion').onclick = async () => { await au.signOut(auth); localStorage.removeItem('ldn_sync'); etat('Vous êtes déconnecté. La progression reste sur cet appareil.'); voir('v-acces'); onglet('connexion'); };
+    $('supprimer').onclick = e => occupe(e.target, async () => {
+      if (!confirm('Supprimer définitivement le compte et la copie de la progression gardée en ligne ? La progression déjà présente sur cet appareil n\'est pas effacée.')) return;
+      try { const u = auth.currentUser; await supprimerDonnees(c, u.uid); await au.deleteUser(u); etat('Compte supprimé.'); voir('v-acces'); onglet('connexion'); }
+      catch (err) { etat(messageErreur(err), true); }
+    });
+
+    const u = auth.currentUser || await new Promise(ok => { const s = au.onAuthStateChanged(auth, x => { s(); ok(x); }); });
+    if (u) { montrerEspace(u); synchroniser(c, u.uid).then(r => r.conflits.length && montrerConflit()).catch(() => {}); }
+    else { voir('v-acces'); onglet(location.hash === '#inscription' ? 'inscription' : 'connexion'); }
+  }
+}
+</script>
+<script src="../univers/univers.js?v=1" defer></script>
+</body>
+</html>
