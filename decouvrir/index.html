@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="fr" data-univers="histoires">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Découvrez le Monde de Nour · Les Lanternes de Nour</title>
+<meta name="description" content="Le Monde de Nour : un village pour apprendre l'islam en jouant, pour les enfants de 3 à 10 ans. Histoires des prophètes, ablutions, prière, Ramadan. Gratuit et sans publicité.">
+<meta name="theme-color" content="#191345">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../univers/univers.css?v=1">
+<style>
+*{box-sizing:border-box}html,body{margin:0}
+html{scroll-behavior:smooth}
+body{min-height:100vh;color:#f4efff;font-family:Nunito,system-ui,sans-serif;line-height:1.55}
+.wrap{max-width:1040px;margin:0 auto;padding:0 18px;position:relative;z-index:1}
+a{color:#ffe3a3}
+h1,h2,h3{font-family:Poppins,system-ui,sans-serif;line-height:1.2;margin:0}
+p{margin:0}
+.cache{display:none!important}
+
+/* --- en-tête --- */
+.haut{display:flex;justify-content:space-between;align-items:center;padding:14px 0}
+.haut a{text-decoration:none;font-weight:800}
+.marque{display:flex;gap:8px;align-items:center;color:#f5b942}
+.lien-famille{background:rgba(255,255,255,.08);border:1px solid rgba(255,227,163,.35);border-radius:999px;padding:8px 14px;color:#ffe3a3}
+
+.hero{text-align:center;padding:10px 0 8px}
+.hero .sur{color:#ffe3a3;font-weight:800;letter-spacing:.06em;text-transform:uppercase;font-size:13px}
+.hero h1{font-size:clamp(32px,7vw,56px);color:#fff!important;margin:6px 0 10px}
+.hero h1 span{color:#f5b942}
+.hero p.intro{max-width:640px;margin:0 auto;color:#d8cff5;font-size:clamp(16px,2.4vw,19px)}
+.illus{margin:22px auto 0;max-width:820px;border-radius:28px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.35),0 0 0 3px rgba(245,185,66,.35)}
+.illus svg{display:block;width:100%;height:auto}
+.illus .flotte{animation:u-flotte 5s ease-in-out infinite}
+.illus .scint{animation:u-scintille 2.6s ease-in-out infinite}
+@keyframes u-flotte{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes u-scintille{0%,100%{opacity:.35}50%{opacity:1}}
+
+.actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:24px 0 8px}
+.btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:18px;padding:14px 22px;font:900 18px Nunito,system-ui;cursor:pointer;text-decoration:none}
+.btn-or{background:#f5b942;color:#2a1d00;box-shadow:0 5px 0 #d9952a}
+.btn-or:active{transform:translateY(3px);box-shadow:0 2px 0 #d9952a}
+.btn-ligne{background:rgba(255,255,255,.07);color:#fff;border:2px solid rgba(255,227,163,.45)}
+
+/* --- choix parents / enfants --- */
+.choix-espace{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:560px;margin:26px auto 30px;background:rgba(0,0,0,.18);padding:6px;border-radius:24px}
+.choix-espace button{border:0;border-radius:18px;padding:14px 10px;font:900 clamp(16px,3.6vw,19px) Nunito,system-ui;cursor:pointer;background:none;color:#d8cff5}
+.choix-espace button[aria-selected=true]{background:#f5b942;color:#2a1d00;box-shadow:0 4px 0 #d9952a}
+
+section.bloc{margin:0 0 30px}
+section.bloc>h2{font-size:clamp(22px,4.4vw,30px);color:#fff;margin-bottom:12px}
+section.bloc>p.chapo{color:#d8cff5;margin-bottom:16px;max-width:760px}
+.carte{background:#2a2166;border-radius:24px;padding:20px;box-shadow:0 8px 0 #120d33}
+.grille{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.contenu{display:grid;gap:8px;align-content:start}
+.contenu .ico{font-size:30px;line-height:1}
+.contenu h3{font-size:18px;color:#fff}
+.contenu p{color:#d8cff5;font-size:15.5px}
+.etiquette{justify-self:start;font:800 12px Nunito,system-ui;padding:4px 10px;border-radius:999px;background:#2f8f6f;color:#eafff6}
+.etiquette.bientot{background:#6b5aa8;color:#f1ebff}
+.contenu a{font-weight:800}
+.liste{margin:0;padding-left:20px;display:grid;gap:6px;color:#e9e2ff}
+.deux{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.note{font-size:14px;color:#bfb3e6}
+
+/* --- espace enfants --- */
+.enfants h2{text-align:center}
+.bulle-enf{font:800 clamp(19px,4.2vw,24px) Nunito,system-ui;color:#fff;text-align:center;max-width:680px;margin:0 auto 18px}
+.lire{display:flex;justify-content:center;margin-bottom:22px}
+.maisons{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.maison{border-radius:22px;padding:16px 12px;text-align:center;background:var(--u-fond,#2a2166);color:var(--u-texte,#191345);
+  box-shadow:0 6px 0 var(--u-ombre,rgba(0,0,0,.25));display:grid;gap:6px;align-content:start;transition:transform .2s}
+.maison:hover,.maison:focus-within{transform:translateY(-4px) rotate(-1deg)}
+.maison .ico{font-size:40px;line-height:1;animation:u-flotte 4s ease-in-out infinite}
+.maison b{font:800 16px Poppins,system-ui;color:var(--u-texte,#191345)}
+.maison span{font-size:14px;color:var(--u-texte2,#3a3460);font-weight:700}
+.maison .etiquette{justify-self:center;color:#eafff6}.maison .etiquette.bientot{color:#f1ebff}
+.univers-liste{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.univ{border-radius:18px;padding:14px;background:var(--u-fond);color:var(--u-texte);box-shadow:0 5px 0 var(--u-ombre);font-weight:800;display:grid;gap:4px}
+.univ i{font-style:normal;font-size:26px}
+.univ small{font-weight:700;color:var(--u-texte2)}
+.persos{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.perso{display:flex;gap:14px;align-items:center;border-radius:22px;padding:16px;background:var(--u-fond);color:var(--u-texte);box-shadow:0 6px 0 var(--u-ombre)}
+.perso .m{width:96px;flex:none;animation:u-flotte 3.6s ease-in-out infinite}
+.perso .m svg{width:100%;height:auto;display:block}
+.perso b{font:800 19px Poppins,system-ui;display:block}
+.perso span{font-weight:700;color:var(--u-texte2)}
+.fin{text-align:center;padding:10px 0 40px}
+footer{text-align:center;padding:0 0 30px;font-size:14px;color:#bfb3e6}
+@media (max-width:520px){.haut a{font-size:14px}.choix-espace{grid-template-columns:1fr 1fr}.btn{width:100%;justify-content:center}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="deco" aria-hidden="true"></div>
+
+<div class="wrap">
+  <header class="haut">
+    <a class="marque" href="../">🏮 Les Lanternes de Nour</a>
+    <a class="lien-famille" href="../compte/">👨‍👩‍👧 Espace famille</a>
+  </header>
+
+  <section class="hero">
+    <p class="sur">Gratuit · sans publicité · pour les 3 à 10 ans</p>
+    <h1>Découvrez le <span>Monde de Nour</span></h1>
+    <p class="intro">Un village de lanternes où chaque maison ouvre une activité : les ablutions, la prière, le Ramadan, et bientôt les sourates, les mots et les cinq prières. Les enfants s'y promènent, apprennent et gagnent des étoiles.</p>
+
+    <div class="illus">
+      <svg viewBox="0 0 820 420" role="img" aria-label="Illustration du village des lanternes : des maisons colorées, une mosquée au dôme doré et des lanternes sous la lune">
+        <defs>
+          <linearGradient id="ciel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1b1452"/><stop offset=".7" stop-color="#4a3a9a"/><stop offset="1" stop-color="#f3a96b"/></linearGradient>
+          <linearGradient id="colline1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4fb38a"/><stop offset="1" stop-color="#2f8f6f"/></linearGradient>
+          <linearGradient id="colline2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7fd0a6"/><stop offset="1" stop-color="#4fb38a"/></linearGradient>
+          <radialGradient id="halo"><stop offset="0" stop-color="#ffe9a8" stop-opacity=".9"/><stop offset="1" stop-color="#ffe9a8" stop-opacity="0"/></radialGradient>
+          <symbol id="lant" viewBox="0 0 26 40"><path d="M7 7h12l-2 4H9z" fill="#c98a1c"/><path d="M8 11h10c3 4 3 15 0 19H8c-3-4-3-15 0-19z" fill="#ffcf5c" stroke="#c98a1c" stroke-width="1.4"/><ellipse cx="13" cy="21" rx="3" ry="4.5" fill="#fff6d8"/><path d="M8 30h10l-1.5 4h-7z" fill="#c98a1c"/></symbol>
+        </defs>
+        <rect width="820" height="420" fill="url(#ciel)"/>
+        <g fill="#fff" class="scint"><circle cx="70" cy="50" r="2"/><circle cx="180" cy="90" r="1.6"/><circle cx="300" cy="40" r="2.2"/><circle cx="520" cy="70" r="1.6"/><circle cx="760" cy="40" r="2"/><circle cx="420" cy="110" r="1.4"/></g>
+        <g fill="#fff" class="scint" style="animation-delay:-1.3s"><circle cx="120" cy="140" r="1.4"/><circle cx="640" cy="120" r="1.8"/><circle cx="360" cy="80" r="1.5"/><circle cx="700" cy="160" r="1.3"/></g>
+        <circle cx="680" cy="82" r="60" fill="url(#halo)"/>
+        <path d="M690 50a34 34 0 1 0 0 64a42 42 0 0 1 0-64z" fill="#ffe3a3"/>
+        <!-- guirlande -->
+        <path d="M0 26Q410 120 820 26" fill="none" stroke="rgba(245,185,66,.6)" stroke-width="2"/>
+        <g class="flotte"><use href="#lant" x="120" y="50" width="22" height="34"/><use href="#lant" x="280" y="78" width="26" height="40"/><use href="#lant" x="400" y="86" width="22" height="34"/><use href="#lant" x="530" y="78" width="26" height="40"/><use href="#lant" x="680" y="52" width="22" height="34"/></g>
+        <!-- collines -->
+        <path d="M0 300Q200 230 410 280T820 270V420H0z" fill="url(#colline1)"/>
+        <!-- mosquée au centre -->
+        <g transform="translate(410 268)">
+          <rect x="-70" y="-50" width="140" height="62" fill="#fff6d8"/>
+          <path d="M-48-50a48 48 0 0 1 96 0z" fill="#f5b942"/><path d="M0-112v14" stroke="#c98a1c" stroke-width="3"/><path d="M5-118a7 7 0 1 0 0 10a9 9 0 0 1 0-10z" fill="#c98a1c"/>
+          <rect x="84" y="-120" width="18" height="132" fill="#fff6d8"/><path d="M80-120l13-20 13 20z" fill="#f5b942"/>
+          <path d="M-16 12v-32a16 16 0 0 1 32 0v32z" fill="#1d8f9c"/>
+          <circle cx="-44" cy="-22" r="7" fill="#ffd57a"/><circle cx="44" cy="-22" r="7" fill="#ffd57a"/>
+        </g>
+        <!-- maisons -->
+        <g transform="translate(150 300)"><rect x="-40" y="-40" width="80" height="50" fill="#e7fbff"/><path d="M-40-40a40 40 0 0 1 80 0z" fill="#2bb3c0"/><path d="M-10 10v-24a10 10 0 0 1 20 0v24z" fill="#1784a8"/><text x="0" y="-50" font-size="22" text-anchor="middle">💧</text></g>
+        <g transform="translate(270 316)"><path d="M-46 8l46-58 46 58z" fill="#ff8a3d"/><path d="M-8 8l8-24 8 24z" fill="#7a3a12"/><text x="0" y="-58" font-size="22" text-anchor="middle">🏮</text></g>
+        <g transform="translate(560 306)"><rect x="-26" y="-74" width="52" height="84" fill="#efe9ff"/><path d="M-32-74l32-30 32 30z" fill="#8a6cf0"/><rect x="-8" y="-50" width="16" height="20" rx="8" fill="#5b4bc4"/><text x="0" y="-110" font-size="22" text-anchor="middle">👂</text></g>
+        <g transform="translate(690 318)"><ellipse cx="0" cy="0" rx="56" ry="18" fill="#3fbf7f"/><circle cx="-24" cy="-14" r="14" fill="#2f8f4f"/><circle cx="8" cy="-20" r="18" fill="#3a9e5c"/><circle cx="34" cy="-10" r="12" fill="#2f8f4f"/><text x="0" y="-44" font-size="22" text-anchor="middle">🌱</text></g>
+        <path d="M0 360Q240 320 410 350T820 340V420H0z" fill="url(#colline2)"/>
+        <path d="M410 420C400 390 420 370 410 345" stroke="#f3e2b8" stroke-width="22" fill="none" stroke-linecap="round" opacity=".85"/>
+      </svg>
+    </div>
+
+    <div class="actions">
+      <a class="btn btn-or" href="../monde/">✨ Entrer dans le monde</a>
+      <a class="btn btn-ligne" href="../compte/">👨‍👩‍👧 Espace famille</a>
+    </div>
+  </section>
+
+  <div class="choix-espace" role="tablist" aria-label="Choisir un espace">
+    <button role="tab" id="t-parents" aria-controls="parents" aria-selected="true">👨‍👩‍👧 Pour les parents</button>
+    <button role="tab" id="t-enfants" aria-controls="enfants" aria-selected="false">🧒 Pour les enfants</button>
+  </div>
+
+  <!-- ================= ESPACE PARENTS ================= -->
+  <div id="parents" role="tabpanel" aria-labelledby="t-parents">
+    <section class="bloc">
+      <h2>Le projet</h2>
+      <div class="carte"><p>Les Lanternes de Nour racontent et chantent les histoires des prophètes pour les enfants de 3 à 10 ans. Autour de la chaîne, le Monde de Nour réunit des jeux et des activités pour apprendre les bases de l'islam en douceur : les ablutions, la prière, le Ramadan, les bonnes actions. Tout est gratuit, sans publicité et sans rien à acheter.</p></div>
+    </section>
+
+    <section class="bloc">
+      <h2>Objectifs éducatifs</h2>
+      <div class="deux">
+        <div class="carte"><ul class="liste">
+          <li>Faire connaître les prophètes et leurs histoires, telles que le Coran les raconte.</li>
+          <li>Apprendre les gestes des ablutions et de la prière, dans le bon ordre.</li>
+          <li>Vivre le mois de Ramadan avec une petite mission chaque jour.</li>
+        </ul></div>
+        <div class="carte"><ul class="liste">
+          <li>Encourager les bonnes actions et les belles paroles au quotidien.</li>
+          <li>Donner les mots arabes avec leur sens en français.</li>
+          <li>Adapter les activités à l'âge : 3 à 5 ans et 6 à 10 ans.</li>
+        </ul></div>
+      </div>
+      <p class="note" style="margin-top:12px">Les contenus religieux s'appuient sur le Coran et des hadiths authentiques, cités dans les activités. Nous ne représentons ni Allah, ni les prophètes, ni les anges.</p>
+    </section>
+
+    <section class="bloc">
+      <h2>Les contenus</h2>
+      <p class="chapo">Ce qui est déjà là, et ce qui se prépare dans le village.</p>
+      <div class="grille">
+        <article class="carte contenu"><span class="ico">📖</span><span class="etiquette">Disponible</span><h3>Histoires des prophètes et du Coran</h3><p>Des épisodes racontés et chantés, avec une leçon à retenir.</p><a href="https://www.youtube.com/@LesLanternesdeNour">Voir la chaîne</a></article>
+        <article class="carte contenu"><span class="ico">🎶</span><span class="etiquette">Disponible</span><h3>Anasheed et chansons</h3><p>Une chanson dans chaque histoire, et un nasheed qui accompagne la promenade dans le village.</p></article>
+        <article class="carte contenu"><span class="ico">💧</span><span class="etiquette">Disponible</span><h3>Les ablutions</h3><p>Les étapes animées avec Nour, la petite goutte d'eau, lues à voix haute, et 4 petits jeux.</p><a href="../ablutions/">Ouvrir</a></article>
+        <article class="carte contenu"><span class="ico">🕌</span><span class="etiquette">Disponible</span><h3>La prière</h3><p>Les 13 étapes de la prière avec Sajjadou, le tapis de prière, des jeux et un diplôme.</p><a href="../priere/">Ouvrir</a></article>
+        <article class="carte contenu"><span class="ico">🌙</span><span class="etiquette">Disponible</span><h3>Calendrier du Ramadan</h3><p>30 missions avec leurs sources, des devinettes et des questions-réponses, plusieurs enfants par famille.</p><a href="../calendrier/">Ouvrir</a></article>
+        <article class="carte contenu"><span class="ico">⭐</span><span class="etiquette">Disponible</span><h3>Jeux, activités et récompenses</h3><p>Des étoiles, des lanternes à allumer et des diplômes à imprimer pour fêter les progrès.</p></article>
+        <article class="carte contenu"><span class="ico">🕋</span><span class="etiquette">Disponible</span><h3>Apprendre l'islam</h3><p>Missions, devinettes et questions-réponses sur l'islam, avec les mots arabes et leur traduction.</p></article>
+        <article class="carte contenu"><span class="ico">👂</span><span class="etiquette bientot">En préparation</span><h3>Sourates et lettres arabes</h3><p>Écouter et répéter les sons des lettres arabes, puis les sourates.</p></article>
+        <article class="carte contenu"><span class="ico">🔎</span><span class="etiquette bientot">En préparation</span><h3>Quiz et défis</h3><p>La chasse aux mots et le défi des cinq prières de la journée.</p></article>
+      </div>
+    </section>
+
+    <section class="bloc" id="confidentialite">
+      <h2>Confidentialité et sécurité</h2>
+      <div class="deux">
+        <div class="carte"><ul class="liste">
+          <li><b>Sans publicité</b> et sans traceur publicitaire.</li>
+          <li><b>Sans compte</b>, tout fonctionne : la progression reste sur l'appareil, rien n'est envoyé.</li>
+          <li>Les enfants n'ont jamais à écrire d'adresse e-mail ni de mot de passe.</li>
+          <li>Les vidéos sont hébergées sur YouTube, qui applique ses propres règles.</li>
+        </ul></div>
+        <div class="carte"><ul class="liste">
+          <li><b>Compte famille (facultatif)</b>, créé par un parent, pour retrouver la progression sur plusieurs appareils.</li>
+          <li>Il garde l'adresse e-mail du parent et une copie de la progression : étoiles, étapes réussies, et les profils du calendrier (prénom, tranche d'âge, garçon ou fille).</li>
+          <li>Ces données ne sont ni vendues ni partagées. Elles sont hébergées par Google Firebase.</li>
+          <li>Le compte et sa copie se suppriment à tout moment depuis l'<a href="../compte/">Espace famille</a>.</li>
+        </ul></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ================= ESPACE ENFANTS ================= -->
+  <div id="enfants" class="enfants cache" role="tabpanel" aria-labelledby="t-enfants">
+    <p class="bulle-enf" id="texte-enfants">Bienvenue dans le village des lanternes ! Touche une maison pour jouer, gagne des étoiles et allume des lanternes.</p>
+    <div class="lire"><button class="btn btn-ligne" id="lire">🔊 Écouter</button></div>
+
+    <section class="bloc">
+      <h2>Les maisons du village</h2>
+      <div class="maisons" id="maisons"></div>
+    </section>
+
+    <section class="bloc">
+      <h2>Les mondes des couleurs</h2>
+      <div class="univers-liste">
+        <div class="univ" data-univers="ablutions"><i>💧</i>L'eau<small>Bleu ciel et turquoise</small></div>
+        <div class="univ" data-univers="priere"><i>🕌</i>La prière<small>Crème, turquoise et or</small></div>
+        <div class="univ" data-univers="sourates"><i>📗</i>Les sourates<small>Vert sauge et étoiles</small></div>
+        <div class="univ" data-univers="quiz"><i>❓</i>Les quiz<small>Lavande et bleu pastel</small></div>
+        <div class="univ" data-univers="histoires"><i>🏮</i>Les histoires<small>Nuit et lanternes</small></div>
+        <div class="univ" data-univers="jeux"><i>🎈</i>Les jeux<small>Jaune et pêche</small></div>
+      </div>
+    </section>
+
+    <section class="bloc">
+      <h2>Tes amis du village</h2>
+      <div class="persos">
+        <div class="perso" data-univers="ablutions"><div class="m" id="m-nour"></div><div><b>Nour</b><span>La petite goutte d'eau. Elle t'apprend les ablutions.</span></div></div>
+        <div class="perso" data-univers="priere"><div class="m" id="m-sajjadou"></div><div><b>Sajjadou</b><span>Le tapis de prière. Il t'accompagne dans les 13 étapes.</span></div></div>
+      </div>
+      <p class="note" style="margin-top:12px;text-align:center">Dans les histoires, Aylan, Ismaïl, Naël, Ayline et Nelya ouvrent le grand livre avec toi.</p>
+    </section>
+
+    <div class="fin"><a class="btn btn-or" href="../monde/">✨ Entrer dans le monde</a></div>
+  </div>
+</div>
+
+<footer>Les Lanternes de Nour · <a href="../">Accueil</a> · <a href="../compte/">Espace famille</a> · <a href="#confidentialite" id="lien-conf">Confidentialité</a></footer>
+
+<script type="module">
+import { BATIMENTS } from '../monde/batiments.js?v=2';
+import { mascotte } from '../monde/mascottes.js?v=1';
+const $ = id => document.getElementById(id);
+
+// Onglets parents / enfants (l'adresse #enfants ouvre directement l'espace enfants)
+function espace(n) {
+  ['parents', 'enfants'].forEach(x => {
+    $(x).classList.toggle('cache', x !== n);
+    $('t-' + x).setAttribute('aria-selected', x === n);
+  });
+  if (n !== 'enfants') try { speechSynthesis.cancel(); } catch (e) {}
+}
+$('t-parents').onclick = () => { espace('parents'); history.replaceState(null, '', '#parents'); };
+$('t-enfants').onclick = () => { espace('enfants'); history.replaceState(null, '', '#enfants'); };
+$('lien-conf').onclick = () => espace('parents');
+if (location.hash === '#enfants') espace('enfants');
+
+// Les maisons, depuis la même liste que le village
+$('maisons').innerHTML = BATIMENTS.map(b => `
+  <div class="maison" data-univers="${b.univers}">
+    <span class="ico" aria-hidden="true">${b.icone}</span>
+    <b>${b.nom}</b><span>${b.texte}</span>
+    ${b.etat === 'ouvert' ? '<span class="etiquette">On peut jouer !</span>' : '<span class="etiquette bientot">Bientôt</span>'}
+  </div>`).join('');
+
+$('m-nour').innerHTML = mascotte('ablutions') || '';
+$('m-sajjadou').innerHTML = mascotte('priere') || '';
+
+// Lecture à voix haute pour les petits
+$('lire').onclick = () => {
+  if (!('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  const voix = speechSynthesis.getVoices().find(v => /^fr/i.test(v.lang));
+  const u = new SpeechSynthesisUtterance($('texte-enfants').textContent);
+  u.lang = 'fr-FR'; if (voix) u.voice = voix; u.rate = .9;
+  speechSynthesis.speak(u);
+};
+</script>
+<script src="../univers/univers.js?v=1" defer></script>
+</body>
+</html>
