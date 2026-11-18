@@ -1,0 +1,43 @@
+rules_version = '2';
+// Règles de sécurité Firestore — à publier depuis la console Firebase (rien n'est actif tant que tu ne le fais pas).
+// Principe : le client ne peut JAMAIS s'attribuer un abonnement, un rôle admin ou un cadeau.
+// L'administrateur est déclaré à la main dans la console : document admins/{uid} (jamais depuis le site).
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function connecte() { return request.auth != null; }
+    function estAdmin() { return connecte() && exists(/databases/$(database)/documents/admins/$(request.auth.uid)); }
+
+    // Progression d'une famille (existant : compte/synchro.js)
+    match /familles/{uid} {
+      allow read, write: if connecte() && request.auth.uid == uid;
+    }
+
+    // Statut d'accès : lisible par son propriétaire, écrit uniquement par l'admin
+    // (les paiements écriront ici via un serveur de confiance, jamais depuis le navigateur).
+    match /acces/{uid} {
+      allow read: if connecte() && (request.auth.uid == uid || estAdmin());
+      allow write: if estAdmin();
+    }
+
+    // Réglages (fonctionnalités gratuites/Premium, prix, offre de lancement) : lecture publique, écriture admin.
+    match /reglages/{doc} {
+      allow read: if true;
+      allow write: if estAdmin();
+    }
+
+    // Historique des cadeaux et modifications d'accès : admin uniquement, sans modification ni suppression.
+    match /journalAcces/{id} {
+      allow read, create: if estAdmin();
+      allow update, delete: if false;
+    }
+
+    // Déclaration des administrateurs : lecture de son propre document seulement, écriture impossible depuis le site.
+    match /admins/{uid} {
+      allow get: if connecte() && request.auth.uid == uid;
+      allow list, write: if false;
+    }
+
+    match /{autre=**} { allow read, write: if false; }
+  }
+}
