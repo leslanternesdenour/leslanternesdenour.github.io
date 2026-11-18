@@ -24,6 +24,9 @@ import { COLLECTIONS, BADGES, progressionCollection } from './succes.js?v=3';
 import { creerGuide } from './guide.js?v=3';
 import { creerQuetes, QUETES, CATEGORIES_QUETES } from './quetes.js?v=3';
 import { creerRegions, REGIONS } from './regions.js?v=3';
+import { illustration, ICONE_MOTS, ICONE_SON } from './illustrations.js?v=3';
+import { creerEffetDecouverte } from './decouverte.js?v=3';
+import { MOTS } from './quetes.js?v=3';
 import { creerCarte, CATEGORIES } from './carte.js?v=3';
 import { creerBourse } from './economie.js?v=3';
 import { creerQuotidien } from './quotidien.js?v=3';
@@ -73,7 +76,7 @@ async function demarrer() {
   const effets = creerEffets(scene, terrain, Q);
   const aventure = creerAventure({ scene, terrain, colliders: decor.colliders, etat, enregistrer, sons: S, ombres: !!Q.ombres,
     donner: (id, n, raison) => bourse.recompense(id, n, raison, ouDonner()), evenement: (t, i) => quotidien && quotidien.evenement(t, i),
-    ui: { dialogue: (p) => dialogue(p), bandeau: (a, b) => bandeau(a, b), indice: (h, ms) => montrerIndice(h, ms), pieces: (t, n, r) => afficherGain(t, n, r), majSuivi: () => majSuivi() } });
+    ui: { dialogue: (p) => dialogue(p), decouverte: d => decouvrir(d), bandeau: (a, b) => bandeau(a, b), indice: (h, ms) => montrerIndice(h, ms), pieces: (t, n, r) => afficherGain(t, n, r), majSuivi: () => majSuivi() } });
   const AV = aventure.A;
   // les habits portés : un jeu pour la voyageuse, un pour le voyageur (les anciens habits du garçon sont gardés)
   if (!AV.tenues) {
@@ -106,7 +109,7 @@ async function demarrer() {
   // les quêtes : mots arabes, plantes, énigmes du souk, grande traversée
   const quetes = creerQuetes({ scene, terrain, colliders: decor.colliders, AV, etat, enregistrer, ombres: !!Q.ombres,
     donner: (id, n, raison) => bourse.recompense(id, n, raison, ouDonner()),
-    ui: { dialogue: p => dialogue(p), bandeau: (a, b) => { bandeau(a, b); S.sonDecouverte(); }, evenement: t => quotidien.evenement(t) } });
+    ui: { dialogue: p => dialogue(p), decouverte: d => decouvrir(d), bandeau: (a, b) => { bandeau(a, b); S.sonDecouverte(); }, evenement: t => quotidien.evenement(t) } });
   // les régions à débloquer (le wadi, les rochers gravés)
   const regions = creerRegions({ etat, AV, enregistrer, barrieres: decor.barrieres,
     ui: { debloquee: (id, R) => { setTimeout(() => { bandeau('Nouvelle région débloquée !', `${R.icone} ${R.nom}`); S.sonPorte(); montrerIndice(`🗺️ ${R.nom} est ouvert : regarde ta carte !`, 4000); }, 600); } } });
@@ -266,7 +269,7 @@ async function demarrer() {
     if (p.decouverte) quotidien.evenement('lu', cle);
     if (cle === 'nour') { aventure.parlerNour(nouveau ? p.texte : ''); return; }
     dialogue(p);
-    if (nouveau) { S.sonDecouverte(); aventure.gagner(30, 'Découverte : ' + p.titre, 'lu:' + cle); }
+    if (nouveau) { S.sonMerveille(); const pt = decor.points.find(o => o.id === id); if (pt) effetDecouverte.jouer(pt.x, pt.z); aventure.gagner(30, 'Découverte : ' + p.titre, 'lu:' + cle); }
   }
   // Fenêtre de dialogue commune (panneaux, mascottes, personnages, animaux) avec des choix possibles
   function dialogue(p) {
@@ -360,7 +363,7 @@ async function demarrer() {
   function zoneIci(x, z) {
     if (z < -200) return 'montagnes';
     if (Math.hypot(x - marche.centre.x, z - marche.centre.z) < 21) return 'marche';
-    for (const id of ['village', 'oasis', 'camp', 'wadi', 'rochers']) { const l = LIEUX[id]; if (Math.hypot(x - l.x, z - l.z) < l.r + 6) return id; }
+    for (const id of ['village', 'oasis', 'camp', 'wadi', 'rochers']) { const l = LIEUX[id]; if ((id === 'wadi' || id === 'rochers') && !regions.ouverte(id)) continue; if (Math.hypot(x - l.x, z - l.z) < l.r + 6) return id; }
     if (Math.hypot(x - LIEUX.dunes.x, z - LIEUX.dunes.z) < LIEUX.dunes.r) return 'dunes';
     return null;
   }
@@ -374,8 +377,9 @@ async function demarrer() {
     $('lieu').textContent = info ? info.icone + ' ' + info.nom : (J.z < -140 ? '🪨 Le chemin du col' : '🐫 Le désert');
     if (z && !etat.zones.includes(z)) {
       etat.zones.push(z); enregistrer();
-      bandeau('Tu découvres', info.nom);
-      S.sonDecouverte();
+      if (z === 'village') { bandeau('Tu découvres', info.nom); S.sonDecouverte(); }
+      else decouvrir({ type: 'lieu', cle: z, nom: info.nom, icone: info.icone, texte: DESCRIPTIONS_LIEUX[z] || '', nouveau: true,
+        progression: { n: etat.zones.length, total: ZONES.length, label: etat.zones.length > 1 ? 'lieux découverts' : 'lieu découvert' } });
       sauvegarde.gagner('voyage', 'etoiles', 1);
       setTimeout(() => aventure.gagner(50, 'Nouveau lieu : ' + info.nom, 'zone:' + z), 900);
       verifierCol(true);
@@ -428,6 +432,7 @@ async function demarrer() {
     cc.querySelectorAll('[data-guider-jour]').forEach(b => b.onclick = () => { fermerCarnet(); guiderJour(b.dataset.guiderJour); });
     cc.querySelectorAll('[data-guider-quete]').forEach(b => b.onclick = () => { fermerCarnet(); guiderQuete(b.dataset.guiderQuete); });
     cc.querySelectorAll('[data-filtre]').forEach(b => b.onclick = () => { filtreQuetes = b.dataset.filtre; ouvrirCarnet('missions'); });
+    cc.querySelectorAll('[data-ecouter-mot]').forEach(b => b.onclick = () => { const m = MOTS.find(x => x.id === b.dataset.ecouterMot); if (m) parlerArabe(m.ar); });
     cc.querySelectorAll('[data-fiche-monture]').forEach(b => b.onclick = () => { $('carnet').classList.add('cache'); ficheMonture(b.dataset.ficheMonture, () => ouvrirCarnet('sablo')); });
     remplirApercus(cc);
     $('carnet').classList.remove('cache');
@@ -476,6 +481,15 @@ async function demarrer() {
       return `<h3>🏮 Les lanternes cachées</h3><div class="grille-collection">${Array.from({ length: 12 }, (_, i) => `<div class="${l(i) ? '' : 'manque'}"><span>🏮</span>${l(i) ? 'Trouvée' : '?'}</div>`).join('')}</div>
         <h3>🧺 Objets trouvés</h3><div class="grille-collection">${objets.map(([k, ic, nom]) => `<div class="${AV.ramasses.includes(k) ? '' : 'manque'}"><span>${ic}</span>${AV.ramasses.includes(k) ? nom : '?'}</div>`).join('')}</div>
         ` + pageSucces();
+    }
+    if (o === 'mots') {
+      const appris = AV.quetes.mots || [];
+      const ou = { bir: 'près du puits du village', jamal: 'près de l\'enclos de Sablo', souq: 'au souk', nakhla: 'à l\'oasis', tamr: 'à l\'oasis', maa: 'au bord de l\'eau de l\'oasis', khayma: 'au camp des caravanes', najma: 'au bout du chemin des dunes' };
+      return `<p class="moi"><span class="moi-ico">${ICONE_MOTS}</span><span><b>Mes mots arabes : ${appris.length} sur ${MOTS.length}</b><br>Cherche les petits livres dorés qui flottent près des lieux du pays !</span></p>
+        <div class="grille-mots">${MOTS.map(m => appris.includes(m.id)
+          ? `<div class="carte-mot"><img src="${illustration(m.id)}" alt=""><span class="ar" lang="ar" dir="rtl">${m.ar}</span><b>${m.dit.charAt(0).toUpperCase() + m.dit.slice(1)}</b><span>${m.fr}</span><button data-ecouter-mot="${m.id}">${ICONE_SON}Écouter</button></div>`
+          : `<div class="carte-mot cachee"><img src="${illustration(m.id)}" alt=""><span class="ar">؟</span><b>À découvrir</b><span>${ou[m.id] || ''}</span></div>`).join('')}</div>
+        <p class="note">Les mots sont écrits en arabe, de droite à gauche, avec leur prononciation. Le bouton « Écouter » utilise la voix arabe de ton appareil, s'il en a une.</p>`;
     }
     if (o === 'animaux') {
       return Object.entries(FICHES).map(([id, f]) => AV.animaux.includes(id)
@@ -878,6 +892,85 @@ async function demarrer() {
       <p class="note">On gagne les Pièces de Nour en jouant, en explorant et en apprenant. On ne les achète jamais avec de l'argent.</p>`;
   }
 
+  // ---------- les découvertes : un vrai petit événement ----------
+  const effetDecouverte = creerEffetDecouverte(scene, H);
+  let focus = null;                            // la caméra se tourne doucement vers ce qu'on découvre
+  const fileDecouvertes = [];
+  const DESCRIPTIONS_LIEUX = {
+    marche: 'Le souk, où les marchands vendent des tissus, des poteries et des parures pour les montures.',
+    oasis: 'Une oasis : de l\'eau, de l\'ombre et des palmiers, au milieu du désert.',
+    camp: 'Le camp où les caravanes se reposent le soir, près du feu, sous les tentes.',
+    dunes: 'Le grand désert de sable, où le vent dessine des dunes et des vagues.',
+    montagnes: 'Les montagnes de pierre, au nord du pays. Il y fait plus frais.',
+    wadi: 'Le lit d\'une rivière souvent à sec, qui se couvre de fleurs après la pluie.',
+    rochers: 'De gros rochers rouges, couverts de gravures très anciennes.'
+  };
+  const TYPES = { mot: [ICONE_MOTS, 'Nouveau mot arabe !', 'Mot arabe'], plante: ['🌿', 'Nouvelle plante observée !', 'Plante'], animal: ['🔍', 'Nouvel animal observé !', 'Animal'],
+    gravure: ['🪨', 'Gravure découverte !', 'Gravure'], nature: ['✨', 'Nouvelle découverte !', 'Découverte'], lieu: ['🗺️', 'Nouveau lieu découvert !', 'Lieu'] };
+  // une image d'un modèle du jeu (pour les animaux)
+  const cacheObjets = new Map();
+  function rendreObjet(obj, cle) {
+    if (cacheObjets.has(cle)) return cacheObjets.get(cle);
+    let url = '';
+    try {
+      apercu(article('selle-cuir'));
+      const { r, cv, cam: c } = rendApercu, sc = new THREE.Scene();
+      sc.add(new THREE.HemisphereLight('#fff6e6', '#c9a77e', 1.8)); const so = new THREE.DirectionalLight('#fff3dc', 2.3); so.position.set(2, 4, 4); sc.add(so);
+      const k = obj.clone(true); k.position.set(0, 0, 0); k.rotation.set(0, 0.7, 0); sc.add(k); k.updateMatrixWorld(true);
+      const b = new THREE.Box3().setFromObject(k), t = b.getSize(new THREE.Vector3()), ce = b.getCenter(new THREE.Vector3());
+      const dist = Math.max(t.x, t.y, t.z) / (2 * Math.tan(15 * Math.PI / 180)) * 1.15;
+      c.position.set(ce.x + dist * 0.1, ce.y + dist * 0.18, ce.z + dist); c.lookAt(ce);
+      r.render(sc, c); url = cv.toDataURL('image/png');
+    } catch (e) { console.warn('image', e); }
+    cacheObjets.set(cle, url); return url;
+  }
+  function decouvrir(d) {
+    if (interface_ouverte && !d.forcer) { fileDecouvertes.push(d); return; }   // une autre fenêtre est ouverte : on attend
+    interface_ouverte = true; ctl.bloque = true;
+    if (d.nouveau) {
+      S.sonMerveille();
+      if (d.x != null) { effetDecouverte.jouer(d.x, d.z, d.y ?? null); focus = { x: d.x, z: d.z }; setTimeout(() => panneauDecouverte(d), 1150); return; }
+    }
+    panneauDecouverte(d);
+  }
+  function panneauDecouverte(d) {
+    const T = TYPES[d.type] || TYPES.nature, z = $('decouverte'), mot = d.type === 'mot';
+    $('dec-icone').innerHTML = T[0].startsWith('<svg') ? T[0] : `<span>${T[0]}</span>`;
+    $('dec-type').textContent = d.nouveau ? T[1] : T[2];
+    const img = d.objet ? rendreObjet(d.objet, d.type + ':' + d.cle) : illustration(d.cle);
+    $('dec-image').src = img || ''; $('dec-emoji').textContent = img ? '' : (d.icone || '✨');
+    $('dec-nom').textContent = mot ? d.nom.charAt(0).toUpperCase() + d.nom.slice(1) : d.nom;
+    $('dec-arabe').textContent = d.arabe || ''; $('dec-arabe').classList.toggle('cache', !d.arabe);
+    $('dec-translit').textContent = d.translit ? d.translit.charAt(0).toUpperCase() + d.translit.slice(1) : ''; $('dec-translit').classList.toggle('cache', !d.translit);
+    $('dec-texte').textContent = d.texte || '';
+    $('dec-sous').textContent = d.sous || ''; $('dec-sous').classList.toggle('cache', !d.sous);
+    const p = d.progression;
+    $('dec-progres-txt').textContent = p ? `${p.n} ${p.label} sur ${p.total}` : '';
+    $('dec-barre').style.transition = 'none'; $('dec-barre').style.width = p ? `${((d.nouveau ? p.n - 1 : p.n) / p.total) * 100}%` : '0';
+    z.querySelector('.dec-progres').classList.toggle('cache', !p);
+    setTimeout(() => { $('dec-barre').style.transition = 'width 1s ease'; $('dec-barre').style.width = p ? `${p.n / p.total * 100}%` : '0'; }, 450);
+    const b = $('dec-ecouter');
+    b.innerHTML = `${ICONE_SON}<span>${mot || d.arabe ? 'Écouter en arabe' : 'Écouter'}</span>`;
+    b.onclick = () => { b.classList.add('parle'); setTimeout(() => b.classList.remove('parle'), 1800); if (mot || d.arabe) parlerArabe(d.arabe); else parler(`${d.nom}. ${d.texte || ''}`); };
+    z.classList.remove('cache', 'joue'); void z.offsetWidth; z.classList.add('joue');
+    if (d.nouveau) {
+      if (!monte) enfant.faire('joie');
+      parler(mot ? `Nouveau mot arabe : ${d.nom}.` : `${T[1].replace(' !', '')} : ${d.nom}.`);
+    }
+    $('dec-ok').focus({ preventScroll: true });
+  }
+  function fermerDecouverte() {
+    if ($('decouverte').classList.contains('cache')) return;
+    $('decouverte').classList.add('cache'); $('decouverte').classList.remove('joue');
+    focus = null; interface_ouverte = false; ctl.bloque = false; dernierEtatBoutons = '';
+    try { speechSynthesis.cancel(); } catch (e) {}
+    const suite = fileDecouvertes.shift(); if (suite) setTimeout(() => decouvrir(suite), 400);
+  }
+  $('dec-ok').addEventListener('click', fermerDecouverte);
+  $('decouverte').addEventListener('click', e => { if (e.target.id === 'decouverte') fermerDecouverte(); });
+  // les fenêtres en attente s'ouvrent quand les autres se ferment
+  setInterval(() => { if (!interface_ouverte && fileDecouvertes.length) decouvrir(fileDecouvertes.shift()); }, 600);
+
   // ---------- choisir son personnage (au premier voyage, puis dans les réglages) ----------
   function ouvrirPerso(premiere) {
     fermerPanneaux();
@@ -1141,10 +1234,15 @@ async function demarrer() {
     // la caméra suit en douceur (pas de saccade, même avec un doigt nerveux)
     cam.yaw += angleVers(cam.yaw, cam.yawCible) * Math.min(1, dt * 12);
     cam.pitch += (cam.pitchCible - cam.pitch) * Math.min(1, dt * 12);
-    const distBase = (monte || (sequence && sequence.type === 'monter')) ? (chameau.espece === 'elephant' ? 13 : 10.5) : 6.5;
+    let distBase = (monte || (sequence && sequence.type === 'monter')) ? (chameau.espece === 'elephant' ? 13 : 10.5) : 6.5;
+    if (focus) {   // pendant une découverte : on regarde l'objet, de derrière l'enfant
+      const ox = monte ? C.x : J.x, oz = monte ? C.z : J.z;
+      cam.yawCible = Math.atan2(ox - focus.x, oz - focus.z); cam.pitchCible = 0.3; distBase = monte ? 9 : 5;
+    }
     cam.dist += (distBase + cam.zoomPerso - cam.dist) * Math.min(1, dt * 3);
     const cibleY = monte ? vSelle.y + 1.0 : enfant.racine.position.y + 1.35;
-    cam.cible.lerp(premierCadre.set(monte ? C.x : J.x, cibleY, monte ? C.z : J.z), Math.min(1, dt * 10));
+    if (focus) cam.cible.lerp(premierCadre.set(((monte ? C.x : J.x) * 0.55 + focus.x * 0.45), cibleY - 0.2, ((monte ? C.z : J.z) * 0.55 + focus.z * 0.45)), Math.min(1, dt * 3));
+    else cam.cible.lerp(premierCadre.set(monte ? C.x : J.x, cibleY, monte ? C.z : J.z), Math.min(1, dt * 10));
     const cp = Math.cos(cam.pitch);
     let px = cam.cible.x + Math.sin(cam.yaw) * cp * cam.dist, pz = cam.cible.z + Math.cos(cam.yaw) * cp * cam.dist;
     let py = cam.cible.y + Math.sin(cam.pitch) * cam.dist;
@@ -1184,7 +1282,7 @@ async function demarrer() {
     procheAv = sequence ? null : (() => { const a = aventure.interaction(J), b = quetes.interaction(J); return !a ? b : !b ? a : (b.d < a.d ? b : a); })();
     aventure.maj(dt, tTotal, J, monte ? C.vit > 6 : J.vit > 4.2, nuit);
     quetes.maj(dt, tTotal, posGuide(), monte && !sequence);
-    marche.maj(dt, tTotal, J); ecurie.animer(dt, tTotal, J);
+    marche.maj(dt, tTotal, J); ecurie.animer(dt, tTotal, J); effetDecouverte.maj(dt);
     { const info = guide.maj(dt, tTotal, posGuide(), rayonGuide());
       if (info && info.arrive) { majGuidage(null); etat.guidage = null; enregistrer(); S.sonDecouverte(); bandeau('Tu es arrivé !', `${info.dest.icone || ''} ${info.dest.nom}`); if (!monte) enfant.faire('joie'); }
       else majGuidage(info); }
@@ -1244,7 +1342,8 @@ async function demarrer() {
     if (cle === dernierEtatBoutons) return;
     dernierEtatBoutons = cle;
     $('btn-action').classList.toggle('cache', !lire || interface_ouverte);
-    if (lire) { $('btn-action').querySelector('.txt').textContent = lire; $('btn-action').querySelector('.ico').textContent = (avPrio && procheAv.icone) || { Parler: '💬', Caresser: '🤲', Acheter: '🛍️', 'Ma cour': '🏡' }[lire] || '✋'; }
+    if (lire) { $('btn-action').querySelector('.txt').textContent = lire; const ic = (avPrio && procheAv.icone) || { Parler: '💬', Caresser: '🤲', Acheter: '🛍️', 'Ma cour': '🏡' }[lire] || '✋';
+      if (ic === 'mots') $('btn-action').querySelector('.ico').innerHTML = ICONE_MOTS; else $('btn-action').querySelector('.ico').textContent = ic; }
     $('btn-chameau').classList.toggle('cache', !cham || interface_ouverte);
     if (cham) $('btn-chameau').querySelector('.txt').textContent = cham;
     if (!indiceForce && !ctl.tactile) {
@@ -1288,7 +1387,7 @@ async function demarrer() {
     etat, J, C, decor, ciel, H, cam, aventure, bourse, action: () => action(),
     teleporter(x, z) { J.x = x; J.z = z; if (monte) { C.x = x; C.z = z; } },
     monte: () => monte, sequence: () => sequence, proche: () => proche, zone: () => zoneActuelle,
-    enfant: () => enfant, perso, quetes, regions, guide, carte, ouvrirCarte: id => ouvrirCarte(id), guiderVers: d => guiderVers(d), guiderMission: k => guiderMission(k), lieuxCarte: () => lieuxCarte(), choisirMonture: id => choisirMonture(id), ouvrirEcurie: () => ouvrirEcurie(), monture: () => chameau, ecurie, ouvrirBoutique: id => ouvrirBoutique(id), ouvrirCarnet: o => ouvrirCarnet(o), ouvrirPerso: () => ouvrirPerso(false), apercu: a => apercu(article(a)),
+    enfant: () => enfant, perso, quetes, regions, decouvrir: d => decouvrir(d), guide, carte, ouvrirCarte: id => ouvrirCarte(id), guiderVers: d => guiderVers(d), guiderMission: k => guiderMission(k), lieuxCarte: () => lieuxCarte(), choisirMonture: id => choisirMonture(id), ouvrirEcurie: () => ouvrirEcurie(), monture: () => chameau, ecurie, ouvrirBoutique: id => ouvrirBoutique(id), ouvrirCarnet: o => ouvrirCarnet(o), ouvrirPerso: () => ouvrirPerso(false), apercu: a => apercu(article(a)),
     infos: () => renderer.info.render
   };
 }

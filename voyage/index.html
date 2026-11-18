@@ -154,6 +154,22 @@
   <div class="perso-boutons"><button class="petit-bouton" id="perso-tourner">↻ Tourner</button> <button class="petit-bouton cache" id="perso-annuler">Annuler</button> <button class="gros-bouton" id="perso-ok">C'est parti !</button></div>
 </div>
 
+<!-- Une découverte : le grand panneau -->
+<div id="decouverte" class="cache" role="dialog" aria-labelledby="dec-nom">
+  <div class="dec-carte">
+    <div class="dec-rayons" aria-hidden="true"></div>
+    <p class="dec-kicker"><span id="dec-icone" aria-hidden="true"></span><span id="dec-type">Nouvelle découverte !</span></p>
+    <div class="dec-medaillon"><img id="dec-image" alt=""><span id="dec-emoji" aria-hidden="true"></span></div>
+    <h2 id="dec-nom"></h2>
+    <p id="dec-arabe" class="arabe cache" lang="ar" dir="rtl"></p>
+    <p id="dec-translit" class="cache"></p>
+    <p id="dec-texte"></p>
+    <p id="dec-sous" class="cache"></p>
+    <div class="dec-progres"><div class="barre"><i id="dec-barre"></i></div><span id="dec-progres-txt"></span></div>
+    <div class="dec-boutons"><button class="bouton-ecoute" id="dec-ecouter"></button><button class="gros-bouton" id="dec-ok">Continuer</button></div>
+  </div>
+</div>
+
 <!-- Animation d'achat -->
 <div id="achat" class="cache" aria-live="polite">
   <div class="achat-carte"><div class="achat-rayons"></div><div id="achat-image"></div><p class="achat-petit">C'est à toi !</p><p id="achat-nom"></p><p id="achat-rarete"></p></div>
@@ -168,6 +184,7 @@
     <div class="onglets" role="tablist">
       <button role="tab" data-onglet="missions">🗺️ Missions</button>
       <button role="tab" data-onglet="collection">🏆 Collections</button>
+      <button role="tab" data-onglet="mots">📖 Mots</button>
       <button role="tab" data-onglet="animaux">🦊 Animaux</button>
       <button role="tab" data-onglet="lieux">🏜️ Lieux</button>
       <button role="tab" data-onglet="armoire">👕 Armoire</button>

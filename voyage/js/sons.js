@@ -138,3 +138,11 @@ export function pasCheval(fort) { // cloc-cloc des sabots sur le sable
   if (!ctx || ctx.state !== 'running') return;
   souffle(1400, 3, 0.05, 0.08 * fort); souffle(700, 2, 0.06, 0.06 * fort, 'lowpass');
 }
+// une découverte : un carillon doux, une petite montée de notes et un léger souffle (jamais fort)
+export function sonMerveille() {
+  if (!ctx || ctx.state !== 'running') return;
+  souffle(1800, 0.7, 1.4, 0.025);
+  [587, 740, 880, 1175].forEach((f, i) => bip(f, f, 1.2, 0.045, 'sine', i * 0.11));
+  [1760, 2350].forEach((f, i) => bip(f, f * 1.003, 0.8, 0.018, 'triangle', 0.5 + i * 0.12));
+  bip(294, 296, 1.6, 0.03, 'sine', 0.05);
+}
