@@ -2,6 +2,7 @@
 // emplacement : place sur le cercle (0 = porte d'entrée du village, 1 à 9 = maisons).
 // univers : l'ambiance graphique de l'activité (voir univers/univers.css).
 // etat : 'ouvert' (lien actif) | 'bientot' (maison qui se prépare).
+// pleinePage : l'activité est un monde 3D à part entière, ouvert en pleine page (pas dans le cadre du village).
 // Les jeux déjà en ligne restent à leur adresse ; le Parcours des ablutions
 // passera à sa version 3D (jeux/ablutions/) à la phase 3.
 
@@ -31,6 +32,6 @@ export const BATIMENTS = [
     nom: 'Fabrique des étoiles', texte: 'Transforme tes réussites en étoiles.',
     etat: 'bientot' },
   { id: 'desert', univers: 'histoires', emplacement: 9, forme: 'tente', couleur: '#c8664a', icone: '🐪',
-    nom: 'Voyage dans le désert', texte: 'Pars en voyage à travers le désert.',
-    etat: 'bientot' }
+    nom: 'Voyage dans le désert', texte: 'Pars à l\'aventure, à pied et à dos de chameau : l\'oasis, le désert et les montagnes.',
+    etat: 'ouvert', lien: '../voyage/', pleinePage: true }
 ];

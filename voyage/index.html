@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Le Grand Voyage de Nour — Les Lanternes de Nour</title>
+<meta name="description" content="Un monde à explorer à pied et à dos de chameau : village, oasis, désert et montagnes. Pour les enfants de 3 à 10 ans. Gratuit, sans publicité.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#191345">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&family=Nunito:wght@400;600;700&family=Amiri:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="voyage.css?v=2">
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js" } }
+</script>
+</head>
+<body>
+<canvas id="scene" aria-label="Le monde de Nour en 3D : village, oasis, désert et montagnes"></canvas>
+
+<!-- Chargement -->
+<div id="chargement" class="ecran">
+  <div class="lanterne-anim" aria-hidden="true"><span></span></div>
+  <p class="titre-ecran">Le voyage se prépare…</p>
+  <p class="sous-titre" id="chargement-detail">On dessine le désert</p>
+</div>
+
+<!-- Erreur 3D -->
+<div id="erreur" class="ecran cache">
+  <p class="titre-ecran">Le grand voyage ne peut pas s'ouvrir sur cet appareil.</p>
+  <p class="sous-titre">Le village et ses jeux restent accessibles.</p>
+  <a class="gros-bouton" href="../monde/">🏘️ Retour au village</a>
+</div>
+
+<!-- Aide de départ -->
+<div id="aide" class="ecran cache" role="dialog" aria-labelledby="aide-titre">
+  <h1 id="aide-titre">Le Grand Voyage</h1>
+  <p class="sous-titre">Promène-toi dans le monde de Nour, monte sur le chameau Sablo et pars découvrir l'oasis, le désert et les montagnes.</p>
+  <div class="aide-commandes aide-clavier">
+    <p><kbd>Z</kbd><kbd>Q</kbd><kbd>S</kbd><kbd>D</kbd> ou les flèches : marcher</p>
+    <p><kbd>Maj</kbd> : courir</p>
+    <p>Souris (clic maintenu) : tourner la caméra</p>
+    <p><kbd>E</kbd> : lire, parler</p>
+    <p><kbd>C</kbd> : monter sur le chameau ou descendre</p>
+  </div>
+  <div class="aide-commandes aide-tactile">
+    <p>🕹️ Le rond à gauche : marcher (pousse loin pour courir)</p>
+    <p>👆 Glisse le doigt à droite : tourner la caméra</p>
+    <p>Les boutons apparaissent quand il y a quelque chose à faire</p>
+  </div>
+  <button class="gros-bouton" id="aide-partir">C'est parti !</button>
+</div>
+
+<!-- Barre du haut -->
+<div id="hud" class="cache">
+  <a class="rond" href="../monde/" aria-label="Retour au village" title="Retour au village">🏘️</a>
+  <div class="centre-hud"><div id="lieu" aria-live="polite"></div><button id="bourse" title="Mes Pièces de Nour"><span class="piece" aria-hidden="true"></span><b id="nb-pieces">0</b></button></div>
+  <div class="groupe-droite">
+    <button class="rond" id="btn-carnet" aria-label="Mon carnet de voyage" title="Carnet de voyage">📖</button>
+    <button class="rond" id="btn-son" aria-label="Sons et musique" title="Sons">🔊</button>
+    <button class="rond" id="btn-reglages" aria-label="Réglages" title="Réglages">⚙️</button>
+  </div>
+</div>
+
+<!-- Suivi de la mission en cours, boussole -->
+<button id="suivi" class="cache" aria-label="Ma mission en cours"></button>
+<div id="boussole" class="cache" aria-hidden="true"><div id="boussole-aiguille"></div></div>
+<div id="gain" class="cache" aria-live="polite"></div>
+<div id="outils">
+  <button class="rond cache" id="btn-carte" aria-label="Carte du pays" title="Carte du pays">🗺️</button>
+  <button class="rond cache" id="btn-jumelles" aria-label="Jumelles" title="Jumelles">🔭</button>
+</div>
+
+<!-- Boutique d'un marchand -->
+<div id="boutique" class="cache" role="dialog" aria-labelledby="boutique-nom">
+  <div class="carnet-page boutique-page">
+    <button class="fermer" id="boutique-fermer" aria-label="Fermer">✕</button>
+    <div class="boutique-tete"><span id="boutique-icone"></span><div><h2 id="boutique-nom"></h2><p id="boutique-accueil"></p></div></div>
+    <p class="carnet-resume">Tu as <span class="piece"></span> <b id="boutique-pieces">0</b> Pièces de Nour</p>
+    <div id="boutique-articles"></div>
+    <p class="note">On achète uniquement avec les Pièces de Nour gagnées en jouant. Jamais avec de l'argent.</p>
+  </div>
+</div>
+
+<!-- Carte du pays -->
+<div id="carte-pays" class="cache" role="dialog" aria-label="Carte du pays de Nour">
+  <div class="carnet-page carte-page">
+    <button class="fermer" id="carte-fermer" aria-label="Fermer">✕</button>
+    <h2>🗺️ Le pays de Nour</h2>
+    <canvas id="carte-canvas" width="560" height="560"></canvas>
+    <p class="note">⬆️ Toi · 🐪 Sablo · ❔ lieu à découvrir · ✨ endroit secret</p>
+  </div>
+</div>
+
+<!-- Bandeau de découverte -->
+<div id="bandeau" class="cache" aria-live="polite"><span id="bandeau-petit">Tu découvres</span><b id="bandeau-nom"></b></div>
+
+<!-- Indication contextuelle (ordinateur) -->
+<div id="indice" class="cache"></div>
+
+<!-- Commandes tactiles -->
+<div id="tactile" class="cache">
+  <div id="joystick" aria-hidden="true"><div class="joy-fleches"><i></i><i></i><i></i><i></i></div><div id="joystick-bouton"><span>✦</span></div></div>
+  <div class="boutons-action">
+    <button class="action cache" id="btn-chameau" aria-label="Monter sur le chameau"><span class="ico">🐪</span><span class="txt">Monter</span></button>
+    <button class="action cache" id="btn-action" aria-label="Interagir"><span class="ico">✋</span><span class="txt">Lire</span></button>
+    <button class="action rond-action" id="btn-courir" aria-label="Courir (maintenir)"><span class="ico">💨</span><span class="txt">Courir</span></button>
+  </div>
+</div>
+
+<!-- Déplacement des commandes tactiles -->
+<div id="barre-edition" class="cache">
+  <p>Fais glisser le joystick et les boutons où tu veux.</p>
+  <div><button class="petit-bouton" id="edition-defaut">Remettre en place</button> <button class="gros-bouton" id="edition-fini">Terminé</button></div>
+</div>
+
+<!-- Fenêtre de lecture (panneaux, Nour…) -->
+<div id="lecture" class="cache" role="dialog" aria-labelledby="lecture-titre">
+  <div class="lecture-carte">
+    <button class="fermer" id="lecture-fermer" aria-label="Fermer">✕</button>
+    <div id="lecture-mascotte" aria-hidden="true"></div>
+    <h2 id="lecture-titre"></h2>
+    <p class="arabe cache" id="lecture-arabe" lang="ar" dir="rtl"></p>
+    <p id="lecture-texte"></p>
+    <p class="sous cache" id="lecture-sous"></p>
+    <p class="source cache" id="lecture-source"></p>
+    <div class="lecture-boutons" id="lecture-boutons">
+      <button class="petit-bouton" id="lecture-ecouter">🔊 Écouter</button>
+      <button class="gros-bouton" id="lecture-ok">D'accord !</button>
+    </div>
+  </div>
+</div>
+
+<!-- Carnet de voyage -->
+<div id="carnet" class="cache" role="dialog" aria-labelledby="carnet-titre">
+  <div class="carnet-page">
+    <button class="fermer" id="carnet-fermer" aria-label="Fermer">✕</button>
+    <h2 id="carnet-titre">📖 Mon carnet d'aventure</h2>
+    <p class="carnet-resume" id="carnet-resume"></p>
+    <div class="onglets" role="tablist">
+      <button role="tab" data-onglet="missions">🗺️ Missions</button>
+      <button role="tab" data-onglet="collection">🏮 Collection</button>
+      <button role="tab" data-onglet="animaux">🦊 Animaux</button>
+      <button role="tab" data-onglet="lieux">🏜️ Lieux</button>
+      <button role="tab" data-onglet="sablo">🐪 Sablo</button>
+    </div>
+    <div id="carnet-contenu"></div>
+  </div>
+</div>
+
+<!-- Sons -->
+<div id="panneau-son" class="panneau cache" role="dialog" aria-label="Réglages des sons">
+  <button class="fermer" id="son-fermer" aria-label="Fermer">✕</button>
+  <h2>Sons</h2>
+  <label class="ligne"><input type="checkbox" id="musique-active"> Musique</label>
+  <label class="ligne-vol" for="vol-musique">Volume de la musique <input type="range" id="vol-musique" min="0" max="100" step="1"></label>
+  <label class="ligne-vol" for="vol-effets">Bruits de la nature <input type="range" id="vol-effets" min="0" max="100" step="1"></label>
+  <label class="ligne-vol" for="vol-voix">Voix <input type="range" id="vol-voix" min="0" max="100" step="1"></label>
+</div>
+
+<!-- Réglages -->
+<div id="panneau-reglages" class="panneau cache" role="dialog" aria-label="Réglages">
+  <button class="fermer" id="reglages-fermer" aria-label="Fermer">✕</button>
+  <h2>Réglages</h2>
+  <label class="ligne"><input type="checkbox" id="cycle-jour"> Le soleil se couche et se lève</label>
+  <p class="note">Décoche pour garder toujours la lumière du jour.</p>
+  <p class="ligne-titre">Graphismes</p>
+  <label class="ligne"><input type="radio" name="qualite" value="faible"> Faible (téléphones modestes)</label>
+  <label class="ligne"><input type="radio" name="qualite" value="equilibre"> Équilibré (téléphones récents, tablettes)</label>
+  <label class="ligne"><input type="radio" name="qualite" value="eleve"> Élevé (ordinateurs)</label>
+  <p class="note">Le changement de graphismes recharge la page.</p>
+  <div class="lecture-boutons"><button class="petit-bouton" id="ouvrir-commandes">🎮 Commandes</button>
+  <button class="petit-bouton" id="revoir-aide">❔ Aide</button></div>
+</div>
+
+<!-- Personnalisation des commandes -->
+<div id="panneau-commandes" class="panneau grand cache" role="dialog" aria-labelledby="cmd-titre">
+  <button class="fermer" id="commandes-fermer" aria-label="Fermer">✕</button>
+  <h2 id="cmd-titre">🎮 Commandes</h2>
+  <h3>Écran tactile</h3>
+  <label class="ligne-vol" for="cmd-taille">Taille des boutons <input type="range" id="cmd-taille" min="70" max="140" step="5"></label>
+  <label class="ligne-vol" for="cmd-opacite">Visibilité des boutons <input type="range" id="cmd-opacite" min="30" max="100" step="5"></label>
+  <label class="ligne-vol" for="cmd-sensibilite">Vitesse de la caméra <input type="range" id="cmd-sensibilite" min="40" max="200" step="10"></label>
+  <p class="ligne-titre">Disposition</p>
+  <label class="ligne"><input type="radio" name="disposition" value="classique"> Joystick à gauche, boutons à droite</label>
+  <label class="ligne"><input type="radio" name="disposition" value="gaucher"> Pour les gauchers (inversé)</label>
+  <label class="ligne"><input type="radio" name="disposition" value="flottant"> Joystick qui apparaît sous le pouce</label>
+  <button class="petit-bouton" id="cmd-deplacer">✋ Déplacer les boutons</button>
+  <label class="ligne"><input type="checkbox" id="cmd-tactile"> Toujours afficher les commandes tactiles</label>
+  <h3>Clavier</h3>
+  <p class="note">Touche un bouton, puis appuie sur la nouvelle touche. Les flèches marchent toujours.</p>
+  <ul id="cmd-touches"></ul>
+  <button class="petit-bouton" id="cmd-defaut">Tout remettre par défaut</button>
+</div>
+
+<noscript><p style="padding:2em;color:#fff">Active JavaScript pour partir en voyage. <a href="../monde/" style="color:#f5b942">Retour au village</a></p></noscript>
+<script type="module" src="../compte/synchro.js?v=1"></script>
+<script type="module" src="js/main.js?v=2"></script>
+</body>
+</html>
