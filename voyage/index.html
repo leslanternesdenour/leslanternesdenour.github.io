@@ -41,12 +41,14 @@
     <p><kbd>Maj</kbd> : courir</p>
     <p>Souris (clic maintenu) : tourner la caméra</p>
     <p><kbd>E</kbd> : lire, parler</p>
-    <p><kbd>C</kbd> : monter sur le chameau ou descendre</p>
+    <p><kbd>C</kbd> : monter sur ta monture ou descendre</p>
+    <p><kbd>M</kbd> : la carte du pays (touche un lieu pour t'y faire guider)</p>
   </div>
   <div class="aide-commandes aide-tactile">
     <p>🕹️ Le rond à gauche : marcher (pousse loin pour courir)</p>
     <p>👆 Glisse le doigt à droite : tourner la caméra</p>
     <p>Les boutons apparaissent quand il y a quelque chose à faire</p>
+    <p>🗺️ La carte : touche un lieu pour t'y faire guider</p>
   </div>
   <button class="gros-bouton" id="aide-partir">C'est parti !</button>
 </div>
@@ -62,12 +64,15 @@
   </div>
 </div>
 
+<!-- Guidage vers une destination -->
+<div id="guidage" class="cache" aria-live="polite"><span id="guidage-fleche" aria-hidden="true">▲</span><span id="guidage-txt"></span>
+  <button id="guidage-voir" aria-label="Montrer ou cacher les lumières du chemin" title="Lumières du chemin">👣</button><button id="guidage-stop" aria-label="Arrêter le guidage" title="Arrêter le guidage">✕</button></div>
 <!-- Suivi de la mission en cours, boussole -->
 <button id="suivi" class="cache" aria-label="Ma mission en cours"></button>
 <div id="boussole" class="cache" aria-hidden="true"><div id="boussole-aiguille"></div></div>
 <div id="gain" class="cache" aria-live="polite"></div>
 <div id="outils">
-  <button class="rond cache" id="btn-carte" aria-label="Carte sur parchemin" title="Carte sur parchemin">📜</button>
+  <button class="rond" id="btn-carte" aria-label="Carte du pays (touche M)" title="Carte du pays (M)">🗺️</button>
   <button class="rond cache" id="btn-jumelles" aria-label="Le faucon du voyageur" title="Le faucon du voyageur">🦅</button>
 </div>
 
@@ -84,12 +89,15 @@
 
 <!-- Carte du pays -->
 <div id="carte-pays" class="cache" role="dialog" aria-label="Carte du pays de Nour">
-  <div class="carnet-page carte-page">
-    <button class="fermer" id="carte-fermer" aria-label="Fermer">✕</button>
-    <h2>🗺️ Le pays de Nour</h2>
-    <canvas id="carte-canvas" width="560" height="560"></canvas>
-    <p class="note">⬆️ Toi · 🐪 Sablo · ❔ lieu à découvrir · ✨ endroit secret</p>
+  <canvas id="carte-canvas" aria-label="Carte : fais glisser pour te déplacer, pince ou utilise + et − pour agrandir, touche un lieu pour le choisir"></canvas>
+  <div class="carte-haut"><h2>🗺️ Carte du pays de Nour</h2><button class="fermer" id="carte-fermer" aria-label="Fermer la carte">✕</button></div>
+  <div class="carte-outils">
+    <button id="carte-plus" aria-label="Agrandir">+</button><button id="carte-moins" aria-label="Réduire">−</button>
+    <button id="carte-moi" aria-label="Me retrouver sur la carte">⌖</button><button id="carte-legende-btn" aria-label="Légende">?</button>
   </div>
+  <div id="carte-legende" class="cache"></div>
+  <div id="carte-fiche" class="cache"></div>
+  <p class="carte-aide">Touche un lieu pour t'y faire guider.</p>
 </div>
 
 <!-- Bandeau de découverte -->

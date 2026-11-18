@@ -297,12 +297,13 @@ export function creerAventure({ scene, terrain, colliders, etat, enregistrer, ui
   }
 
   // Où aller ensuite ? (pour la boussole)
-  function prochaineCible(J) {
-    const cand = [];
-    const ml = mission('lanternes'); if (ml && ml.etat !== 'finie') objets3d.filter(o => o.type === 'lanterne' && !o.parti).forEach(o => cand.push(o));
-    const mo = mission('objets'); if (mo && mo.etat !== 'finie') { if (A.sac.some(k => OBJETS.some(o => o.id === k)) && !placeDansSac()) cand.push({ x: -5.5, z: 5 }); else objets3d.filter(o => o.type === 'objet' && !o.parti).forEach(o => cand.push(o)); }
-    const mt = mission('tresor'); if (mt && mt.etat !== 'finie') { const c = objets3d.find(o => o.type === 'cairn' && o.i === A.indices); cand.push(c || coffre); }
-    const mv = mission('voyageur'); if (mv && mv.etat !== 'finie') { if (A.sac.some(k => k.startsWith('dattes') || k.startsWith('eau'))) cand.push(pv); else { objets3d.filter(o => o.type === 'dattes' && !o.parti).forEach(o => cand.push(o)); cand.push(EAU); } }
+  function prochaineCible(J, seule = null) {
+    const cand = [], pour = id => !seule || seule === id;
+    const ml = mission('lanternes'); if (pour('lanternes') && ml && ml.etat !== 'finie') objets3d.filter(o => o.type === 'lanterne' && !o.parti).forEach(o => cand.push(o));
+    const mo = mission('objets'); if (pour('objets') && mo && mo.etat !== 'finie') { if (A.sac.some(k => OBJETS.some(o => o.id === k)) && !placeDansSac()) cand.push({ x: -5.5, z: 5 }); else objets3d.filter(o => o.type === 'objet' && !o.parti).forEach(o => cand.push(o)); }
+    const mt = mission('tresor'); if (pour('tresor') && mt && mt.etat !== 'finie') { const c = objets3d.find(o => o.type === 'cairn' && o.i === A.indices); cand.push(c || coffre); }
+    const mv = mission('voyageur'); if (pour('voyageur') && mv && mv.etat !== 'finie') { if (A.sac.some(k => k.startsWith('dattes') || k.startsWith('eau'))) cand.push(pv); else { objets3d.filter(o => o.type === 'dattes' && !o.parti).forEach(o => cand.push(o)); cand.push(EAU); } }
+    const ma = mission('animaux'); if (seule === 'animaux' && ma && ma.etat !== 'finie') animaux.liste.filter(o => !A.animaux.includes(o.id)).forEach(o => cand.push(o));
     let best = null, d = Infinity;
     for (const c of cand) { const dd = Math.hypot(c.x - J.x, c.z - J.z); if (dd < d) { d = dd; best = c; } }
     return best;
