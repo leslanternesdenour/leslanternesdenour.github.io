@@ -52,39 +52,41 @@
     b.classList.toggle('invite', etat.son === 'invite' || etat.son === 'coupe');
   }
   function arreterVoix(fondu) {
-    [etat.ar, etat.fr].forEach(function (a) {
-      if (!a) return;
-      try {
-        if (fondu && !a.paused) { var v = a.volume, pas = setInterval(function () { v -= 0.1; if (v <= 0.02) { clearInterval(pas); try { a.pause(); a.volume = 0.85; } catch (e) {} } else a.volume = v; }, 40); }
-        else a.pause();
-      } catch (e) {}
-    });
+    var a = etat.voix; if (!a) return;
+    try {
+      if (fondu && !a.paused) { var v = a.volume, pas = setInterval(function () { v -= 0.1; if (v <= 0.02) { clearInterval(pas); try { a.pause(); a.volume = 0.85; } catch (e) {} } else a.volume = v; }, 40); }
+      else a.pause();
+    } catch (e) {}
   }
+  // UN SEUL élément audio pour l'arabe puis le français : sur iPhone/iPad, seul l'élément « débloqué »
+  // par le toucher de l'utilisateur peut continuer à parler ensuite (un 2e élément resterait muet).
   function preparerVoix() {
-    if (etat.ar) return;
-    etat.ar = new Audio(VOIX_AR); etat.fr = new Audio(VOIX_FR);
-    [etat.ar, etat.fr].forEach(function (a) { a.preload = 'auto'; a.volume = 0.85; });
-    etat.ar.addEventListener('ended', function () {
+    if (etat.voix) return;
+    var a = etat.voix = new Audio(VOIX_AR); etat.partie = 'ar';
+    a.preload = 'auto'; a.volume = 0.85;
+    a.addEventListener('ended', function () {
       if (etat.ferme || etat.son !== 'joue') return;
-      legende(null);
+      if (etat.partie !== 'ar') { finVoix(); return; }
+      etat.partie = 'fr'; legende(null);
       plus(function () {
         if (etat.ferme || etat.son !== 'joue') return;
         legende('fr');
-        try { var p = etat.fr.play(); if (p && p.catch) p.catch(finVoix); } catch (e) { finVoix(); }
+        try { a.src = VOIX_FR; var p = a.play(); if (p && p.catch) p.catch(finVoix); } catch (e) { finVoix(); }
       }, 250);
     });
-    etat.fr.addEventListener('ended', finVoix);
-    etat.ar.addEventListener('error', function () { etat.son = 'invite'; majBoutonSon(); legende(null); });
-    etat.fr.addEventListener('error', finVoix);
+    a.addEventListener('error', function () {
+      if (etat.partie === 'ar') { etat.son = 'invite'; majBoutonSon(); legende(null); } else finVoix();
+    });
   }
   function finVoix() { if (etat.son === 'joue') { etat.son = 'fini'; majBoutonSon(); } plus(function () { legende(null); }, 1800); }
   function lancerVoix(depuisGeste) {
     if (etat.ferme || etat.ouvert) return;
     preparerVoix();
-    try { etat.ar.pause(); etat.fr.pause(); etat.ar.currentTime = 0; etat.fr.currentTime = 0; } catch (e) {}
+    var a = etat.voix;
+    try { a.pause(); if (etat.partie !== 'ar') { a.src = VOIX_AR; etat.partie = 'ar'; } a.currentTime = 0; } catch (e) {}
     if (depuisGeste) memoSon(true);
     var p;
-    try { p = etat.ar.play(); } catch (e) { p = null; }
+    try { p = a.play(); } catch (e) { p = null; }
     var ok = function () { etat.son = 'joue'; majBoutonSon(); legende('ar'); };
     var bloque = function () { etat.son = 'invite'; majBoutonSon(); legende(null); };
     if (p && p.then) p.then(ok, bloque); else bloque();
@@ -115,7 +117,7 @@
     try { sessionStorage.setItem(CLE_SESSION, '1'); } catch (e) {}
     racine.classList.add('sortie'); if (raison === 'passer') racine.classList.add('sortie-vite');
     window.removeEventListener('keydown', clavier, true);
-    racine.removeEventListener('pointerdown', geste, true);
+    racine.removeEventListener('click', geste, true);
     plus(function () {
       H.classList.remove('intro-on');
       Array.prototype.forEach.call(document.body.children, function (e) { if (e !== racine) e.removeAttribute('inert'); });
@@ -136,7 +138,7 @@
       else if (a === -1) { e.preventDefault(); f[0].focus(); }
     }
   }
-  // premier toucher n'importe où (hors boutons) : la voix démarre tout de suite, si le navigateur l'avait bloquée
+  // premier toucher n'importe où (hors boutons ; « click » et non « pointerdown » : seul le relâcher du doigt débloque le son sur téléphone) : la voix démarre tout de suite, si le navigateur l'avait bloquée
   function geste(e) {
     if (etat.son !== 'invite' || etat.ouvert || etat.ferme) return;
     if (e.target.closest && e.target.closest('button, label, input, a')) return;
@@ -157,7 +159,7 @@
     // le bouton d'entrée apparaît vite, sans attendre la fin de la voix
     plus(montrerEntrer, mode === 'courte' ? 1800 : (calme ? 600 : 2800));
     window.addEventListener('keydown', clavier, true);
-    racine.addEventListener('pointerdown', geste, true);
+    racine.addEventListener('click', geste, true);
     try { racine.focus({ preventScroll: true }); } catch (e) {}
     window.__introPret = true;
   }
