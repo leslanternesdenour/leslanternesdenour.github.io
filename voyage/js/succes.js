@@ -23,6 +23,10 @@ export const BADGES = [
   { id: 'cour', icone: '🏡', nom: 'Une jolie cour', desc: 'Exposer 5 objets dans ta cour.', ok: c => c.objetsCour >= 5 },
   { id: 'elegant', icone: '👕', nom: 'Bien habillé', desc: 'Avoir 6 habits ou accessoires.', ok: c => c.habits >= 6 },
   { id: 'legendaire', icone: '🌟', nom: 'Trésor légendaire', desc: 'Posséder un objet ou une monture légendaire.', ok: c => c.legendaires > 0 },
+  { id: 'mots', icone: '🔤', nom: 'Petit linguiste', desc: 'Apprendre les 8 mots arabes du voyage.', ok: c => (c.AV.quetes && c.AV.quetes.finies || []).includes('mots') },
+  { id: 'botaniste', icone: '🌿', nom: 'Ami des plantes', desc: 'Observer les 4 plantes du désert.', ok: c => (c.AV.quetes && c.AV.quetes.finies || []).includes('plantes') },
+  { id: 'enigmes', icone: '🧩', nom: 'Petit malin', desc: 'Résoudre les 5 énigmes du souk.', ok: c => (c.AV.quetes && c.AV.quetes.finies || []).includes('enigmes') },
+  { id: 'traversee', icone: '🐪', nom: 'Grand voyageur', desc: 'Réussir la grande traversée à dos de monture.', ok: c => (c.AV.quetes && c.AV.quetes.finies || []).includes('traversee') },
   ...COLLECTIONS.map(k => ({ id: 'collection-' + k.id, icone: k.icone, nom: k.nom, desc: 'Compléter cette collection.', ok: c => c.collectionFinie(k) }))
 ];
 

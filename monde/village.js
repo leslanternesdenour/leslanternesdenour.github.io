@@ -85,6 +85,15 @@ async function init() {
 // Tout toucher réveille le son si le navigateur l'avait mis en veille
 addEventListener('pointerdown', () => { if (dansLeVillage) reveiller(); }, { capture: true, passive: true });
 
+// ---------- accueil : le personnage (fille ou garçon), gardé dans le profil et jamais changé tout seul ----------
+function majChoixPerso() { const g = (S.personnage || {}).genre; document.querySelectorAll('#accueil [data-genre]').forEach(b => b.setAttribute('aria-pressed', b.dataset.genre === g)); }
+document.querySelectorAll('#accueil [data-genre]').forEach(btn => btn.addEventListener('click', () => {
+  const p = S.personnage || { tenue: 'ecru', peau: 1 };
+  sauvegarde.regler('personnage', { ...p, genre: btn.dataset.genre, choisi: Date.now() });
+  majChoixPerso();
+}));
+majChoixPerso();
+
 // ---------- accueil : qui joue ? (ce toucher débloque aussi le son) ----------
 document.querySelectorAll('#accueil [data-age]').forEach(btn => btn.addEventListener('click', () => {
   sauvegarde.regler('age', btn.dataset.age);
