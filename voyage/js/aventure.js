@@ -1,10 +1,10 @@
 // L'aventure : missions, objets cachés, Pièces de Nour, animaux à observer.
 // Tout est gagné en jouant : aucun achat réel, aucun hasard, aucune boîte mystère.
 import * as THREE from 'three';
-import { piece, fusion, materiau } from './formes.js?v=2';
-import { Enfant } from './personnages.js?v=2';
-import { creerAnimaux, FICHES } from './animaux.js?v=2';
-import { LIEUX } from './terrain.js?v=2';
+import { piece, fusion, materiau } from './formes.js?v=3';
+import { Enfant } from './personnages.js?v=3';
+import { creerAnimaux, FICHES } from './animaux.js?v=3';
+import { LIEUX } from './terrain.js?v=3';
 
 const mat = materiau({ finesse: 1.6 });
 const B = () => new THREE.BoxGeometry(1, 1, 1);
@@ -12,15 +12,15 @@ const SPH = (r, w = 10, h = 8) => new THREE.SphereGeometry(r, w, h);
 const CYL = (a, b, h, s = 10) => new THREE.CylinderGeometry(a, b, h, s);
 
 export const MISSIONS = {
-  lanternes: { titre: 'Les lanternes cachées', icone: '🏮', total: 12, recompense: 20,
+  lanternes: { titre: 'Les lanternes cachées', icone: '🏮', total: 12, recompense: 200,
     resume: 'Douze petites lanternes dorées se sont cachées dans tout le pays de Nour. Retrouve-les toutes !' },
-  objets: { titre: 'Les objets perdus de Nour', icone: '🧺', total: 3, recompense: 15,
+  objets: { titre: 'Les objets perdus de Nour', icone: '🧺', total: 3, recompense: 150,
     resume: 'Nour a perdu son seau, sa gourde et son arrosoir près de l\'oasis. Retrouve-les et rapporte-les-lui au village.' },
-  tresor: { titre: 'Le trésor de l\'oasis', icone: '🗝️', total: 4, recompense: 25,
+  tresor: { titre: 'Le trésor de l\'oasis', icone: '🗝️', total: 4, recompense: 250,
     resume: 'Suis les petits tas de pierres au ruban turquoise : chacun donne un indice. Le dernier mène au coffre.' },
-  voyageur: { titre: 'Aider le voyageur', icone: '🤝', total: 4, recompense: 20,
+  voyageur: { titre: 'Aider le voyageur', icone: '🤝', total: 4, recompense: 200,
     resume: 'Salim, le voyageur du camp, a besoin de 2 paniers de dattes et de 2 outres d\'eau. Va les chercher à l\'oasis et apporte-les-lui.' },
-  animaux: { titre: 'Les animaux du désert', icone: '🦊', total: 7, recompense: 15,
+  animaux: { titre: 'Les animaux du désert', icone: '🦊', total: 7, recompense: 150,
     resume: 'Observe sept animaux différents et découvre comment ils vivent. Approche doucement, sans courir !' }
 };
 
@@ -38,7 +38,7 @@ const COFFRE = { x: 224, z: -14 };
 const VOYAGEUR = { x: -163, z: 50 };
 const GROTTE = { x: -13, z: -258 };
 
-export function creerAventure({ scene, terrain, colliders, etat, enregistrer, ui, sons, ombres }) {
+export function creerAventure({ scene, terrain, colliders, etat, enregistrer, ui, sons, ombres, donner, evenement = () => {} }) {
   const H = (x, z) => terrain.hauteur(x, z);
   const A = etat.aventure = Object.assign({ pieces: 0, missions: {}, ramasses: [], sac: [], capacite: 3, animaux: [], indices: 0, livres: 0, achats: [], equipement: {} }, etat.aventure || {});
   const libre = (x, z, r = 0.6) => { // sort un objet d'un obstacle s'il tombe dedans
@@ -60,10 +60,11 @@ export function creerAventure({ scene, terrain, colliders, etat, enregistrer, ui
   }
   function finir(id) {
     const m = A.missions[id]; m.etat = 'finie'; m.fin = Date.now();
-    gagner(MISSIONS[id].recompense, 'Mission réussie');
+    gagner(MISSIONS[id].recompense, 'Mission réussie : ' + MISSIONS[id].titre, 'mission:' + id);
     setTimeout(() => { ui.bandeau('Mission réussie !', MISSIONS[id].titre); sons.sonPorte(); }, 700);
   }
-  function gagner(n, raison) { A.pieces += n; enregistrer(); ui.pieces(A.pieces, n, raison); sons.sonPiece(); }
+  // les pièces tombent au sol près de l'enfant (voir economie.js) : une seule fois par identifiant
+  function gagner(n, raison, id) { donner(id, n, raison); }
 
   // ---------- les modèles ----------
   const groupe = new THREE.Group(); scene.add(groupe);
@@ -135,10 +136,10 @@ export function creerAventure({ scene, terrain, colliders, etat, enregistrer, ui
     return { x: devant.x, z: devant.z };
   })();
   function explorerGrotte() {
-    if (!A.equipement.lanterne) { ui.dialogue({ titre: 'Une grotte sombre', texte: 'Il fait tout noir là-dedans… Avec une lanterne de voyage, tu pourrais l\'explorer. Karim en vend au marché du village.' }); return; }
+    if (!A.equipement.lanterne) { ui.dialogue({ titre: 'Une grotte sombre', texte: 'Il fait tout noir là-dedans… Avec une lampe à huile de voyage, tu pourrais l\'explorer. Karim en vend au souk du village.' }); return; }
     if (A.ramasses.includes('jarre')) { ui.dialogue({ titre: 'La grotte des montagnes', texte: 'Ta lanterne éclaire les parois de pierre. Il fait frais et calme ici. Tu as déjà trouvé ce que la grotte cachait !' }); return; }
     A.ramasses.push('jarre'); enregistrer(); sons.sonPorte();
-    gagner(10, 'La grotte des montagnes');
+    gagner(100, 'La grotte des montagnes', 'grotte');
     ui.dialogue({ titre: '🪔 La grotte des montagnes', texte: 'Grâce à ta lanterne, tu vois au fond de la grotte une vieille jarre en terre cuite, posée là par des voyageurs d\'autrefois pour garder de l\'eau au frais. Elle rejoint ta collection !' });
   }
 
@@ -183,8 +184,8 @@ export function creerAventure({ scene, terrain, colliders, etat, enregistrer, ui
       if (o.type === 'dattes' && !mission('voyageur')) ui.indice('🎒 Un panier de dattes… quelqu\'un en a peut-être besoin au camp des caravanes !', 4000);
     } else if (o.type === 'lanterne') {
       commencer('lanternes', !!mission('lanternes'));
-      A.ramasses.push(o.cle); gagner(2, 'Lanterne trouvée');
-      avancer('lanternes');
+      A.ramasses.push(o.cle); gagner(20, 'Lanterne cachée trouvée', 'lanterne:' + o.cle);
+      avancer('lanternes'); evenement('lanterne');
       const m = mission('lanternes'); if (m && m.etat !== 'finie') ui.indice(`🏮 Lanterne trouvée : ${m.n} sur 12`, 2500);
     }
     if (o.type !== 'lanterne') A.ramasses.push(o.cle);
@@ -241,7 +242,8 @@ export function creerAventure({ scene, terrain, colliders, etat, enregistrer, ui
     const f = FICHES[id];
     commencer('animaux', !!mission('animaux'));
     const nouveau = !A.animaux.includes(id);
-    if (nouveau) { A.animaux.push(id); gagner(3, 'Nouvel animal'); avancer('animaux'); }
+    if (nouveau) { A.animaux.push(id); gagner(30, 'Nouvel animal : ' + f.nom, 'animal:' + id); avancer('animaux'); }
+    evenement('animal', id);
     ui.dialogue({ titre: f.icone + ' ' + f.nom, texte: f.vie, sous: '🏠 Où il vit : ' + f.habitat });
   }
   // Nour : donne les missions des lanternes et des objets, reçoit les objets

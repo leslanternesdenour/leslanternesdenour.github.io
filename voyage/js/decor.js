@@ -1,8 +1,8 @@
 // Les décors du monde, construits zone par zone quand l'enfant s'en approche (chargement progressif).
 // Tout est dessiné avec des formes simples fusionnées : léger, net, et facile à faire évoluer.
 import * as THREE from 'three';
-import { piece, fusion, placer, hasard, materiau, temps } from './formes.js?v=2';
-import { LIEUX, CHEMINS, distanceChemins, lisse, fbm, LIMITE } from './terrain.js?v=2';
+import { piece, fusion, placer, hasard, materiau, temps, M } from './formes.js?v=3';
+import { LIEUX, CHEMINS, distanceChemins, lisse, fbm, LIMITE } from './terrain.js?v=3';
 
 const deg = d => d * Math.PI / 180;
 const B = () => new THREE.BoxGeometry(1, 1, 1);
@@ -122,64 +122,68 @@ function geoPorteVillage(couleur) {
   for (const sx of [-1, 1]) {
     p.push(piece(B(), couleur, { p: [sx * 3.2, 2.6, 0], s: [1.3, 5.2, 1.3] }));
     p.push(piece(B(), '#f6ead2', { p: [sx * 3.2, 5.35, 0], s: [1.6, 0.3, 1.6] }));
-    p.push(piece(new THREE.ConeGeometry(0.75, 0.9, 4), '#2bb3c0', { p: [sx * 3.2, 5.95, 0], r: [0, Math.PI / 4, 0] }));
+    for (const [ox, oz] of [[-0.5, -0.5], [0.5, -0.5], [-0.5, 0.5], [0.5, 0.5]]) p.push(piece(B(), '#e0c08e', { p: [sx * 3.2 + ox, 5.75, oz], s: [0.42, 0.5, 0.42], m: M.terre }));
   }
   p.push(piece(new THREE.TorusGeometry(2.55, 0.55, 8, 20, Math.PI), couleur, { p: [0, 4.4, 0] }));
   p.push(piece(new THREE.TorusGeometry(2.0, 0.08, 6, 20, Math.PI), '#f5b942', { p: [0, 4.4, 0.56] }));
   p.push(piece(new THREE.TorusGeometry(2.0, 0.08, 6, 20, Math.PI), '#f5b942', { p: [0, 4.4, -0.56] }));
-  p.push(piece(B(), '#2bb3c0', { p: [0, 7.05, 0], s: [1.2, 0.5, 0.4] }));
+
   for (let i = 0; i < 7; i++) { const a = Math.PI * (i + 0.5) / 7; p.push(piece(B(), i % 2 ? '#c94f3c' : '#f5b942', { p: [Math.cos(a) * 2.5, 4.4 + Math.sin(a) * 2.5, 0.6], r: [0, 0, a], s: [0.25, 0.25, 0.05] })); }
   return fusion(p);
 }
 
 function geoMosquee() {
-  const p = [];
-  p.push(piece(B(), '#fbf2df', { p: [0, 3, 0], s: [12, 6, 10] }));
-  p.push(piece(B(), '#f0dfbd', { p: [0, 6.2, 0], s: [12.4, 0.4, 10.4] }));
-  p.push(piece(CYL(3.6, 3.6, 1.4, 20), '#fbf2df', { p: [0, 7.1, 0] }));
-  p.push(piece(SPH(3.6, 20, 12, Math.PI * 2, Math.PI / 2), '#2bb3c0', { p: [0, 7.8, 0] }));
-  p.push(piece(CYL(0.08, 0.08, 1.2, 6), '#f5b942', { p: [0, 12, 0] }));
-  p.push(piece(SPH(0.28, 10, 8), '#f5b942', { p: [0, 11.6, 0] }));
-  p.push(piece(new THREE.TorusGeometry(0.45, 0.1, 6, 16, Math.PI * 1.3), '#f5b942', { p: [0, 12.8, 0], r: [0, 0, deg(-25)] }));
-  // grande porte en arc
-  p.push(piece(B(), '#1d8f9c', { p: [0, 1.6, 5.03], s: [2.4, 3.2, 0.1] }));
-  p.push(piece(CYL(1.2, 1.2, 0.1, 16), '#1d8f9c', { p: [0, 3.2, 5.03], r: [Math.PI / 2, 0, 0] }));
-  p.push(piece(B(), '#f5b942', { p: [0, 4.6, 5.06], s: [6, 0.25, 0.1] }));
-  for (const sx of [-1, 1]) for (const k of [0.5, 0.82]) {
-    p.push(piece(B(), '#2d5b8a', { p: [sx * 6 * k, 3, 5.03], s: [1, 1.8, 0.08] }));
-    p.push(piece(CYL(0.5, 0.5, 0.08, 12), '#2d5b8a', { p: [sx * 6 * k, 3.9, 5.03], r: [Math.PI / 2, 0, 0] }));
+  // Une mosquée simple, inspirée de ce que l'on sait des premières mosquées d'Arabie :
+  // une cour entourée de murs de briques crues, un abri au toit plat de palmes posé sur des troncs de palmier.
+  // Pas de dôme ni de minaret (ils sont venus plus tard). C'est une reconstitution imaginée, pas un lieu réel.
+  const p = [], mur = '#d9bf94', haut = 2.6, W = 13, D = 11;
+  const pan = (x, z, sx, sz) => p.push(piece(B(), mur, { p: [x, haut / 2, z], s: [sx, haut, sz], m: M.terre }), piece(B(), '#cdb184', { p: [x, haut + 0.06, z], s: [sx + 0.1, 0.12, sz + 0.1], m: M.terre }));
+  pan(0, -D / 2, W, 0.6);                                   // mur du fond
+  pan(-W / 2, 0, 0.6, D); pan(W / 2, 0, 0.6, D);          // côtés
+  pan(-W / 2 + 2.7, D / 2, 5.4, 0.6); pan(W / 2 - 2.7, D / 2, 5.4, 0.6);   // façade, avec une large entrée
+  for (const sx of [-1, 1]) p.push(piece(B(), '#6b4428', { p: [sx * 1.15, 1.4, D / 2], s: [0.2, 2.8, 0.7], m: M.bois }));
+  p.push(piece(B(), '#6b4428', { p: [0, 2.85, D / 2], s: [2.6, 0.22, 0.7], m: M.bois }));
+  // l'abri : troncs de palmier et toit de palmes
+  const zA = -D / 2 + 0.3, prof = 4.2;
+  for (let i = 0; i < 5; i++) for (let j = 0; j < 2; j++) {
+    const x = -W / 2 + 1.6 + i * (W - 3.2) / 4, z = zA + 1.5 + j * 2.4;
+    p.push(piece(CYL(0.2, 0.24, 3.1, 8), '#7a5a3a', { p: [x, 1.55, z], m: M.bois }));
+    for (let k = 0; k < 5; k++) p.push(piece(CYL(0.25, 0.25, 0.06, 8), '#5e4430', { p: [x, 0.4 + k * 0.6, z] }));
   }
-  // minaret
-  const mx = 7.6, mz = -3.6;
-  p.push(piece(CYL(1.0, 1.15, 15, 12), '#fbf2df', { p: [mx, 7.5, mz] }));
-  p.push(piece(CYL(1.5, 1.2, 0.5, 12), '#f0dfbd', { p: [mx, 11.5, mz] }));
-  p.push(piece(CYL(0.85, 0.85, 2.2, 12), '#fbf2df', { p: [mx, 16, mz] }));
-  p.push(piece(new THREE.ConeGeometry(1, 1.8, 12), '#2bb3c0', { p: [mx, 18, mz] }));
-  p.push(piece(SPH(0.2, 8, 6), '#f5b942', { p: [mx, 19.1, mz] }));
-  for (let i = 0; i < 6; i++) p.push(piece(B(), '#2d5b8a', { p: [mx + Math.cos(i) * 0.86, 16.2, mz + Math.sin(i) * 0.86], r: [0, -i, 0], s: [0.1, 0.9, 0.35] }));
+  p.push(piece(B(), '#a88a5e', { p: [0, 3.2, zA + prof / 2], s: [W - 0.4, 0.22, prof + 0.8], m: M.bois }));
+  for (let i = 0; i < 16; i++) p.push(piece(B(), i % 2 ? '#8f7650' : '#b39468', { p: [-W / 2 + 0.6 + i * (W - 1.2) / 15, 3.34, zA + prof / 2], s: [0.35, 0.06, prof + 0.7] }));
+  // la cour : sable bien balayé, des nattes de palmier sous l'abri
+  p.push(piece(B(), '#e6d3ac', { p: [0, 0.03, 0], s: [W - 0.6, 0.06, D - 0.6] }));
+  for (let i = 0; i < 4; i++) p.push(piece(B(), '#c9a96e', { p: [-4.2 + i * 2.8, 0.08, zA + 2.6], s: [2.5, 0.03, 3.6], m: M.bois }));
   return fusion(p);
 }
 
-function geoFontaine() {
+function geoPuits() {
+  // un puits de pierre avec son portique de bois, sa poulie, sa corde et son seau de cuir, et un abreuvoir
   const p = [];
-  p.push(piece(CYL(3.4, 3.6, 0.9, 8), '#e8dcc4', { p: [0, 0.45, 0] }));
-  p.push(piece(CYL(3.0, 3.0, 0.2, 8), '#2bb3c0', { p: [0, 0.7, 0] }));
-  p.push(piece(CYL(0.5, 0.7, 1.8, 8), '#e8dcc4', { p: [0, 1.5, 0] }));
-  p.push(piece(CYL(1.3, 0.8, 0.4, 8), '#e8dcc4', { p: [0, 2.5, 0] }));
-  p.push(piece(SPH(0.45, 10, 8), '#f5b942', { p: [0, 3.0, 0] }));
-  for (let i = 0; i < 8; i++) p.push(piece(B(), '#2bb3c0', { p: [Math.cos(i * Math.PI / 4 + Math.PI / 8) * 3.45, 0.55, Math.sin(i * Math.PI / 4 + Math.PI / 8) * 3.45], r: [0, -i * Math.PI / 4 - Math.PI / 8, 0], s: [0.1, 0.4, 1.6] }));
+  p.push(piece(CYL(1.45, 1.6, 0.95, 18), '#c9b48e', { p: [0, 0.47, 0], m: M.pierre }));
+  p.push(piece(new THREE.TorusGeometry(1.45, 0.16, 6, 20), '#b9a27a', { p: [0, 0.96, 0], r: [Math.PI / 2, 0, 0], m: M.pierre }));
+  p.push(piece(CYL(1.2, 1.2, 0.05, 18), '#1d3a44', { p: [0, 0.7, 0] }));
+  for (const sx of [-1, 1]) p.push(piece(CYL(0.11, 0.13, 2.6, 8), '#6b4a30', { p: [sx * 1.35, 1.3, 0], m: M.bois }));
+  p.push(piece(CYL(0.09, 0.09, 3.0, 8), '#6b4a30', { p: [0, 2.55, 0], r: [0, 0, Math.PI / 2], m: M.bois }));
+  p.push(piece(CYL(0.22, 0.22, 0.12, 12), '#8a6440', { p: [0, 2.42, 0], r: [0, 0, Math.PI / 2], m: M.bois }));
+  p.push(piece(CYL(0.015, 0.015, 1.3, 4), '#d9c79e', { p: [0.06, 1.75, 0] }));
+  p.push(piece(CYL(0.16, 0.12, 0.26, 10), '#7a5232', { p: [0.06, 1.05, 0], m: M.cuir }));
+  // l'abreuvoir de pierre, pour les bêtes
+  p.push(piece(B(), '#c9b48e', { p: [0, 0.3, 2.3], s: [2.4, 0.6, 0.8], m: M.pierre }), piece(B(), '#4fa9b8', { p: [0, 0.58, 2.3], s: [2.1, 0.04, 0.55] }));
   return fusion(p);
 }
 
 function geoLampadaire() {
+  // un poteau de bois de palmier avec une petite niche et une lampe à huile en terre cuite
   return fusion([
-    piece(CYL(0.07, 0.1, 2.6, 6), '#4a3a5a', { p: [0, 1.3, 0] }),
-    piece(CYL(0.16, 0.16, 0.05, 6), '#4a3a5a', { p: [0, 2.62, 0] }),
-    piece(new THREE.ConeGeometry(0.22, 0.26, 6), '#d9952a', { p: [0, 3.15, 0] }),
-    piece(SPH(0.05, 6, 4), '#d9952a', { p: [0, 3.32, 0] })
+    piece(CYL(0.09, 0.12, 2.6, 7), '#6b4a30', { p: [0, 1.3, 0], m: M.bois }),
+    piece(B(), '#8a6440', { p: [0, 2.62, 0], s: [0.42, 0.06, 0.42], m: M.bois }),
+    piece(SPH(0.13, 10, 6), '#b9652f', { p: [0, 2.7, 0], s: [1, 0.45, 1.35], m: M.terre }),
+    piece(CYL(0.03, 0.04, 0.08, 6), '#a5552a', { p: [0, 2.74, 0.16], r: [0.8, 0, 0] })
   ]);
 }
-function geoLueur() { return fusion([piece(CYL(0.14, 0.17, 0.38, 6), '#ffd36b', { p: [0, 2.83, 0] })]); }
+function geoLueur() { return fusion([piece(SPH(0.05, 6, 5), '#ffd36b', { p: [0, 2.83, 0.2], s: [0.8, 1.6, 0.8] })]); }
 
 function geoTente(R, c1, c2) {
   const p = [];
@@ -330,18 +334,16 @@ export function creerDecor(scene, terrain, Q, TX = {}) {
   // ===== Le village de Nour =====
   zone('village', LIEUX.village, g => {
     const R = hasard(7);
-    ajouter(g, geoFontaine(), matBase, 0, 0, { y: H(0, 0) - 0.05 });
-    colliders.push({ x: 0, z: 0, r: 3.7 });
-    const eau = new THREE.Mesh(new THREE.CircleGeometry(2.9, 8), matEau('#5fd3e0', 0.5));
-    eau.rotation.x = -Math.PI / 2; eau.rotation.z = Math.PI / 8; eau.position.set(0, H(0, 0) + 0.82, 0); g.add(eau);
+    ajouter(g, geoPuits(), matBase, 0, 0, { y: H(0, 0) - 0.05 });
+    colliders.push({ x: 0, z: 0, r: 1.9 }, { x: 0, z: 2.3, r: 1.0 }, { x: -0.8, z: 2.3, r: 0.7 }, { x: 0.8, z: 2.3, r: 0.7 });
 
     const murs = ['#f3dcb4', '#f7e6c8', '#efcfa0', '#f6d9c4', '#e9d2b0'];
-    const domes = ['#2bb3c0', '#f5b942', null, '#8fd8ef', null];
+    const domes = [null, null, null, null, null];   // pas de dômes : toits plats en terrasse
     const maisons = [[35, 26], [60, 28], [110, 27], [135, 25], [190, 26], [215, 29], [300, 26], [330, 28]];
     maisons.forEach(([a, r], i) => {
       const x = Math.cos(deg(a)) * r, z = Math.sin(deg(a)) * r;
       const w = 6 + R() * 2.5, d = 5.5 + R() * 2, h = 3.6 + R() * 1.6;
-      const rot = Math.atan2(-x, -z); // la porte regarde la fontaine
+      const rot = Math.atan2(-x, -z); // la porte regarde le puits
       ajouter(g, geoMaison(w, d, h, murs[i % murs.length], domes[i % domes.length], R), matBase, x, z, { rot, y: H(x, z) - 0.1 });
       colliders.push({ x, z, r: Math.max(w, d) * 0.58 });
     });
@@ -349,8 +351,7 @@ export function creerDecor(scene, terrain, Q, TX = {}) {
     { const a = deg(248), r = 33, x = Math.cos(a) * r, z = Math.sin(a) * r, rot = Math.atan2(-x, -z);
       ajouter(g, geoMosquee(), matBase, x, z, { rot, y: H(x, z) - 0.1 });
       colliders.push({ x, z, r: 7.6 });
-      const lx = 7.6, lz = -3.6; // le minaret, dans le repère de la mosquée
-      colliders.push({ x: x + lx * Math.cos(rot) + lz * Math.sin(rot), z: z - lx * Math.sin(rot) + lz * Math.cos(rot), r: 1.6 }); }
+    }
 
     // les portes du village, sur chaque chemin
     for (const c of CHEMINS) {
@@ -360,7 +361,7 @@ export function creerDecor(scene, terrain, Q, TX = {}) {
       const px = -uz, pz = ux;
       for (const sgn of [-1, 1]) colliders.push({ x: x + px * 3.2 * sgn, z: z + pz * 3.2 * sgn, r: 0.95 });
     }
-    // lampadaires le long des chemins et autour de la fontaine
+    // lampes à huile sur poteaux, le long des chemins et autour du puits
     const lamp = [];
     for (const c of CHEMINS) {
       const [ax, az] = c[0], [bx, bz] = c[1], L = Math.hypot(bx - ax, bz - az), ux = (bx - ax) / L, uz = (bz - az) / L;

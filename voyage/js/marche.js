@@ -2,41 +2,15 @@
 // On paie uniquement avec des Pièces de Nour gagnées en jouant. Prix affichés, confirmation avant chaque achat.
 // Aucun hasard, aucune boîte mystère, aucun argent réel.
 import * as THREE from 'three';
-import { piece, fusion, materiau } from './formes.js?v=2';
-import { Enfant } from './personnages.js?v=2';
+import { piece, fusion, materiau, M } from './formes.js?v=3';
+import { Enfant } from './personnages.js?v=3';
 
 const mat = materiau({ finesse: 1.4 });
 const B = () => new THREE.BoxGeometry(1, 1, 1);
 const CYL = (a, b, h, s = 10) => new THREE.CylinderGeometry(a, b, h, s);
 const SPH = (r, w = 10, h = 8) => new THREE.SphereGeometry(r, w, h);
 
-export const MARCHANDS = {
-  karim: { nom: 'Karim, le marchand de voyage', icone: '🧭', accueil: 'Bienvenue ! Tout pour bien voyager dans le désert.' },
-  amina: { nom: 'Amina, tapis et lanternes', icone: '🧶', accueil: 'Regarde ces jolis tapis pour Sablo, tissés à la main !' },
-  hassan: { nom: 'Hassan, l\'artisan du chameau', icone: '🐪', accueil: 'Des selles, des sacoches… et des habits pour toi aussi !' }
-};
-
-export const ARTICLES = [
-  { id: 'boussole', marchand: 'karim', nom: 'La boussole', icone: '🧭', prix: 20, type: 'outil', desc: 'Une vraie boussole de voyageur.', effet: 'Une aiguille à l\'écran montre où aller pour ta mission.' },
-  { id: 'carte', marchand: 'karim', nom: 'La carte du pays', icone: '🗺️', prix: 25, type: 'outil', desc: 'Une grande carte dessinée à la main.', effet: 'Bouton 🗺️ : voir tout le pays, les lieux à découvrir et un endroit secret.' },
-  { id: 'sac', marchand: 'karim', nom: 'Le grand sac de voyage', icone: '🎒', prix: 25, type: 'outil', desc: 'Un sac solide en toile.', effet: 'Tu peux porter 6 objets au lieu de 3.' },
-  { id: 'jumelles', marchand: 'karim', nom: 'Les jumelles', icone: '🔭', prix: 35, type: 'outil', desc: 'Pour observer très loin.', effet: 'Bouton 🔭 : regarder au loin. Les lanternes cachées brillent plus fort.' },
-  { id: 'lanterne', marchand: 'karim', nom: 'La lanterne de voyage', icone: '🪔', prix: 20, type: 'outil', desc: 'Une lanterne en cuivre.', effet: 'Éclaire autour de toi la nuit, et permet d\'explorer la grotte des montagnes.' },
-  { id: 'tapis-rouge', marchand: 'amina', nom: 'Tapis rouge et or', icone: '🟥', prix: 10, type: 'tapis', couleurs: ['#c94f3c', '#f5b942'], desc: 'Le tapis de selle de Sablo.', effet: 'Change le tapis de Sablo.' },
-  { id: 'tapis-turquoise', marchand: 'amina', nom: 'Tapis turquoise', icone: '🟦', prix: 10, type: 'tapis', couleurs: ['#2bb3c0', '#fff8e7'], desc: 'Le tapis de selle de Sablo.', effet: 'Change le tapis de Sablo.' },
-  { id: 'tapis-violet', marchand: 'amina', nom: 'Tapis violet', icone: '🟪', prix: 12, type: 'tapis', couleurs: ['#7b4fa0', '#f5b942'], desc: 'Le tapis de selle de Sablo.', effet: 'Change le tapis de Sablo.' },
-  { id: 'tapis-nuit', marchand: 'amina', nom: 'Tapis bleu nuit étoilé', icone: '🌙', prix: 15, type: 'tapis', couleurs: ['#2d3a7a', '#ffe3a3'], desc: 'Bleu comme le ciel du soir.', effet: 'Change le tapis de Sablo.' },
-  { id: 'lanterne-sablo', marchand: 'amina', nom: 'Petite lanterne de selle', icone: '🏮', prix: 12, type: 'deco', desc: 'Elle se balance quand Sablo marche.', effet: 'Une lanterne accrochée à la selle de Sablo.' },
-  { id: 'selle-doree', marchand: 'hassan', nom: 'Selle dorée', icone: '🪑', prix: 18, type: 'selle', couleur: '#f5b942', desc: 'Une selle qui brille au soleil.', effet: 'Change la selle de Sablo.' },
-  { id: 'selle-cuir', marchand: 'hassan', nom: 'Selle de cuir', icone: '🟫', prix: 12, type: 'selle', couleur: '#8a5a35', desc: 'Solide et confortable.', effet: 'Change la selle de Sablo.' },
-  { id: 'sacoches', marchand: 'hassan', nom: 'Sacoches brodées', icone: '👜', prix: 15, type: 'sacoches', desc: 'Deux sacoches de chaque côté.', effet: 'Sablo porte de jolies sacoches.' },
-  { id: 'pompons', marchand: 'hassan', nom: 'Collier à pompons', icone: '🎀', prix: 10, type: 'pompons', desc: 'Des pompons de toutes les couleurs.', effet: 'Un collier de fête pour Sablo.' },
-  { id: 'cheche-bleu', marchand: 'hassan', nom: 'Chèche bleu', icone: '🧣', prix: 8, type: 'cheche', couleur: '#5d8fd6', desc: 'Un foulard qui protège du soleil.', effet: 'Change ton chèche.' },
-  { id: 'cheche-vert', marchand: 'hassan', nom: 'Chèche vert', icone: '🧣', prix: 8, type: 'cheche', couleur: '#5fae7a', desc: 'Un foulard qui protège du soleil.', effet: 'Change ton chèche.' },
-  { id: 'tunique-sable', marchand: 'hassan', nom: 'Tunique couleur sable', icone: '👘', prix: 10, type: 'tunique', couleur: '#cfa36a', desc: 'Une tunique légère.', effet: 'Change ta tunique.' },
-  { id: 'tunique-indigo', marchand: 'hassan', nom: 'Tunique indigo', icone: '👘', prix: 10, type: 'tunique', couleur: '#4a5aa8', desc: 'Une tunique bleu profond.', effet: 'Change ta tunique.' }
-];
-export const article = id => ARTICLES.find(a => a.id === id);
+export { MARCHANDS, ARTICLES, article } from './catalogue.js?v=3';
 
 // ---------- les étals ----------
 function geoEtal(c1, c2, marchandises) {
@@ -69,6 +43,27 @@ function marchandisesTapis() {
   t.push(piece(B(), '#c94f3c', { p: [0, 1.6, -0.62], s: [2.6, 1.3, 0.04] }), piece(B(), '#f5b942', { p: [0, 1.6, -0.6], s: [2.0, 0.9, 0.04] }));
   return t;
 }
+function marchandisesTissus() {
+  const t = [];
+  // piles de tissus pliés
+  [['#e6d6b4', '#b8694a', '#7f9a6a'], ['#3d4f86', '#f1ece0', '#a8503e'], ['#8a6448', '#6f86a8', '#efe4cc']].forEach((pile, i) => pile.forEach((c, j) => t.push(piece(B(), c, { p: [-1.1 + i * 0.55, 0.96 + j * 0.09, 0.15], s: [0.45, 0.08, 0.35], m: M.tissu }))));
+  // robes et tuniques suspendues
+  [['#e9d8b8', '#2b8f9a'], ['#a8503e', '#efd9a8'], ['#cfa36a', '#8a6440'], ['#3d4f86', '#e8c87a']].forEach(([a, b], i) => {
+    t.push(piece(CYL(0.12, 0.24, 0.9, 10), a, { p: [-1.1 + i * 0.72, 1.95, -0.45], m: M.tissu }), piece(B(), b, { p: [-1.1 + i * 0.72, 1.52, -0.45], s: [0.46, 0.04, 0.46] }));
+  });
+  t.push(piece(CYL(0.02, 0.02, 3.0, 6), '#6b4428', { p: [0, 2.45, -0.45], r: [0, 0, Math.PI / 2] }));
+  t.push(piece(CYL(0.13, 0.13, 0.5, 10), '#efe4cc', { p: [1.2, 1.05, 0.1], r: [Math.PI / 2, 0, 0], m: M.laine }), piece(CYL(0.11, 0.11, 0.5, 10), '#b8503c', { p: [1.2, 1.25, 0.1], r: [Math.PI / 2, 0, 0], m: M.laine }));
+  return t;
+}
+function marchandisesPoterie() {
+  const t = [];
+  for (let i = 0; i < 4; i++) t.push(piece(SPH(0.2, 12, 10), ['#c48452', '#b9652f', '#d9925a', '#a8582c'][i], { p: [-1.2 + i * 0.6, 1.1, 0.1], s: [1, 1.25, 1], m: M.terre }), piece(CYL(0.08, 0.11, 0.12, 10), '#a5552a', { p: [-1.2 + i * 0.6, 1.36, 0.1], m: M.terre }));
+  for (let i = 0; i < 5; i++) t.push(piece(SPH(0.08, 10, 6), '#b9652f', { p: [-1.1 + i * 0.5, 1.83, -0.45], s: [1, 0.45, 1.4], m: M.terre }));
+  t.push(piece(B(), '#8a6440', { p: [0, 1.75, -0.45], s: [3, 0.06, 0.35], m: M.bois }));
+  for (let i = 0; i < 3; i++) t.push(piece(SPH(0.32, 14, 10), '#c48452', { p: [-1.0 + i * 1.0, 0.32, 0.95], s: [1, 1.3, 1], m: M.terre }));
+  t.push(piece(CYL(0.3, 0.22, 0.05, 16), '#d9925a', { p: [0.9, 2.05, -0.45], r: [Math.PI / 2 - 0.2, 0, 0], m: M.terre }));
+  return t;
+}
 function marchandisesChameau() {
   return [
     piece(B(), '#f5b942', { p: [-0.9, 1.05, 0.1], s: [0.8, 0.25, 0.6] }), piece(B(), '#c94f3c', { p: [-0.9, 0.95, 0.1], s: [0.95, 0.06, 0.7] }),
@@ -83,8 +78,10 @@ export function creerMarche({ scene, terrain, colliders, ombres }) {
   const ux = -0.928, uz = 0.371, px = -uz, pz = ux;      // le long du chemin du camp, juste après la porte ouest
   const etals = [
     { id: 'karim', d: 57, cote: 1, c: ['#2bb3c0', '#fff8e7'], m: marchandisesVoyage(), habit: { tunique: '#2d5b8a', cheche: '#fff3dc' } },
-    { id: 'amina', d: 64, cote: -1, c: ['#c94f3c', '#f3e3c3'], m: marchandisesTapis(), habit: { tunique: '#7b4fa0', cheche: '#f6dbe6', peau: '#c98e66' } },
-    { id: 'hassan', d: 71, cote: 1, c: ['#f5b942', '#fff3dc'], m: marchandisesChameau(), habit: { tunique: '#8a5a35', cheche: '#f6f0e2', peau: '#b97f58' } }
+    { id: 'amina', d: 64, cote: -1, c: ['#c94f3c', '#f3e3c3'], m: marchandisesTapis(), habit: { tunique: '#7b4f6a', voile: '#efe2cf', peau: '#c98e66' } },
+    { id: 'hassan', d: 71, cote: 1, c: ['#f5b942', '#fff3dc'], m: marchandisesChameau(), habit: { tunique: '#8a5a35', cheche: '#f6f0e2', peau: '#b97f58' } },
+    { id: 'layla', d: 78, cote: -1, c: ['#3d4f86', '#efe4cc'], m: marchandisesTissus(), habit: { tunique: '#3d4f86', voile: '#e8e2d2', peau: '#d9a27a' } },
+    { id: 'samira', d: 84, cote: 1, c: ['#b9652f', '#f3e3c3'], m: marchandisesPoterie(), habit: { tunique: '#a8582c', voile: '#efe4cc', peau: '#b97f58' } }
   ];
   const points = [];
   for (const e of etals) {
@@ -100,7 +97,7 @@ export function creerMarche({ scene, terrain, colliders, ombres }) {
     points.push({ id: e.id, x: x - px * e.cote * 1.6, z: z - pz * e.cote * 1.6, r: 3, vendeur: v, rot });
   }
   return {
-    centre: { x: ux * 64, z: uz * 64 },
+    centre: { x: ux * 70, z: uz * 70 },
     points,
     maj(dt, t, J) { for (const p of points) { p.vendeur.animer(dt, 0, t); const d = Math.hypot(J.x - p.x, J.z - p.z); if (d < 7) p.vendeur.tete.rotation.y = Math.max(-0.8, Math.min(0.8, Math.sin(t * 0.3) * 0.2)); } }
   };

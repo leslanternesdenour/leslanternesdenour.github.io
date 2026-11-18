@@ -1,7 +1,7 @@
 // Les animaux du pays de Nour. Chacun a son modèle, sa façon de bouger et sa fiche (informations vérifiables,
 // sans rien d'inventé). Les gazelles s'éloignent si l'on court vers elles : on apprend à approcher doucement.
 import * as THREE from 'three';
-import { piece, fusion, materiau } from './formes.js?v=2';
+import { piece, fusion, materiau } from './formes.js?v=3';
 
 const mat = materiau({ finesse: 2.2 });
 const B = () => new THREE.BoxGeometry(1, 1, 1);

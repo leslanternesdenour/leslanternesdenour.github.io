@@ -2,7 +2,7 @@
 // - les traces de pas de l'enfant et les empreintes de Sablo dans le sable (elles s'effacent doucement) ;
 // - des grains de sable qui volent avec le vent autour de l'enfant (désert et montagnes).
 import * as THREE from 'three';
-import { textureEmpreinte, texturePoussiere } from './textures.js?v=2';
+import { textureEmpreinte, texturePoussiere } from './textures.js?v=3';
 
 export function creerEffets(scene, terrain, Q) {
   const H = (x, z) => terrain.hauteur(x, z);
