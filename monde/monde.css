@@ -157,3 +157,9 @@ input[type=range]:disabled{opacity:.45}
 #jeu{transition:opacity .28s ease}
 #jeu.sortie{opacity:0}
 @media (max-height:620px){.pan-icone.avec-mascotte{width:70px;height:82px}}
+
+#accueil .sous-titre.petit{font-size:clamp(15px,3.6vw,18px);margin:22px 0 8px;opacity:.9}
+.choix-perso{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.choix-perso button{border:0;border-radius:20px;padding:8px 16px;min-width:140px;background:#fff8e7;color:#1b3a57;font:800 16px Poppins,Nunito,sans-serif;cursor:pointer;box-shadow:inset 0 0 0 2px #e6d6b0,0 4px 0 #d8c9a6}
+.choix-perso button span{display:block;font-size:30px}
+.choix-perso button[aria-pressed=true]{background:#fff3d6;color:#5a3a08;box-shadow:inset 0 0 0 4px #f5b942,0 4px 0 #d9952a}

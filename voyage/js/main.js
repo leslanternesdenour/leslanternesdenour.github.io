@@ -22,6 +22,7 @@ import { creerCour } from './cour.js?v=3';
 import { MONTURES, monture, creerMonture, creerEcurie, FICHES_ESPECES } from './montures.js?v=3';
 import { COLLECTIONS, BADGES, progressionCollection } from './succes.js?v=3';
 import { creerGuide } from './guide.js?v=3';
+import { creerQuetes, QUETES, CATEGORIES_QUETES } from './quetes.js?v=3';
 import { creerCarte, CATEGORIES } from './carte.js?v=3';
 import { creerBourse } from './economie.js?v=3';
 import { creerQuotidien } from './quotidien.js?v=3';
@@ -101,6 +102,10 @@ async function demarrer() {
   quotidien = creerQuotidien({ etat, A: AV, enregistrer, age: sauvegarde.get().age,
     donner: (id, n, raison) => bourse.recompense(id, n, raison, ouDonner()),
     ui: { dialogue: p => dialogue(p), majSuivi: () => majSuivi() } });
+  // les quêtes : mots arabes, plantes, énigmes du souk, grande traversée
+  const quetes = creerQuetes({ scene, terrain, colliders: decor.colliders, AV, etat, enregistrer, ombres: !!Q.ombres,
+    donner: (id, n, raison) => bourse.recompense(id, n, raison, ouDonner()),
+    ui: { dialogue: p => dialogue(p), bandeau: (a, b) => { bandeau(a, b); S.sonDecouverte(); }, evenement: t => quotidien.evenement(t) } });
   // Hakim, l'ancien du village (personnage imaginaire) : il pose des questions chaque jour
   const hakim = new Enfant(!!Q.ombres, { tunique: '#efe6d2', pantalon: '#cfc2a8', cheche: '#ffffff', peau: '#c08a62', sac: false, barbe: '#f4f1ea' });
   hakim.racine.scale.setScalar(1.22);
@@ -278,7 +283,9 @@ async function demarrer() {
     });
     $('lecture').classList.remove('cache');
     (zone.querySelector('.choix') || $('lecture-ok')).focus({ preventScroll: true });
-    $('lecture-ecouter').onclick = () => parler(p.texte + (p.sous ? ' ' + p.sous.replace(/^[^\wÀ-ÿ]+/, '') : '') + (p.sens ? ' ' + p.sens.replace('Sens du verset : ', 'Le sens de ce verset : ') : ''));
+    const voix = p.voix || (p.mascotte === 'nour' ? 'nour' : /Hakim/.test(p.titre) ? 'hakim' : /Salim/.test(p.titre) ? 'salim' : null);
+    $('lecture-ecouter').onclick = p.ecouterArabe ? () => parlerArabe(p.ecouterArabe)
+      : () => parler(p.texte + (p.sous ? ' ' + p.sous.replace(/^[^\wÀ-ÿ]+/, '') : '') + (p.sens ? ' ' + p.sens.replace('Sens du verset : ', 'Le sens de ce verset : ') : ''), voix);
   }
   // Pièces de Nour gagnées : petit « +n » qui monte, la bourse bondit
   let timerGain = null;
@@ -322,11 +329,21 @@ async function demarrer() {
   addEventListener('keydown', e => { if (e.code === 'Escape' && !ctl.capture) { fermerLecture(); fermerCarnet(); fermerPanneaux(); fermerCommandes(); fermerBoutique(); $('carte-fermer').click(); } });
 
   // Voix du navigateur, en français seulement (le texte arabe du Coran n'est jamais lu par une machine)
-  function parler(texte) {
+  // chaque personnage a sa façon de parler (en attendant les vraies voix enregistrées)
+  const VOIX = { nour: { pitch: 1.45, rate: 0.98 }, hakim: { pitch: 0.7, rate: 0.82 }, salim: { pitch: 0.9, rate: 0.95 }, karim: { pitch: 1.0, rate: 1.0 },
+    amina: { pitch: 1.25, rate: 0.95 }, layla: { pitch: 1.2, rate: 0.9 }, samira: { pitch: 1.1, rate: 0.92 }, hassan: { pitch: 0.8, rate: 0.9 }, nabil: { pitch: 0.85, rate: 0.95 } };
+  function parlerArabe(mot) {
+    try {
+      const v = speechSynthesis.getVoices().find(v => v.lang && v.lang.toLowerCase().startsWith('ar'));
+      if (!v) { montrerIndice('Ton appareil n\'a pas de voix arabe : lis la prononciation écrite sous le mot.', 3500); return; }
+      speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(mot); u.voice = v; u.lang = v.lang; u.rate = 0.75; u.volume = sauvegarde.get().sons.voix ?? 1; speechSynthesis.speak(u);
+    } catch (e) {}
+  }
+  function parler(texte, voix) {
     try {
       speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(texte);
-      u.lang = 'fr-FR'; u.rate = 0.92; u.volume = sauvegarde.get().sons.voix ?? 1;
+      const u = new SpeechSynthesisUtterance(texte), vx = VOIX[voix] || {};
+      u.lang = 'fr-FR'; u.rate = vx.rate || 0.92; u.pitch = vx.pitch || 1; u.volume = sauvegarde.get().sons.voix ?? 1;
       const v = speechSynthesis.getVoices().find(v => v.lang && v.lang.startsWith('fr'));
       if (v) u.voice = v;
       speechSynthesis.speak(u);
@@ -383,6 +400,11 @@ async function demarrer() {
   }
 
   // ---------- carnet d'aventure ----------
+  const META_MISSIONS = {
+    lanternes: { cat: 'observation', diff: 2, objectif: 'Trouver 12 lanternes cachées' }, objets: { cat: 'entraide', diff: 1, objectif: 'Rapporter 3 objets à Nour' },
+    tresor: { cat: 'reflexion', diff: 2, objectif: 'Suivre 4 indices jusqu\'au coffre' }, voyageur: { cat: 'entraide', diff: 2, objectif: 'Apporter 2 paniers de dattes et 2 outres d\'eau à Salim' },
+    animaux: { cat: 'observation', diff: 2, objectif: 'Observer 7 animaux' } };
+  let filtreQuetes = 'toutes';
   let ongletCarnet = 'missions';
   function ouvrirCarnet(onglet) {
     fermerPanneaux();
@@ -398,6 +420,8 @@ async function demarrer() {
     cc.querySelectorAll('[data-perso]').forEach(b => b.onclick = () => { fermerCarnet(); ouvrirPerso(false); });
     cc.querySelectorAll('[data-guider-mission]').forEach(b => b.onclick = () => { fermerCarnet(); guiderMission(b.dataset.guiderMission); });
     cc.querySelectorAll('[data-guider-jour]').forEach(b => b.onclick = () => { fermerCarnet(); guiderJour(b.dataset.guiderJour); });
+    cc.querySelectorAll('[data-guider-quete]').forEach(b => b.onclick = () => { fermerCarnet(); guiderQuete(b.dataset.guiderQuete); });
+    cc.querySelectorAll('[data-filtre]').forEach(b => b.onclick = () => { filtreQuetes = b.dataset.filtre; ouvrirCarnet('missions'); });
     cc.querySelectorAll('[data-fiche-monture]').forEach(b => b.onclick = () => { $('carnet').classList.add('cache'); ficheMonture(b.dataset.ficheMonture, () => ouvrirCarnet('sablo')); });
     remplirApercus(cc);
     $('carnet').classList.remove('cache');
@@ -405,19 +429,40 @@ async function demarrer() {
   document.querySelectorAll('.onglets button').forEach(b => b.addEventListener('click', () => ouvrirCarnet(b.dataset.onglet)));
   function pageCarnet(o) {
     if (o === 'missions') {
-      const ids = Object.keys(MISSIONS);
-      const carte = k => { const m = AV.missions[k], M = MISSIONS[k], n = m ? m.n : 0;
-        const guidable = m && m.etat !== 'finie' && aventure.prochaineCible(J, k);
-        return `<div class="carte-mission ${m && m.etat === 'finie' ? 'finie' : ''}">${guidable ? `<button class="me-guider" data-guider-mission="${k}">🧭 Me guider</button>` : ''}<h4>${M.icone} ${M.titre}${m && m.etat === 'finie' ? '<span class="etiquette">Réussie ✓</span>' : !m ? '<span class="etiquette">À découvrir</span>' : ''}</h4>
-          <p>${m ? M.resume : 'Parle aux habitants et explore pour découvrir cette mission.'}</p><div class="barre"><i style="width:${n / M.total * 100}%"></i></div>
-          <p style="margin:6px 0 0;font-size:14px">${n} / ${M.total} · récompense : ${M.recompense} <span class="piece" style="width:16px;height:16px;vertical-align:-3px"></span></p></div>`; };
-      const enCours = ids.filter(k => AV.missions[k] && AV.missions[k].etat !== 'finie'), finies = ids.filter(k => AV.missions[k] && AV.missions[k].etat === 'finie'), autres = ids.filter(k => !AV.missions[k]);
+      const etoiles = n => `<span class="diff" title="Difficulté">${'★'.repeat(n)}<i>${'★'.repeat(3 - n)}</i></span>`;
+      const piece = '<span class="piece" style="width:16px;height:16px;vertical-align:-3px"></span>';
+      // toutes les quêtes, rangées de la même façon
+      const toutes = [
+        ...Object.keys(MISSIONS).map(k => { const m = AV.missions[k], M = MISSIONS[k], meta = META_MISSIONS[k];
+          return { id: k, sorte: 'mission', titre: M.titre, icone: M.icone, cat: meta.cat, diff: meta.diff, objectif: meta.objectif, desc: m ? M.resume : 'Parle aux habitants et explore pour découvrir cette mission.',
+            n: m ? m.n : 0, total: M.total, recompense: M.recompense, etat: !m ? 'decouvrir' : m.etat === 'finie' ? 'finie' : 'encours', guidable: m && m.etat !== 'finie' && !!aventure.prochaineCible(J, k) }; }),
+        ...Object.entries(QUETES).map(([k, q]) => { const n = Math.min(q.total, quetes.nombre(k));
+          return { id: k, sorte: 'quete', titre: q.titre, icone: q.icone, cat: q.cat, diff: q.diff, objectif: q.objectif, desc: q.desc, n, total: q.total, recompense: q.recompense,
+            etat: quetes.fini(k) ? 'finie' : n > 0 ? 'encours' : 'disponible', guidable: !quetes.fini(k) && !!quetes.destination(k, J) }; }),
+        ...COLLECTIONS.map(k => { const p = progressionCollection(k, AV);
+          return { id: k.id, sorte: 'collection', titre: k.nom, icone: k.icone, cat: 'collection', diff: k.montures ? 3 : 2, objectif: `Réunir ${p.total} ${k.montures ? 'montures' : 'objets'}`,
+            desc: k.montures ? 'Adopte ces montures à l\'écurie de Nabil.' : 'Trouve ces objets au souk du village.', n: p.n, total: p.total, recompense: k.pieces,
+            etat: p.n === p.total ? 'finie' : p.n > 0 ? 'encours' : 'disponible', guidable: p.n < p.total }; })
+      ];
+      const filtre = filtreQuetes, liste = toutes.filter(q => filtre === 'toutes' || q.cat === filtre);
+      const carte = q => `<div class="carte-mission ${q.etat === 'finie' ? 'finie' : ''}">${q.guidable ? `<button class="me-guider" data-guider-quete="${q.sorte}:${q.id}">🧭 Me guider</button>` : ''}
+          <h4>${q.icone} ${q.titre}${q.etat === 'finie' ? '<span class="etiquette">Réussie ✓</span>' : q.etat === 'decouvrir' ? '<span class="etiquette">À découvrir</span>' : ''}</h4>
+          <p class="puces"><span class="puce">${CATEGORIES_QUETES[q.cat].icone} ${CATEGORIES_QUETES[q.cat].nom}</span>${etoiles(q.diff)}</p>
+          <p>${q.desc}</p><p class="objectif">🎯 ${q.objectif}</p>
+          <div class="barre"><i style="width:${q.n / q.total * 100}%"></i></div>
+          <p style="margin:6px 0 0;font-size:14px">${q.n} / ${q.total} · récompense : ${q.recompense} ${piece}</p></div>`;
+      const groupe = (titre, l) => l.length ? `<h3>${titre}</h3>${l.map(carte).join('')}` : '';
       const mj = quotidien.missions();
       const jourHtml = `<h3>☀️ Missions du jour</h3>${quotidien.recul ? '<p class="note">L\'heure de l\'appareil semble avoir reculé : les missions de ce jour restent les mêmes.</p>' : ''}
         ${mj.map(m => `<div class="carte-mission ${m.fini ? 'finie' : ''}">${!m.fini && JOUR_GUIDABLE.includes(m.id) ? `<button class="me-guider" data-guider-jour="${m.id}">🧭 Me guider</button>` : ''}<h4>${m.icone} ${m.titre}${m.fini ? '<span class="etiquette">Réussie ✓</span>' : ''}</h4>
-          <div class="barre"><i style="width:${Math.min(100, m.n / m.total * 100)}%"></i></div><p style="margin:6px 0 0;font-size:14px">${Math.min(m.n, m.total)} / ${m.total} · ${m.pieces} <span class="piece" style="width:16px;height:16px;vertical-align:-3px"></span></p></div>`).join('')}
-        <p class="note">Bonus si les trois sont réussies : ${quotidien.bonus} pièces. Les missions changent chaque jour, sans obligation : tes pièces restent à toi pour toujours. Hakim, l'ancien du village, pose aussi 3 questions par jour.</p>`;
-      return jourHtml + (enCours.length ? '<h3>En cours</h3>' + enCours.map(carte).join('') : '') + (finies.length ? '<h3>Terminées</h3>' + finies.map(carte).join('') : '') + (autres.length ? '<h3>À découvrir</h3>' + autres.map(carte).join('') : '');
+          <p class="puces"><span class="puce">☀️ Du jour</span>${etoiles(1)}</p>
+          <div class="barre"><i style="width:${Math.min(100, m.n / m.total * 100)}%"></i></div><p style="margin:6px 0 0;font-size:14px">${Math.min(m.n, m.total)} / ${m.total} · ${m.pieces} ${piece}</p></div>`).join('')}
+        <p class="note">Bonus si les trois sont réussies : ${quotidien.bonus} pièces. Elles changent chaque jour, sans obligation : tes pièces restent à toi pour toujours.</p>`;
+      const puces = `<div class="filtres-quetes">${[['toutes', '✨', 'Toutes'], ...Object.entries(CATEGORIES_QUETES).map(([k, c]) => [k, c.icone, c.nom])].map(([k, ic, nom]) => `<button data-filtre="${k}" aria-pressed="${k === filtre}">${ic} ${nom}</button>`).join('')}</div>`;
+      return jourHtml + '<h3>🗺️ Quêtes et aventures</h3>' + puces +
+        groupe('En cours', liste.filter(q => q.etat === 'encours')) + groupe('À commencer', liste.filter(q => q.etat === 'disponible')) +
+        groupe('À découvrir', liste.filter(q => q.etat === 'decouvrir')) + groupe('Réussies', liste.filter(q => q.etat === 'finie')) +
+        (liste.length ? '' : '<p class="note">Aucune quête de ce genre pour l\'instant.</p>');
     }
     if (o === 'collection') {
       const l = i => AV.ramasses.includes('lanterne' + i);
@@ -658,6 +703,8 @@ async function demarrer() {
       return `<button class="objet" data-fiche="${a.id}" style="--r:${RARETES[a.rarete].couleur};--f:${RARETES[a.rarete].fond}">${vignette(a)}<b>${a.nom}</b>${badge(a)}${a.rotation && !possede(a) ? '<span class="du-jour">Aujourd\'hui</span>' : ''}${etiq}</button>`;
     }).join('')}</div>${tournant ? '<p class="note">Certains objets ne sont là que certains jours. Les objets utiles au voyage, eux, sont toujours en vente.</p>' : ''}`;
     const z = $('boutique-articles');
+    if (QUETES.enigmes) z.insertAdjacentHTML('afterbegin', quetes.enigmeFaite(id) ? '<p class="enigme faite">🧩 Énigme résolue ✓</p>' : `<button class="enigme" data-enigme>🧩 ${Mm.nom.split(',')[0]} a une énigme pour toi !</button>`);
+    const be = z.querySelector('[data-enigme]'); if (be) be.onclick = () => { $('boutique').classList.add('cache'); quetes.enigme(id, Mm.nom.split(',')[0], id, () => ouvrirBoutique(id)); };
     z.querySelectorAll('[data-fiche]').forEach(b => b.onclick = () => ficheObjet(article(b.dataset.fiche), () => ouvrirBoutique(id)));
     remplirApercus(z);
     $('boutique').classList.remove('cache');
@@ -951,6 +998,24 @@ async function demarrer() {
     guiderVers({ id: d.id, x: d.x, z: d.z, nom: d.nom, icone: d.icone || (CATEGORIES[d.cat] || {}).icone, rayon: d.rayon || 5 });
   }
   const JOUR_GUIDABLE = ['oasis', 'souk', 'sage', 'lieux', 'pierre', 'lanterne', 'animal'];
+  function guiderQuete(cle) {
+    const [sorte, id] = cle.split(':'), P0 = posGuide();
+    if (sorte === 'mission') return guiderMission(id);
+    let d = null;
+    if (sorte === 'quete') {
+      if (id === 'coins') { const l = lieuxCarte().filter(l => ['zone:oasis', 'zone:camp', 'zone:dunes', 'zone:montagnes'].includes(l.id) && !l.connu && !l.verrou);
+        d = l.sort((a, b) => Math.hypot(a.x - P0.x, a.z - P0.z) - Math.hypot(b.x - P0.x, b.z - P0.z))[0]; if (d) d = { ...d, nom: 'une nouvelle région', icone: '❔' }; }
+      else if (id === 'enigmes') { const m = ['karim', 'amina', 'hassan', 'layla', 'samira'].find(k => !quetes.enigmeFaite(k)); const pt = m && decor.points.find(p => p.id === 'boutique-' + m);
+        if (pt) d = { x: pt.x, z: pt.z, nom: MARCHANDS[m].nom.split(',')[0], icone: '🧩', rayon: 3 }; }
+      else d = quetes.destination(id, P0);
+    } else if (sorte === 'collection') {
+      const k = COLLECTIONS.find(c => c.id === id), p = k && progressionCollection(k, AV), manque = p && p.liste.find(x => !x.ok);
+      if (manque) { if (k.montures) d = { x: ecurie.point.x, z: ecurie.point.z, nom: 'l\'écurie de Nabil', icone: '🐎', rayon: 3.5 };
+        else { const a = article(manque.id), pt = a && decor.points.find(p => p.id === 'boutique-' + a.marchand); if (pt) d = { x: pt.x, z: pt.z, nom: MARCHANDS[a.marchand].nom.split(',')[0], icone: a.icone, rayon: 3 }; } }
+    }
+    if (!d) { montrerIndice('Pas de destination précise pour celle-ci : à toi de jouer !', 3000); return; }
+    guiderVers({ id: cle, x: d.x, z: d.z, nom: d.nom, icone: d.icone, rayon: d.rayon || 5 });
+  }
 
   // ---------- les jumelles ----------
   let jumelles = false, vol = 0;
@@ -1107,8 +1172,9 @@ async function demarrer() {
     proche = null;
     let meilleur = Infinity;
     for (const p of decor.points) { const dd = Math.hypot(p.x - J.x, p.z - J.z); if (dd < p.r && dd < meilleur) { meilleur = dd; proche = p; } }
-    procheAv = sequence ? null : aventure.interaction(J);
+    procheAv = sequence ? null : (() => { const a = aventure.interaction(J), b = quetes.interaction(J); return !a ? b : !b ? a : (b.d < a.d ? b : a); })();
     aventure.maj(dt, tTotal, J, monte ? C.vit > 6 : J.vit > 4.2, nuit);
+    quetes.maj(dt, tTotal, posGuide(), monte && !sequence);
     marche.maj(dt, tTotal, J); ecurie.animer(dt, tTotal, J);
     { const info = guide.maj(dt, tTotal, posGuide(), rayonGuide());
       if (info && info.arrive) { majGuidage(null); etat.guidage = null; enregistrer(); S.sonDecouverte(); bandeau('Tu es arrivé !', `${info.dest.icone || ''} ${info.dest.nom}`); if (!monte) enfant.faire('joie'); }
@@ -1212,7 +1278,7 @@ async function demarrer() {
     etat, J, C, decor, ciel, H, cam, aventure, bourse, action: () => action(),
     teleporter(x, z) { J.x = x; J.z = z; if (monte) { C.x = x; C.z = z; } },
     monte: () => monte, sequence: () => sequence, proche: () => proche, zone: () => zoneActuelle,
-    enfant: () => enfant, perso, guide, carte, ouvrirCarte: id => ouvrirCarte(id), guiderVers: d => guiderVers(d), guiderMission: k => guiderMission(k), lieuxCarte: () => lieuxCarte(), choisirMonture: id => choisirMonture(id), ouvrirEcurie: () => ouvrirEcurie(), monture: () => chameau, ecurie, ouvrirBoutique: id => ouvrirBoutique(id), ouvrirCarnet: o => ouvrirCarnet(o), ouvrirPerso: () => ouvrirPerso(false), apercu: a => apercu(article(a)),
+    enfant: () => enfant, perso, quetes, guide, carte, ouvrirCarte: id => ouvrirCarte(id), guiderVers: d => guiderVers(d), guiderMission: k => guiderMission(k), lieuxCarte: () => lieuxCarte(), choisirMonture: id => choisirMonture(id), ouvrirEcurie: () => ouvrirEcurie(), monture: () => chameau, ecurie, ouvrirBoutique: id => ouvrirBoutique(id), ouvrirCarnet: o => ouvrirCarnet(o), ouvrirPerso: () => ouvrirPerso(false), apercu: a => apercu(article(a)),
     infos: () => renderer.info.render
   };
 }

@@ -373,3 +373,13 @@ body.jumelles-actives #scene{filter:none}
 #guidage-voir.eteint{opacity:.45}
 .carte-mission{position:relative}
 .me-guider{float:right;margin:-2px 0 4px 8px;border:0;border-radius:14px;padding:7px 12px;background:#f5b942;color:#5a3a08;font:800 13px Poppins,sans-serif;box-shadow:0 3px 0 #b8741f;cursor:pointer}
+/* ===== Quêtes ===== */
+.filtres-quetes{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:4px 0 8px}
+.filtres-quetes button{border:0;border-radius:14px;padding:6px 10px;background:#efe2c4;color:var(--tx);font:800 13px Nunito,sans-serif;cursor:pointer}
+.filtres-quetes button[aria-pressed=true]{background:#2bb3c0;color:#fff}
+.puces{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:4px 0!important}
+.puce{font:800 12px Poppins,sans-serif;background:#f3ead6;color:#6b4410;border-radius:10px;padding:2px 8px}
+.diff{color:#f5b942;font-size:15px;letter-spacing:1px}.diff i{font-style:normal;color:#e2d6bc}
+.objectif{font-weight:800;color:#1d6f7a;margin:4px 0!important}
+.enigme{display:block;width:100%;border:0;border-radius:16px;padding:10px 14px;margin:0 0 8px;background:#fff3d6;color:#6b4410;font:800 15px Poppins,sans-serif;cursor:pointer;box-shadow:0 0 0 2px #f5b942 inset,0 3px 0 #d9952a}
+.enigme.faite{background:#e3f4ea;color:#2a8e5c;box-shadow:none;text-align:center}
