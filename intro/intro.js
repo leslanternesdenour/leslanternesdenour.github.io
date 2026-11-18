@@ -1,17 +1,16 @@
 /* Les Lanternes de Nour — introduction d'accueil.
    « Une lumière s'allume, une découverte commence. »
+   Tout démarre seul à l'ouverture du site (le visuel), la voix se lance dès que le navigateur l'autorise ou via « Activer le son ».
    Chargé en différé par la page d'accueil. Si quoi que ce soit échoue, l'introduction se ferme et le site reste utilisable. */
 (function () {
   'use strict';
   var H = document.documentElement;
   var CLE = 'lanternes_intro', CLE_SON = 'lanternes_intro_son', CLE_SESSION = 'lanternes_intro_session';
-  var PAROLE = 'Assalâmou alaykoum… Bienvenue dans Les Lanternes de Nour. Ici, chaque lumière ouvre une nouvelle découverte.';
-  var VOIX = 'intro/bienvenue.mp3';
+  var VOIX_AR = 'intro/bienvenue-ar.mp3', VOIX_FR = 'intro/bienvenue-fr.mp3';
 
-  /* ---------- mémoire du choix du visiteur (jamais bloquant) ---------- */
   function lire() { try { return JSON.parse(localStorage.getItem(CLE) || '{}') || {}; } catch (e) { return {}; } }
   function ecrire(o) { try { localStorage.setItem(CLE, JSON.stringify(o)); } catch (e) {} }
-  function sonActif() { try { return localStorage.getItem(CLE_SON) !== 'non'; } catch (e) { return true; } }
+  function prefSon() { try { return localStorage.getItem(CLE_SON) !== 'non'; } catch (e) { return true; } }
   function memoSon(on) { try { localStorage.setItem(CLE_SON, on ? 'oui' : 'non'); } catch (e) {} }
 
   var calme = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -22,132 +21,114 @@
 
   var racine = document.getElementById('intro');
   var $ = function (id) { return document.getElementById(id); };
-  var etat = { mode: 'complete', voix: null, voixFinie: false, ouvert: false, minuteurs: [], ferme: false };
-
-  /* ---------- décision d'afficher ou non (aussi utilisée par le <head> pour éviter tout flash) ---------- */
-  function decider(force) {
-    var m = lire(), maintenant = Date.now();
-    if (force) return 'complete';
-    if (m.off) return null;
-    try { if (sessionStorage.getItem(CLE_SESSION)) return null; } catch (e) {}
-    if (!m.vu) return 'complete';
-    if (maintenant - m.vu > 14 * 864e5) return 'courte';   // un visiteur qui revient après deux semaines : version courte
-    return null;                                            // sinon, on ne lui impose rien
-  }
-  window.lanternesIntroDecision = decider;
+  // son : 'invite' (pas encore lancé), 'joue', 'fini', 'coupe'
+  var etat = { mode: 'complete', ar: null, fr: null, son: 'invite', ouvert: false, ferme: false, minuteurs: [] };
 
   function plus(fn, ms) { var t = setTimeout(fn, ms); etat.minuteurs.push(t); return t; }
   function viderMinuteurs() { etat.minuteurs.forEach(clearTimeout); etat.minuteurs = []; }
 
-  /* ---------- particules dorées ---------- */
+  /* ---------- particules dorées : légères, discrètes ---------- */
   function semer() {
     var cible = racine.querySelector('.intro-particules'); if (!cible || calme) return;
-    var n = leger ? 0 : (innerWidth < 600 ? 14 : 26);
+    cible.textContent = '';
+    var n = leger ? 0 : (innerWidth < 600 ? 14 : 28);
     for (var i = 0; i < n; i++) {
       var s = document.createElement('span'), t = 2 + Math.random() * 3.6;
       s.style.cssText = 'left:' + (Math.random() * 100).toFixed(1) + '%;width:' + t.toFixed(1) + 'px;height:' + t.toFixed(1) + 'px;' +
-        'animation-duration:' + (11 + Math.random() * 12).toFixed(1) + 's;animation-delay:-' + (Math.random() * 20).toFixed(1) + 's;' +
+        'animation-duration:' + (10 + Math.random() * 11).toFixed(1) + 's;animation-delay:-' + (Math.random() * 14).toFixed(1) + 's;' +
         '--dx:' + ((Math.random() - .5) * 90).toFixed(0) + 'px';
       cible.appendChild(s);
     }
   }
-  function gerbe() {   // quelques particules qui jaillissent de la lanterne
-    if (calme) return;
-    var lueur = racine.querySelector('.intro-lueur'), r = lueur.getBoundingClientRect(), n = leger ? 9 : 22;
-    var cx = r.left + r.width / 2, cy = r.top + r.height / 2;
-    for (var i = 0; i < n; i++) {
-      var p = document.createElement('span'), t = 3 + Math.random() * 5, a = Math.random() * Math.PI * 2, d = 50 + Math.random() * 150;
-      p.style.cssText = 'position:fixed;z-index:10001;pointer-events:none;border-radius:50%;left:' + (cx - t / 2) + 'px;top:' + (cy - t / 2) + 'px;width:' + t + 'px;height:' + t + 'px;' +
-        'background:radial-gradient(circle,#fff6d0,#f5b942 60%,rgba(245,185,66,0) 72%)';
-      document.body.appendChild(p);
-      if (p.animate) {
-        var an = p.animate([{ transform: 'translate(0,0) scale(1)', opacity: 1 },
-          { transform: 'translate(' + (Math.cos(a) * d).toFixed(0) + 'px,' + (Math.sin(a) * d - 40).toFixed(0) + 'px) scale(.2)', opacity: 0 }],
-          { duration: 1000 + Math.random() * 900, easing: 'cubic-bezier(.12,.7,.3,1)', fill: 'forwards' });
-        an.onfinish = (function (el) { return function () { el.remove(); }; })(p);
-      } else p.remove();
-    }
-  }
 
-  /* ---------- affichage des éléments du bas (indice, parole, bouton) sans décalage de la page ---------- */
-  function montrer(id) {
-    ['intro-indice', 'intro-parole', 'intro-entrer'].forEach(function (k) {
-      var e = $(k); if (!e) return;
-      if (k === id) { e.classList.add('visible'); e.removeAttribute('aria-hidden'); if (k === 'intro-entrer') e.disabled = false; }
-      else { e.classList.remove('visible'); e.setAttribute('aria-hidden', 'true'); if (k === 'intro-entrer') e.disabled = true; }
+  /* ---------- la voix : arabe puis français ---------- */
+  function legende(qui) {
+    $('intro-ar').classList.toggle('visible', qui === 'ar');
+    $('intro-fr').classList.toggle('visible', qui === 'fr');
+  }
+  function majBoutonSon() {
+    var b = $('intro-son'), t = { invite: '🔊 Activer le son', joue: '🔇 Couper le son', fini: '🔊 Réécouter', coupe: '🔊 Activer le son' }[etat.son];
+    b.textContent = t; b.setAttribute('aria-label', t.replace(/^\S+\s/, ''));
+    b.classList.toggle('invite', etat.son === 'invite' || etat.son === 'coupe');
+  }
+  function arreterVoix(fondu) {
+    [etat.ar, etat.fr].forEach(function (a) {
+      if (!a) return;
+      try {
+        if (fondu && !a.paused) { var v = a.volume, pas = setInterval(function () { v -= 0.1; if (v <= 0.02) { clearInterval(pas); try { a.pause(); a.volume = 0.85; } catch (e) {} } else a.volume = v; }, 40); }
+        else a.pause();
+      } catch (e) {}
     });
   }
-  function proposerEntree() {
+  function preparerVoix() {
+    if (etat.ar) return;
+    etat.ar = new Audio(VOIX_AR); etat.fr = new Audio(VOIX_FR);
+    [etat.ar, etat.fr].forEach(function (a) { a.preload = 'auto'; a.volume = 0.85; });
+    etat.ar.addEventListener('ended', function () {
+      if (etat.ferme || etat.son !== 'joue') return;
+      legende(null);
+      plus(function () {
+        if (etat.ferme || etat.son !== 'joue') return;
+        legende('fr');
+        try { var p = etat.fr.play(); if (p && p.catch) p.catch(finVoix); } catch (e) { finVoix(); }
+      }, 250);
+    });
+    etat.fr.addEventListener('ended', finVoix);
+    etat.ar.addEventListener('error', function () { etat.son = 'invite'; majBoutonSon(); legende(null); });
+    etat.fr.addEventListener('error', finVoix);
+  }
+  function finVoix() { if (etat.son === 'joue') { etat.son = 'fini'; majBoutonSon(); } plus(function () { legende(null); }, 1800); }
+  function lancerVoix(depuisGeste) {
     if (etat.ferme || etat.ouvert) return;
-    montrer('intro-entrer');
-    try { $('intro-entrer').focus({ preventScroll: true }); } catch (e) {}
+    preparerVoix();
+    try { etat.ar.pause(); etat.fr.pause(); etat.ar.currentTime = 0; etat.fr.currentTime = 0; } catch (e) {}
+    if (depuisGeste) memoSon(true);
+    var p;
+    try { p = etat.ar.play(); } catch (e) { p = null; }
+    var ok = function () { etat.son = 'joue'; majBoutonSon(); legende('ar'); };
+    var bloque = function () { etat.son = 'invite'; majBoutonSon(); legende(null); };
+    if (p && p.then) p.then(ok, bloque); else bloque();
+  }
+  function basculerSon() {
+    if (etat.son === 'joue') { etat.son = 'coupe'; memoSon(false); arreterVoix(false); legende(null); majBoutonSon(); }
+    else lancerVoix(true);
   }
 
-  /* ---------- la voix de bienvenue : seulement après un clic, jamais automatiquement ---------- */
-  function jouerVoix() {
-    etat.voixFinie = false;
-    var parole = $('intro-parole'); parole.textContent = '« ' + PAROLE + ' »'; montrer('intro-parole');
-    var fin = function () { etat.voixFinie = true; plus(proposerEntree, 500); };
-    if (!sonActif()) { plus(proposerEntree, 4200); return; }
-    try {
-      if (!etat.voix) {
-        etat.voix = new Audio(VOIX); etat.voix.preload = 'auto'; etat.voix.volume = 0.8;
-        etat.voix.addEventListener('ended', fin);
-        etat.voix.addEventListener('error', function () { plus(proposerEntree, 3800); });
-      }
-      etat.voix.currentTime = 0;
-      var p = etat.voix.play();
-      if (p && p.catch) p.catch(function () { plus(proposerEntree, 3800); });
-    } catch (e) { plus(proposerEntree, 3800); }
+  /* ---------- l'entrée dans le site : douce et rapide ---------- */
+  function montrerEntrer() {
+    if (etat.ferme || etat.ouvert) return;
+    var e = $('intro-entrer'); e.disabled = false; e.classList.add('visible');
   }
-
-  function toucherLogo() {
-    if (etat.ouvert || etat.ferme) return;
-    viderMinuteurs();
-    racine.classList.remove('allume'); void racine.offsetWidth; racine.classList.add('allume');
-    gerbe();
-    jouerVoix();
-  }
-
-  /* ---------- la porte du monde de Nour ---------- */
   function entrer() {
     if (etat.ouvert || etat.ferme) return;
-    etat.ouvert = true; viderMinuteurs();
-    if (etat.voix) { try { etat.voix.pause(); } catch (e) {} }
-    var img = racine.querySelector('.intro-paysage img');
-    var ouvrir = function () {
-      racine.classList.add('allume', 'ouvre');
-      var duree = calme ? 700 : leger ? 2500 : 3100;
-      plus(function () { fermer('entree'); }, duree);
-    };
-    if (img && !img.complete) { var go = function () { img.removeEventListener('load', go); img.removeEventListener('error', go); ouvrir(); }; img.addEventListener('load', go); img.addEventListener('error', go); plus(go, 1500); }
-    else ouvrir();
+    etat.ouvert = true; viderMinuteurs(); arreterVoix(true); legende(null);
+    racine.classList.add('ouvre');
+    plus(function () { fermer('entree'); }, calme ? 120 : 750);
   }
 
   /* ---------- fermeture : toujours propre, quel que soit le chemin ---------- */
   function fermer(raison) {
-    if (etat.ferme) return; etat.ferme = true; viderMinuteurs();
-    if (etat.voix) { try { etat.voix.pause(); } catch (e) {} }
+    if (etat.ferme) return; etat.ferme = true; viderMinuteurs(); arreterVoix(raison !== 'passer');
     var m = lire(); m.vu = Date.now();
     if ($('intro-off') && $('intro-off').checked) m.off = true;
     ecrire(m);
     try { sessionStorage.setItem(CLE_SESSION, '1'); } catch (e) {}
     racine.classList.add('sortie'); if (raison === 'passer') racine.classList.add('sortie-vite');
-    var fini = function () {
+    window.removeEventListener('keydown', clavier, true);
+    racine.removeEventListener('pointerdown', geste, true);
+    plus(function () {
       H.classList.remove('intro-on');
       Array.prototype.forEach.call(document.body.children, function (e) { if (e !== racine) e.removeAttribute('inert'); });
       racine.style.display = 'none';
       majReglage();
-    };
-    plus(fini, calme ? 50 : raison === 'passer' ? 320 : 650);
-    window.removeEventListener('keydown', clavier, true);
+    }, calme ? 50 : raison === 'passer' ? 320 : 500);
   }
 
   function clavier(e) {
     if (etat.ferme) return;
     if (e.key === 'Escape') { e.preventDefault(); fermer('passer'); return; }
     if (e.key === 'Tab') {   // le focus reste dans l'introduction
-      var f = Array.prototype.filter.call(racine.querySelectorAll('button, input'), function (x) { return !x.disabled && x.offsetParent !== null && x.getAttribute('aria-hidden') !== 'true'; });
+      var f = Array.prototype.filter.call(racine.querySelectorAll('button, input'), function (x) { return !x.disabled && x.offsetParent !== null; });
       if (!f.length) return;
       var a = f.indexOf(document.activeElement);
       if (e.shiftKey && a <= 0) { e.preventDefault(); f[f.length - 1].focus(); }
@@ -155,41 +136,36 @@
       else if (a === -1) { e.preventDefault(); f[0].focus(); }
     }
   }
+  // premier toucher n'importe où (hors boutons) : la voix démarre tout de suite, si le navigateur l'avait bloquée
+  function geste(e) {
+    if (etat.son !== 'invite' || etat.ouvert || etat.ferme) return;
+    if (e.target.closest && e.target.closest('button, label, input, a')) return;
+    lancerVoix(true);
+  }
 
-  /* ---------- démarrage ---------- */
+  /* ---------- démarrage : le visuel commence tout de suite, tout seul ---------- */
   function demarrer(mode) {
-    etat.mode = mode; etat.ferme = false; etat.ouvert = false; etat.voixFinie = false;
-    racine.className = 'intro attend' + (leger ? ' leger' : '') + (calme ? ' calme' : '');
+    etat.mode = mode; etat.ferme = false; etat.ouvert = false; etat.son = prefSon() ? 'invite' : 'coupe';
+    racine.className = 'intro' + (leger ? ' leger' : '') + (calme ? ' calme' : '');
     racine.style.display = '';
     H.classList.add('intro-on');
     Array.prototype.forEach.call(document.body.children, function (e) { if (e !== racine) e.setAttribute('inert', ''); });
-    semer();
-    $('intro-son').setAttribute('aria-pressed', sonActif() ? 'true' : 'false');
-    $('intro-son').textContent = sonActif() ? '🔊' : '🔇';
-    $('intro-son').setAttribute('aria-label', sonActif() ? 'Couper le son' : 'Réactiver le son');
-    montrer(mode === 'courte' ? 'intro-entrer' : null);
-    if (mode === 'complete') plus(function () { montrer('intro-indice'); }, calme ? 300 : 2600);
-    // sécurité : même sans clic, on propose d'entrer
-    plus(function () { if (!etat.ouvert && !$('intro-entrer').classList.contains('visible')) proposerEntree(); }, 11000);
-    // visiteur de retour : la porte s'ouvre toute seule après un instant, s'il ne touche à rien
-    if (mode === 'courte') plus(function () { entrer(); }, 3400);
+    legende(null); $('intro-entrer').classList.remove('visible'); $('intro-entrer').disabled = true;
+    semer(); majBoutonSon(); preparerVoix();
+    // la voix : essai automatique (accepté si le navigateur l'autorise), sinon le bouton « Activer le son » prend le relais
+    if (mode === 'complete' && prefSon()) plus(function () { lancerVoix(false); }, calme ? 600 : 1500);
+    // le bouton d'entrée apparaît vite, sans attendre la fin de la voix
+    plus(montrerEntrer, mode === 'courte' ? 1100 : (calme ? 600 : 2800));
     window.addEventListener('keydown', clavier, true);
+    racine.addEventListener('pointerdown', geste, true);
     try { racine.focus({ preventScroll: true }); } catch (e) {}
-    // préchargement discret de la voix, sans la jouer
-    plus(function () { try { fetch(VOIX, { method: 'GET', cache: 'force-cache' }).catch(function () {}); } catch (e) {} }, 1200);
     window.__introPret = true;
   }
 
   function brancher() {
-    $('intro-logo').addEventListener('click', function () { if (etat.mode === 'courte') viderMinuteurs(); toucherLogo(); });
     $('intro-entrer').addEventListener('click', entrer);
     $('intro-passer').addEventListener('click', function () { fermer('passer'); });
-    $('intro-son').addEventListener('click', function () {
-      var on = !sonActif(); memoSon(on);
-      this.setAttribute('aria-pressed', on ? 'true' : 'false'); this.textContent = on ? '🔊' : '🔇';
-      this.setAttribute('aria-label', on ? 'Couper le son' : 'Réactiver le son');
-      if (etat.voix) { try { if (on) { if (!etat.voixFinie && etat.voix.currentTime > 0) etat.voix.play().catch(function () {}); } else etat.voix.pause(); } catch (e) {} }
-    });
+    $('intro-son').addEventListener('click', basculerSon);
   }
 
   /* ---------- réglage dans le pied de page : désactiver, réactiver, revoir ---------- */
@@ -203,7 +179,7 @@
   function brancherReglage() {
     var b = $('intro-reglage'), v = $('intro-revoir'); if (!b) return;
     b.addEventListener('click', function () { var m = lire(); m.off = !m.off; ecrire(m); majReglage(); });
-    if (v && racine) v.addEventListener('click', function () { var check = $('intro-off'); if (check) check.checked = false; viderMinuteurs(); demarrer('complete'); });
+    if (v && racine) v.addEventListener('click', function () { var c = $('intro-off'); if (c) c.checked = false; viderMinuteurs(); demarrer('complete'); });
     majReglage();
   }
 
@@ -229,11 +205,10 @@
   try {
     brancher();
     var logo = racine.querySelector('.intro-logo img');
-    var force = /[?&]intro=1\b/.test(location.search);
-    var mode = H.classList.contains('intro-on') ? (window.__introMode || decider(force)) : null;
+    var mode = H.classList.contains('intro-on') ? (window.__introMode || 'complete') : null;
     if (mode) {
       var lancer = function () { try { demarrer(mode); } catch (e) { fermer('erreur'); H.classList.remove('intro-on'); } };
-      if (logo && !logo.complete) { logo.addEventListener('load', lancer, { once: true }); logo.addEventListener('error', function () { fermer('erreur'); }, { once: true }); }
+      if (logo && !logo.complete) { logo.addEventListener('load', lancer, { once: true }); logo.addEventListener('error', function () { fermer('erreur'); H.classList.remove('intro-on'); }, { once: true }); }
       else lancer();
     } else { H.classList.remove('intro-on'); racine.style.display = 'none'; }
   } catch (e) { H.classList.remove('intro-on'); if (racine) racine.style.display = 'none'; }

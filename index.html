@@ -15,7 +15,7 @@
 (function(){var H=document.documentElement,m={},mode=null;try{m=JSON.parse(localStorage.getItem('lanternes_intro')||'{}')||{}}catch(e){}
 if(/[?&]intro=1\b/.test(location.search))mode='complete';
 else if(!m.off){var s=null;try{s=sessionStorage.getItem('lanternes_intro_session')}catch(e){}
-if(!s){if(!m.vu)mode='complete';else if(Date.now()-m.vu>14*864e5)mode='courte'}}
+if(!s)mode=m.vu?'courte':'complete'}
 if(mode){window.__introMode=mode;H.classList.add('intro-on');setTimeout(function(){if(!window.__introPret)H.classList.remove('intro-on')},5000)}})();
 </script>
 <meta property="og:type" content="website">
@@ -201,24 +201,25 @@ footer { border-top: 1px solid rgba(245, 185, 66, .18); padding: 22px 0 30px; co
 <body>
 <div id="intro" class="intro" tabindex="-1" role="dialog" aria-modal="true" aria-label="Bienvenue aux Lanternes de Nour">
   <div class="intro-fond" aria-hidden="true"><div class="intro-etoiles"></div><div class="intro-particules"></div></div>
-  <div class="intro-paysage" aria-hidden="true"><img src="intro/paysage.webp" alt="" width="1600" height="1200" decoding="async"></div>
   <div class="intro-flash" aria-hidden="true"></div>
   <div class="intro-centre">
-    <button type="button" class="intro-logo" id="intro-logo" aria-label="Allumer la lanterne et écouter le message de bienvenue">
+    <div class="intro-logo" id="intro-logo">
       <span class="intro-halo" aria-hidden="true"></span>
-      <img src="intro/logo-1000.webp" srcset="intro/logo-640.webp 640w, intro/logo-1000.webp 1000w" sizes="(max-width: 700px) 94vw, 760px" width="1000" height="672" alt="Les Lanternes de Nour">
+      <img src="intro/logo-1000.webp" srcset="intro/logo-640.webp 640w, intro/logo-1000.webp 1000w" sizes="(max-width: 700px) 94vw, 740px" width="1000" height="672" alt="Les Lanternes de Nour" fetchpriority="high">
       <span class="intro-lueur" aria-hidden="true"></span>
       <span class="intro-eclat" aria-hidden="true"></span>
-    </button>
+    </div>
     <div class="intro-bas">
-      <p class="intro-indice" id="intro-indice" aria-hidden="true">Touche la lanterne</p>
-      <p class="intro-parole" id="intro-parole" aria-live="polite" aria-hidden="true"></p>
-      <button type="button" class="intro-entrer" id="intro-entrer" aria-hidden="true" disabled>ENTRER DANS LE MONDE DE NOUR</button>
+      <div class="intro-legendes" aria-live="polite">
+        <p class="intro-ar" id="intro-ar" lang="ar" dir="rtl">السَّلَامُ عَلَيْكُمْ</p>
+        <p class="intro-fr" id="intro-fr" lang="fr">Bienvenue dans le merveilleux univers des Lanternes de Nour !</p>
+      </div>
+      <button type="button" class="intro-entrer" id="intro-entrer" disabled>ENTRER DANS LE MONDE DE NOUR</button>
     </div>
   </div>
   <div class="intro-barre">
-    <button type="button" class="intro-passer" id="intro-passer">Passer l'introduction</button>
-    <button type="button" class="intro-son" id="intro-son" aria-pressed="true" aria-label="Couper le son">🔊</button>
+    <button type="button" class="intro-passer" id="intro-passer">Passer</button>
+    <button type="button" class="intro-son" id="intro-son" aria-label="Activer le son">🔊 Activer le son</button>
   </div>
   <div class="intro-pied"><label class="intro-jamais"><input type="checkbox" id="intro-off"> Ne plus afficher l'introduction</label></div>
 </div>
