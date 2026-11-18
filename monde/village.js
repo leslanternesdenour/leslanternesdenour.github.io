@@ -3,7 +3,9 @@ import { sauvegarde } from './socle/sauvegarde.js?v=2';
 import { reveiller, reglerVolume, retirer } from './socle/audio.js?v=1';
 import { prechargerMusique, jouerMusique, arreterMusique, musiqueIndisponible } from './socle/musique.js?v=1';
 import { demarrerAmbiance, goutte, majAmbiance } from './socle/ambiance.js?v=2';
-import { chargerVoix } from './socle/voix.js?v=2';
+import { chargerVoix, dire, arreterVoix } from './socle/voix.js?v=2';
+// voix enregistrées du village (identifiants du catalogue des voix NOUR-VOIX-…)
+const VOIX_MAISON = { ablutions: 'VIL-003', priere: 'VIL-004', ramadan: 'VIL-005', sons: 'VIL-006', jardin: 'VIL-007', mots: 'VIL-008', cinq: 'VIL-009', etoiles: 'VIL-010', desert: 'VIL-011' };
 import { qualiteAuto, reglages, surveillerFluidite } from './socle/qualite.js?v=2';
 import { BATIMENTS } from './batiments.js?v=3';
 import { mascotte } from './mascottes.js?v=1';
@@ -91,6 +93,7 @@ document.querySelectorAll('#accueil [data-genre]').forEach(btn => btn.addEventLi
   const p = S.personnage || { tenue: 'ecru', peau: 1 };
   sauvegarde.regler('personnage', { ...p, genre: btn.dataset.genre, choisi: Date.now() });
   majChoixPerso();
+  chargerVoix('voix/').then(() => dire(btn.dataset.genre === 'fille' ? 'NOUR-VOIX-ACC-004' : 'NOUR-VOIX-ACC-005'));
 }));
 majChoixPerso();
 
@@ -105,7 +108,7 @@ document.querySelectorAll('#accueil [data-age]').forEach(btn => btn.addEventList
   reveiller();
   demarrerAmbiance();
   if (sons().musiqueActive) jouerMusique().then(majPanneauSon);
-  chargerVoix('voix/');
+  chargerVoix('voix/').then(() => dire('NOUR-VOIX-ACC-002', ok => { if (ok && dansLeVillage && !choisi) dire('NOUR-VOIX-VIL-001'); }));
   goutte();
 }));
 
@@ -138,11 +141,14 @@ function ouvrirPanneau(b) {
   if (ouvert) $('pan-entrer').href = b.lien;
   $('panneau').classList.remove('cache');
   $('bulle').classList.add('cache');
+  const v = VOIX_MAISON[b.id];
+  if (v) dire('NOUR-VOIX-' + v, ok => { if (ok && !ouvert && choisi === b) dire('NOUR-VOIX-VIL-002'); });
 }
 
 function fermerPanneau() {
   if (!choisi) return;
   choisi = null;
+  arreterVoix();
   village.deselectionner();
   $('panneau').classList.add('cache');
   $('bulle').classList.remove('cache');
