@@ -13,6 +13,8 @@ export const REGLAGES_PAR_DEFAUT = {
   version: 1,
 
   // Les prix sont des PROJETS, à valider. Aucun prix barré n'est affiché tant que prixHabituelValide est faux.
+  // Tant que prixValides est faux, la page d'abonnements n'affiche AUCUN montant (« prix annoncés bientôt »).
+  prixValides: false,
   tarifs: {
     mensuel: { promo: 4.99, habituel: 7.99 },
     annuel: { promo: 49.99, habituel: 79.90 }

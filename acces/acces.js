@@ -109,7 +109,7 @@ export function prixAffiches(reglages = REGLAGES_PAR_DEFAUT, maintenant = Date.n
   const m = f('mensuel'), a = f('annuel');
   const parMois = Math.round((a.prix / 12) * 100) / 100;
   const economie = a.barre !== null ? Math.round((a.barre - a.prix) * 100) / 100 : null;
-  return { enCours, debut: pr.debut, fin: pr.fin, mensuel: m, annuel: a, annuelParMois: parMois, economieAnnuelle: economie };
+  return { valides: !!reglages.prixValides, enCours, debut: pr.debut, fin: pr.fin, mensuel: m, annuel: a, annuelParMois: parMois, economieAnnuelle: economie };
 }
 
 export function formaterEuros(x) {

@@ -82,4 +82,5 @@ test('promo sans dates => jamais en cours', () => {
   const r = { ...R, promotion: { ...R.promotion, active: true } };
   assert.equal(prixAffiches(r, T).enCours, false);
 });
+test('prix non validés par défaut : rien à afficher', () => assert.equal(prixAffiches(R, T).valides, false));
 test('format euros', () => assert.equal(formaterEuros(4.99), '4,99 €'));

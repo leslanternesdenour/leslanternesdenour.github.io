@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr" data-univers="histoires">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Abonnements · Les Lanternes de Nour</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../univers/univers.css?v=1">
+<style>
+*{box-sizing:border-box}html,body{margin:0}
+body{min-height:100vh;color:#f4efff;font-family:Nunito,system-ui,sans-serif;padding:24px 16px 48px}
+main{max-width:1000px;margin:0 auto;display:grid;gap:22px;position:relative;z-index:1}
+h1{font:800 clamp(26px,6vw,38px) Poppins,system-ui;margin:0;color:#f5b942;text-align:center}
+.intro{text-align:center;color:#c9bfe8;line-height:1.55;max-width:640px;margin:0 auto}
+.bandeau{background:#3a2a7d;border-radius:18px;padding:12px 16px;text-align:center;font-weight:800;color:#ffe3a3}
+.cartes{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));align-items:stretch}
+.carte{background:#2a2166;border-radius:24px;padding:22px;display:grid;gap:12px;align-content:start;box-shadow:0 8px 0 #120d33;position:relative}
+.carte.vedette{outline:3px solid #f5b942}
+.pastille{position:absolute;top:-12px;right:16px;background:#f5b942;color:#2a1d00;font:800 13px Nunito,system-ui;padding:5px 12px;border-radius:999px}
+.carte h2{margin:0;font:800 21px Poppins,system-ui;color:#fff}
+.prix{font:800 34px Poppins,system-ui;color:#f5b942;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.prix small{font:700 15px Nunito,system-ui;color:#c9bfe8}
+.barre{text-decoration:line-through;color:#c9bfe8;font:700 18px Nunito,system-ui}
+.note{font-size:14px;color:#c9bfe8;margin:0}
+ul{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+li{display:flex;gap:8px;line-height:1.4;color:#e9e2ff;font-weight:600}
+li::before{content:"✦";color:#f5b942;flex:none}
+.bouton{display:block;text-align:center;border:0;border-radius:18px;padding:14px 16px;font:900 18px Nunito,system-ui;cursor:pointer;background:#f5b942;color:#2a1d00;box-shadow:0 5px 0 #d9952a;text-decoration:none;margin-top:auto}
+.bouton:active{transform:translateY(3px);box-shadow:0 2px 0 #d9952a}
+.bouton[aria-disabled=true]{background:#3a2a7d;color:#c9bfe8;box-shadow:0 5px 0 #191345;cursor:not-allowed}
+.retour{justify-self:center;color:#ffe3a3;font-weight:800}
+.mentions{font-size:13px;color:#c9bfe8;text-align:center;max-width:680px;margin:0 auto;line-height:1.5}
+</style>
+</head>
+<body>
+<div id="deco" aria-hidden="true"></div>
+<main>
+  <h1>🏮 Les abonnements</h1>
+  <p class="intro">Choisissez comment accompagner vos enfants dans le Monde de Nour. Les abonnements ne sont pas encore ouverts : cette page présente ce qui est prévu.</p>
+  <div class="bandeau" id="promo" hidden></div>
+
+  <section class="cartes" id="cartes" aria-label="Formules"></section>
+
+  <p class="mentions" id="mentions"></p>
+  <a class="retour" href="../">← Retour à l'accueil</a>
+</main>
+
+<script type="module">
+import { REGLAGES_PAR_DEFAUT as R } from '../acces/reglages.js';
+import { prixAffiches, formaterEuros } from '../acces/acces.js';
+
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const F = R.fonctionnalites;
+const nomsGratuit = Object.values(F).filter((f) => f.niveau === 'libre' || f.niveau === 'gratuit').map((f) => f.niveau === 'gratuit' ? f.nom + ' (aperçu)' : f.nom);
+const p = prixAffiches(R);
+
+if (p.enCours) {
+  const b = document.getElementById('promo');
+  b.hidden = false;
+  b.textContent = 'Offre de lancement en cours';
+}
+
+const prixBloc = (x, unite) => !p.valides
+  ? `<div class="prix"><small>Prix annoncés bientôt</small></div>`
+  : `<div class="prix">${x.barre !== null ? `<span class="barre">${formaterEuros(x.barre)}</span>` : ''}${formaterEuros(x.prix)} <small>${unite}</small></div>`;
+
+const cartes = [
+  { titre: 'Gratuit', prix: `<div class="prix">0 € <small>pour toujours</small></div>`,
+    liste: nomsGratuit,
+    lien: ['Créer mon compte gratuit', '../compte/'] },
+  { titre: 'Premium mensuel', prix: prixBloc(p.mensuel, 'par mois'),
+    liste: ['Tout le contenu du site, sans limite', 'Les nouveautés dès leur sortie'],
+    lien: ['Bientôt disponible', null] },
+  { titre: 'Premium annuel', vedette: true, prix: prixBloc(p.annuel, 'par an'),
+    note: !p.valides ? '' : `Soit ${formaterEuros(p.annuelParMois)} par mois` + (p.economieAnnuelle ? ` · vous économisez ${formaterEuros(p.economieAnnuelle)}` : ''),
+    liste: ['Tout le contenu du site, sans limite', 'Les nouveautés dès leur sortie'],
+    lien: ['Bientôt disponible', null] }
+];
+
+document.getElementById('cartes').innerHTML = cartes.map((c) => `
+  <article class="carte${c.vedette ? ' vedette' : ''}">
+    ${c.vedette && p.valides ? '<span class="pastille">Meilleur prix</span>' : ''}
+    <h2>${esc(c.titre)}</h2>
+    ${c.prix}
+    ${c.note ? `<p class="note">${esc(c.note)}</p>` : ''}
+    <ul>${c.liste.map((l) => `<li>${esc(l)}</li>`).join('')}</ul>
+    ${c.lien[1] ? `<a class="bouton" href="${c.lien[1]}">${esc(c.lien[0])}</a>` : `<a class="bouton" aria-disabled="true" role="button">${esc(c.lien[0])}</a>`}
+  </article>`).join('');
+
+document.getElementById('mentions').textContent =
+  "Aucun paiement n'est possible pour le moment. Les prix et le contenu de chaque formule peuvent encore évoluer avant l'ouverture.";
+</script>
+<script src="../univers/univers.js?v=1" defer></script>
+</body>
+</html>
