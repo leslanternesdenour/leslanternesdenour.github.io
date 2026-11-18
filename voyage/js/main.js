@@ -21,6 +21,8 @@ import { Voyageur, TENUES, PEAUX, convient } from './voyageur.js?v=3';
 import { creerCour } from './cour.js?v=3';
 import { MONTURES, monture, creerMonture, creerEcurie, FICHES_ESPECES } from './montures.js?v=3';
 import { COLLECTIONS, BADGES, progressionCollection } from './succes.js?v=3';
+import { creerGuide } from './guide.js?v=3';
+import { creerCarte, CATEGORIES } from './carte.js?v=3';
 import { creerBourse } from './economie.js?v=3';
 import { creerQuotidien } from './quotidien.js?v=3';
 import { reglageGrain, materiau } from './formes.js?v=3';
@@ -394,6 +396,8 @@ async function demarrer() {
     cc.querySelectorAll('[data-basculer]').forEach(b => b.onclick = () => { const a = article(b.dataset.basculer); equiper(a, !estEquipe(a)); ouvrirCarnet(ongletCarnet); });
     cc.querySelectorAll('[data-fiche]').forEach(b => b.onclick = () => ficheObjet(article(b.dataset.fiche), () => ouvrirCarnet(ongletCarnet)));
     cc.querySelectorAll('[data-perso]').forEach(b => b.onclick = () => { fermerCarnet(); ouvrirPerso(false); });
+    cc.querySelectorAll('[data-guider-mission]').forEach(b => b.onclick = () => { fermerCarnet(); guiderMission(b.dataset.guiderMission); });
+    cc.querySelectorAll('[data-guider-jour]').forEach(b => b.onclick = () => { fermerCarnet(); guiderJour(b.dataset.guiderJour); });
     cc.querySelectorAll('[data-fiche-monture]').forEach(b => b.onclick = () => { $('carnet').classList.add('cache'); ficheMonture(b.dataset.ficheMonture, () => ouvrirCarnet('sablo')); });
     remplirApercus(cc);
     $('carnet').classList.remove('cache');
@@ -403,13 +407,14 @@ async function demarrer() {
     if (o === 'missions') {
       const ids = Object.keys(MISSIONS);
       const carte = k => { const m = AV.missions[k], M = MISSIONS[k], n = m ? m.n : 0;
-        return `<div class="carte-mission ${m && m.etat === 'finie' ? 'finie' : ''}"><h4>${M.icone} ${M.titre}${m && m.etat === 'finie' ? '<span class="etiquette">Réussie ✓</span>' : !m ? '<span class="etiquette">À découvrir</span>' : ''}</h4>
+        const guidable = m && m.etat !== 'finie' && aventure.prochaineCible(J, k);
+        return `<div class="carte-mission ${m && m.etat === 'finie' ? 'finie' : ''}">${guidable ? `<button class="me-guider" data-guider-mission="${k}">🧭 Me guider</button>` : ''}<h4>${M.icone} ${M.titre}${m && m.etat === 'finie' ? '<span class="etiquette">Réussie ✓</span>' : !m ? '<span class="etiquette">À découvrir</span>' : ''}</h4>
           <p>${m ? M.resume : 'Parle aux habitants et explore pour découvrir cette mission.'}</p><div class="barre"><i style="width:${n / M.total * 100}%"></i></div>
           <p style="margin:6px 0 0;font-size:14px">${n} / ${M.total} · récompense : ${M.recompense} <span class="piece" style="width:16px;height:16px;vertical-align:-3px"></span></p></div>`; };
       const enCours = ids.filter(k => AV.missions[k] && AV.missions[k].etat !== 'finie'), finies = ids.filter(k => AV.missions[k] && AV.missions[k].etat === 'finie'), autres = ids.filter(k => !AV.missions[k]);
       const mj = quotidien.missions();
       const jourHtml = `<h3>☀️ Missions du jour</h3>${quotidien.recul ? '<p class="note">L\'heure de l\'appareil semble avoir reculé : les missions de ce jour restent les mêmes.</p>' : ''}
-        ${mj.map(m => `<div class="carte-mission ${m.fini ? 'finie' : ''}"><h4>${m.icone} ${m.titre}${m.fini ? '<span class="etiquette">Réussie ✓</span>' : ''}</h4>
+        ${mj.map(m => `<div class="carte-mission ${m.fini ? 'finie' : ''}">${!m.fini && JOUR_GUIDABLE.includes(m.id) ? `<button class="me-guider" data-guider-jour="${m.id}">🧭 Me guider</button>` : ''}<h4>${m.icone} ${m.titre}${m.fini ? '<span class="etiquette">Réussie ✓</span>' : ''}</h4>
           <div class="barre"><i style="width:${Math.min(100, m.n / m.total * 100)}%"></i></div><p style="margin:6px 0 0;font-size:14px">${Math.min(m.n, m.total)} / ${m.total} · ${m.pieces} <span class="piece" style="width:16px;height:16px;vertical-align:-3px"></span></p></div>`).join('')}
         <p class="note">Bonus si les trois sont réussies : ${quotidien.bonus} pièces. Les missions changent chaque jour, sans obligation : tes pièces restent à toi pour toujours. Hakim, l'ancien du village, pose aussi 3 questions par jour.</p>`;
       return jourHtml + (enCours.length ? '<h3>En cours</h3>' + enCours.map(carte).join('') : '') + (finies.length ? '<h3>Terminées</h3>' + finies.map(carte).join('') : '') + (autres.length ? '<h3>À découvrir</h3>' + autres.map(carte).join('') : '');
@@ -577,7 +582,6 @@ async function demarrer() {
     nouveau.racine.position.copy(ancien.position); nouveau.racine.rotation.copy(ancien.rotation); nouveau.pose = pose;
     scene.remove(ancien); ancien.traverse(o => { if (o.geometry) o.geometry.dispose(); });
     scene.add(nouveau.racine); enfant = nouveau;
-    $('btn-carte').classList.toggle('cache', !E.carte);
     $('btn-jumelles').classList.toggle('cache', !E.jumelles);
     if (E.lanterne && !lumiere) { lumiere = new THREE.PointLight('#ffc870', 0, 14, 1.6); scene.add(lumiere); }
     cour.maj(AV);
@@ -855,37 +859,98 @@ async function demarrer() {
   }
   $('ouvrir-perso').addEventListener('click', () => ouvrirPerso(false));
 
-  // ---------- la carte du pays ----------
-  function dessinerCarte() {
-    const cv = $('carte-canvas'), x = cv.getContext('2d'), N = cv.width, k = N / 760, X = v => (v + 380) * k;
-    if (!dessinerCarte.fond) {
-      const img = x.createImageData(N, N), col = terrain.mesh.geometry.attributes.color, n1 = terrain.n + 1;
-      for (let j = 0; j < N; j++) for (let i = 0; i < N; i++) {
-        const wx = i / k - 380, wz = j / k - 380, gi = Math.round((wx + 400) / terrain.pas), gj = Math.round((wz + 400) / terrain.pas), v = gj * n1 + gi;
-        const o = (j * N + i) * 4, f = 255 * 1.08;
-        img.data[o] = Math.min(255, Math.pow(col.getX(v), 1 / 2.2) * f); img.data[o + 1] = Math.min(255, Math.pow(col.getY(v), 1 / 2.2) * f); img.data[o + 2] = Math.min(255, Math.pow(col.getZ(v), 1 / 2.2) * f); img.data[o + 3] = 255;
-      }
-      dessinerCarte.fond = img;
-    }
-    x.putImageData(dessinerCarte.fond, 0, 0);
-    x.fillStyle = '#4fc3d8'; x.beginPath(); x.arc(X(LIEUX.oasis.x), X(LIEUX.oasis.z), LIEUX.oasis.lac * k, 0, 7); x.fill();
-    x.font = 'bold 15px Nunito, sans-serif'; x.textAlign = 'center';
-    const lieux = [['village', 0, 0, -1], ['marche', marche.centre.x, marche.centre.z, 1], ['oasis', LIEUX.oasis.x, LIEUX.oasis.z, 1], ['camp', LIEUX.camp.x, LIEUX.camp.z, 1], ['dunes', LIEUX.dunes.x, LIEUX.dunes.z, 1], ['montagnes', 0, -265, 1]];
-    for (const [id, lx, lz, sens] of lieux) {
-      const z = ZONES.find(o => o.id === id), vu = etat.zones.includes(id);
-      x.font = '26px sans-serif'; x.fillText(vu ? z.icone : '❔', X(lx), X(lz) + 8);
-      x.font = 'bold 14px Nunito, sans-serif'; x.lineWidth = 4; x.strokeStyle = 'rgba(255,248,231,.85)';
-      const ty = X(lz) + (sens > 0 ? 28 : -18);
-      if (vu) { x.strokeText(z.nom, X(lx), ty); x.fillStyle = '#3a2a1a'; x.fillText(z.nom, X(lx), ty); }
-      x.fillStyle = '#4fc3d8';
-    }
-    if (!etat.lus.includes('etoiles')) { x.font = '22px sans-serif'; x.fillText('✨', X(-70), X(238)); }
-    x.font = '24px sans-serif'; x.fillText('🐪', X(C.x), X(C.z) + 8);
-    x.save(); x.translate(X(J.x), X(J.z)); x.rotate(-J.a + Math.PI); x.fillStyle = '#c94f3c'; x.strokeStyle = '#fff'; x.lineWidth = 3;
-    x.beginPath(); x.moveTo(0, -12); x.lineTo(9, 10); x.lineTo(0, 5); x.lineTo(-9, 10); x.closePath(); x.stroke(); x.fill(); x.restore();
+  // ---------- la carte du pays et le guidage ----------
+  const guide = creerGuide({ scene, terrain, colliders: decor.colliders, col: decor.col });
+  const rayonGuide = () => monte ? (monture(AV.monture).espece === 'elephant' ? 2.0 : 1.4) : 0.8;
+  const posGuide = () => monte ? { x: C.x, z: C.z } : { x: J.x, z: J.z };
+  function lieuxCarte() {
+    const L = [], z = id => ZONES.find(o => o.id === id), connue = id => etat.zones.includes(id);
+    const zone = (id, x, zz, cat, region, extra = {}) => { const o = z(id); L.push({ id: 'zone:' + id, zone: id, nom: o.nom, icone: o.icone, cat, x, z: zz, connu: connue(id), fait: connue(id), region, grand: true, ...extra }); };
+    zone('village', 0, 0, 'village', 0, { rayon: 20 });
+    zone('marche', marche.centre.x, marche.centre.z, 'marche', 0, { rayon: 10 });
+    zone('oasis', LIEUX.oasis.x - LIEUX.oasis.lac - 6, LIEUX.oasis.z, 'oasis', 55, { rayon: 12 });
+    zone('camp', LIEUX.camp.x, LIEUX.camp.z, 'camp', 45, { rayon: 14 });
+    zone('dunes', LIEUX.dunes.x, LIEUX.dunes.z, 'desert', 110, { rayon: 30 });
+    zone('montagnes', 0, -258, 'montagne', 75, { rayon: 18, verrou: decor.col.ouvert ? null : 'Le passage vers les montagnes est encore fermé. Découvre d\'abord l\'oasis et le camp des caravanes.' });
+    L.push({ id: 'col', nom: 'Le col', cat: 'passage', x: 0, z: -150, connu: true, rayon: 8, verrou: decor.col.ouvert ? null : 'Ce passage s\'ouvrira quand tu auras découvert l\'oasis et le camp des caravanes.', texte: 'Le passage entre le village et les montagnes.' });
+    L.push({ id: 'puits', nom: 'Le puits du village', cat: 'eau', x: 0, z: 3.4, connu: true, rayon: 4 });
+    L.push({ id: 'abreuvoir', nom: 'L\'abreuvoir de l\'enclos', cat: 'eau', x: 36.5, z: -12.5, connu: true, rayon: 4 });
+    L.push({ id: 'ecurie', nom: 'L\'écurie de Nabil', cat: 'ecurie', x: ecurie.point.x, z: ecurie.point.z, connu: true, rayon: 4, texte: 'Pour choisir ou adopter une monture.' });
+    L.push({ id: 'cour', nom: 'Ma cour', cat: 'maison', x: cour.centre.x, z: cour.centre.z, connu: true, rayon: 4.5, texte: 'Ta maison, où tu exposes tes objets.' });
+    L.push({ id: 'nour', nom: 'Nour', cat: 'personne', icone: '💧', x: NOUR.x, z: NOUR.z, connu: true, rayon: 4 });
+    const s = decor.points.find(p => p.id === 'sage'); if (s) L.push({ id: 'hakim', nom: 'Hakim, l\'ancien', cat: 'personne', icone: '🧓', x: s.x, z: s.z, connu: true, rayon: 3.5, texte: 'Il pose trois questions chaque jour.' });
+    for (const p of decor.points) { const d = POINTS[p.id]; if (!d || !d.decouverte) continue;
+      L.push({ id: 'pierre:' + p.id, nom: d.titre, cat: 'pierre', x: p.x, z: p.z, connu: true, fait: etat.lus.includes(p.id), rayon: 3.5 }); }
+    const gr = aventure.grotte;
+    if (gr && (connue('montagnes') || AV.equipement.carte)) L.push({ id: 'grotte', nom: 'La grotte des montagnes', cat: 'decouverte', icone: '🕳️', x: gr.x, z: gr.z, connu: true, fait: AV.ramasses.includes('jarre'), rayon: 4,
+      texte: 'Il y fait tout noir : il faut une lampe à huile.', verrou: decor.col.ouvert ? null : 'Le passage vers les montagnes est encore fermé.' });
+    if (AV.equipement.carte && !etat.lus.includes('etoiles') && !decor.points.some(p => p.id === 'etoiles')) L.push({ id: 'secret', nom: 'Un endroit secret', cat: 'decouverte', x: -70, z: 238, connu: true, rayon: 6, texte: 'Ta carte des secrets montre ici quelque chose à découvrir…' });
+    return L;
   }
-  $('btn-carte').addEventListener('click', () => { interface_ouverte = true; ctl.bloque = true; dessinerCarte(); $('carte-pays').classList.remove('cache'); });
-  $('carte-fermer').addEventListener('click', () => { $('carte-pays').classList.add('cache'); interface_ouverte = false; ctl.bloque = false; });
+  function guiderVers(d) {
+    const r = guide.activer(d, posGuide(), rayonGuide());
+    if (!r.ok && d.silencieux) return false;
+    if (!r.ok) {
+      const msg = r.raison === 'col' ? 'Le passage vers les montagnes est encore fermé : découvre d\'abord l\'oasis et le camp des caravanes.'
+        : 'Je ne trouve pas de chemin praticable jusque-là pour le moment. Essaie depuis un autre endroit, ou choisis un lieu tout près.';
+      dialogue({ titre: '🧭 Pas de chemin', texte: msg }); return false;
+    }
+    etat.guidage = { id: d.id, x: d.x, z: d.z, nom: d.nom, icone: d.icone, rayon: d.rayon }; enregistrer();   // repris si on revient plus tard
+    if (!d.silencieux) { S.sonPorte(); montrerIndice(`🧭 En route vers ${d.nom} ! Suis les petites lumières dorées.`, 3500); }
+    majGuidage(null);
+    return true;
+  }
+  const carte = creerCarte(terrain, {
+    lieux: lieuxCarte, joueur: () => ({ x: J.x, z: J.z, a: monte ? C.a : J.a }),
+    monture: () => ({ x: C.x, z: C.z, icone: monture(AV.monture).icone, avecToi: monte }),
+    route: () => guide.route, dest: () => guide.dest,
+    guider: l => guiderVers({ id: l.id, x: l.x, z: l.z, nom: l.connu ? l.nom : 'un lieu inconnu', icone: l.connu ? (l.icone || CATEGORIES[l.cat].icone) : '❔', rayon: l.rayon || 5 }),
+    arreter: () => { guide.arreter(); etat.guidage = null; enregistrer(); majGuidage(null); }, fermer: () => fermerCarte()
+  });
+  function ouvrirCarte(lieuId) {
+    if (interface_ouverte && $('carte-pays').classList.contains('cache')) return;
+    fermerPanneaux(); interface_ouverte = true; ctl.bloque = true;
+    $('carte-pays').classList.remove('cache'); carte.ouvrir(lieuId);
+  }
+  function fermerCarte() { if ($('carte-pays').classList.contains('cache')) return; carte.fermer(); $('carte-pays').classList.add('cache'); interface_ouverte = false; ctl.bloque = false; dernierEtatBoutons = ''; }
+  $('btn-carte').addEventListener('click', () => ouvrirCarte());
+  $('carte-fermer').addEventListener('click', fermerCarte);
+  addEventListener('keydown', e => { if (e.code === 'KeyM' && !e.repeat) { if (!$('carte-pays').classList.contains('cache')) fermerCarte(); else if (!interface_ouverte) ouvrirCarte(); } if (e.code === 'Escape') fermerCarte(); });
+  // le petit bandeau du guidage, en haut de l'écran
+  function majGuidage(info) {
+    const g = $('guidage');
+    if (!guide.dest) { g.classList.add('cache'); return; }
+    g.classList.toggle('cache', interface_ouverte);
+    if (!info) return;
+    const d = info.distance;
+    $('guidage-txt').textContent = `${guide.dest.icone || '🧭'} ${guide.dest.nom} · ${info.probleme ? 'chemin introuvable' : d > 950 ? (d / 1000).toFixed(1).replace('.', ',') + ' km' : Math.round(d / 5) * 5 + ' m'}`;
+    $('guidage-fleche').style.transform = `rotate(${-angleVers(cam.yaw + Math.PI, info.cap)}rad)`;
+    $('guidage-voir').classList.toggle('eteint', !guide.montrer);
+  }
+  $('guidage-voir').addEventListener('click', () => { guide.montrer = !guide.montrer; montrerIndice(guide.montrer ? '👣 Les lumières du chemin sont visibles.' : '👣 Lumières cachées : tu explores librement, la flèche reste là.', 2500); });
+  $('guidage-stop').addEventListener('click', () => { guide.arreter(); etat.guidage = null; enregistrer(); majGuidage(null); montrerIndice('Guidage arrêté. Bonne exploration !', 2000); });
+  $('guidage-txt').addEventListener('click', () => ouvrirCarte());
+  // se faire guider vers la prochaine étape d'une mission
+  function guiderMission(k) {
+    const c = aventure.prochaineCible(J, k);
+    if (!c) { montrerIndice('Rien à chercher pour cette mission pour l\'instant : parle aux habitants !', 3000); return; }
+    const M = MISSIONS[k];
+    guiderVers({ id: 'mission:' + k, x: c.x, z: c.z, nom: M.titre, icone: M.icone, rayon: 3.5 });
+  }
+  function guiderJour(type) {
+    const J0 = posGuide(), proche = l => l.reduce((b, o) => !b || Math.hypot(o.x - J0.x, o.z - J0.z) < Math.hypot(b.x - J0.x, b.z - J0.z) ? o : b, null);
+    let d = null;
+    if (type === 'oasis') d = lieuxCarte().find(l => l.id === 'zone:oasis');
+    else if (type === 'souk') d = lieuxCarte().find(l => l.id === 'zone:marche');
+    else if (type === 'sage') d = lieuxCarte().find(l => l.id === 'hakim');
+    else if (type === 'lieux') d = proche(lieuxCarte().filter(l => l.zone && !l.connu && !l.verrou && !(quotidien.J.lieux || []).includes(l.zone))) || proche(lieuxCarte().filter(l => l.zone && !l.verrou && !(quotidien.J.lieux || []).includes(l.zone)));
+    else if (type === 'pierre') d = proche(lieuxCarte().filter(l => l.cat === 'pierre' && !l.fait)) || proche(lieuxCarte().filter(l => l.cat === 'pierre'));
+    else if (type === 'lanterne') { const c = aventure.prochaineCible(J, 'lanternes'); if (c) d = { id: 'lanterne', x: c.x, z: c.z, nom: 'une lanterne cachée', icone: '🏮', rayon: 3.5 }; }
+    else if (type === 'animal') { const c = aventure.prochaineCible(J, 'animaux'); if (c) d = { id: 'animal', x: c.x, z: c.z, nom: 'un animal', icone: '🦊', rayon: 8 }; }
+    if (!d) { montrerIndice('Pas de destination précise pour celle-ci : à toi de jouer !', 3000); return; }
+    guiderVers({ id: d.id, x: d.x, z: d.z, nom: d.nom, icone: d.icone || (CATEGORIES[d.cat] || {}).icone, rayon: d.rayon || 5 });
+  }
+  const JOUR_GUIDABLE = ['oasis', 'souk', 'sage', 'lieux', 'pierre', 'lanterne', 'animal'];
 
   // ---------- les jumelles ----------
   let jumelles = false, vol = 0;
@@ -1045,6 +1110,9 @@ async function demarrer() {
     procheAv = sequence ? null : aventure.interaction(J);
     aventure.maj(dt, tTotal, J, monte ? C.vit > 6 : J.vit > 4.2, nuit);
     marche.maj(dt, tTotal, J); ecurie.animer(dt, tTotal, J);
+    { const info = guide.maj(dt, tTotal, posGuide(), rayonGuide());
+      if (info && info.arrive) { majGuidage(null); etat.guidage = null; enregistrer(); S.sonDecouverte(); bandeau('Tu es arrivé !', `${info.dest.icone || ''} ${info.dest.nom}`); if (!monte) enfant.faire('joie'); }
+      else majGuidage(info); }
     bourse.maj(dt, tTotal, monte ? C : J, monte ? 3.8 : 2.7, camera);
     if (monte && C.vit > 0.5) quotidien.evenement('distance', C.vit * dt);
     hakim.animer(dt, 0, tTotal);
@@ -1086,7 +1154,7 @@ async function demarrer() {
   function majBoussole() {
     const b = $('boussole');
     if (!AV.equipement.boussole) { b.classList.add('cache'); return; }
-    const cible = aventure.prochaineCible(J);
+    const cible = guide.dest || aventure.prochaineCible(J);
     b.classList.toggle('cache', !cible || interface_ouverte);
     if (!cible) return;
     const rel = angleVers(cam.yaw + Math.PI, Math.atan2(cible.x - J.x, cible.z - J.z));
@@ -1133,6 +1201,8 @@ async function demarrer() {
   $('chargement').classList.add('cache');
   $('hud').classList.remove('cache');
   $('tactile').classList.remove('cache');
+  setTimeout(() => carte.preparer(), 5000);
+  if (etat.guidage) { const g0 = etat.guidage; etat.guidage = null; if (!guiderVers({ ...g0, silencieux: true })) etat.guidage = null; }   // la carte se dessine en douce
   if (!perso()) ouvrirPerso(true);
   else if (!etat.aideVue) montrerAide();
   else { const go = () => { S.demarrerSons(); S.reglerSons(sons()); removeEventListener('pointerdown', go); removeEventListener('keydown', go); }; addEventListener('pointerdown', go); addEventListener('keydown', go); }
@@ -1142,7 +1212,7 @@ async function demarrer() {
     etat, J, C, decor, ciel, H, cam, aventure, bourse, action: () => action(),
     teleporter(x, z) { J.x = x; J.z = z; if (monte) { C.x = x; C.z = z; } },
     monte: () => monte, sequence: () => sequence, proche: () => proche, zone: () => zoneActuelle,
-    enfant: () => enfant, perso, choisirMonture: id => choisirMonture(id), ouvrirEcurie: () => ouvrirEcurie(), monture: () => chameau, ecurie, ouvrirBoutique: id => ouvrirBoutique(id), ouvrirCarnet: o => ouvrirCarnet(o), ouvrirPerso: () => ouvrirPerso(false), apercu: a => apercu(article(a)),
+    enfant: () => enfant, perso, guide, carte, ouvrirCarte: id => ouvrirCarte(id), guiderVers: d => guiderVers(d), guiderMission: k => guiderMission(k), lieuxCarte: () => lieuxCarte(), choisirMonture: id => choisirMonture(id), ouvrirEcurie: () => ouvrirEcurie(), monture: () => chameau, ecurie, ouvrirBoutique: id => ouvrirBoutique(id), ouvrirCarnet: o => ouvrirCarnet(o), ouvrirPerso: () => ouvrirPerso(false), apercu: a => apercu(article(a)),
     infos: () => renderer.info.render
   };
 }
