@@ -9,6 +9,7 @@ import { Controles, ACTIONS, nomTouche } from './controles.js?v=3';
 import { creerOiseaux } from './oiseaux.js?v=3';
 import { creerFaucon } from './faucon.js?v=3';
 import * as S from './sons.js?v=3';
+import { chargerVoixVoyage, direTextes, direIds, direMotArabe, arreterVoixVoyage } from './voix.js?v=3';
 import { ZONES, POINTS, BIENTOT } from './contenu.js?v=3';
 import { sauvegarde } from '../../monde/socle/sauvegarde.js?v=2';
 import { qualiteAuto, surveillerFluidite } from '../../monde/socle/qualite.js?v=2';
@@ -92,6 +93,10 @@ async function demarrer() {
   const nomMonture = () => monture(AV.monture).nom;
   // le personnage choisi est rangé dans le profil de l'enfant (clé « monde »), jamais changé tout seul
   const perso = () => sauvegarde.get().personnage || null;
+  // les phrases s'accordent avec le personnage choisi (fille ou garçon)
+  const ACCORDS = [[/(\b[Tt]u es arrivé)(?!e)/g, '$1e'], [/\bun vrai explorateur/g, 'une vraie exploratrice'], [/m'a accueilli(?!e)/g, "m'a accueillie"]];
+  const accord = t => (t && (perso() || {}).genre === 'fille') ? ACCORDS.reduce((x, [re, r]) => x.replace(re, r), t) : t;
+  chargerVoixVoyage();
   const genre = () => (perso() && perso().genre) || 'fille';
   const tenueActuelle = () => AV.tenues[genre()] || (AV.tenues[genre()] = {});
   // la bourse : les pièces tombent au sol devant l'enfant et se ramassent toutes seules
@@ -294,6 +299,7 @@ async function demarrer() {
     $('lecture-mascotte').innerHTML = p.mascotte === 'nour' ? mascotte('ablutions') : p.image ? `<img class="fiche-image" src="${p.image}" alt="">` : p.icone ? `<span class="fiche-icone">${p.icone}</span>` : '';
     $('lecture').style.setProperty('--r', p.couleur || 'transparent'); $('lecture').classList.toggle('fiche', !!p.couleur);
     $('lecture-arabe').textContent = p.arabe || ''; $('lecture-arabe').classList.toggle('cache', !p.arabe);
+    p = { ...p, texte: accord(p.texte) };
     $('lecture-texte').textContent = p.texte;
     $('lecture-sous').textContent = p.sous || ''; $('lecture-sous').classList.toggle('cache', !p.sous);
     const src = $('lecture-source');
@@ -313,7 +319,7 @@ async function demarrer() {
     (zone.querySelector('button.choix') || $('lecture-ok')).focus({ preventScroll: true });
     const voix = p.voix || (p.mascotte === 'nour' ? 'nour' : /Hakim/.test(p.titre) ? 'hakim' : /Salim/.test(p.titre) ? 'salim' : null);
     $('lecture-ecouter').onclick = p.ecouterArabe ? () => parlerArabe(p.ecouterArabe)
-      : () => parler(p.texte + (p.sous ? ' ' + p.sous.replace(/^[^\wÀ-ÿ]+/, '') : '') + (p.sens ? ' ' + p.sens.replace('Sens du verset : ', 'Le sens de ce verset : ') : ''), voix);
+      : () => direTextes([{ t: p.texte }, { t: p.sous, opt: true }, { t: p.sens }]) || parler(p.texte + (p.sous ? ' ' + p.sous.replace(/^[^\wÀ-ÿ]+/, '') : '') + (p.sens ? ' ' + p.sens.replace('Sens du verset : ', 'Le sens de ce verset : ') : ''), voix);
   }
   // Pièces de Nour gagnées : petit « +n » qui monte, la bourse bondit
   let timerGain = null;
@@ -350,7 +356,7 @@ async function demarrer() {
   $('bourse').addEventListener('click', () => ouvrirCarnet('collection'));
   function fermerLecture() {
     $('lecture').classList.add('cache'); interface_ouverte = false; ctl.bloque = false;
-    try { speechSynthesis.cancel(); } catch (e) {}
+    try { speechSynthesis.cancel(); } catch (e) {} arreterVoixVoyage();
   }
   $('lecture-ok').addEventListener('click', fermerLecture);
   $('lecture-fermer').addEventListener('click', fermerLecture);
@@ -361,6 +367,7 @@ async function demarrer() {
   const VOIX = { nour: { pitch: 1.45, rate: 0.98 }, hakim: { pitch: 0.7, rate: 0.82 }, salim: { pitch: 0.9, rate: 0.95 }, karim: { pitch: 1.0, rate: 1.0 },
     amina: { pitch: 1.25, rate: 0.95 }, layla: { pitch: 1.2, rate: 0.9 }, samira: { pitch: 1.1, rate: 0.92 }, hassan: { pitch: 0.8, rate: 0.9 }, nabil: { pitch: 0.85, rate: 0.95 } };
   function parlerArabe(mot) {
+    if (direMotArabe(mot)) return;
     try {
       const v = speechSynthesis.getVoices().find(v => v.lang && v.lang.toLowerCase().startsWith('ar'));
       if (!v) { montrerIndice('Ton appareil n\'a pas de voix arabe : lis la prononciation écrite sous le mot.', 3500); return; }
@@ -418,12 +425,16 @@ async function demarrer() {
   $('nb-pieces').textContent = AV.pieces;
   let timerBandeau = null;
   function bandeau(petit, nom) {
-    const b = $('bandeau'); b.classList.add('cache'); void b.offsetWidth;
+    const b = $('bandeau'); b.classList.add('cache'); void b.offsetWidth; petit = accord(petit);
+    direTextes([{ t: petit }, { t: nom, opt: true }]);   // seulement si la phrase est enregistrée
     $('bandeau-petit').textContent = petit; $('bandeau-nom').textContent = nom; b.classList.remove('cache');
     clearTimeout(timerBandeau); timerBandeau = setTimeout(() => b.classList.add('cache'), 4300);
   }
   let timerIndice = null, indiceForce = false;
+  let dernierIndiceDit = { t: '', quand: 0 };
   function montrerIndice(html, ms) {
+    html = accord(html);
+    if (html !== dernierIndiceDit.t || performance.now() - dernierIndiceDit.quand > 8000) { dernierIndiceDit = { t: html, quand: performance.now() }; direTextes([{ t: html }]); }
     const i = $('indice'); i.innerHTML = html; i.classList.remove('cache'); indiceForce = true;
     clearTimeout(timerIndice); timerIndice = setTimeout(() => { indiceForce = false; i.classList.add('cache'); }, ms);
   }
@@ -597,6 +608,7 @@ async function demarrer() {
       <p>${k('courir')} : courir</p><p>Souris (clic maintenu) : tourner la caméra · molette : zoomer</p>
       <p>${k('interagir')} : lire, parler, ramasser</p><p>${k('chameau')} : monter sur le chameau ou descendre</p>`;
     interface_ouverte = true; ctl.bloque = true; $('aide').classList.remove('cache');
+    setTimeout(() => direIds(['NOUR-VOIX-NAV-014', matchMedia('(pointer: coarse)').matches ? 'NOUR-VOIX-NAV-013' : 'NOUR-VOIX-NAV-015']), 400);
   }
 
   // ---------- personnalisation des commandes ----------
@@ -628,6 +640,7 @@ async function demarrer() {
   $('edition-fini').addEventListener('click', () => { $('barre-edition').classList.add('cache'); ctl.editer(false); ctl.tactile = ctl.r.tactileForce || matchMedia('(pointer: coarse)').matches || ('ontouchstart' in window && navigator.maxTouchPoints > 0); ctl.appliquer(); interface_ouverte = false; ctl.bloque = false; dernierEtatBoutons = ''; });
   $('edition-defaut').addEventListener('click', () => { ctl.r.positions = {}; ctl.sauver(); ctl.editer(true); });
   $('aide-partir').addEventListener('click', () => {
+    arreterVoixVoyage();
     $('aide').classList.add('cache'); interface_ouverte = false; ctl.bloque = false;
     etat.aideVue = true; enregistrer();
     S.demarrerSons(); S.reglerSons(sons());
@@ -731,7 +744,7 @@ async function demarrer() {
   function ouvrirBoutique(id) {
     const Mm = MARCHANDS[id]; marchandOuvert = id;
     interface_ouverte = true; ctl.bloque = true;
-    $('boutique-icone').textContent = Mm.icone; $('boutique-nom').textContent = Mm.nom; $('boutique-accueil').textContent = Mm.accueil;
+    $('boutique-icone').textContent = Mm.icone; $('boutique-nom').textContent = Mm.nom; $('boutique-accueil').textContent = Mm.accueil; direTextes([{ t: Mm.accueil }]);
     $('boutique-pieces').textContent = AV.pieces;
     const dispo = articlesDuJour(quotidien.jour);
     const liste = ARTICLES.filter(a => a.marchand === id && (!a.emplacement || convient(a, genre())) && (dispo(a.id) || possede(a)));
@@ -814,7 +827,7 @@ async function demarrer() {
   function ouvrirEcurie() {
     interface_ouverte = true; ctl.bloque = true; marchandOuvert = 'ecurie';
     $('boutique-icone').textContent = '🐎'; $('boutique-nom').textContent = 'Nabil, le gardien de l\'écurie';
-    $('boutique-accueil').textContent = 'Bienvenue à l\'écurie ! Ici, tes montures se reposent, boivent et mangent. Choisis celle qui partira en voyage avec toi.';
+    $('boutique-accueil').textContent = 'Bienvenue à l\'écurie ! Ici, tes montures se reposent, boivent et mangent. Choisis celle qui partira en voyage avec toi.'; direTextes([{ t: $('boutique-accueil').textContent }]);
     $('boutique-pieces').textContent = AV.pieces;
     $('boutique-articles').innerHTML = `<div class="etal-grille">${MONTURES.map(m => {
       const R = RARETES[m.rarete], avoir = AV.montures.includes(m.id), actif = AV.monture === m.id;
@@ -970,11 +983,11 @@ async function demarrer() {
     setTimeout(() => { $('dec-barre').style.transition = 'width 1s ease'; $('dec-barre').style.width = p ? `${p.n / p.total * 100}%` : '0'; }, 450);
     const b = $('dec-ecouter');
     b.innerHTML = `${ICONE_SON}<span>${mot || d.arabe ? 'Écouter en arabe' : 'Écouter'}</span>`;
-    b.onclick = () => { b.classList.add('parle'); setTimeout(() => b.classList.remove('parle'), 1800); if (mot || d.arabe) parlerArabe(d.arabe); else parler(`${d.nom}. ${d.texte || ''}`); };
+    b.onclick = () => { b.classList.add('parle'); setTimeout(() => b.classList.remove('parle'), 1800); if (mot || d.arabe) parlerArabe(d.arabe); else if (!direTextes([{ t: d.nom, opt: true }, { t: d.texte }])) parler(`${d.nom}. ${d.texte || ''}`); };
     z.classList.remove('cache', 'joue'); void z.offsetWidth; z.classList.add('joue');
     if (d.nouveau) {
       if (!monte) enfant.faire('joie');
-      parler(mot ? `Nouveau mot arabe : ${d.nom}.` : `${T[1].replace(' !', '')} : ${d.nom}.`);
+      if (!direTextes([{ t: T[1] }, { t: mot ? d.arabe : d.nom, opt: !mot }])) parler(mot ? `Nouveau mot arabe : ${d.nom}.` : `${T[1].replace(' !', '')} : ${d.nom}.`);
     }
     $('dec-ok').focus({ preventScroll: true });
   }
@@ -982,7 +995,7 @@ async function demarrer() {
     if ($('decouverte').classList.contains('cache')) return;
     $('decouverte').classList.add('cache'); $('decouverte').classList.remove('joue');
     focus = null; interface_ouverte = false; ctl.bloque = false; dernierEtatBoutons = '';
-    try { speechSynthesis.cancel(); } catch (e) {}
+    try { speechSynthesis.cancel(); } catch (e) {} arreterVoixVoyage();
     const suite = fileDecouvertes.shift(); if (suite) setTimeout(() => decouvrir(suite), 400);
   }
   $('dec-ok').addEventListener('click', fermerDecouverte);
@@ -998,6 +1011,7 @@ async function demarrer() {
     interface_ouverte = true; ctl.bloque = true; portrait = { tour: 0 };
     $('tactile').classList.add('cache'); $('suivi').classList.add('cache');
     $('perso-titre').textContent = premiere ? 'Qui part en voyage ?' : 'Mon personnage';
+    if (premiere) direIds(['NOUR-VOIX-NAV-012']);
     $('perso-ok').textContent = premiere ? 'C\'est parti !' : 'Terminé';
     $('perso-annuler').classList.toggle('cache', !!premiere);
     const dessiner = () => {
@@ -1446,7 +1460,7 @@ async function demarrer() {
     teleporter(x, z) { J.x = x; J.z = z; if (monte) { C.x = x; C.z = z; } },
     monte: () => monte, sequence: () => sequence, proche: () => proche, zone: () => zoneActuelle,
     enfant: () => enfant, perso, quetes, regions, decouvrir: d => decouvrir(d), guide, carte, ouvrirCarte: id => ouvrirCarte(id), guiderVers: d => guiderVers(d), guiderMission: k => guiderMission(k), lieuxCarte: () => lieuxCarte(), choisirMonture: id => choisirMonture(id), ouvrirEcurie: () => ouvrirEcurie(), monture: () => chameau, ecurie, ouvrirBoutique: id => ouvrirBoutique(id), ouvrirCarnet: o => ouvrirCarnet(o), ouvrirPerso: () => ouvrirPerso(false), apercu: a => apercu(article(a)),
-    infos: () => renderer.info.render, faucon: () => faucon
+    infos: () => renderer.info.render, faucon: () => faucon, dialogue: p => dialogue(p), indice: (h, ms) => montrerIndice(h, ms), bandeau: (a, b) => bandeau(a, b)
   };
 }
 
