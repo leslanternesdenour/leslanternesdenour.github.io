@@ -244,7 +244,10 @@ export function creerAventure({ scene, terrain, colliders, etat, enregistrer, ui
     const nouveau = !A.animaux.includes(id);
     if (nouveau) { A.animaux.push(id); gagner(30, 'Nouvel animal : ' + f.nom, 'animal:' + id); avancer('animaux'); }
     evenement('animal', id);
-    ui.dialogue({ titre: f.icone + ' ' + f.nom, texte: f.vie, sous: '🏠 Où il vit : ' + f.habitat });
+    const bete = animaux.liste.find(o => o.id === id);
+    if (ui.decouverte) ui.decouverte({ type: 'animal', cle: id, nom: f.nom, icone: f.icone, texte: f.vie, sous: '🏠 Où il vit : ' + f.habitat, nouveau, objet: bete && bete.g, x: bete && bete.x, z: bete && bete.z,
+      progression: { n: A.animaux.length, total: Object.keys(FICHES).length, label: A.animaux.length > 1 ? 'animaux observés' : 'animal observé' } });
+    else ui.dialogue({ titre: f.icone + ' ' + f.nom, texte: f.vie, sous: '🏠 Où il vit : ' + f.habitat });
   }
   // Nour : donne les missions des lanternes et des objets, reçoit les objets
   function parlerNour(texteAccueil) {

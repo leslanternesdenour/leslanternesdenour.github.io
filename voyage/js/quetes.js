@@ -4,6 +4,7 @@
 // Les mots arabes sont écrits en écriture arabe, avec leur prononciation et leur sens ; ils ont été vérifiés.
 import * as THREE from 'three';
 import { piece, fusion, materiau, M } from './formes.js?v=3';
+import { texRonde } from './decouverte.js?v=3';
 
 const mat = materiau({ finesse: 2 });
 const B = () => new THREE.BoxGeometry(1, 1, 1);
@@ -74,7 +75,7 @@ export const SPOTS = [
 export const QUETES = {
   coins: { titre: 'Les quatre coins du pays', icone: '🗺️', cat: 'exploration', diff: 2, total: 4, recompense: 200,
     desc: 'Découvre l\'oasis, le camp des caravanes, les grandes dunes et les montagnes.', objectif: 'Découvrir 4 régions' },
-  mots: { titre: 'Les mots du voyage', icone: '🔤', cat: 'education', diff: 1, total: MOTS.length, recompense: 250,
+  mots: { titre: 'Les mots du voyage', icone: '📖', cat: 'education', diff: 1, total: MOTS.length, recompense: 250,
     desc: 'Des petites étoiles dorées cachent des mots arabes près des lieux du pays. Trouve-les et apprends-les !', objectif: `Apprendre ${MOTS.length} mots arabes` },
   plantes: { titre: 'Les plantes du désert', icone: '🌿', cat: 'observation', diff: 2, total: PLANTES.length, recompense: 200,
     desc: 'Observe quatre plantes du pays de Nour et découvre à quoi elles servent.', objectif: 'Observer 4 plantes' },
@@ -107,11 +108,16 @@ export function creerQuetes({ scene, terrain, colliders, AV, etat, enregistrer, 
     ui.bandeau('Quête réussie !', `${QUETES[id].icone} ${QUETES[id].titre}`);
   }
   // ---------- dans le monde : petites étoiles dorées (mots) et plantes ----------
-  const etoile = (() => { const p = []; for (const r of [0, Math.PI / 4]) p.push(piece(B(), '#ffd36b', { r: [0, 0, r], s: [0.32, 0.32, 0.06] })); p.push(piece(SPH(0.1), '#fff3c4')); return fusion(p); })();
+  // un petit livre ouvert qui flotte et brille : là, un mot arabe attend l'enfant (la lettre noûn en or, comme Nour)
+  const etoile = (() => { const p = [];
+    for (const sx of [-1, 1]) { p.push(piece(B(), '#8a4e2a', { p: [sx * 0.2, 0, -0.005], r: [0, sx * -0.35, 0], s: [0.42, 0.52, 0.03] }), piece(B(), '#fff6dc', { p: [sx * 0.19, 0, 0.02], r: [0, sx * -0.35, 0], s: [0.36, 0.46, 0.03] })); }
+    for (let k = 0; k < 3; k++) p.push(piece(B(), '#c9b48a', { p: [-0.2, 0.12 - k * 0.08, 0.045], r: [0, 0.35, 0], s: [0.22, 0.02, 0.01] }));
+    p.push(piece(B(), '#e0a020', { p: [0, 0, -0.02], s: [0.06, 0.52, 0.04] }), piece(new THREE.TorusGeometry(0.075, 0.022, 6, 14, Math.PI), '#e0a020', { p: [0.2, -0.02, 0.05], r: [0, -0.35, Math.PI] }), piece(SPH(0.025, 6, 5), '#e0a020', { p: [0.2, 0.1, 0.05] }));
+    return fusion(p); })();
   const matEtoile = new THREE.MeshBasicMaterial({ vertexColors: true }), matAnneau = new THREE.MeshBasicMaterial({ color: '#ffd36b' });
   const marques = MOTS.map(m => { const e = new THREE.Mesh(etoile, matEtoile); e.position.set(m.x, H(m.x, m.z) + 1.3, m.z); scene.add(e); return { m, e }; });
   const halo = new THREE.Points(new THREE.BufferGeometry().setFromPoints(MOTS.map(m => new THREE.Vector3(m.x, H(m.x, m.z) + 1.3, m.z))),
-    new THREE.PointsMaterial({ color: '#ffd36b', size: 1.6, transparent: true, opacity: 0.45, depthWrite: false, blending: THREE.AdditiveBlending }));
+    new THREE.PointsMaterial({ map: texRonde(), color: '#ffd36b', size: 1.8, transparent: true, opacity: 0.6, depthWrite: false, blending: THREE.AdditiveBlending }));
   scene.add(halo);
   // les plantes (leurs modèles), avec une petite loupe brillante au-dessus tant qu'on ne les a pas observées
   const modeles = {
@@ -154,7 +160,8 @@ export function creerQuetes({ scene, terrain, colliders, AV, etat, enregistrer, 
   function decouvrir(k) {
     const liste = Q[k.sp.quete], nouveau = !liste.includes(k.sp.id), q = QUETES[k.sp.quete];
     if (nouveau) { liste.push(k.sp.id); enregistrer(); majMarques(); }
-    ui.dialogue({ titre: `${k.sp.icone} ${k.sp.titre}`, texte: k.sp.texte, arabe: k.sp.arabe, ecouterArabe: k.sp.arabe, sous: `${liste.length} sur ${q.total} · ${q.titre}` });
+    ui.decouverte({ type: k.sp.quete === 'gravures' ? 'gravure' : 'nature', cle: k.sp.id, nom: k.sp.titre, icone: k.sp.icone, texte: k.sp.texte, arabe: k.sp.arabe, nouveau, x: k.x, z: k.z,
+      progression: { n: liste.length, total: q.total, label: q.titre } });
     if (nouveau) { donner('spot:' + k.sp.id, 20, k.sp.titre); verifier(k.sp.quete); }
   }
 
@@ -169,13 +176,15 @@ export function creerQuetes({ scene, terrain, colliders, AV, etat, enregistrer, 
   function apprendre(m) {
     const nouveau = !Q.mots.includes(m.id);
     if (nouveau) { Q.mots.push(m.id); enregistrer(); majMarques(); }
-    ui.dialogue({ titre: `🔤 Un mot arabe : ${m.fr}`, arabe: m.ar, texte: `On dit « ${m.dit} ». ${m.phrase}`, sous: `${Q.mots.length} mot${Q.mots.length > 1 ? 's' : ''} appris sur ${MOTS.length}`, ecouterArabe: m.ar });
+    ui.decouverte({ type: 'mot', cle: m.id, nom: m.fr, arabe: m.ar, translit: m.dit, texte: m.phrase, nouveau, x: m.x, z: m.z, y: H(m.x, m.z) + 1.3,
+      progression: { n: Q.mots.length, total: MOTS.length, label: Q.mots.length > 1 ? 'mots appris' : 'mot appris' } });
     if (nouveau) { donner('mot:' + m.id, 15, 'Nouveau mot : ' + m.fr); ui.evenement('mot'); verifier('mots'); }
   }
   function observer(k) {
     const nouveau = !Q.plantes.includes(k.pl.id);
     if (nouveau) { Q.plantes.push(k.pl.id); enregistrer(); majMarques(); }
-    ui.dialogue({ titre: `${k.pl.icone} ${k.pl.nom}`, texte: k.pl.texte, sous: `${Q.plantes.length} plante${Q.plantes.length > 1 ? 's' : ''} observée${Q.plantes.length > 1 ? 's' : ''} sur ${PLANTES.length}` });
+    ui.decouverte({ type: 'plante', cle: k.pl.id, nom: k.pl.nom, icone: k.pl.icone, texte: k.pl.texte, nouveau, x: k.pl.x, z: k.pl.z,
+      progression: { n: Q.plantes.length, total: PLANTES.length, label: Q.plantes.length > 1 ? 'plantes observées' : 'plante observée' } });
     if (nouveau) { donner('plante:' + k.pl.id, 20, 'Plante observée : ' + k.pl.nom); verifier('plantes'); }
   }
   function enigme(marchand, nom, voix, retour) {
@@ -195,7 +204,7 @@ export function creerQuetes({ scene, terrain, colliders, AV, etat, enregistrer, 
     // ce qu'on peut faire tout près
     interaction(J) {
       let best = null, dmin = Infinity;
-      for (const k of marques) if (k.e.visible) { const d = Math.hypot(k.m.x - J.x, k.m.z - J.z); if (d < 2.8 && d < dmin) { dmin = d; best = { label: 'Apprendre', icone: '🔤', faire: () => apprendre(k.m), d }; } }
+      for (const k of marques) if (k.e.visible) { const d = Math.hypot(k.m.x - J.x, k.m.z - J.z); if (d < 2.8 && d < dmin) { dmin = d; best = { label: 'Apprendre', icone: 'mots', faire: () => apprendre(k.m), d }; } }
       for (const k of plantes) { const d = Math.hypot(k.pl.x - J.x, k.pl.z - J.z); if (d < k.pl.r + 2.8 && d < dmin) { dmin = d; best = { label: 'Observer', icone: '🔍', faire: () => observer(k), d }; } }
       for (const k of spots) { const d = Math.hypot(k.x - J.x, k.z - J.z); if (d < 3.2 && d < dmin) { dmin = d; best = { label: 'Observer', icone: k.sp.icone, faire: () => decouvrir(k), d }; } }
       return best;
@@ -219,7 +228,7 @@ export function creerQuetes({ scene, terrain, colliders, AV, etat, enregistrer, 
     destination(id, J) {
       const proche = l => l.reduce((b, o) => !b || Math.hypot(o.x - J.x, o.z - J.z) < Math.hypot(b.x - J.x, b.z - J.z) ? o : b, null);
       if (fini(id)) return null;
-      if (id === 'mots') { const m = proche(MOTS.filter(m => !Q.mots.includes(m.id))); return m && { x: m.x, z: m.z, nom: 'un mot arabe', icone: '🔤', rayon: 2.5 }; }
+      if (id === 'mots') { const m = proche(MOTS.filter(m => !Q.mots.includes(m.id))); return m && { x: m.x, z: m.z, nom: 'un mot arabe', icone: '📖', rayon: 2.5 }; }
       if (id === 'plantes') { const p = proche(PLANTES.filter(p => !Q.plantes.includes(p.id))); return p && { x: p.x, z: p.z, nom: p.nom, icone: p.icone, rayon: p.r + 2.5 }; }
       if (id === 'wadi' || id === 'gravures') { const k = proche(spots.filter(k => k.sp.quete === id && !Q[id].includes(k.sp.id))); return k && { x: k.x, z: k.z, nom: k.sp.titre, icone: k.sp.icone, rayon: 2.6 }; }
       if (id === 'traversee') { const e = TRAVERSEE[Q.traversee]; return e && { x: e.x, z: e.z, nom: e.nom, icone: e.icone, rayon: 14 }; }
