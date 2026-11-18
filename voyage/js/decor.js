@@ -41,6 +41,21 @@ function geoRocher(R, couleur = '#a98e72', s = [1, 1, 1]) {
   return fusion([piece(g, couleur, { p: [0, 0.3 * s[1], 0], s })]);
 }
 
+// Une formation de grès en strates : des dalles empilées, un peu décalées, comme les falaises d'Arabie
+function geoStrates(R, couleurs = ['#a0705a', '#8e5e4a', '#b98a68', '#7a5848']) {
+  const p = [], n = 3 + Math.floor(R() * 3);
+  let y = 0, l = 1.6 + R() * 0.6;
+  for (let i = 0; i < n; i++) {
+    const g = new THREE.DodecahedronGeometry(1, 0), pos = g.attributes.position, k = R() * 100;
+    for (let j = 0; j < pos.count; j++) { const x = pos.getX(j), yy = pos.getY(j), z = pos.getZ(j), f = 0.85 + 0.3 * fbm(x * 1.5 + k, z * 1.5 + yy, 2); pos.setXYZ(j, x * f, yy * f, z * f); }
+    g.computeVertexNormals();
+    const h = 0.35 + R() * 0.3;
+    p.push(piece(g, couleurs[i % couleurs.length], { p: [(R() - 0.5) * 0.35, y + h, (R() - 0.5) * 0.35], r: [0, R() * 3, (R() - 0.5) * 0.12], s: [l, h, l * (0.7 + R() * 0.3)], m: M.pierre }));
+    y += h * 1.7; l *= 0.72 + R() * 0.2;
+  }
+  return fusion(p);
+}
+
 function geoMaison(w, d, h, mur, dome, R) {
   // Chaque maison tire ses propres détails : étage, terrasse, porte, fenêtres, auvent, balcon, escalier…
   const p = [], bois = R() > 0.5 ? '#6b4428' : '#7b4f2e', bord = '#f6ead2';
@@ -473,6 +488,33 @@ export function creerDecor(scene, terrain, Q, TX = {}) {
     roc.forEach(o => colliders.push({ x: o.x, z: o.z, r: 1.2 }));
   });
 
+  // ===== Des traces de pas autour des chemins les plus fréquentés =====
+  {
+    const c = document.createElement('canvas'); c.width = c.height = 64; const x = c.getContext('2d'); x.fillStyle = '#fff';
+    x.beginPath(); x.ellipse(32, 22, 10, 16, 0, 0, 7); x.fill(); x.beginPath(); x.ellipse(32, 48, 8, 10, 0, 0, 7); x.fill();
+    const tex = new THREE.CanvasTexture(c);
+    const geo = new THREE.PlaneGeometry(0.2, 0.32); geo.rotateX(-Math.PI / 2);
+    const mat = new THREE.MeshBasicMaterial({ alphaMap: tex, color: '#7a5636', transparent: true, opacity: 0.45, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2 });
+    const R = hasard(99), liste = [];
+    for (const ch of [...CHEMINS, ...PISTES]) {
+      let parcouru = 0;
+      for (let k = 0; k < ch.length - 1; k++) {
+        const [ax, az] = ch[k], [bx, bz] = ch[k + 1], L = Math.hypot(bx - ax, bz - az), ux = (bx - ax) / L, uz = (bz - az) / L, ang = Math.atan2(ux, uz);
+        for (let d = 0; d < L; d += 0.75) {
+          parcouru += 0.75;
+          if (parcouru > 140 && Math.hypot(ax + ux * d, az + uz * d) > 60) continue;          // surtout près des lieux habités
+          if (R() < 0.35) continue;
+          const pas = (Math.round(d / 0.75) % 2) ? 1 : -1, dec = (R() - 0.5) * 2.4 + pas * 0.13;
+          const x2 = ax + ux * d - uz * dec, z2 = az + uz * d + ux * dec;
+          liste.push({ x: x2, z: z2, y: H(x2, z2) + 0.04, rot: ang + (R() - 0.5) * 0.3 });
+        }
+      }
+    }
+    const im = new THREE.InstancedMesh(geo, mat, liste.length), m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), e = new THREE.Euler(), un = new THREE.Vector3(1, 1, 1);
+    liste.forEach((o, i) => { m4.compose(new THREE.Vector3(o.x, o.y, o.z), q.setFromEuler(e.set(0, o.rot, 0)), un); im.setMatrixAt(i, m4); });
+    im.renderOrder = 1; scene.add(im);
+  }
+
   // ===== Les régions à débloquer : le wadi et les rochers gravés =====
   // À l'entrée de chaque région, un éboulis de pierres ferme la piste tant qu'elle n'est pas débloquée.
   const barrieres = {};
@@ -542,13 +584,28 @@ export function creerDecor(scene, terrain, Q, TX = {}) {
     barre.castShadow = ombres; pivot.add(barre); col.barre = pivot;
     points.push({ id: 'col', x: px, z: pz + 4, r: 6 });
     // rochers de montagne
-    const roc = [];
+    // les objectifs de la montagne (grotte, lanternes cachées, belvédère, quêtes, porte du col) restent bien dégagés
+    const OBJ = [[-13, -258], [26, -163], [-26, -236], [9, -272], [0, -265], [0, -150], [0, -255], [-8.75, -175], [0, -200]];
+    const degage = (x, z, m) => OBJ.every(([ox, oz]) => Math.hypot(x - ox, z - oz) > m);
+    // quatre sortes de rochers (formes et teintes différentes) au lieu d'un seul modèle répété
+    const sortes = [geoRocher(R, '#9c8470'), geoRocher(R, '#86685a', [1.25, 0.75, 1.05]), geoRocher(R, '#a98f72', [0.85, 1.35, 0.9]), geoStrates(R)];
+    const roc = sortes.map(() => []);
     for (let i = 0; i < 70; i++) {
       const x = (R() - 0.5) * 220, z = -160 - R() * 170;
-      if (libre(x, z, 3)) roc.push({ x, z, rot: R() * 6, s: 1 + R() * 2.6 });
+      if (libre(x, z, 3) && degage(x, z, 5)) roc[i % 4].push({ x, z, rot: R() * 6, s: 1 + R() * 2.6 });
     }
-    copies(g, geoRocher(R, '#9c8470'), matBase, roc);
-    roc.forEach(o => colliders.push({ x: o.x, z: o.z, r: 0.9 * o.s }));
+    sortes.forEach((geo, k) => { copies(g, geo, matBase, roc[k]); roc[k].forEach(o => colliders.push({ x: o.x, z: o.z, r: 0.9 * o.s })); });
+    // de grandes formations de grès sur les pentes raides, loin des chemins : de vraies falaises
+    const grandes = [geoStrates(R), geoStrates(R, ['#b07a5e', '#94654f', '#c49674']), geoStrates(R, ['#8a604c', '#a8785e', '#74533f'])], form = grandes.map(() => []);
+    for (let i = 0; i < 140 && form.flat().length < 34; i++) {
+      const x = (R() - 0.5) * 250, z = -150 - R() * 200;
+      if (distanceChemins(x, z) < 16 || !degage(x, z, 16) || !libre(x, z, 8)) continue;
+      const pente = (Math.abs(H(x + 4, z) - H(x - 4, z)) + Math.abs(H(x, z + 4) - H(x, z - 4))) / 16;
+      if (pente < 0.3) continue;
+      const s0 = 3 + R() * 4.5, o = { x, z, rot: R() * 6, s: s0, dy: -0.35 * s0 };   // un peu enfoncée dans la pente
+      form[form.flat().length % 3].push(o); colliders.push({ x, z, r: 1.3 * o.s });
+    }
+    grandes.forEach((geo, k) => copies(g, geo, matBase, form[k]));
     copies(g, geoTouffe('#8a9a4a'), matHerbe, disperser(R, 40, 0, -220, 4, 60, 1).map(o => ({ ...o, rot: R() * 6 })), false);
     // le belvédère
     const { x: bx, z: bz } = LIEUX.montagnes;

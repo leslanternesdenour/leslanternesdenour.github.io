@@ -271,6 +271,7 @@ function why(){A.innerHTML=topbar('Pourquoi les ablutions ?')+bubble("Pourquoi o
 function home(){const st=k=>'★'.repeat(prog[k]||0)+'☆'.repeat(3-(prog[k]||0));
  A.innerHTML=`<div class="bar"><span></span><span></span><button class="rb" id="snd" aria-label="Son">${sound?'🔊':'🔇'}</button></div><div class="hero">${nour()}<h1>La mission des <span>petites ablutions</span></h1><p>Apprends à faire tes ablutions (le wudû) avec Nour, la petite goutte d'eau !</p></div>
  <div class="menu"><button class="big b1" id="m1"><span class="ic">💧</span><span>Apprendre<small>Les 9 étapes avec Nour</small></span></button>
+ <a class="big b1" id="m4" href="jeu3d/" style="background:#1d8f9c"><span class="ic">🧒</span><span>Les ablutions en 3D<small>Fais toi-même chaque geste, devant le robinet</small></span></a>
  <button class="big b2" id="m2"><span class="ic">🎮</span><span>Jouer<small>4 petits jeux · ${['g1','g2','g3','g4'].reduce((a,k)=>a+(prog[k]||0),0)} / 12 étoiles</small></span></button>
  <button class="big b3" id="m3"><span class="ic">🌙</span><span>Pourquoi ?<small>Pourquoi on fait les ablutions</small></span></button></div>
  ${bubble("Assalâmou ‘alaykoum ! Je suis Nour. Tu viens avec moi apprendre les ablutions ?")}`;

@@ -142,6 +142,12 @@ export class Controles {
     this.joy.x = dx; this.joy.y = -dy;
     this.bouton.style.transform = `translate(${dx * rayon * 0.6}px, ${dy * rayon * 0.6}px)`;
   }
+  // L'écran a tourné ou changé de taille : on lâche tout ce qui était tenu et on replace les commandes
+  rotation() {
+    if (this.joy.actif || this.jid !== null) this.lacherJoy();
+    this.courseTactile = false; document.getElementById('btn-courir').classList.remove('appuye');
+    this.appliquer();
+  }
   lacherJoy() {
     this.jid = null; this.joyFlottant = null;
     this.joy = { x: 0, y: 0, actif: false }; this.bouton.style.transform = '';
@@ -160,7 +166,9 @@ export class Controles {
       const p = r.positions[id];
       el.style.left = el.style.top = el.style.right = el.style.bottom = '';
       if (p && r.disposition !== 'flottant' || (p && id === 'boutons')) {
-        el.style.left = (p.x * innerWidth) + 'px'; el.style.top = (p.y * innerHeight) + 'px';
+        // toujours entièrement dans l'écran, même après une rotation du téléphone
+        const x = Math.max(0, Math.min(innerWidth - el.offsetWidth, p.x * innerWidth)), y = Math.max(60, Math.min(innerHeight - el.offsetHeight, p.y * innerHeight));
+        el.style.left = x + 'px'; el.style.top = y + 'px';
         el.style.right = 'auto'; el.style.bottom = 'auto';
       }
     }

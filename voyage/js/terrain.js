@@ -96,6 +96,12 @@ function relief(x, z) {
   const rempart = lisse(300, 390, bord) * 38;
 
   let h = dunes * (1 - 0.85 * surChemin) * (1 - 0.7 * nord) + massif + rochers * (1 - 0.9 * surChemin) + rempart;
+  // les montagnes en gradins : des falaises et des corniches (grès et granit d'Arabie), mais pas sur le chemin ni dans la vallée
+  const gradins = nord * (1 - vallee) * (1 - surChemin) * lisse(12, 34, massif);
+  if (gradins > 0.01) {
+    const pas = 7 + fbm(x * 0.004, z * 0.004, 2) * 4, q = h / pas, f = q - Math.floor(q);
+    h = melange(h, (Math.floor(q) + lisse(0.5, 0.88, f)) * pas, gradins * 0.8);
+  }
 
   // le village et l'oasis sont plats
   const v = lisse(LIEUX.village.r + 22, LIEUX.village.r, dist(x, z, LIEUX.village));
@@ -119,7 +125,7 @@ function relief(x, z) {
   const dR = dist(x, z, LIEUX.rochers), gr = lisse(LIEUX.rochers.r + 26, LIEUX.rochers.r - 4, dR);
   h = melange(h, 2 + fbm(x * 0.05, z * 0.05, 2) * 1.5, gr);
   const wv = w * lisse(24, 8, dLit) * (0.55 + 0.45 * fbm(x * 0.09, z * 0.09, 2));   // l'herbe pousse près du lit
-  return { h, surChemin, v, o, lac, dOasis, nord, massif, rochers, c, lit, gres: gr, wv };
+  return { h, surChemin, v, o, lac, dOasis, nord, massif, rochers, c, lit, gres: gr, wv, gradins };
 }
 
 export function hauteurBrute(x, z) { return relief(x, z).h; }
@@ -138,15 +144,22 @@ export class Terrain {
     this.matieres = new Float32Array(pos.count * 2);   // herbe, roche (pour les empreintes et les sons)
     const sable = new THREE.Color('#e9c88f'), sable2 = new THREE.Color('#dcb06f'), herbe = new THREE.Color('#93bd5f'),
       herbe2 = new THREE.Color('#6d9a45'), roche = new THREE.Color('#94705c'), roche2 = new THREE.Color('#5d4f48'),
-      chemin = new THREE.Color('#d8b07a'), gravier = new THREE.Color('#a89a86'), gres = new THREE.Color('#c27a52'), place = new THREE.Color('#f1e2c4'), mouille = new THREE.Color('#b99a68'), tmp = new THREE.Color();
+      chemin = new THREE.Color('#d8b07a'), sableClair = new THREE.Color('#f3dfb2'), ocre = new THREE.Color('#d39a5c'), sableFonce = new THREE.Color('#c39156'), gravier = new THREE.Color('#a89a86'), gres = new THREE.Color('#c27a52'), place = new THREE.Color('#f1e2c4'), mouille = new THREE.Color('#b99a68'), tmp = new THREE.Color();
+    const montagne = new Float32Array(pos.count);     // pour colorer les falaises et les corniches ensuite
     for (let i = 0; i < pos.count; i++) {
       const x = pos.getX(i), z = pos.getZ(i);
       const r = relief(x, z);
+      montagne[i] = r.nord * (1 - r.surChemin);
       pos.setY(i, r.h);
       this.grille[i] = r.h;
       // couleur
       const var1 = fbm(x * 0.05, z * 0.05, 2);
+      // de grandes taches de sable : doré, beige clair, ocre, et quelques zones plus foncées
+      const g1 = fbm(x * 0.006 + 3.1, z * 0.006 - 1.7, 3), g2 = fbm(x * 0.013 - 5.2, z * 0.011 + 2.4, 2);
       tmp.copy(sable).lerp(sable2, var1);
+      tmp.lerp(sableClair, lisse(0.52, 0.72, g1) * 0.75);
+      tmp.lerp(ocre, lisse(0.55, 0.78, g2) * 0.55 * (1 - lisse(0.5, 0.7, g1)));
+      tmp.lerp(sableFonce, lisse(0.3, 0.12, g1) * 0.45);
       const vert = Math.max(r.v * lisse(0.2, 0.9, fbm(x * 0.08, z * 0.08, 2) + 0.35),
         r.o * lisse(LIEUX.oasis.r + 4, LIEUX.oasis.lac + 4, r.dOasis), r.wv * (1 - r.lit));
       const wHerbe = Math.min(1, vert * 1.2);
@@ -166,6 +179,24 @@ export class Terrain {
       const dv = Math.hypot(x, z);                      // la place pavée autour de la fontaine
       if (dv < 13) tmp.lerp(place, lisse(13, 10, dv) * (0.85 + 0.15 * var1));
       coul[i * 3] = tmp.r; coul[i * 3 + 1] = tmp.g; coul[i * 3 + 2] = tmp.b;
+    }
+    {
+      const g = this.grille, n1b = n1, k = 2, pasGrille = TAILLE / segments;
+      for (let j = 0; j < n1b; j++) for (let i = 0; i < n1b; i++) {
+        const v = j * n1b + i, h = g[v];
+        const a = g[j * n1b + Math.max(0, i - k)], b = g[j * n1b + Math.min(n1b - 1, i + k)], c2 = g[Math.max(0, j - k) * n1b + i], d2 = g[Math.min(n1b - 1, j + k) * n1b + i];
+        const creux = h - (a + b + c2 + d2) / 4;
+        const f = 1 + Math.max(-0.13, Math.min(0.07, creux * 0.05));
+        coul[v * 3] *= f; coul[v * 3 + 1] *= f; coul[v * 3 + 2] *= f * (creux < 0 ? 1.02 : 1);
+        // en montagne : parois raides en roche sombre et rougeâtre, replats couverts de sable clair
+        const m = montagne[v];
+        if (m > 0.05) {
+          const pente = Math.hypot(b - a, d2 - c2) / (4 * k * pasGrille);
+          const raide = lisse(0.45, 1.1, pente) * m, plat = lisse(0.3, 0.1, pente) * m;
+          if (raide > 0) { coul[v * 3] = melange(coul[v * 3], 0.36, raide * 0.85); coul[v * 3 + 1] = melange(coul[v * 3 + 1], 0.23, raide * 0.85); coul[v * 3 + 2] = melange(coul[v * 3 + 2], 0.18, raide * 0.85); }
+          if (plat > 0) { coul[v * 3] = melange(coul[v * 3], 0.62, plat * 0.12); coul[v * 3 + 1] = melange(coul[v * 3 + 1], 0.48, plat * 0.12); coul[v * 3 + 2] = melange(coul[v * 3 + 2], 0.38, plat * 0.12); }
+        }
+      }
     }
     geo.setAttribute('color', new THREE.BufferAttribute(coul, 3));
     geo.setAttribute('aMat', new THREE.BufferAttribute(mat, 3));
@@ -225,7 +256,11 @@ function materiauSol(detail) {
       .replace('#include <color_fragment>', `#include <color_fragment>
         float hD = hDetail();
         float pres = smoothstep(140.0, 15.0, length(vViewPosition));
-        diffuseColor.rgb *= mix(1.0, 0.86 + 0.26 * hD, 0.55 + 0.45 * pres);`)
+        diffuseColor.rgb *= mix(1.0, 0.86 + 0.26 * hD, 0.55 + 0.45 * pres);
+        // de petites paillettes de sable qui brillent tout près
+        vec2 cel = floor(vUvD * 140.0);
+        float pai = step(0.992, fract(sin(dot(cel, vec2(12.9898, 78.233))) * 43758.5453));
+        diffuseColor.rgb += pai * vMat.x * smoothstep(25.0, 4.0, length(vViewPosition)) * 0.22;`)
       .replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>
         float forceRelief = (0.9 * vMat.x + 0.5 * vMat.y + 1.6 * vMat.z) * pres;
         normal = bosseSol(-vViewPosition, normal, vec2(dFdx(hD), dFdy(hD)) * forceRelief, faceDirection);`);

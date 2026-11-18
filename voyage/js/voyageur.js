@@ -280,9 +280,17 @@ export class Voyageur {
     if (g) {
       g.t += dt; const k = Math.sin(Math.min(1, g.t / g.d) * Math.PI);
       if (g.type === 'prendre') {
-        this.buste.rotation.x += 0.55 * k; corpsY -= 0.1 * k;
-        for (const j of this.jambes) { j.haut.rotation.x -= 0.6 * k; j.bas.rotation.x += 1.0 * k; }
-        bd.haut.rotation.x = -1.0 * k + bd.haut.rotation.x * (1 - k); bd.bas.rotation.x = -0.3 * k;
+        // s'accroupir pour ramasser : les genoux plient vraiment, le bassin descend d'autant (les pieds restent au sol),
+        // le dos reste assez droit, la tête suit le regard vers le sol, la main droite descend devant les pieds
+        const cuisse = -1.05 * k, genou = 1.7 * k;
+        for (const j of this.jambes) { j.haut.rotation.x = cuisse; j.bas.rotation.x = genou; }
+        // hauteur perdue par la jambe pliée (cuisse 0,3 m, jambe 0,285 m) : on descend le corps d'autant
+        corpsY -= 0.585 - (0.3 * Math.cos(cuisse) + 0.285 * Math.cos(cuisse + genou));
+        this.buste.rotation.x = this.buste.rotation.x * (1 - k) + 0.38 * k;
+        this.tete.rotation.x = this.tete.rotation.x * (1 - k) + 0.35 * k;
+        this.jupe.scale.y = 1 - 0.45 * k; this.jupe.rotation.x = -0.5 * k;      // la robe se replie au lieu de traverser le sol
+        bd.haut.rotation.set(-0.75 * k + bd.haut.rotation.x * (1 - k), 0, bd.s * 0.15 * k); bd.bas.rotation.x = -0.25 * k;
+        bg.haut.rotation.set(-0.35 * k + bg.haut.rotation.x * (1 - k), 0, bg.s * 0.2 * k); bg.bas.rotation.x = -0.5 * k;
       } else if (g.type === 'caresser') {
         bd.haut.rotation.set(-1.35 * k, 0, -0.1); bd.bas.rotation.set(-0.35 * k + Math.sin(g.t * 9) * 0.25 * k, 0, 0);
         this.tete.rotation.x += 0.15 * k;
@@ -292,7 +300,7 @@ export class Voyageur {
         corpsY += Math.abs(Math.sin(g.t * Math.PI * 2 / g.d * 2)) * 0.12 * k;
         for (const b of this.bras) b.haut.rotation.set(-0.3 * k, 0, b.s * 2.3 * k);
       }
-      if (g.t >= g.d) this.geste = null;
+      if (g.t >= g.d) { this.geste = null; this.jupe.scale.y = 1; }
     }
     this.corps.position.y = corpsY;
   }

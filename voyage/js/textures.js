@@ -62,16 +62,27 @@ export function normalesEau(n = 256) {
 
 // Un nuage doux (plusieurs boules floues)
 export function textureNuage(graine = 1) {
-  const c = canvas(256), x = c.getContext('2d');
+  // un cumulus : des boules blanches bien rondes en haut, une base plus plate et légèrement ombrée
+  const c = document.createElement('canvas'); c.width = 512; c.height = 256; const x = c.getContext('2d');
   let s = graine * 9301 + 49297;
   const R = () => { s = (s * 9301 + 49297) % 233280; return s / 233280; };
-  for (let k = 0; k < 14; k++) {
-    const cx = 50 + R() * 156, cy = 120 + (R() - 0.5) * 60, r = 30 + R() * 45;
-    const g = x.createRadialGradient(cx, cy, 0, cx, cy, r);
-    g.addColorStop(0, 'rgba(255,255,255,.55)'); g.addColorStop(0.6, 'rgba(255,255,255,.25)'); g.addColorStop(1, 'rgba(255,255,255,0)');
-    x.fillStyle = g; x.fillRect(0, 0, 256, 256);
+  const base = 178, n = 9 + Math.floor(R() * 5), boules = [];
+  for (let k = 0; k < n; k++) { const t = k / (n - 1), cx = 70 + t * 372 + (R() - 0.5) * 30, r = 34 + Math.sin(t * Math.PI) * (40 + R() * 34) + R() * 12; boules.push([cx, base - r * 0.55 - R() * 14, r]); }
+  for (let k = 0; k < 6; k++) { const cx = 150 + R() * 210, r = 40 + R() * 30; boules.push([cx, base - 70 - R() * 40, r]); }
+  for (const [cx, cy, r] of boules) {
+    const g = x.createRadialGradient(cx - r * 0.25, cy - r * 0.3, r * 0.1, cx, cy, r);
+    g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(0.75, 'rgba(250,250,255,.95)'); g.addColorStop(1, 'rgba(240,242,250,0)');
+    x.fillStyle = g; x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.fill();
   }
-  return texture(c, { srgb: true, repeat: false });
+  // la base, un peu grise-mauve (le ciel la colore ensuite)
+  x.globalCompositeOperation = 'source-atop';
+  const gb = x.createLinearGradient(0, base - 70, 0, base + 10);
+  gb.addColorStop(0, 'rgba(160,165,200,0)'); gb.addColorStop(1, 'rgba(150,155,195,.55)');
+  x.fillStyle = gb; x.fillRect(0, 0, 512, 256);
+  x.globalCompositeOperation = 'destination-out';
+  const gc = x.createLinearGradient(0, base - 6, 0, base + 30); gc.addColorStop(0, 'rgba(0,0,0,0)'); gc.addColorStop(1, 'rgba(0,0,0,1)');
+  x.fillStyle = gc; x.fillRect(0, base - 6, 512, 80);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
 }
 
 // Empreintes : pied d'enfant et pied de chameau (deux grosses pelotes)

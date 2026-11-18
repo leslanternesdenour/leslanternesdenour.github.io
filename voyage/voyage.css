@@ -259,6 +259,12 @@ body.jumelles-actives #scene{filter:none}
 .etat-obj.porte{color:#1d8f9c}
 .prix-obj{color:#8a5a12;display:flex;align-items:center;gap:4px}
 .prix-obj.cher{color:#a89a80}
+.manque-pieces{order:-1;flex:1 1 100%;display:flex;flex-direction:column;align-items:center;gap:5px;padding:8px 14px;border-radius:16px;
+  background:#efe7d6;border:2px dashed #c8b691;color:#6b5d44;cursor:default;font:600 15px/1.4 Nunito,sans-serif;text-align:center}
+.manque-pieces b{font:800 18px Poppins,system-ui,sans-serif;color:#7a6a4c}
+.manque-pieces .jauge{display:block;width:min(260px,90%);height:12px;border-radius:6px;background:#ddd0b3;overflow:hidden}
+.manque-pieces .jauge i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#e9a830,#f5c96a)}
+.manque-detail{font-size:13px;line-height:1.35;color:#6b5d44}
 .prix-obj .piece,.ou .piece{width:16px;height:16px}
 .objet > button:not(.voir){border:0;border-radius:12px;padding:7px 12px;font:800 13px Poppins,sans-serif;background:#3fbf7f;color:#fff;box-shadow:0 3px 0 #2a8e5c;cursor:pointer}
 .objet > button.equipe{background:#2bb3c0;box-shadow:0 3px 0 #1d8f9c}

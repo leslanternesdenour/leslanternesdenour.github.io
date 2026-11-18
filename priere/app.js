@@ -145,6 +145,7 @@ function home(){
  <div class="hero">${sajjadou('','accueil')}<h1>J'apprends <span>ma prière</span></h1><p>Avec Sajjadou, ton petit tapis de prière, découvre la salât étape par étape : les gestes, les paroles et leur sens.</p></div>
  ${lanterns()}
  <div class="menu"><button class="big b1" id="m1"><span class="ic">🕌</span><span>Apprendre<small>Les ${ST.length} étapes de la prière${prog.learn?' · ✔':''}</small></span></button>
+ <a class="big b1" id="m4" href="jeu3d/" style="background:#1d8f9c;text-decoration:none"><span class="ic">🧎</span><span>La prière en 3D<small>Fais les positions avec ton ami, sur ton tapis</small></span></a>
  <button class="big b2" id="m2"><span class="ic">🎮</span><span>Jouer<small>3 jeux · ${GAMES.reduce((a,k)=>a+(prog[k]||0),0)} / 9 étoiles</small></span></button>
  <button class="big b3" id="m3"><span class="ic">📜</span><span>Mon diplôme<small>${canDip()?'Il est prêt !':'Allume les 4 lanternes'}</small></span></button></div>
  <div class="parc"><b>Mon parcours</b><a href="../ablutions/">1 · Mes ablutions ✔</a><span class="here">2 · Ma prière</span><span class="soon">3 · Les sourates (bientôt)</span><span class="soon">4 · Le grand quiz (bientôt)</span></div>
