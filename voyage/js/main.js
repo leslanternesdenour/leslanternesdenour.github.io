@@ -7,6 +7,7 @@ import { Ciel } from './ciel.js?v=3';
 import { Enfant, Chameau } from './personnages.js?v=3';
 import { Controles, ACTIONS, nomTouche } from './controles.js?v=3';
 import { creerOiseaux } from './oiseaux.js?v=3';
+import { creerFaucon } from './faucon.js?v=3';
 import * as S from './sons.js?v=3';
 import { ZONES, POINTS, BIENTOT } from './contenu.js?v=3';
 import { sauvegarde } from '../../monde/socle/sauvegarde.js?v=2';
@@ -134,6 +135,12 @@ async function demarrer() {
   // ---------- personnages ----------
   let enfant = new Voyageur(!!Q.ombres, perso() || {}, {}); let chameau = creerMonture(AV.monture, !!Q.ombres);
   scene.add(enfant.racine, chameau.racine);
+  // des ombres douces au pied de l'enfant et de la monture : ils sont bien posés sur le sol (même sans ombres projetées)
+  const ombreDouce = (() => { const c = document.createElement('canvas'); c.width = c.height = 64; const x = c.getContext('2d'), g = x.createRadialGradient(32, 32, 2, 32, 32, 31);
+    g.addColorStop(0, 'rgba(0,0,0,1)'); g.addColorStop(0.55, 'rgba(0,0,0,.55)'); g.addColorStop(1, 'rgba(0,0,0,0)'); x.fillStyle = g; x.fillRect(0, 0, 64, 64); return new THREE.CanvasTexture(c); })();
+  const blobs = [0, 1].map(() => { const g = new THREE.PlaneGeometry(1, 1); g.rotateX(-Math.PI / 2);
+    const m = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ color: '#2a1c10', alphaMap: ombreDouce, transparent: true, opacity: Q.ombres ? 0.28 : 0.42, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -3 }));
+    m.renderOrder = 2; scene.add(m); return m; });
   const J = { x: 2.2, z: 14, a: Math.PI, vx: 0, vz: 0, vit: 0 };            // l'enfant
   const C = { x: 33, z: -9, a: -2.2, vit: 0, venir: false };              // Sablo
   if (etat.joueur) Object.assign(J, etat.joueur);
@@ -272,6 +279,15 @@ async function demarrer() {
     if (nouveau) { S.sonMerveille(); const pt = decor.points.find(o => o.id === id); if (pt) effetDecouverte.jouer(pt.x, pt.z); aventure.gagner(30, 'Découverte : ' + p.titre, 'lu:' + cle); }
   }
   // Fenêtre de dialogue commune (panneaux, mascottes, personnages, animaux) avec des choix possibles
+  // Quand il manque des pièces : un encadré gris (pas un bouton), le montant manquant et comment en gagner
+  function encadreManque({ prix, verbe }) {
+    const a = Math.max(0, AV.pieces), manque = Math.max(0, prix - a), pc = Math.min(100, Math.round(a / prix * 100));
+    const el = document.createElement('div'); el.className = 'manque-pieces choix'; el.setAttribute('role', 'note');
+    el.addEventListener('pointerdown', e => e.preventDefault());   // le bouton Retour garde le focus
+    el.innerHTML = `<b>🔒 Il te manque ${manque} pièces</b><span class="jauge" aria-hidden="true"><i style="width:${pc}%"></i></span>
+      <span class="manque-detail">Tu as ${a} pièces sur ${prix}. Pour ${verbe || 'l\'acheter'}, gagne des pièces en voyageant : ramasse les pièces dorées, découvre des lieux, réponds à Hakim, fais les missions du jour.</span>`;
+    return el;
+  }
   function dialogue(p) {
     interface_ouverte = true; ctl.bloque = true;
     $('lecture-titre').textContent = p.titre;
@@ -285,13 +301,16 @@ async function demarrer() {
     const zone = $('lecture-boutons');
     zone.querySelectorAll('.choix').forEach(b => b.remove());
     $('lecture-ok').classList.toggle('cache', !!p.boutons);
-    (p.boutons || []).forEach((b, i) => {
-      const el = document.createElement('button'); el.className = (i === 0 && !p.petitsBoutons ? 'gros-bouton' : 'petit-bouton') + ' choix' + (p.petitsBoutons ? ' reponse' : ''); el.textContent = b.txt;
+    let premier = true;
+    (p.boutons || []).forEach(b => {
+      if (b.manque) { zone.appendChild(encadreManque(b.manque)); return; }   // pas un bouton : l'achat est impossible pour l'instant
+      const el = document.createElement('button'); el.className = (premier && !p.petitsBoutons ? 'gros-bouton' : 'petit-bouton') + ' choix' + (p.petitsBoutons ? ' reponse' : ''); el.textContent = b.txt;
+      premier = false;
       el.onclick = () => { fermerLecture(); b.fn(); };
       zone.appendChild(el);
     });
     $('lecture').classList.remove('cache');
-    (zone.querySelector('.choix') || $('lecture-ok')).focus({ preventScroll: true });
+    (zone.querySelector('button.choix') || $('lecture-ok')).focus({ preventScroll: true });
     const voix = p.voix || (p.mascotte === 'nour' ? 'nour' : /Hakim/.test(p.titre) ? 'hakim' : /Salim/.test(p.titre) ? 'salim' : null);
     $('lecture-ecouter').onclick = p.ecouterArabe ? () => parlerArabe(p.ecouterArabe)
       : () => parler(p.texte + (p.sous ? ' ' + p.sous.replace(/^[^\wÀ-ÿ]+/, '') : '') + (p.sens ? ' ' + p.sens.replace('Sens du verset : ', 'Le sens de ce verset : ') : ''), voix);
@@ -740,7 +759,7 @@ async function demarrer() {
     const boutons = [];
     if (!avoir) {
       if (AV.pieces >= a.prix) boutons.push({ txt: `Acheter · ${a.prix} pièces`, fn: () => setTimeout(() => confirmerAchat(a, retour), 40) });
-      else boutons.push({ txt: `Il manque ${a.prix - AV.pieces} pièces`, fn: () => setTimeout(retour, 40) });
+      else boutons.push({ manque: { prix: a.prix } });
     } else if (a.cat === 'outil' && !a.emplacement) boutons.push({ txt: '✓ Il est à toi', fn: () => setTimeout(retour, 40) });
     else if (!pasPourToi) boutons.push({ txt: eq ? (a.cat === 'collection' ? 'Ranger' : 'Retirer') : (a.emplacement ? 'Porter' : a.cat === 'collection' ? 'Mettre dans ma cour' : 'Utiliser'), fn: () => { equiper(a, !eq); setTimeout(retour, 40); } });
     boutons.push({ txt: 'Retour', fn: () => setTimeout(retour, 40) });
@@ -828,7 +847,7 @@ async function demarrer() {
           const fin = () => { z.classList.add('cache'); z.classList.remove('joue'); z.onclick = null; clearTimeout(tm); setTimeout(() => ficheMonture(id, retour), 30); };
           const tm = setTimeout(fin, 2600); z.onclick = fin;
         } }, { txt: 'Non merci', fn: () => setTimeout(retour, 40) }] }), 40) });
-      else boutons.push({ txt: `Il manque ${m.prix - AV.pieces} pièces`, fn: () => setTimeout(retour, 40) });
+      else boutons.push({ manque: { prix: m.prix, verbe: 'l\'adopter' } });
     } else if (!actif) boutons.push({ txt: `Partir avec ${m.nom}`, fn: () => { choisirMonture(id); } });
     boutons.push({ txt: 'Retour', fn: () => setTimeout(retour, 40) });
     $('boutique').classList.add('cache');
@@ -1120,11 +1139,19 @@ async function demarrer() {
   }
 
   // ---------- les jumelles ----------
-  let jumelles = false, vol = 0;
+  let jumelles = false, vol = 0, retourVol = 0;
+  const faucon = creerFaucon(scene, H, !!Q.ombres);
+  const camVol = new THREE.Vector3(), viseVol = new THREE.Vector3(), viseLisse = new THREE.Vector3();
   $('btn-jumelles').addEventListener('click', () => {
     jumelles = !jumelles; vol = 0;
     $('btn-jumelles').classList.toggle('actif', jumelles);
-    camera.fov = jumelles ? 38 : 55; camera.updateProjectionMatrix();
+    camera.fov = jumelles ? 60 : 55; camera.updateProjectionMatrix();
+    if (jumelles) {
+      // le faucon part du bras levé de l'enfant, dans la direction où regarde la caméra
+      const r = enfant.racine.position; if (!monte) enfant.faire('salut');
+      faucon.envol(new THREE.Vector3(r.x, r.y + (monte ? 2.6 : 1.5), r.z), Math.atan2(-Math.sin(cam.yaw), -Math.cos(cam.yaw)));
+      viseLisse.copy(camera.position).add(new THREE.Vector3(-Math.sin(cam.yaw) * 10, 0, -Math.cos(cam.yaw) * 10));
+    } else { retourVol = 1; faucon.rappeler(); }
     aventure.reperes(jumelles);
     let v = $('vue-jumelles');
     if (jumelles && !v) { v = document.createElement('div'); v.id = 'vue-jumelles'; document.body.appendChild(v); }
@@ -1140,7 +1167,19 @@ async function demarrer() {
     renderer.setPixelRatio(1);
     if (!etat.profil && profil !== 'faible') { etat.profilAuto = profil === 'eleve' ? 'equilibre' : 'faible'; enregistrer(); }
   });
-  addEventListener('resize', () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight, false); });
+  // Redimensionnement et rotation du téléphone (certains téléphones donnent la nouvelle taille un peu après la rotation)
+  let tailleEcran = '', portraitEcran = innerHeight > innerWidth;
+  function ajusterEcran() {
+    const t = innerWidth + 'x' + innerHeight; if (t === tailleEcran || !innerWidth || !innerHeight) return; tailleEcran = t;
+    camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight, false);
+    const p = innerHeight > innerWidth;
+    if (p !== portraitEcran) { portraitEcran = p; ctl.rotation(); } else ctl.appliquer();
+  }
+  const ajusterBientot = () => { ajusterEcran(); setTimeout(ajusterEcran, 250); setTimeout(ajusterEcran, 700); };
+  addEventListener('resize', ajusterBientot);
+  addEventListener('orientationchange', ajusterBientot);
+  if (window.visualViewport) visualViewport.addEventListener('resize', ajusterBientot);
+  ajusterEcran();
   const premierCadre = (() => { const v = new THREE.Vector3(); return v; })();
   let phasePasEnfant = 0, phasePasChameau = 0, portrait = null;
 
@@ -1195,6 +1234,9 @@ async function demarrer() {
     { const dEnf = Math.hypot(J.x - C.x, J.z - C.z);
       chameau.regard = !monte && !sequence && dEnf < 7 && dEnf > 0.5 ? angleVers(C.a, Math.atan2(J.x - C.x, J.z - C.z)) : null; }
     chameau.animer(dt, sequence ? 0 : C.vit, tTotal);
+    { const e = chameau.espece === 'elephant' ? [3.2, 4.4] : chameau.espece === 'cheval' ? [1.0, 2.4] : [1.3, 2.9];
+      blobs[1].position.set(C.x, H(C.x, C.z) + 0.05, C.z); blobs[1].rotation.y = C.a; blobs[1].scale.set(e[0], 1, e[1]);
+      if (!monte) { const r = enfant.racine.position; blobs[0].visible = true; blobs[0].position.set(r.x, H(r.x, r.z) + 0.05, r.z); blobs[0].scale.set(0.75, 1, 0.75); } else blobs[0].visible = false; }
     chameau.racine.updateMatrixWorld(true);
     if (monte || (sequence && enfant.pose === 'monte' && !J.saut)) {
       chameau.positionSelle(vSelle);
@@ -1244,17 +1286,32 @@ async function demarrer() {
     if (focus) cam.cible.lerp(premierCadre.set(((monte ? C.x : J.x) * 0.55 + focus.x * 0.45), cibleY - 0.2, ((monte ? C.z : J.z) * 0.55 + focus.z * 0.45)), Math.min(1, dt * 3));
     else cam.cible.lerp(premierCadre.set(monte ? C.x : J.x, cibleY, monte ? C.z : J.z), Math.min(1, dt * 10));
     const cp = Math.cos(cam.pitch);
-    let px = cam.cible.x + Math.sin(cam.yaw) * cp * cam.dist, pz = cam.cible.z + Math.cos(cam.yaw) * cp * cam.dist;
-    let py = cam.cible.y + Math.sin(cam.pitch) * cam.dist;
+    // un poteau, un palmier ou une maison entre la caméra et l'enfant : la caméra se rapproche en douceur pour ne pas le perdre de vue
+    { const sx = Math.sin(cam.yaw), sz = Math.cos(cam.yaw), L = cam.dist * cp; let libre = cam.dist;
+      for (const o of decor.colliders) {
+        const ox = o.x - cam.cible.x, oz = o.z - cam.cible.z; if (Math.abs(ox) > L + o.r || Math.abs(oz) > L + o.r) continue;
+        const t = ox * sx + oz * sz; if (t < 0.3 || t > L) continue;                 // l'obstacle est-il entre les deux ?
+        const lat = Math.abs(ox * sz - oz * sx); if (lat > o.r + 0.15) continue;
+        const hCam = Math.sin(cam.pitch) * cam.dist * (t / L); if (hCam > 3.2) continue;   // la caméra passe au-dessus
+        libre = Math.min(libre, Math.max(1.8, (t - o.r - 0.3) / Math.max(0.2, cp)));
+      }
+      cam.distVue = cam.distVue == null ? cam.dist : cam.distVue + (libre - cam.distVue) * Math.min(1, dt * (libre < cam.distVue ? 8 : 2)); }
+    const dv = Math.min(cam.dist, cam.distVue);
+    let px = cam.cible.x + Math.sin(cam.yaw) * cp * dv, pz = cam.cible.z + Math.cos(cam.yaw) * cp * dv;
+    let py = cam.cible.y + Math.sin(cam.pitch) * dv;
     py = Math.max(py, H(px, pz) + 0.7);
     cam.pos.set(px, py, pz);
-    if (jumelles) {
-      // le faucon du voyageur : il s'élève au-dessus de l'enfant et regarde au loin, dans la direction de la caméra
-      vol = Math.min(1, vol + dt * 0.7); const k = vol * vol * (3 - 2 * vol);
-      const r = enfant.racine.position, dx = -Math.sin(cam.yaw), dz = -Math.cos(cam.yaw);
-      const hx = r.x + dx * 10 * k, hz = r.z + dz * 10 * k, hy = Math.max(r.y + 1.4 + 22 * k, H(hx, hz) + 6);
-      camera.position.set(hx, hy, hz);
-      camera.lookAt(hx + dx * 40, hy - 7 - (cam.pitch - 0.3) * 30, hz + dz * 40);
+    if (jumelles || retourVol > 0) {
+      // le faucon du voyageur : la caméra le suit de derrière ; l'enfant le dirige en tournant la caméra
+      if (jumelles) { vol = Math.min(1, vol + dt * 0.8); faucon.viser(Math.atan2(-Math.sin(cam.yaw), -Math.cos(cam.yaw))); }
+      else retourVol = Math.max(0, retourVol - dt * 1.2);
+      const k0 = jumelles ? vol : retourVol, k = k0 * k0 * (3 - 2 * k0);
+      faucon.camera(camVol, viseVol);
+      camera.position.lerpVectors(cam.pos, camVol, k);
+      camera.position.y = Math.max(camera.position.y, H(camera.position.x, camera.position.z) + 1);
+      viseLisse.lerp(viseVol, 1 - Math.exp(-dt * 6));
+      const regard = new THREE.Vector3().lerpVectors(cam.cible, viseLisse, k);
+      camera.lookAt(regard);
     } else if (portrait && !monte) {
       // vue de face, pour se voir pendant qu'on choisit ses habits
       const r = enfant.racine.position, ang = J.a + portrait.tour, ec = innerWidth / innerHeight < 0.8;
@@ -1271,6 +1328,7 @@ async function demarrer() {
     const nuit = ciel.maj(dt, cam.cible, etat.cycle !== false);
     decor.maj({ x: J.x, z: J.z }, tTotal, nuit);
     oiseaux.maj(dt, tTotal, nuit);
+    faucon.maj(dt, tTotal, { x: enfant.racine.position.x, y: enfant.racine.position.y, z: enfant.racine.position.z });
     { const sol = terrain.matiere(J.x, J.z), village = Math.hypot(J.x, J.z) < 60;
       effets.maj(dt, { x: J.x, z: J.z }, village ? 0 : (1 - sol.herbe) * (1 - nuit * 0.6) * (0.5 + 0.5 * Math.sin(tTotal * 0.15) ** 2), tTotal); }
     if (nour) nour.position.set(NOUR.x, H(NOUR.x, NOUR.z) + 1.6 + Math.sin(tTotal * 1.8) * 0.12, NOUR.z);
@@ -1375,7 +1433,7 @@ async function demarrer() {
   await attendre();
   $('chargement').classList.add('cache');
   $('hud').classList.remove('cache');
-  $('tactile').classList.remove('cache');
+  $('tactile').classList.remove('cache'); ctl.appliquer();   // les commandes ont maintenant leur taille : on les garde dans l'écran
   setTimeout(() => carte.preparer(), 5000);
   if (etat.guidage) { const g0 = etat.guidage; etat.guidage = null; if (!guiderVers({ ...g0, silencieux: true })) etat.guidage = null; }   // la carte se dessine en douce
   if (!perso()) ouvrirPerso(true);
@@ -1388,7 +1446,7 @@ async function demarrer() {
     teleporter(x, z) { J.x = x; J.z = z; if (monte) { C.x = x; C.z = z; } },
     monte: () => monte, sequence: () => sequence, proche: () => proche, zone: () => zoneActuelle,
     enfant: () => enfant, perso, quetes, regions, decouvrir: d => decouvrir(d), guide, carte, ouvrirCarte: id => ouvrirCarte(id), guiderVers: d => guiderVers(d), guiderMission: k => guiderMission(k), lieuxCarte: () => lieuxCarte(), choisirMonture: id => choisirMonture(id), ouvrirEcurie: () => ouvrirEcurie(), monture: () => chameau, ecurie, ouvrirBoutique: id => ouvrirBoutique(id), ouvrirCarnet: o => ouvrirCarnet(o), ouvrirPerso: () => ouvrirPerso(false), apercu: a => apercu(article(a)),
-    infos: () => renderer.info.render
+    infos: () => renderer.info.render, faucon: () => faucon
   };
 }
 
@@ -1396,11 +1454,11 @@ async function demarrer() {
 const dpr = () => window.devicePixelRatio || 1;
 const PROFILS = {
   faible: () => ({ nom: 'faible', leger: true, terrain: 140, pixelRatio: 1, antialias: false, ombres: false, densiteDeco: 0.5, etoiles: 250,
-    detail: 256, grain: 0, nuages: 7, particules: 0, empreintes: 50, brumeProche: 70, brumeLoin: 330 }),
+    detail: 256, grain: 0, nuages: 9, particules: 0, empreintes: 50, brumeProche: 70, brumeLoin: 330 }),
   equilibre: () => ({ nom: 'equilibre', leger: false, terrain: 200, pixelRatio: Math.min(dpr(), 1.5), antialias: false, ombres: true, ombresTaille: 1024,
-    densiteDeco: 0.8, etoiles: 500, detail: 512, grain: 1, nuages: 11, particules: 140, empreintes: 110, brumeProche: 100, brumeLoin: 440 }),
+    densiteDeco: 0.8, etoiles: 500, detail: 512, grain: 1, nuages: 16, particules: 140, empreintes: 110, brumeProche: 100, brumeLoin: 440 }),
   eleve: () => ({ nom: 'eleve', leger: false, terrain: 260, pixelRatio: Math.min(dpr(), 2), antialias: true, ombres: true, ombresTaille: 2048,
-    densiteDeco: 1, etoiles: 800, detail: 512, grain: 1, nuages: 15, particules: 280, empreintes: 160, brumeProche: 120, brumeLoin: 520 })
+    densiteDeco: 1, etoiles: 800, detail: 512, grain: 1, nuages: 22, particules: 280, empreintes: 160, brumeProche: 120, brumeLoin: 520 })
 };
 // Choix automatique selon l'appareil (modifiable dans les réglages)
 function choisirProfil() {

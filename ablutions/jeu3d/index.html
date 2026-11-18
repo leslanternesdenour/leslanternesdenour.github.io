@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Les ablutions en 3D · Les Lanternes de Nour</title>
+<meta name="description" content="Fais toi-même les ablutions (wudû) en 3D, étape par étape, avec Nour la petite goutte d'eau.">
+<meta name="theme-color" content="#2bb3c0">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Nunito:wght@600;800;900&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="jeu3d.css?v=1">
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js" } }
+</script>
+</head>
+<body>
+<canvas id="scene" aria-label="La cour des ablutions en 3D"></canvas>
+
+<div id="chargement" class="ecran"><div class="carte"><div class="goutte">💧</div><p>On prépare l'eau…</p></div></div>
+<div id="erreur" class="ecran cache"><div class="carte"><h2>Oh non !</h2><p>La 3D ne peut pas s'ouvrir sur cet appareil.</p><a class="gros" href="../">💧 Retour aux ablutions</a></div></div>
+
+<!-- l'accueil : choisir le personnage et le mode -->
+<div id="accueil" class="ecran cache">
+  <div class="carte large">
+    <a class="retour" href="../" aria-label="Retour aux ablutions">✕</a>
+    <div id="accueil-nour" class="nour"></div>
+    <h1>Les ablutions <span>en 3D</span></h1>
+    <p class="intro">Assieds-toi devant un robinet et fais toi-même les ablutions, geste après geste.</p>
+    <div class="qui" role="group" aria-label="Qui fait les ablutions ?">
+      <button data-genre="fille" class="choix-perso">👧 Une fille</button>
+      <button data-genre="garcon" class="choix-perso">👦 Un garçon</button>
+    </div>
+    <div class="modes">
+      <button class="mode m1" data-mode="apprendre"><span class="ic">💧</span><span>Apprendre<small>Nour te montre, puis tu fais</small></span></button>
+      <button class="mode m2" data-mode="entrainer"><span class="ic">🎯</span><span>S'entraîner<small>Tu trouves toi-même l'ordre</small></span></button>
+      <button class="mode m3" data-mode="libre"><span class="ic">🌿</span><span>Libre<small>Tous les gestes, à ton rythme</small></span></button>
+    </div>
+  </div>
+</div>
+
+<!-- en jeu -->
+<div id="haut" class="cache">
+  <button class="rond" id="btn-menu" aria-label="Menu">☰</button>
+  <div id="titre-etape"></div>
+  <button class="rond" id="btn-son" aria-label="Son">🔊</button>
+</div>
+<div id="points" class="cache" aria-hidden="true"></div>
+<div id="consigne" class="cache"></div>
+
+<div id="panneau" class="cache" role="region" aria-live="polite">
+  <div class="bulle-ligne"><div id="mini-nour" class="nour mini"></div><div id="bulle" class="bulle"></div></div>
+  <div id="detail"></div>
+  <div id="actions"></div>
+</div>
+
+<div id="fin" class="ecran cache"><div class="carte"><div id="fin-nour" class="nour"></div><h2 id="fin-titre"></h2><p id="fin-texte"></p><div id="fin-boutons" class="fin-boutons"></div></div></div>
+
+<div id="menu" class="ecran cache"><div class="carte">
+  <h2>Pause</h2>
+  <div class="fin-boutons">
+    <button class="gros" id="menu-reprendre">▶ Reprendre</button>
+    <button class="moyen" id="menu-modes">🔁 Changer de mode</button>
+    <a class="moyen" href="../">💧 Retour aux ablutions</a>
+  </div>
+  <p class="note">Les personnages et la cour sont des créations du jeu. Les textes et leurs sources sont ceux de la leçon des ablutions.</p>
+</div></div>
+
+<script type="module" src="jeu.js?v=1"></script>
+<noscript><p style="padding:2em">Active JavaScript pour jouer. <a href="../">Retour aux ablutions</a></p></noscript>
+</body>
+</html>
