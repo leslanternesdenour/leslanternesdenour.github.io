@@ -87,8 +87,9 @@
     if (depuisGeste) memoSon(true);
     var p;
     try { p = a.play(); } catch (e) { p = null; }
-    var ok = function () { etat.son = 'joue'; majBoutonSon(); legende('ar'); };
-    var bloque = function () { etat.son = 'invite'; majBoutonSon(); legende(null); };
+    etat.essai = true;
+    var ok = function () { etat.essai = false; etat.son = 'joue'; majBoutonSon(); legende('ar'); };
+    var bloque = function () { etat.essai = false; etat.son = 'invite'; majBoutonSon(); legende(depuisGeste ? null : 'fr'); };
     if (p && p.then) p.then(ok, bloque); else bloque();
   }
   function basculerSon() {
@@ -117,7 +118,7 @@
     try { sessionStorage.setItem(CLE_SESSION, '1'); } catch (e) {}
     racine.classList.add('sortie'); if (raison === 'passer') racine.classList.add('sortie-vite');
     window.removeEventListener('keydown', clavier, true);
-    racine.removeEventListener('click', geste, true);
+    racine.removeEventListener('click', geste, true); racine.removeEventListener('touchend', geste, true); window.removeEventListener('keydown', geste, true);
     plus(function () {
       H.classList.remove('intro-on');
       Array.prototype.forEach.call(document.body.children, function (e) { if (e !== racine) e.removeAttribute('inert'); });
@@ -141,7 +142,9 @@
   // premier toucher n'importe où (hors boutons ; « click » et non « pointerdown » : seul le relâcher du doigt débloque le son sur téléphone) : la voix démarre tout de suite, si le navigateur l'avait bloquée
   function geste(e) {
     if (etat.son !== 'invite' || etat.ouvert || etat.ferme) return;
-    if (e.target.closest && e.target.closest('button, label, input, a')) return;
+    if (e.target && e.target.closest && e.target.closest('button, label, input, a')) return;
+    if (e.type === 'keydown' && (e.key === 'Tab' || e.key === 'Escape' || e.key === 'Shift')) return;
+    if (etat.essai) return;   // un essai est déjà en cours (touchend puis click)
     lancerVoix(true);
   }
 
@@ -159,7 +162,7 @@
     // le bouton d'entrée apparaît vite, sans attendre la fin de la voix
     plus(montrerEntrer, mode === 'courte' ? 1800 : (calme ? 600 : 2800));
     window.addEventListener('keydown', clavier, true);
-    racine.addEventListener('click', geste, true);
+    racine.addEventListener('click', geste, true); racine.addEventListener('touchend', geste, true); window.addEventListener('keydown', geste, true);
     try { racine.focus({ preventScroll: true }); } catch (e) {}
     window.__introPret = true;
   }
