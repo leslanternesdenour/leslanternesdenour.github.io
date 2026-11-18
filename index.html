@@ -6,7 +6,18 @@
 <title>Les Lanternes de Nour</title>
 <meta name="description" content="Les histoires des prophètes racontées et chantées pour les enfants de 3 à 10 ans : Adam, Nouh (Noé), Youssouf, Younous. Sources du Coran et des hadiths dans chaque épisode.">
 <link rel="canonical" href="https://leslanternesdenour.fr/">
-<link rel="icon" href="https://yt3.googleusercontent.com/YOIWLrvboPlviOsRbwgJVE8UC3BrUqyOLm6zNGXV7uqe_SaWU4TZwbpjp99PaXls27fnSVga5XY=s120-c-k-c0x00ffffff-no-rj">
+<link rel="icon" type="image/png" sizes="48x48" href="intro/favicon-48.png">
+<link rel="apple-touch-icon" href="intro/apple-touch-icon.png">
+<meta name="theme-color" content="#191345">
+<link rel="stylesheet" href="intro/intro.css?v=1">
+<script>
+/* Introduction d'accueil : décide avant le premier affichage pour éviter tout clignotement. Si elle n'est pas prête sous 5 s, on l'abandonne. */
+(function(){var H=document.documentElement,m={},mode=null;try{m=JSON.parse(localStorage.getItem('lanternes_intro')||'{}')||{}}catch(e){}
+if(/[?&]intro=1\b/.test(location.search))mode='complete';
+else if(!m.off){var s=null;try{s=sessionStorage.getItem('lanternes_intro_session')}catch(e){}
+if(!s){if(!m.vu)mode='complete';else if(Date.now()-m.vu>14*864e5)mode='courte'}}
+if(mode){window.__introMode=mode;H.classList.add('intro-on');setTimeout(function(){if(!window.__introPret)H.classList.remove('intro-on')},5000)}})();
+</script>
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Les Lanternes de Nour">
 <meta property="og:title" content="Les Lanternes de Nour : les histoires des prophètes pour les enfants">
@@ -188,9 +199,33 @@ footer { border-top: 1px solid rgba(245, 185, 66, .18); padding: 22px 0 30px; co
 </style>
 </head>
 <body>
+<div id="intro" class="intro" tabindex="-1" role="dialog" aria-modal="true" aria-label="Bienvenue aux Lanternes de Nour">
+  <div class="intro-fond" aria-hidden="true"><div class="intro-etoiles"></div><div class="intro-particules"></div></div>
+  <div class="intro-paysage" aria-hidden="true"><img src="intro/paysage.webp" alt="" width="1600" height="1200" decoding="async"></div>
+  <div class="intro-flash" aria-hidden="true"></div>
+  <div class="intro-centre">
+    <button type="button" class="intro-logo" id="intro-logo" aria-label="Allumer la lanterne et écouter le message de bienvenue">
+      <span class="intro-halo" aria-hidden="true"></span>
+      <img src="intro/logo-1000.webp" srcset="intro/logo-640.webp 640w, intro/logo-1000.webp 1000w" sizes="(max-width: 700px) 94vw, 760px" width="1000" height="672" alt="Les Lanternes de Nour">
+      <span class="intro-lueur" aria-hidden="true"></span>
+      <span class="intro-eclat" aria-hidden="true"></span>
+    </button>
+    <div class="intro-bas">
+      <p class="intro-indice" id="intro-indice" aria-hidden="true">Touche la lanterne</p>
+      <p class="intro-parole" id="intro-parole" aria-live="polite" aria-hidden="true"></p>
+      <button type="button" class="intro-entrer" id="intro-entrer" aria-hidden="true" disabled>ENTRER DANS LE MONDE DE NOUR</button>
+    </div>
+  </div>
+  <div class="intro-barre">
+    <button type="button" class="intro-passer" id="intro-passer">Passer l'introduction</button>
+    <button type="button" class="intro-son" id="intro-son" aria-pressed="true" aria-label="Couper le son">🔊</button>
+  </div>
+  <div class="intro-pied"><label class="intro-jamais"><input type="checkbox" id="intro-off"> Ne plus afficher l'introduction</label></div>
+</div>
 <div class="ciel" aria-hidden="true"></div>
 
 <header class="hero">
+  <a class="marque-entete" href="./" aria-label="Les Lanternes de Nour, accueil"><picture><source media="(max-width: 560px)" srcset="intro/lanterne-120.webp"><img src="intro/logo-320.webp" alt="Les Lanternes de Nour" width="320" height="215"></picture></a>
   <img class="hero-img" src="https://yt3.googleusercontent.com/6otGy7OdabaxaRN82KGSFwmTRqoCdf5agDqZsqooEgIYQjoeugb3KYTU3U46CHTvseKWOXAW4w=w1920-k-c0xffffffff-no-nd-rj" alt="Les Lanternes de Nour : les histoires des prophètes, chantées pour les enfants">
   <div class="wrap hero-body">
     <h1>Les histoires des prophètes, <span>racontées et chantées</span> pour les enfants de 3 à 10 ans</h1>
@@ -358,6 +393,7 @@ footer { border-top: 1px solid rgba(245, 185, 66, .18); padding: 22px 0 30px; co
 <footer>
   <div class="wrap pied">
     <span class="marque"><img src="https://yt3.googleusercontent.com/YOIWLrvboPlviOsRbwgJVE8UC3BrUqyOLm6zNGXV7uqe_SaWU4TZwbpjp99PaXls27fnSVga5XY=s120-c-k-c0x00ffffff-no-rj" alt="">Les Lanternes de Nour</span>
+    <span class="reglage-intro-boite"><button type="button" class="reglage-intro" id="intro-reglage" aria-pressed="false">Désactiver l'introduction d'accueil</button> · <button type="button" class="reglage-intro" id="intro-revoir">Revoir l'introduction</button> <span id="intro-reglage-etat" class="sr-only" role="status"></span></span>
     <span>youtube.com/@LesLanternesdeNour · Contenus conçus pour les enfants · © Les Lanternes de Nour 2026</span>
   </div>
 </footer>
@@ -399,5 +435,6 @@ footer { border-top: 1px solid rgba(245, 185, 66, .18); padding: 22px 0 30px; co
   });
 })();
 </script>
+<script src="intro/intro.js?v=1" defer></script>
 </body>
 </html>
