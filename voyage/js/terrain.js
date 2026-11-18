@@ -12,7 +12,9 @@ export const LIEUX = {
   camp:      { x: -175, z: 60,   r: 42 },
   dunes:     { x: 30,   z: 230,  r: 120 },
   col:       { x: 0,    z: -150, r: 22 },
-  montagnes: { x: 0,    z: -265, r: 70 }
+  montagnes: { x: 0,    z: -265, r: 70 },
+  wadi:      { x: -245, z: 175,  r: 46 },     // région à débloquer : le lit d'une rivière sèche
+  rochers:   { x: 150,  z: -95,  r: 40 }      // région à débloquer : les rochers gravés
 };
 
 // Les chemins (lignes brisées). Ils aplanissent les dunes et se colorent.
@@ -23,6 +25,13 @@ export const CHEMINS = [
   [[0, 0], [10, 70], [22, 140], [30, 205]]                                 // vers les grandes dunes
 ];
 const CHEMIN_MONTAGNE = CHEMINS[2];
+// les pistes vers les régions à débloquer (elles partent des chemins existants)
+export const PISTES = [
+  [[-175, 60], [-205, 110], [-232, 148], [-242, 168]],   // du camp vers le wadi
+  [[95, 20], [118, -30], [140, -70], [148, -86]]          // de la route de l'oasis vers les rochers gravés
+];
+// le lit du wadi : une ligne sinueuse qui traverse la région
+const LIT_WADI = [[-290, 150], [-268, 160], [-250, 176], [-232, 186], [-212, 204], [-196, 214]];
 
 // ---------- bruit (valeurs pseudo-aléatoires, toujours les mêmes) ----------
 function hash(i, j) {
@@ -60,6 +69,7 @@ export function distanceChemin(x, z, pts) {
 export function distanceChemins(x, z) {
   let d = Infinity;
   for (const c of CHEMINS) d = Math.min(d, distanceChemin(x, z, c));
+  for (const c of PISTES) d = Math.min(d, distanceChemin(x, z, c));
   return d;
 }
 const dist = (x, z, l) => Math.hypot(x - l.x, z - l.z);
@@ -100,7 +110,16 @@ function relief(x, z) {
   const belv = lisse(28, 14, dist(x, z, LIEUX.montagnes));  // le belvédère : un plateau en haut
   h = melange(h, h * 0.4 + 22, belv * 0.8);
 
-  return { h, surChemin, v, o, lac, dOasis, nord, massif, rochers, c };
+  // le wadi : une région plus plate, creusée par le lit d'une rivière à sec
+  const dW = dist(x, z, LIEUX.wadi), w = lisse(LIEUX.wadi.r + 30, LIEUX.wadi.r, dW);
+  h = melange(h, 1.2 + fbm(x * 0.03, z * 0.03, 2) * 2, w);
+  const dLit = distanceChemin(x, z, LIT_WADI), lit = lisse(9, 3, dLit) * w;
+  h -= lit * 2.6;
+  // les rochers gravés : un plateau de grès, avec de gros blocs
+  const dR = dist(x, z, LIEUX.rochers), gr = lisse(LIEUX.rochers.r + 26, LIEUX.rochers.r - 4, dR);
+  h = melange(h, 2 + fbm(x * 0.05, z * 0.05, 2) * 1.5, gr);
+  const wv = w * lisse(24, 8, dLit) * (0.55 + 0.45 * fbm(x * 0.09, z * 0.09, 2));   // l'herbe pousse près du lit
+  return { h, surChemin, v, o, lac, dOasis, nord, massif, rochers, c, lit, gres: gr, wv };
 }
 
 export function hauteurBrute(x, z) { return relief(x, z).h; }
@@ -119,7 +138,7 @@ export class Terrain {
     this.matieres = new Float32Array(pos.count * 2);   // herbe, roche (pour les empreintes et les sons)
     const sable = new THREE.Color('#e9c88f'), sable2 = new THREE.Color('#dcb06f'), herbe = new THREE.Color('#93bd5f'),
       herbe2 = new THREE.Color('#6d9a45'), roche = new THREE.Color('#94705c'), roche2 = new THREE.Color('#5d4f48'),
-      chemin = new THREE.Color('#d8b07a'), place = new THREE.Color('#f1e2c4'), mouille = new THREE.Color('#b99a68'), tmp = new THREE.Color();
+      chemin = new THREE.Color('#d8b07a'), gravier = new THREE.Color('#a89a86'), gres = new THREE.Color('#c27a52'), place = new THREE.Color('#f1e2c4'), mouille = new THREE.Color('#b99a68'), tmp = new THREE.Color();
     for (let i = 0; i < pos.count; i++) {
       const x = pos.getX(i), z = pos.getZ(i);
       const r = relief(x, z);
@@ -129,7 +148,7 @@ export class Terrain {
       const var1 = fbm(x * 0.05, z * 0.05, 2);
       tmp.copy(sable).lerp(sable2, var1);
       const vert = Math.max(r.v * lisse(0.2, 0.9, fbm(x * 0.08, z * 0.08, 2) + 0.35),
-        r.o * lisse(LIEUX.oasis.r + 4, LIEUX.oasis.lac + 4, r.dOasis));
+        r.o * lisse(LIEUX.oasis.r + 4, LIEUX.oasis.lac + 4, r.dOasis), r.wv * (1 - r.lit));
       const wHerbe = Math.min(1, vert * 1.2);
       if (vert > 0) tmp.lerp(herbe.clone().lerp(herbe2, Math.min(1, var1 * 0.7 + fbm(x * 0.15, z * 0.15, 2) * 0.6)), wHerbe);
       const roc = Math.min(1, r.nord * 1.35 * (0.62 + 0.38 * lisse(4, 18, r.massif + r.rochers)) + r.nord * lisse(3, 8, r.rochers));
@@ -138,6 +157,8 @@ export class Terrain {
         tmp.multiplyScalar(1 - roc * (0.1 + 0.1 * Math.sin(r.h * 0.9 + var1 * 3)));   // strates dans la roche
       }
       if (r.lac > 0.05) tmp.lerp(mouille, Math.min(1, r.lac * 1.6));
+      if (r.lit > 0.05) tmp.lerp(gravier.clone().lerp(roche2, var1 * 0.4), Math.min(1, r.lit * 1.3));          // galets du wadi
+      if (r.gres > 0.05) tmp.lerp(gres.clone().lerp(roche, var1 * 0.5), r.gres * 0.75);                       // grès rouge
       const wRoche = Math.max(0, Math.min(1, roc)) * (1 - r.surChemin * 0.6);
       mat[i * 3] = Math.max(0, 1 - wHerbe - wRoche); mat[i * 3 + 1] = wHerbe * (1 - r.surChemin); mat[i * 3 + 2] = wRoche;
       this.matieres[i * 2] = wHerbe; this.matieres[i * 2 + 1] = wRoche;

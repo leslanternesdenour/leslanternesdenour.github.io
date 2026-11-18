@@ -10,7 +10,9 @@ export const ZONES = [
   { id: 'oasis',     nom: "L'oasis",                 icone: '🌴' },
   { id: 'camp',      nom: 'Le camp des caravanes',   icone: '⛺' },
   { id: 'dunes',     nom: 'Le grand désert',         icone: '🏜️' },
-  { id: 'montagnes', nom: 'Les montagnes',           icone: '⛰️' }
+  { id: 'montagnes', nom: 'Les montagnes',           icone: '⛰️' },
+  { id: 'wadi',      nom: 'Le wadi',                 icone: '🌼' },
+  { id: 'rochers',   nom: 'Les rochers gravés',      icone: '🪨' }
 ];
 
 export const BIENTOT = [
@@ -42,6 +44,16 @@ export const POINTS = {
     sens: 'Sens du verset : « Et Nous avons fait, à partir de l\'eau, toute chose vivante. »',
     source: 'Coran, sourate Al-Anbiyâ (21), verset 30',
     decouverte: "L'eau donne la vie (sourate 21, verset 30)"
+  },
+  wadi: {
+    titre: 'Le wadi',
+    texte: "Un wadi, c'est le lit d'une rivière qui reste sec presque toute l'année. Quand il pleut enfin, l'eau y coule d'un seul coup ! Ensuite, de petites mares restent un moment, et l'herbe et les fleurs poussent très vite.",
+    decouverte: 'Le wadi, une rivière souvent à sec'
+  },
+  rochers: {
+    titre: 'Les rochers gravés',
+    texte: "Il y a très, très longtemps, bien avant l'époque de Nour, des gens ont gravé des animaux sur les rochers d'Arabie : des chameaux, des bouquetins, des autruches… Ces gravures existent vraiment. Ici, ce sont des reconstitutions du jeu.",
+    decouverte: 'Les gravures sur les rochers'
   },
   camp: {
     titre: 'Le camp des caravanes',
