@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&family=Nunito:wght@400;600;700&family=Amiri:wght@700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="voyage.css?v=2">
+<link rel="stylesheet" href="voyage.css?v=3">
 <script type="importmap">
 { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js" } }
 </script>
@@ -67,8 +67,8 @@
 <div id="boussole" class="cache" aria-hidden="true"><div id="boussole-aiguille"></div></div>
 <div id="gain" class="cache" aria-live="polite"></div>
 <div id="outils">
-  <button class="rond cache" id="btn-carte" aria-label="Carte du pays" title="Carte du pays">🗺️</button>
-  <button class="rond cache" id="btn-jumelles" aria-label="Jumelles" title="Jumelles">🔭</button>
+  <button class="rond cache" id="btn-carte" aria-label="Carte sur parchemin" title="Carte sur parchemin">📜</button>
+  <button class="rond cache" id="btn-jumelles" aria-label="Le faucon du voyageur" title="Le faucon du voyageur">🦅</button>
 </div>
 
 <!-- Boutique d'un marchand -->
@@ -131,6 +131,26 @@
   </div>
 </div>
 
+<!-- Choisir son personnage -->
+<div id="perso" class="cache" role="dialog" aria-labelledby="perso-titre">
+  <h2 id="perso-titre">Qui part en voyage ?</h2>
+  <div class="perso-genres">
+    <button data-genre="fille" aria-pressed="true"><span>👧</span>Une voyageuse</button>
+    <button data-genre="garcon" aria-pressed="false"><span>👦</span>Un voyageur</button>
+  </div>
+  <p class="ligne-titre">Tenue de départ</p>
+  <div id="perso-tenues" class="perso-tenues"></div>
+  <p class="ligne-titre">Couleur de peau</p>
+  <div id="perso-peaux" class="perso-peaux"></div>
+  <p class="note">Les habits sont inspirés de l'Arabie ancienne : ce sont des reconstitutions imaginées, pas des copies exactes. Tu pourras en trouver d'autres au souk, et changer tout cela plus tard dans les réglages.</p>
+  <div class="perso-boutons"><button class="petit-bouton" id="perso-tourner">↻ Tourner</button> <button class="petit-bouton cache" id="perso-annuler">Annuler</button> <button class="gros-bouton" id="perso-ok">C'est parti !</button></div>
+</div>
+
+<!-- Animation d'achat -->
+<div id="achat" class="cache" aria-live="polite">
+  <div class="achat-carte"><div class="achat-rayons"></div><div id="achat-image"></div><p class="achat-petit">C'est à toi !</p><p id="achat-nom"></p><p id="achat-rarete"></p></div>
+</div>
+
 <!-- Carnet de voyage -->
 <div id="carnet" class="cache" role="dialog" aria-labelledby="carnet-titre">
   <div class="carnet-page">
@@ -139,10 +159,11 @@
     <p class="carnet-resume" id="carnet-resume"></p>
     <div class="onglets" role="tablist">
       <button role="tab" data-onglet="missions">🗺️ Missions</button>
-      <button role="tab" data-onglet="collection">🏮 Collection</button>
+      <button role="tab" data-onglet="collection">🏆 Collections</button>
       <button role="tab" data-onglet="animaux">🦊 Animaux</button>
       <button role="tab" data-onglet="lieux">🏜️ Lieux</button>
-      <button role="tab" data-onglet="sablo">🐪 Sablo</button>
+      <button role="tab" data-onglet="armoire">👕 Armoire</button>
+      <button role="tab" data-onglet="sablo">🐎 Montures</button>
     </div>
     <div id="carnet-contenu"></div>
   </div>
@@ -169,7 +190,7 @@
   <label class="ligne"><input type="radio" name="qualite" value="equilibre"> Équilibré (téléphones récents, tablettes)</label>
   <label class="ligne"><input type="radio" name="qualite" value="eleve"> Élevé (ordinateurs)</label>
   <p class="note">Le changement de graphismes recharge la page.</p>
-  <div class="lecture-boutons"><button class="petit-bouton" id="ouvrir-commandes">🎮 Commandes</button>
+  <div class="lecture-boutons"><button class="petit-bouton" id="ouvrir-perso">🧒 Mon personnage</button> <button class="petit-bouton" id="ouvrir-commandes">🎮 Commandes</button>
   <button class="petit-bouton" id="revoir-aide">❔ Aide</button></div>
 </div>
 
@@ -195,6 +216,6 @@
 
 <noscript><p style="padding:2em;color:#fff">Active JavaScript pour partir en voyage. <a href="../monde/" style="color:#f5b942">Retour au village</a></p></noscript>
 <script type="module" src="../compte/synchro.js?v=1"></script>
-<script type="module" src="js/main.js?v=2"></script>
+<script type="module" src="js/main.js?v=3"></script>
 </body>
 </html>

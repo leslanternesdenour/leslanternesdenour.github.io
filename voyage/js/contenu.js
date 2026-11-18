@@ -6,7 +6,7 @@
 
 export const ZONES = [
   { id: 'village',   nom: 'Le village de Nour',      icone: '🏘️' },
-  { id: 'marche',    nom: 'Le marché',               icone: '🛍️' },
+  { id: 'marche',    nom: 'Le souk',                  icone: '🛍️' },
   { id: 'oasis',     nom: "L'oasis",                 icone: '🌴' },
   { id: 'camp',      nom: 'Le camp des caravanes',   icone: '⛺' },
   { id: 'dunes',     nom: 'Le grand désert',         icone: '🏜️' },

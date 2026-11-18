@@ -88,9 +88,10 @@ export function sonPorte() {
   souffle(220, 1, 0.9, 0.12, 'lowpass');
   [392, 523, 659].forEach((f, i) => bip(f, f, 0.6, 0.05, 'triangle', 0.3 + i * 0.15));
 }
-export function sonPiece() {
+export function sonPiece(v = 10) {
   if (!ctx || ctx.state !== 'running') return;
-  bip(1318, 1320, 0.12, 0.05, 'triangle'); bip(1760, 1762, 0.25, 0.05, 'triangle', 0.08);
+  const f = v >= 100 ? 1.0 : v >= 50 ? 1.12 : v >= 10 ? 1.25 : 1.4, j = 0.97 + Math.random() * 0.06;   // les grosses pièces sonnent plus grave
+  bip(1318 * f * j, 1320 * f * j, 0.1, 0.04, 'triangle'); bip(1760 * f * j, 1762 * f * j, 0.22, 0.04, 'triangle', 0.06);
 }
 export function sonRamasser() {
   if (!ctx || ctx.state !== 'running') return;
@@ -123,4 +124,17 @@ function arreterMusique() {
   if (!musique.source) return;
   const s = musique.source, g = musique.gain; musique.source = null;
   g.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.4); setTimeout(() => { try { s.stop(); } catch (e) {} }, 1600);
+}
+export function sonCheval() { // petit hennissement doux
+  if (!ctx || ctx.state !== 'running') return;
+  for (let i = 0; i < 5; i++) bip(620 - i * 40, 560 - i * 50, 0.12, 0.035, 'triangle', i * 0.09);
+  souffle(500, 1, 0.3, 0.04, 'lowpass');
+}
+export function sonElephant() { // un barrissement tout doux
+  if (!ctx || ctx.state !== 'running') return;
+  bip(260, 520, 0.6, 0.04, 'sawtooth'); bip(270, 540, 0.55, 0.03, 'triangle', 0.04);
+}
+export function pasCheval(fort) { // cloc-cloc des sabots sur le sable
+  if (!ctx || ctx.state !== 'running') return;
+  souffle(1400, 3, 0.05, 0.08 * fort); souffle(700, 2, 0.06, 0.06 * fort, 'lowpass');
 }

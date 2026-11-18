@@ -1,7 +1,7 @@
 // Les personnages : le petit explorateur (l'enfant qui joue) et Sablo, le chameau.
 // Modèles en formes simples, articulés pour les animations (marche, course, monture, agenouillement).
 import * as THREE from 'three';
-import { piece, fusion, materiau } from './formes.js?v=2';
+import { piece, fusion, materiau, M } from './formes.js?v=3';
 
 const mat = materiau();
 const B = () => new THREE.BoxGeometry(1, 1, 1);
@@ -14,7 +14,7 @@ export class Enfant {
   constructor(ombres, couleurs = {}) {
     this.racine = new THREE.Group();
     this.corps = new THREE.Group(); this.racine.add(this.corps);
-    const { peau = '#d9a27a', tunique = '#2bb3c0', pantalon = '#3a4f7a', chaussure = '#6b4428', cheche = '#fff3dc', sac = true } = couleurs;
+    const { peau = '#d9a27a', tunique = '#2bb3c0', pantalon = '#3a4f7a', chaussure = '#6b4428', cheche = '#fff3dc', sac = true, barbe = null, voile = null } = couleurs;
     // jambes
     this.jambes = [-1, 1].map(s => {
       const g = new THREE.Group(); g.position.set(s * 0.1, 0.58, 0);
@@ -43,13 +43,19 @@ export class Enfant {
     this.tete = new THREE.Group(); this.tete.position.set(0, 1.26, 0); this.corps.add(this.tete);
     this.tete.add(maille(fusion([
       piece(SPH(0.19), peau),
+      ...(voile ? [   // voile qui couvre les cheveux, les oreilles et le cou, et tombe sur les épaules
+        piece(new THREE.SphereGeometry(0.214, 18, 12, 0, Math.PI * 2, 0, Math.PI * 0.36), voile, { p: [0, 0.006, -0.004], m: M.tissu }),
+        piece(new THREE.SphereGeometry(0.216, 18, 12, Math.PI / 2 + 0.78, Math.PI * 2 - 1.56, Math.PI * 0.2, Math.PI * 0.62), voile, { m: M.tissu }),
+        piece(new THREE.CylinderGeometry(0.15, 0.3, 0.36, 18), voile, { p: [0, -0.26, -0.02], m: M.tissu })
+      ] : [
       piece(new THREE.SphereGeometry(0.205, 14, 10, 0, Math.PI * 2, 0, Math.PI * 0.55), cheche, { p: [0, 0.02, -0.01] }),
       piece(new THREE.TorusGeometry(0.19, 0.035, 6, 16), '#f0dcb4', { p: [0, 0.06, 0], r: [Math.PI / 2 - 0.25, 0, 0] }),
-      piece(B(), cheche, { p: [0, -0.06, -0.2], r: [0.35, 0, 0], s: [0.16, 0.26, 0.04] }),
+      piece(B(), cheche, { p: [0, -0.06, -0.2], r: [0.35, 0, 0], s: [0.16, 0.26, 0.04] })]),
       piece(SPH(0.027, 6, 5), '#2a2440', { p: [-0.065, 0.0, 0.17] }),
       piece(SPH(0.027, 6, 5), '#2a2440', { p: [0.065, 0.0, 0.17] }),
       piece(SPH(0.03, 6, 5), '#f19a8a', { p: [-0.11, -0.05, 0.14] }),
-      piece(SPH(0.03, 6, 5), '#f19a8a', { p: [0.11, -0.05, 0.14] })
+      piece(SPH(0.03, 6, 5), '#f19a8a', { p: [0.11, -0.05, 0.14] }),
+      ...(barbe ? [piece(SPH(0.15, 10, 8), barbe, { p: [0, -0.13, 0.08], s: [1, 1.25, 0.8] }), piece(B(), barbe, { p: [0, -0.04, 0.17], s: [0.14, 0.025, 0.03] })] : [])
     ]), ombres));
     this.phase = 0;
     this.pose = 'debout';
@@ -86,18 +92,27 @@ export class Enfant {
 
 // ================= Sablo, le chameau =================
 export class Chameau {
-  constructor(ombres) {
+  // options : robe [poil, poil2, sabot], bosses (1 = dromadaire, 2 = chameau de Bactriane), etoiles (monture imaginaire), echelle
+  constructor(ombres, { robe = ['#d6a868', '#c48f52', '#7a5636'], bosses = 1, etoiles = false, echelle = 0.86 } = {}) {
     this.racine = new THREE.Group();
-    this.echelle = 0.86;
+    this.echelle = echelle; this.bosses = bosses;
     this.racine.scale.setScalar(this.echelle);
-    const poil = '#d6a868', poil2 = '#c48f52', sabot = '#7a5636';
+    const [poil, poil2, sabot] = robe;
     this.hauteurDebout = 1.75;
     this.corps = new THREE.Group(); this.corps.position.y = this.hauteurDebout; this.racine.add(this.corps);
     this.corps.add(maille(fusion([
       piece(SPH(1, 18, 12), poil, { s: [0.72, 0.68, 1.3] }),
-      piece(SPH(1, 16, 10), poil2, { p: [0, 0.55, -0.05], s: [0.55, 0.6, 0.72] }),             // la bosse
+      ...(bosses === 2 ? [                                                                          // deux bosses et une épaisse toison
+        piece(SPH(1, 14, 10), poil2, { p: [0, 0.52, 0.62], s: [0.4, 0.55, 0.34] }), piece(SPH(1, 14, 10), poil2, { p: [0, 0.5, -0.72], s: [0.4, 0.52, 0.34] }),
+        piece(SPH(1, 12, 8), poil2, { p: [0, -0.35, 0.75], s: [0.45, 0.35, 0.45] })
+      ] : [piece(SPH(1, 16, 10), poil2, { p: [0, 0.55, -0.05], s: [0.55, 0.6, 0.72] })]),     // la bosse
       piece(SPH(0.3, 8, 6), poil2, { p: [0, -0.15, -1.25] })
     ]), ombres));
+    if (etoiles) {   // monture imaginaire : de petites étoiles qui brillent sur le pelage
+      const e = [];
+      for (let i = 0; i < 26; i++) { const a = i * 2.4, h = ((i * 37) % 11) / 11; e.push(piece(SPH(0.035, 6, 5), '#fff1b8', { p: [Math.cos(a) * 0.73 * Math.sqrt(1 - (h - 0.5) ** 2 * 0.9), -0.4 + h * 0.75, Math.sin(a) * 1.2 * 0.9] })); }
+      this.corps.add(new THREE.Mesh(fusion(e), new THREE.MeshBasicMaterial({ vertexColors: true })));
+    }
     // la queue (elle chasse les mouches)
     this.queue = new THREE.Group(); this.queue.position.set(0, -0.1, -1.32); this.corps.add(this.queue);
     this.queue.add(maille(fusion([
@@ -153,21 +168,37 @@ export class Chameau {
   }
 
   // tapis : [couleur, bordure] ; selle : couleur ; sacoches, pompons, lanterne : oui/non
-  habiller({ tapis = ['#c94f3c', '#2bb3c0'], selle = '#f5b942', sacoches = false, pompons = false, lanterne = false }) {
+  habiller({ tapis = ['#c94f3c', '#2bb3c0'], motif = null, selle = '#f5b942', selleBois = false, sacoches = false, pompons = false, lanterne = false, couverture = null }) {
     for (const g of [this.harnais, this.collier]) if (g) { g.parent.remove(g); g.traverse(o => o.geometry && o.geometry.dispose()); }
     this.harnais = new THREE.Group(); this.corps.add(this.harnais);
-    const [t1, t2] = tapis;
+    const [t1, t2] = tapis, lz = this.bosses === 2 ? 0.62 : 1;
     const p = [
-      piece(B(), t1, { p: [0, 0.98, -0.05], s: [1.25, 0.08, 1.15] }),
-      piece(B(), t2, { p: [0, 0.95, -0.05], s: [1.32, 0.06, 0.9] }),
-      piece(B(), selle, { p: [0, 1.06, -0.05], s: [0.6, 0.1, 0.6] }),
+      piece(B(), t1, { p: [0, 0.98, -0.05], s: [1.25, 0.08, 1.15 * lz], m: M.laine }),
+      piece(B(), t2, { p: [0, 0.95, -0.05], s: [1.32, 0.06, 0.9 * lz], m: M.laine }),
+      piece(B(), selle, { p: [0, 1.06, -0.05], s: [0.6, 0.1, 0.6], m: selleBois ? M.bois : M.cuir }),
       piece(B(), '#8a5a35', { p: [0, 1.22, 0.24], s: [0.5, 0.3, 0.08] }),
       piece(B(), '#8a5a35', { p: [0, 1.18, -0.34], s: [0.5, 0.22, 0.08] }),
       piece(B(), selle, { p: [0, 1.38, 0.24], s: [0.12, 0.08, 0.12] }),
-      ...[-1, 1].map(s => piece(B(), t2, { p: [s * 0.66, 0.72, -0.05], s: [0.04, 0.5, 0.9] })),
+      ...[-1, 1].map(s => piece(B(), t2, { p: [s * 0.66, 0.72, -0.05], s: [0.04, 0.5, 0.9], m: M.laine })),
       ...[-1, 1].map(s => piece(B(), t1, { p: [s * 0.67, 0.45, -0.05], s: [0.04, 0.08, 0.95] })),
       ...[-1, 1].flatMap(s => Array.from({ length: 7 }, (_, i) => piece(B(), i % 2 ? t1 : t2, { p: [s * 0.68, 0.36, -0.45 + i * 0.13], s: [0.03, 0.1, 0.05] })))
     ];
+    // motif tissé sur les pans du tapis
+    for (const s of [-1, 1]) {
+      const x = s * 0.685;
+      if (motif === 'rayures') for (const y of [0.58, 0.72, 0.86]) p.push(piece(B(), t1, { p: [x, y, -0.05], s: [0.012, 0.05, 0.9] }));
+      if (motif === 'losanges') for (let i = 0; i < 4; i++) p.push(piece(B(), t1, { p: [x, 0.72, -0.4 + i * 0.235], r: [Math.PI / 4, 0, 0], s: [0.012, 0.15, 0.15] }));
+      if (motif === 'etoiles') for (let i = 0; i < 3; i++) for (const r of [0, Math.PI / 4]) p.push(piece(B(), t2, { p: [x * 1.004, 0.72, -0.35 + i * 0.3], r: [r, 0, 0], s: [0.012, 0.12, 0.12] }));
+      if (motif === 'nuit') { p.push(piece(new THREE.TorusGeometry(0.1, 0.025, 5, 14, Math.PI * 1.3), t2, { p: [x * 1.01, 0.74, -0.2], r: [0, Math.PI / 2, 0.6] }));
+        for (const [y, z] of [[0.86, 0.1], [0.62, 0.22], [0.8, 0.32], [0.6, -0.42]]) p.push(piece(SPH(0.025, 6, 5), t2, { p: [x * 1.01, y, z] })); }
+    }
+    if (selleBois) p.push(piece(SPH(0.07, 8, 6), '#6b4428', { p: [0, 1.42, 0.24], m: M.bois }), piece(SPH(0.06, 8, 6), '#6b4428', { p: [0, 1.32, -0.34], m: M.bois }),
+      ...[-1, 1].map(s => piece(B(), '#c9a26a', { p: [s * 0.2, 1.22, 0.285], s: [0.06, 0.18, 0.01] })));
+    if (couverture) {
+      p.push(piece(new THREE.CylinderGeometry(0.13, 0.13, 0.95, 12), couverture[0], { p: [0, 1.2, -0.56], r: [0, 0, Math.PI / 2], m: M.laine }));
+      for (const x of [-0.3, 0, 0.3]) p.push(piece(new THREE.CylinderGeometry(0.135, 0.135, 0.06, 12), couverture[1], { p: [x, 1.2, -0.56], r: [0, 0, Math.PI / 2] }));
+      for (const x of [-0.25, 0.25]) p.push(piece(new THREE.TorusGeometry(0.14, 0.012, 4, 14), '#5a3a22', { p: [x, 1.2, -0.56], r: [0, Math.PI / 2, 0] }));
+    }
     if (sacoches) for (const s of [-1, 1]) {
       p.push(piece(B(), '#a7744a', { p: [s * 0.78, 0.55, -0.55], s: [0.2, 0.42, 0.4] }));
       p.push(piece(B(), '#8a5a35', { p: [s * 0.79, 0.76, -0.55], s: [0.22, 0.08, 0.42] }));
