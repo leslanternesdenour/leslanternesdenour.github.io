@@ -9,7 +9,7 @@ const idx = (i, j) => j * N + i;
 const versMonde = (i, j) => ({ x: O + (i + 0.5) * CASE, z: O + (j + 0.5) * CASE });
 const versCase = (x, z) => ({ i: Math.max(0, Math.min(N - 1, Math.floor((x - O) / CASE))), j: Math.max(0, Math.min(N - 1, Math.floor((z - O) / CASE))) });
 
-export function creerGuide({ scene, terrain, colliders, col }) {
+export function creerGuide({ scene, terrain, colliders, col, fermees = () => [] }) {
   const H = (x, z) => terrain.hauteur(x, z);
   // ---------- ce qui ne change pas : hauteurs, eau, chemins ----------
   const haut = new Float32Array(N * N), cout = new Float32Array(N * N), eau = new Uint8Array(N * N);
@@ -21,10 +21,13 @@ export function creerGuide({ scene, terrain, colliders, col }) {
     cout[k] = distanceChemins(x, z) < 3.5 ? 0.55 : 1;          // les routes caravanières sont plus agréables
   }
   // ---------- ce qui change : obstacles (selon la taille de la monture) ----------
-  let bloque = null, nbColliders = -1, marge = -1, colOuvert = null;
+  let bloque = null, nbColliders = -1, marge = -1, colOuvert = null, clefFermees = '';
+  const clef = () => fermees().map(f => f.id).join(',');
   function preparer(rayon) {
-    if (bloque && nbColliders === colliders.length && marge === rayon && colOuvert === col.ouvert) return;
-    bloque = new Uint8Array(N * N); nbColliders = colliders.length; marge = rayon; colOuvert = col.ouvert;
+    if (bloque && nbColliders === colliders.length && marge === rayon && colOuvert === col.ouvert && clefFermees === clef()) return;
+    bloque = new Uint8Array(N * N); nbColliders = colliders.length; marge = rayon; colOuvert = col.ouvert; clefFermees = clef();
+    for (const f of fermees()) { const a = versCase(f.x - f.r, f.z - f.r), b = versCase(f.x + f.r, f.z + f.r);
+      for (let j = a.j; j <= b.j; j++) for (let i = a.i; i <= b.i; i++) { const p = versMonde(i, j); if (Math.hypot(p.x - f.x, p.z - f.z) < f.r) bloque[idx(i, j)] = 1; } }
     for (let k = 0; k < N * N; k++) if (eau[k]) bloque[k] = 1;
     for (const c of colliders) {
       const r = c.r + rayon, a = versCase(c.x - r, c.z - r), b = versCase(c.x + r, c.z + r);
@@ -164,6 +167,7 @@ export function creerGuide({ scene, terrain, colliders, col }) {
     activer(d, pos, rayon) {
       // on cherche d'abord : si aucun chemin n'existe, le guidage en cours (s'il y en a un) continue
       if (!col.ouvert && d.z < -172) return { ok: false, raison: 'col' };
+      const fe = fermees().find(f => Math.hypot(d.x - f.x, d.z - f.z) < f.r); if (fe) return { ok: false, raison: 'region', region: fe.id };
       const r = chercher(pos, d, rayon);
       if (!r.ok) return { ok: false, raison: r.raison };
       dest = { rayon: 4, ...d }; rayonActuel = rayon; montrer = true; route = r.points; probleme = null;
@@ -178,7 +182,7 @@ export function creerGuide({ scene, terrain, colliders, col }) {
       tRecalcul -= dt;
       if (rayon !== rayonActuel) { rayonActuel = rayon; tRecalcul = 0; route = route || null; }
       let p = route ? projeter(pos) : null;
-      const besoin = !route || p.d > 7 || nbColliders !== colliders.length || colOuvert !== col.ouvert || marge !== rayonActuel;
+      const besoin = !route || p.d > 7 || nbColliders !== colliders.length || colOuvert !== col.ouvert || marge !== rayonActuel || clefFermees !== clef();
       if (besoin && tRecalcul <= 0) { tRecalcul = 1.2; recalculer(pos); p = route ? projeter(pos) : null; }
       const reste = Math.hypot(dest.x - pos.x, dest.z - pos.z);
       if (reste < dest.rayon) {

@@ -52,6 +52,25 @@ export const TRAVERSEE = [
   { nom: 'Les grandes dunes', icone: '🏜️', x: 28, z: 200 }, { nom: 'Le col', icone: '🚪', x: 0, z: -150 }, { nom: 'Les montagnes', icone: '⛰️', x: 0, z: -255 }
 ];
 
+// les découvertes des régions à débloquer
+const RW = { x: -245, z: 175 }, RR = { x: 150, z: -95 };
+export const SPOTS = [
+  { id: 'ghadir', quete: 'wadi', titre: 'La mare du wadi', icone: '💧', x: -244, z: 180, arabe: 'غَدِير',
+    texte: 'Après la pluie, l\'eau reste quelques jours dans les creux du wadi : c\'est un ghadir, une petite mare. Les animaux et les oiseaux viennent y boire.' },
+  { id: 'traces', quete: 'wadi', titre: 'Des traces dans le sable', icone: '🐾', x: -228, z: 190,
+    texte: 'Regarde ces petites traces dans le sable humide : un lièvre est passé par ici ! Les traces racontent qui vit dans le désert, même quand on ne voit personne.' },
+  { id: 'galets', quete: 'wadi', titre: 'Les galets tout ronds', icone: '🪨', x: -266, z: 162,
+    texte: 'Ces cailloux sont tout ronds parce que l\'eau les a roulés pendant très longtemps. C\'est la preuve que de l\'eau coule ici, de temps en temps !' },
+  { id: 'g-chameau', quete: 'gravures', titre: 'La gravure du chameau', icone: '🐪', bloc: [RR.x + 6, RR.z - 6, 3.4], dessin: 'chameau',
+    texte: 'Un chameau gravé dans la pierre. Il y a très longtemps, les gens dessinaient déjà les animaux qui comptaient pour eux.' },
+  { id: 'g-bouquetin', quete: 'gravures', titre: 'La gravure du bouquetin', icone: '🐐', bloc: [RR.x - 12, RR.z - 10, 2.8], dessin: 'bouquetin',
+    texte: 'Un bouquetin, avec ses grandes cornes recourbées. Il vit dans les montagnes rocheuses et grimpe partout sans tomber.' },
+  { id: 'g-autruche', quete: 'gravures', titre: 'La gravure de l\'autruche', icone: '🪶', bloc: [RR.x + 16, RR.z + 8, 3.0], dessin: 'autruche',
+    texte: 'Une autruche ! Autrefois, des autruches vivaient en Arabie. Elles y ont disparu au siècle dernier.' },
+  { id: 'g-chiens', quete: 'gravures', titre: 'La gravure des chiens', icone: '🐕', bloc: [RR.x - 4, RR.z + 16, 2.6], dessin: 'chiens',
+    texte: 'Des chiens à la queue enroulée, gravés il y a très longtemps. Ils accompagnaient les chasseurs.' }
+];
+
 export const QUETES = {
   coins: { titre: 'Les quatre coins du pays', icone: '🗺️', cat: 'exploration', diff: 2, total: 4, recompense: 200,
     desc: 'Découvre l\'oasis, le camp des caravanes, les grandes dunes et les montagnes.', objectif: 'Découvrir 4 régions' },
@@ -61,18 +80,24 @@ export const QUETES = {
     desc: 'Observe quatre plantes du pays de Nour et découvre à quoi elles servent.', objectif: 'Observer 4 plantes' },
   enigmes: { titre: 'Les énigmes du souk', icone: '🧩', cat: 'reflexion', diff: 1, total: Object.keys(ENIGMES).length, recompense: 150,
     desc: 'Chaque marchand du souk a une petite énigme pour toi. Réfléchis bien : tu peux réessayer autant que tu veux.', objectif: 'Résoudre 5 énigmes' },
+  wadi: { titre: 'Les secrets du wadi', icone: '🌼', cat: 'observation', diff: 2, total: 3, recompense: 200, region: 'wadi',
+    desc: 'Dans le wadi, observe la mare, les traces dans le sable et les galets : que racontent-ils ?', objectif: 'Faire 3 découvertes dans le wadi' },
+  gravures: { titre: 'Les rochers gravés', icone: '🪨', cat: 'observation', diff: 2, total: 4, recompense: 250, region: 'rochers',
+    desc: 'Sur les gros rochers rouges, retrouve quatre gravures d\'animaux très anciennes (des reconstitutions du jeu).', objectif: 'Trouver 4 gravures' },
   traversee: { titre: 'La grande traversée', icone: '🐪', cat: 'exceptionnelle', diff: 3, total: TRAVERSEE.length, recompense: 600,
     desc: 'Comme les caravanes d\'autrefois, traverse tout le pays à dos de ta monture : l\'oasis, le camp, les dunes, le col et les montagnes, dans cet ordre.', objectif: 'Rejoindre 5 étapes à dos de monture' }
 };
 
 export function creerQuetes({ scene, terrain, colliders, AV, etat, enregistrer, donner, ui, ombres }) {
   const H = (x, z) => terrain.hauteur(x, z);
-  const Q = AV.quetes = Object.assign({ mots: [], plantes: [], enigmes: [], traversee: 0, finies: [] }, AV.quetes || {});
+  const Q = AV.quetes = Object.assign({ mots: [], plantes: [], enigmes: [], traversee: 0, finies: [], wadi: [], gravures: [] }, AV.quetes || {});
+  if (!Q.wadi) Q.wadi = []; if (!Q.gravures) Q.gravures = [];
   const fini = id => Q.finies.includes(id);
   function nombre(id) {
     if (id === 'coins') return ['oasis', 'camp', 'dunes', 'montagnes'].filter(z => etat.zones.includes(z)).length;
     if (id === 'mots') return Q.mots.length; if (id === 'plantes') return Q.plantes.length;
     if (id === 'enigmes') return Q.enigmes.length; if (id === 'traversee') return Q.traversee;
+    if (id === 'wadi') return Q.wadi.length; if (id === 'gravures') return Q.gravures.length;
     return 0;
   }
   function verifier(id) {
@@ -83,7 +108,7 @@ export function creerQuetes({ scene, terrain, colliders, AV, etat, enregistrer, 
   }
   // ---------- dans le monde : petites étoiles dorées (mots) et plantes ----------
   const etoile = (() => { const p = []; for (const r of [0, Math.PI / 4]) p.push(piece(B(), '#ffd36b', { r: [0, 0, r], s: [0.32, 0.32, 0.06] })); p.push(piece(SPH(0.1), '#fff3c4')); return fusion(p); })();
-  const matEtoile = new THREE.MeshBasicMaterial({ vertexColors: true });
+  const matEtoile = new THREE.MeshBasicMaterial({ vertexColors: true }), matAnneau = new THREE.MeshBasicMaterial({ color: '#ffd36b' });
   const marques = MOTS.map(m => { const e = new THREE.Mesh(etoile, matEtoile); e.position.set(m.x, H(m.x, m.z) + 1.3, m.z); scene.add(e); return { m, e }; });
   const halo = new THREE.Points(new THREE.BufferGeometry().setFromPoints(MOTS.map(m => new THREE.Vector3(m.x, H(m.x, m.z) + 1.3, m.z))),
     new THREE.PointsMaterial({ color: '#ffd36b', size: 1.6, transparent: true, opacity: 0.45, depthWrite: false, blending: THREE.AdditiveBlending }));
@@ -101,10 +126,40 @@ export function creerQuetes({ scene, terrain, colliders, AV, etat, enregistrer, 
   const plantes = PLANTES.map(pl => {
     const m = new THREE.Mesh(modeles[pl.id](), mat); m.castShadow = ombres; m.position.set(pl.x, H(pl.x, pl.z) - 0.05, pl.z); scene.add(m);
     if (pl.r) colliders.push({ x: pl.x, z: pl.z, r: pl.r });
-    const loupe = new THREE.Mesh(new THREE.TorusGeometry(0.22, 0.05, 6, 16), matEtoile); loupe.position.set(pl.x, H(pl.x, pl.z) + (pl.id === 'arak' ? 2.0 : pl.id === 'roseaux' ? 3.0 : 4.4), pl.z); scene.add(loupe);
+    const loupe = new THREE.Mesh(new THREE.TorusGeometry(0.22, 0.05, 6, 16), matAnneau); loupe.position.set(pl.x, H(pl.x, pl.z) + (pl.id === 'arak' ? 2.0 : pl.id === 'roseaux' ? 3.0 : 4.4), pl.z); scene.add(loupe);
     return { pl, m, loupe };
   });
+  // les gravures (dessins à la manière des gravures anciennes : traits faits de petits points) et les repères
+  function texGravure(sorte) {
+    const c = document.createElement('canvas'); c.width = 256; c.height = 192; const x = c.getContext('2d');
+    x.fillStyle = 'rgba(244,222,190,.92)';
+    const trait = (pts, ep = 7) => { for (let i = 0; i < pts.length - 1; i++) { const [a, b] = pts[i], [cc, d] = pts[i + 1], L = Math.hypot(cc - a, d - b); for (let k = 0; k <= L; k += 4) { const t = k / L; x.beginPath(); x.arc(a + (cc - a) * t + (Math.random() - 0.5) * 2, b + (d - b) * t + (Math.random() - 0.5) * 2, ep / 2 * (0.7 + Math.random() * 0.4), 0, 7); x.fill(); } } };
+    if (sorte === 'chameau') { trait([[40, 120], [70, 80], [110, 60], [140, 80], [170, 80], [190, 50], [205, 40], [215, 50]]); trait([[70, 80], [70, 150]]); trait([[95, 85], [95, 150]]); trait([[150, 85], [150, 150]]); trait([[170, 85], [172, 150]]); trait([[40, 120], [55, 100]]); }
+    else if (sorte === 'bouquetin') { trait([[60, 100], [180, 100], [195, 80]]); trait([[195, 80], [185, 40], [160, 25], [135, 35]]); trait([[200, 80], [205, 70]]); for (const xx of [75, 100, 160, 175]) trait([[xx, 100], [xx, 150]]); trait([[60, 100], [50, 90]]); }
+    else if (sorte === 'autruche') { trait([[90, 110], [120, 85], [160, 90], [175, 110], [150, 125], [110, 125], [90, 110]]); trait([[160, 90], [175, 50], [180, 25], [192, 25]]); trait([[125, 125], [120, 170]]); trait([[140, 125], [150, 170]]); }
+    else { for (const ox of [0, 120]) { trait([[30 + ox, 110], [100 + ox, 110], [110 + ox, 95], [118 + ox, 92]]); trait([[30 + ox, 110], [20 + ox, 95], [28 + ox, 85], [36 + ox, 92]]); for (const xx of [40, 55, 85, 98]) trait([[xx + ox, 110], [xx + ox, 145]], 6); } }
+    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+  }
+  const spots = SPOTS.map(sp => {
+    let x = sp.x, z = sp.z, gr = null;
+    if (sp.bloc) {   // la gravure est posée sur le flanc du rocher, tournée vers l'arrivée de la piste
+      const [bx, bz, bs] = sp.bloc, ax = 140, az = -83, L = Math.hypot(ax - bx, az - bz) || 1, dx = (ax - bx) / L, dz = (az - bz) / L;
+      gr = new THREE.Mesh(new THREE.PlaneGeometry(1.7, 1.25), new THREE.MeshLambertMaterial({ map: texGravure(sp.dessin), transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -4 }));
+      gr.position.set(bx + dx * bs * 0.86, H(bx, bz) + bs * 0.5, bz + dz * bs * 0.86); gr.rotation.y = Math.atan2(dx, dz); scene.add(gr);
+      x = bx + dx * (bs + 1.6); z = bz + dz * (bs + 1.6);
+    }
+    const e = new THREE.Mesh(new THREE.TorusGeometry(0.22, 0.05, 6, 16), matAnneau); e.position.set(x, H(x, z) + 2.4, z); scene.add(e);
+    return { sp, x, z, e, gr };
+  });
+  function decouvrir(k) {
+    const liste = Q[k.sp.quete], nouveau = !liste.includes(k.sp.id), q = QUETES[k.sp.quete];
+    if (nouveau) { liste.push(k.sp.id); enregistrer(); majMarques(); }
+    ui.dialogue({ titre: `${k.sp.icone} ${k.sp.titre}`, texte: k.sp.texte, arabe: k.sp.arabe, ecouterArabe: k.sp.arabe, sous: `${liste.length} sur ${q.total} · ${q.titre}` });
+    if (nouveau) { donner('spot:' + k.sp.id, 20, k.sp.titre); verifier(k.sp.quete); }
+  }
+
   function majMarques() {
+    for (const k of spots) k.e.visible = !Q[k.sp.quete].includes(k.sp.id);
     for (const k of marques) k.e.visible = !Q.mots.includes(k.m.id);
     halo.geometry.dispose(); halo.geometry = new THREE.BufferGeometry().setFromPoints(marques.filter(k => k.e.visible).map(k => k.e.position));
     for (const k of plantes) k.loupe.visible = !Q.plantes.includes(k.pl.id);
@@ -142,12 +197,14 @@ export function creerQuetes({ scene, terrain, colliders, AV, etat, enregistrer, 
       let best = null, dmin = Infinity;
       for (const k of marques) if (k.e.visible) { const d = Math.hypot(k.m.x - J.x, k.m.z - J.z); if (d < 2.8 && d < dmin) { dmin = d; best = { label: 'Apprendre', icone: '🔤', faire: () => apprendre(k.m), d }; } }
       for (const k of plantes) { const d = Math.hypot(k.pl.x - J.x, k.pl.z - J.z); if (d < k.pl.r + 2.8 && d < dmin) { dmin = d; best = { label: 'Observer', icone: '🔍', faire: () => observer(k), d }; } }
+      for (const k of spots) { const d = Math.hypot(k.x - J.x, k.z - J.z); if (d < 3.2 && d < dmin) { dmin = d; best = { label: 'Observer', icone: k.sp.icone, faire: () => decouvrir(k), d }; } }
       return best;
     },
     // la traversée et les régions (appelé régulièrement)
     maj(dt, t, pos, monte) {
       for (const k of marques) if (k.e.visible) { k.e.rotation.y = t * 1.5; k.e.position.y = H(k.m.x, k.m.z) + 1.3 + Math.sin(t * 2 + k.m.x) * 0.12; }
       for (const k of plantes) if (k.loupe.visible) k.loupe.rotation.y = t * 1.2;
+      for (const k of spots) if (k.e.visible) k.e.rotation.y = t * 1.2;
       if (!fini('traversee') && monte && Q.traversee < TRAVERSEE.length) {
         const e = TRAVERSEE[Q.traversee];
         if (Math.hypot(e.x - pos.x, e.z - pos.z) < 16) {
@@ -164,6 +221,7 @@ export function creerQuetes({ scene, terrain, colliders, AV, etat, enregistrer, 
       if (fini(id)) return null;
       if (id === 'mots') { const m = proche(MOTS.filter(m => !Q.mots.includes(m.id))); return m && { x: m.x, z: m.z, nom: 'un mot arabe', icone: '🔤', rayon: 2.5 }; }
       if (id === 'plantes') { const p = proche(PLANTES.filter(p => !Q.plantes.includes(p.id))); return p && { x: p.x, z: p.z, nom: p.nom, icone: p.icone, rayon: p.r + 2.5 }; }
+      if (id === 'wadi' || id === 'gravures') { const k = proche(spots.filter(k => k.sp.quete === id && !Q[id].includes(k.sp.id))); return k && { x: k.x, z: k.z, nom: k.sp.titre, icone: k.sp.icone, rayon: 2.6 }; }
       if (id === 'traversee') { const e = TRAVERSEE[Q.traversee]; return e && { x: e.x, z: e.z, nom: e.nom, icone: e.icone, rayon: 14 }; }
       return null;
     }

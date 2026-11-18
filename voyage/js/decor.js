@@ -2,7 +2,7 @@
 // Tout est dessiné avec des formes simples fusionnées : léger, net, et facile à faire évoluer.
 import * as THREE from 'three';
 import { piece, fusion, placer, hasard, materiau, temps, M } from './formes.js?v=3';
-import { LIEUX, CHEMINS, distanceChemins, lisse, fbm, LIMITE } from './terrain.js?v=3';
+import { LIEUX, CHEMINS, PISTES, distanceChemins, lisse, fbm, LIMITE } from './terrain.js?v=3';
 
 const deg = d => d * Math.PI / 180;
 const B = () => new THREE.BoxGeometry(1, 1, 1);
@@ -473,6 +473,58 @@ export function creerDecor(scene, terrain, Q, TX = {}) {
     roc.forEach(o => colliders.push({ x: o.x, z: o.z, r: 1.2 }));
   });
 
+  // ===== Les régions à débloquer : le wadi et les rochers gravés =====
+  // À l'entrée de chaque région, un éboulis de pierres ferme la piste tant qu'elle n'est pas débloquée.
+  const barrieres = {};
+  function eboulis(id, x, z, rot) {
+    const R = hasard(id.length * 31), p = [];
+    for (let i = 0; i < 9; i++) p.push(piece(new THREE.DodecahedronGeometry(0.6 + R() * 0.7, 0), i % 2 ? '#a8926f' : '#8f7d62', { p: [-4 + i, 0.4 + R() * 0.5, (R() - 0.5) * 1.6], r: [R(), R(), R()], s: [1, 0.8, 1] }));
+    p.push(piece(B(), '#8a6440', { p: [0, 1.0, 1.4], s: [0.12, 2, 0.12] }), piece(B(), '#c9a26a', { p: [0, 1.85, 1.45], s: [1.3, 0.6, 0.06] }));
+    const m = new THREE.Mesh(fusion(p), matBase); m.castShadow = ombres; m.position.set(x, H(x, z) - 0.1, z); m.rotation.y = rot; scene.add(m);
+    const cols = Array.from({ length: 5 }, (_, i) => ({ x: x + Math.cos(rot) * (-4 + i * 2), z: z - Math.sin(rot) * (-4 + i * 2), r: 1.6 }));
+    cols.forEach(c => colliders.push(c));
+    barrieres[id] = { mesh: m, cols, ouvert: false, ouvrir() { if (this.ouvert) return; this.ouvert = true; scene.remove(m); for (const c of cols) { const k = colliders.indexOf(c); if (k >= 0) colliders.splice(k, 1); } } };
+  }
+  { const [a, b] = [PISTES[0][1], PISTES[0][2]], t = 0.45, x = a[0] + (b[0] - a[0]) * t, z = a[1] + (b[1] - a[1]) * t; eboulis('wadi', x, z, Math.atan2(b[0] - a[0], b[1] - a[1]) + Math.PI / 2); }
+  { const [a, b] = [PISTES[1][1], PISTES[1][2]], t = 0.5, x = a[0] + (b[0] - a[0]) * t, z = a[1] + (b[1] - a[1]) * t; eboulis('rochers', x, z, Math.atan2(b[0] - a[0], b[1] - a[1]) + Math.PI / 2); }
+
+  zone('wadi', LIEUX.wadi, g => {
+    const R = hasard(66), { x: wx, z: wz } = LIEUX.wadi;
+    stele(g, 'wadi', wx + 6, wz - 14, deg(200));
+    // la mare (ghadir) qui reste après la pluie
+    const mx = -250, mz = 176;
+    const mare = new THREE.Mesh(new THREE.CircleGeometry(4.2, 24), matEau('#4fb3c4', 1)); mare.rotation.x = -Math.PI / 2; mare.position.set(mx, H(mx, mz) + 0.25, mz); g.add(mare);
+    colliders.push({ x: mx, z: mz, r: 3.6 });
+    copies(g, geoRoseaux(), matHerbe, Array.from({ length: 14 }, (_, i) => { const a = i * 0.45 + R() * 0.3, d = 4.3 + R() * 1.2; return { x: mx + Math.cos(a) * d, z: mz + Math.sin(a) * d, rot: R() * 6, s: 0.7 + R() * 0.4 }; }), false);
+    // des acacias et des arbustes le long des berges
+    const ac = disperser(R, 12, wx, wz, 8, LIEUX.wadi.r, 4);
+    copies(g, geoAcacia(R), matVent, ac.map(o => ({ ...o, rot: R() * 6, s: 0.8 + R() * 0.5 })));
+    ac.forEach(o => colliders.push({ x: o.x, z: o.z, r: 0.8 }));
+    const ar = disperser(R, 16, wx, wz, 6, LIEUX.wadi.r, 2.2);
+    copies(g, geoArbuste(R), matHerbe, ar.map(o => ({ ...o, rot: R() * 6, s: 0.8 + R() * 0.6 })));
+    // les galets du lit et de gros rochers
+    const roc = disperser(R, 14, wx, wz, 10, LIEUX.wadi.r + 6, 2.5);
+    copies(g, geoRocher(R, '#9a8e7e'), matBase, roc.map(o => ({ ...o, rot: R() * 6, s: 0.5 + R() * 1.1 })));
+    roc.forEach(o => colliders.push({ x: o.x, z: o.z, r: 0.9 }));
+    // des fleurs : le wadi fleurit après la pluie
+    const fl = [];
+    for (let i = 0; i < 180; i++) { const a = R() * 6.28, d = Math.sqrt(R()) * LIEUX.wadi.r; const x = wx + Math.cos(a) * d, z = wz + Math.sin(a) * d; if (distanceChemins(x, z) > 2) fl.push({ x, z, dy: 0.12, s: 0.6 + R() * 0.6 }); }
+    ['#f5d35a', '#f2f0e8', '#d98ac9', '#f39a5a'].forEach((c, k) => copies(g, fusion([piece(new THREE.SphereGeometry(0.09, 5, 4), c), piece(CYL(0.015, 0.015, 0.25, 4), '#6f9a50', { p: [0, -0.12, 0] })]), matHerbe, fl.filter((_, i) => i % 4 === k), false));
+    copies(g, geoTouffe('#8fae5a'), matHerbe, disperser(R, 40, wx, wz, 3, LIEUX.wadi.r, 1.2).map(o => ({ ...o, rot: R() * 6, s: 0.8 + R() * 0.6 })), false);
+  });
+
+  zone('rochers', LIEUX.rochers, g => {
+    const R = hasard(77), { x: rx, z: rz } = LIEUX.rochers;
+    stele(g, 'rochers', rx - 10, rz + 12, deg(20));
+    // de gros blocs de grès rouge (les gravures sont posées dessus par regions.js)
+    const blocs = [[rx + 6, rz - 6, 3.4], [rx - 12, rz - 10, 2.8], [rx + 16, rz + 8, 3.0], [rx - 4, rz + 16, 2.6], [rx + 20, rz - 18, 2.4], [rx - 22, rz + 4, 2.2]];
+    for (const [x, z, s] of blocs) { ajouter(g, geoRocher(R, '#b46a46', [s, s * 0.9, s * 1.1]), matBase, x, z, { rot: R() * 6 }); colliders.push({ x, z, r: s * 0.95 }); }
+    const roc = disperser(R, 22, rx, rz, 8, LIEUX.rochers.r + 8, 2.5);
+    copies(g, geoRocher(R, '#c27a52'), matBase, roc.map(o => ({ ...o, rot: R() * 6, s: 0.4 + R() * 1.0 })));
+    roc.forEach(o => colliders.push({ x: o.x, z: o.z, r: 0.8 }));
+    copies(g, geoTouffe('#a8a060'), matHerbe, disperser(R, 24, rx, rz, 3, LIEUX.rochers.r, 1.4).map(o => ({ ...o, rot: R() * 6 })), false);
+  });
+
   // ===== Le col et les montagnes =====
   const col = { ouvert: false, barre: null, angle: 0 };
   zone('montagnes', { x: 0, z: -200 }, g => {
@@ -565,5 +617,5 @@ export function creerDecor(scene, terrain, Q, TX = {}) {
   }
   function construireTout() { for (const z of zones) if (!z.construit) { z.construire(); z.construit = true; } majHalos(); enAttente = false; }
 
-  return { colliders, points, zones, col, maj, construireTout, construireZone: id => { const z = zones.find(z => z.id === id); if (z && !z.construit) { z.construire(); z.construit = true; enAttente = true; } } };
+  return { colliders, points, zones, col, barrieres, maj, construireTout, construireZone: id => { const z = zones.find(z => z.id === id); if (z && !z.construit) { z.construire(); z.construit = true; enAttente = true; } } };
 }

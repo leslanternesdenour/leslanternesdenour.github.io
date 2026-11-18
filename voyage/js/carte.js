@@ -1,7 +1,7 @@
 // La carte du pays de Nour : une vieille carte de voyage sur parchemin (dessinée une fois à partir du vrai terrain),
 // qu'on peut déplacer, agrandir, et où l'on choisit une destination pour se faire guider.
 // Les motifs (rose des vents à huit branches, frise) sont des créations du jeu.
-import { LIMITE, LIEUX, CHEMINS, fbm } from './terrain.js?v=3';
+import { LIMITE, LIEUX, CHEMINS, PISTES, fbm } from './terrain.js?v=3';
 
 const TAILLE = 1600, ECH = TAILLE / (LIMITE * 2);              // pixels par mètre sur le parchemin
 const P = v => (v + LIMITE) * ECH;                           // monde → parchemin
@@ -64,7 +64,7 @@ function* dessinerParchemin(terrain) {   // dessin en plusieurs étapes, pour ne
     x.strokeStyle = '#4f7a3a'; x.lineWidth = 2; for (let f = 0; f < 5; f++) { const b = f * 1.25 + 0.3; x.beginPath(); x.moveTo(cx, cz - 3); x.quadraticCurveTo(cx + Math.cos(b) * 5, cz - 8, cx + Math.cos(b) * 9, cz - 3 + Math.sin(b) * 3); x.stroke(); } }
   // les routes caravanières : pointillés à l'encre
   x.strokeStyle = 'rgba(122,62,36,.85)'; x.lineWidth = 3.2; x.setLineDash([10, 8]); x.lineCap = 'round';
-  for (const c of CHEMINS) { x.beginPath(); c.forEach(([wx, wz], n) => n ? x.lineTo(P(wx), P(wz)) : x.moveTo(P(wx), P(wz))); x.stroke(); }
+  for (const c of [...CHEMINS, ...PISTES]) { x.beginPath(); c.forEach(([wx, wz], n) => n ? x.lineTo(P(wx), P(wz)) : x.moveTo(P(wx), P(wz))); x.stroke(); }
   x.setLineDash([]);
   // les maisons du village, comme de petits dessins
   for (const [a, r] of [[35, 26], [60, 28], [110, 27], [135, 25], [190, 26], [215, 29], [300, 26], [330, 28], [248, 33]]) {

@@ -23,6 +23,7 @@ import { MONTURES, monture, creerMonture, creerEcurie, FICHES_ESPECES } from './
 import { COLLECTIONS, BADGES, progressionCollection } from './succes.js?v=3';
 import { creerGuide } from './guide.js?v=3';
 import { creerQuetes, QUETES, CATEGORIES_QUETES } from './quetes.js?v=3';
+import { creerRegions, REGIONS } from './regions.js?v=3';
 import { creerCarte, CATEGORIES } from './carte.js?v=3';
 import { creerBourse } from './economie.js?v=3';
 import { creerQuotidien } from './quotidien.js?v=3';
@@ -106,6 +107,9 @@ async function demarrer() {
   const quetes = creerQuetes({ scene, terrain, colliders: decor.colliders, AV, etat, enregistrer, ombres: !!Q.ombres,
     donner: (id, n, raison) => bourse.recompense(id, n, raison, ouDonner()),
     ui: { dialogue: p => dialogue(p), bandeau: (a, b) => { bandeau(a, b); S.sonDecouverte(); }, evenement: t => quotidien.evenement(t) } });
+  // les régions à débloquer (le wadi, les rochers gravés)
+  const regions = creerRegions({ etat, AV, enregistrer, barrieres: decor.barrieres,
+    ui: { debloquee: (id, R) => { setTimeout(() => { bandeau('Nouvelle région débloquée !', `${R.icone} ${R.nom}`); S.sonPorte(); montrerIndice(`🗺️ ${R.nom} est ouvert : regarde ta carte !`, 4000); }, 600); } } });
   // Hakim, l'ancien du village (personnage imaginaire) : il pose des questions chaque jour
   const hakim = new Enfant(!!Q.ombres, { tunique: '#efe6d2', pantalon: '#cfc2a8', cheche: '#ffffff', peau: '#c08a62', sac: false, barbe: '#f4f1ea' });
   hakim.racine.scale.setScalar(1.22);
@@ -171,9 +175,11 @@ async function demarrer() {
     }
     nx = Math.max(-LIMITE, Math.min(LIMITE, nx)); nz = Math.max(-LIMITE, Math.min(LIMITE, nz));
     if (!decor.col.ouvert && nz < -172) { nz = -172; avertirCol(); }
+    for (const f of regions.fermees()) { const dx = nx - f.x, dz = nz - f.z, d = Math.hypot(dx, dz); if (d < f.r && d > 1e-3) { nx = f.x + dx / d * f.r; nz = f.z + dz / d * f.r; avertirRegion(f.id); } }
     o.x = nx; o.z = nz;
   }
-  let dernierAvertissement = 0;
+  let dernierAvertissement = 0, dernierRegion = 0;
+  function avertirRegion(id) { const t = performance.now(); if (t - dernierRegion > 8000) { dernierRegion = t; montrerIndice('🔒 ' + regions.explication(id), 6500); } }
   function avertirCol() {
     const t = performance.now();
     if (t - dernierAvertissement > 6000) { dernierAvertissement = t; montrerIndice('🔒 Ce chemin est encore fermé : découvre l\'oasis et le camp des caravanes.', 4000); }
@@ -354,7 +360,7 @@ async function demarrer() {
   function zoneIci(x, z) {
     if (z < -200) return 'montagnes';
     if (Math.hypot(x - marche.centre.x, z - marche.centre.z) < 21) return 'marche';
-    for (const id of ['village', 'oasis', 'camp']) { const l = LIEUX[id]; if (Math.hypot(x - l.x, z - l.z) < l.r + 6) return id; }
+    for (const id of ['village', 'oasis', 'camp', 'wadi', 'rochers']) { const l = LIEUX[id]; if (Math.hypot(x - l.x, z - l.z) < l.r + 6) return id; }
     if (Math.hypot(x - LIEUX.dunes.x, z - LIEUX.dunes.z) < LIEUX.dunes.r) return 'dunes';
     return null;
   }
@@ -436,9 +442,9 @@ async function demarrer() {
         ...Object.keys(MISSIONS).map(k => { const m = AV.missions[k], M = MISSIONS[k], meta = META_MISSIONS[k];
           return { id: k, sorte: 'mission', titre: M.titre, icone: M.icone, cat: meta.cat, diff: meta.diff, objectif: meta.objectif, desc: m ? M.resume : 'Parle aux habitants et explore pour découvrir cette mission.',
             n: m ? m.n : 0, total: M.total, recompense: M.recompense, etat: !m ? 'decouvrir' : m.etat === 'finie' ? 'finie' : 'encours', guidable: m && m.etat !== 'finie' && !!aventure.prochaineCible(J, k) }; }),
-        ...Object.entries(QUETES).map(([k, q]) => { const n = Math.min(q.total, quetes.nombre(k));
-          return { id: k, sorte: 'quete', titre: q.titre, icone: q.icone, cat: q.cat, diff: q.diff, objectif: q.objectif, desc: q.desc, n, total: q.total, recompense: q.recompense,
-            etat: quetes.fini(k) ? 'finie' : n > 0 ? 'encours' : 'disponible', guidable: !quetes.fini(k) && !!quetes.destination(k, J) }; }),
+        ...Object.entries(QUETES).map(([k, q]) => { const n = Math.min(q.total, quetes.nombre(k)), ferme = q.region && !regions.ouverte(q.region);
+          return { id: k, sorte: 'quete', titre: q.titre, icone: q.icone, cat: q.cat, diff: q.diff, objectif: q.objectif, desc: ferme ? '🔒 ' + regions.explication(q.region) : q.desc, n, total: q.total, recompense: q.recompense,
+            etat: quetes.fini(k) ? 'finie' : ferme ? 'decouvrir' : n > 0 ? 'encours' : 'disponible', guidable: !ferme && !quetes.fini(k) && !!quetes.destination(k, J) }; }),
         ...COLLECTIONS.map(k => { const p = progressionCollection(k, AV);
           return { id: k.id, sorte: 'collection', titre: k.nom, icone: k.icone, cat: 'collection', diff: k.montures ? 3 : 2, objectif: `Réunir ${p.total} ${k.montures ? 'montures' : 'objets'}`,
             desc: k.montures ? 'Adopte ces montures à l\'écurie de Nabil.' : 'Trouve ces objets au souk du village.', n: p.n, total: p.total, recompense: k.pieces,
@@ -907,7 +913,7 @@ async function demarrer() {
   $('ouvrir-perso').addEventListener('click', () => ouvrirPerso(false));
 
   // ---------- la carte du pays et le guidage ----------
-  const guide = creerGuide({ scene, terrain, colliders: decor.colliders, col: decor.col });
+  const guide = creerGuide({ scene, terrain, colliders: decor.colliders, col: decor.col, fermees: () => regions.fermees() });
   const rayonGuide = () => monte ? (monture(AV.monture).espece === 'elephant' ? 2.0 : 1.4) : 0.8;
   const posGuide = () => monte ? { x: C.x, z: C.z } : { x: J.x, z: J.z };
   function lieuxCarte() {
@@ -919,6 +925,8 @@ async function demarrer() {
     zone('camp', LIEUX.camp.x, LIEUX.camp.z, 'camp', 45, { rayon: 14 });
     zone('dunes', LIEUX.dunes.x, LIEUX.dunes.z, 'desert', 110, { rayon: 30 });
     zone('montagnes', 0, -258, 'montagne', 75, { rayon: 18, verrou: decor.col.ouvert ? null : 'Le passage vers les montagnes est encore fermé. Découvre d\'abord l\'oasis et le camp des caravanes.' });
+    zone('wadi', LIEUX.wadi.x, LIEUX.wadi.z, 'desert', 50, { rayon: 14, icone: '🌼', verrou: regions.ouverte('wadi') ? null : regions.explication('wadi') });
+    zone('rochers', LIEUX.rochers.x, LIEUX.rochers.z, 'decouverte', 44, { rayon: 12, icone: '🪨', verrou: regions.ouverte('rochers') ? null : regions.explication('rochers') });
     L.push({ id: 'col', nom: 'Le col', cat: 'passage', x: 0, z: -150, connu: true, rayon: 8, verrou: decor.col.ouvert ? null : 'Ce passage s\'ouvrira quand tu auras découvert l\'oasis et le camp des caravanes.', texte: 'Le passage entre le village et les montagnes.' });
     L.push({ id: 'puits', nom: 'Le puits du village', cat: 'eau', x: 0, z: 3.4, connu: true, rayon: 4 });
     L.push({ id: 'abreuvoir', nom: 'L\'abreuvoir de l\'enclos', cat: 'eau', x: 36.5, z: -12.5, connu: true, rayon: 4 });
@@ -939,6 +947,7 @@ async function demarrer() {
     if (!r.ok && d.silencieux) return false;
     if (!r.ok) {
       const msg = r.raison === 'col' ? 'Le passage vers les montagnes est encore fermé : découvre d\'abord l\'oasis et le camp des caravanes.'
+        : r.raison === 'region' ? regions.explication(r.region)
         : 'Je ne trouve pas de chemin praticable jusque-là pour le moment. Essaie depuis un autre endroit, ou choisis un lieu tout près.';
       dialogue({ titre: '🧭 Pas de chemin', texte: msg }); return false;
     }
@@ -1209,7 +1218,7 @@ async function demarrer() {
       etat.joueur = { x: +J.x.toFixed(2), z: +J.z.toFixed(2), a: +J.a.toFixed(3) };
       etat.chameau = { x: +C.x.toFixed(2), z: +C.z.toFixed(2), a: +C.a.toFixed(3) };
       etat.monte = monte && !sequence; etat.heure = +ciel.p.toFixed(4);
-      enregistrer(); verifierSucces();
+      enregistrer(); verifierSucces(); regions.verifier();
     }
 
     renderer.render(scene, camera);
@@ -1251,7 +1260,8 @@ async function demarrer() {
   // Première image avant d'enlever l'écran de chargement (évite un écran noir)
   appliquerEquipement();
   ecurie.maj(AV.montures.filter(k => k !== AV.monture));
-  verifierSucces(!Object.keys(AV.badges).length);   // première fois : les badges déjà mérités sont donnés sans fanfare
+  verifierSucces(!Object.keys(AV.badges).length);
+  regions.verifier();   // première fois : les badges déjà mérités sont donnés sans fanfare
   $('btn-chameau').querySelector('.ico').textContent = monture(AV.monture).icone;
   bourse.restaurer(ouDonner());
   quotidien.verifierActivites();
@@ -1278,7 +1288,7 @@ async function demarrer() {
     etat, J, C, decor, ciel, H, cam, aventure, bourse, action: () => action(),
     teleporter(x, z) { J.x = x; J.z = z; if (monte) { C.x = x; C.z = z; } },
     monte: () => monte, sequence: () => sequence, proche: () => proche, zone: () => zoneActuelle,
-    enfant: () => enfant, perso, quetes, guide, carte, ouvrirCarte: id => ouvrirCarte(id), guiderVers: d => guiderVers(d), guiderMission: k => guiderMission(k), lieuxCarte: () => lieuxCarte(), choisirMonture: id => choisirMonture(id), ouvrirEcurie: () => ouvrirEcurie(), monture: () => chameau, ecurie, ouvrirBoutique: id => ouvrirBoutique(id), ouvrirCarnet: o => ouvrirCarnet(o), ouvrirPerso: () => ouvrirPerso(false), apercu: a => apercu(article(a)),
+    enfant: () => enfant, perso, quetes, regions, guide, carte, ouvrirCarte: id => ouvrirCarte(id), guiderVers: d => guiderVers(d), guiderMission: k => guiderMission(k), lieuxCarte: () => lieuxCarte(), choisirMonture: id => choisirMonture(id), ouvrirEcurie: () => ouvrirEcurie(), monture: () => chameau, ecurie, ouvrirBoutique: id => ouvrirBoutique(id), ouvrirCarnet: o => ouvrirCarnet(o), ouvrirPerso: () => ouvrirPerso(false), apercu: a => apercu(article(a)),
     infos: () => renderer.info.render
   };
 }
