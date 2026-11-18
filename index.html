@@ -9,13 +9,15 @@
 <link rel="icon" type="image/png" sizes="48x48" href="intro/favicon-48.png">
 <link rel="apple-touch-icon" href="intro/apple-touch-icon.png">
 <meta name="theme-color" content="#191345">
-<link rel="stylesheet" href="intro/intro.css?v=2">
+<link rel="stylesheet" href="intro/intro.css?v=3">
 <script>
 /* Introduction d'accueil : décide avant le premier affichage pour éviter tout clignotement. Si elle n'est pas prête sous 5 s, on l'abandonne. */
 (function(){var H=document.documentElement,m={},mode=null;try{m=JSON.parse(localStorage.getItem('lanternes_intro')||'{}')||{}}catch(e){}
+/* L'introduction s'affiche à chaque arrivée sur le site (adresse tapée, favori, lien venant d'ailleurs), pas quand on circule dans le site ni au rechargement. */
+var interne=false,recharge=false;try{interne=!!document.referrer&&new URL(document.referrer).origin===location.origin}catch(e){}
+try{var n=performance.getEntriesByType('navigation')[0];recharge=!!n&&(n.type==='reload'||n.type==='back_forward')}catch(e){}
 if(/[?&]intro=1\b/.test(location.search))mode='complete';
-else if(!m.off){var s=null;try{s=sessionStorage.getItem('lanternes_intro_session')}catch(e){}
-if(!s)mode=m.vu?'courte':'complete'}
+else if(!m.off&&!interne&&!recharge)mode=m.vu?'courte':'complete';
 if(mode){window.__introMode=mode;H.classList.add('intro-on');setTimeout(function(){if(!window.__introPret)H.classList.remove('intro-on')},5000)}})();
 </script>
 <meta property="og:type" content="website">
@@ -436,6 +438,6 @@ footer { border-top: 1px solid rgba(245, 185, 66, .18); padding: 22px 0 30px; co
   });
 })();
 </script>
-<script src="intro/intro.js?v=2" defer></script>
+<script src="intro/intro.js?v=3" defer></script>
 </body>
 </html>

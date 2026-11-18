@@ -153,9 +153,9 @@
     legende(null); $('intro-entrer').classList.remove('visible'); $('intro-entrer').disabled = true;
     semer(); majBoutonSon(); preparerVoix();
     // la voix : essai automatique (accepté si le navigateur l'autorise), sinon le bouton « Activer le son » prend le relais
-    if (mode === 'complete' && prefSon()) plus(function () { lancerVoix(false); }, calme ? 600 : 1500);
+    if (prefSon()) plus(function () { lancerVoix(false); }, calme ? 600 : 1500);
     // le bouton d'entrée apparaît vite, sans attendre la fin de la voix
-    plus(montrerEntrer, mode === 'courte' ? 1100 : (calme ? 600 : 2800));
+    plus(montrerEntrer, mode === 'courte' ? 1800 : (calme ? 600 : 2800));
     window.addEventListener('keydown', clavier, true);
     racine.addEventListener('pointerdown', geste, true);
     try { racine.focus({ preventScroll: true }); } catch (e) {}
