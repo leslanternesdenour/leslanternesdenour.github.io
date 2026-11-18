@@ -1,7 +1,7 @@
 // Le village 3D : sol, fontaine, maisons, jardins, rempart, ciel selon l'heure, Nour.
 // Tout est construit par code (pas de modèle à télécharger) pour rester léger.
 import * as THREE from 'three';
-import { BATIMENTS } from './batiments.js?v=2';
+import { BATIMENTS } from './batiments.js?v=3';
 
 const R_MAISONS = 20;          // rayon du cercle des maisons
 const R_REMPART = 31;

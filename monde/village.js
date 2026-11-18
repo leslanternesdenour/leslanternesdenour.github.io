@@ -5,7 +5,7 @@ import { prechargerMusique, jouerMusique, arreterMusique, musiqueIndisponible } 
 import { demarrerAmbiance, goutte, majAmbiance } from './socle/ambiance.js?v=2';
 import { chargerVoix } from './socle/voix.js?v=2';
 import { qualiteAuto, reglages, surveillerFluidite } from './socle/qualite.js?v=2';
-import { BATIMENTS } from './batiments.js?v=2';
+import { BATIMENTS } from './batiments.js?v=3';
 import { mascotte } from './mascottes.js?v=1';
 
 const $ = id => document.getElementById(id);
@@ -57,7 +57,7 @@ async function init() {
   try { await Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 2500))]); } catch (e) {}
 
   let mod;
-  try { mod = await import('./scene.js?v=6'); }
+  try { mod = await import('./scene.js?v=7'); }
   catch (e) { return montrerErreur(e); }
 
   try {
@@ -145,6 +145,7 @@ $('pan-entrer').addEventListener('click', e => {
   if (!choisi) return;
   sauvegarde.gagner(choisi.id, 'visite', 1);
   goutte(1.4);
+  if (choisi.pleinePage) { arreterMusique(0.6); setTimeout(() => { location.href = choisi.lien; }, 250); return; } // le Grand Voyage : un monde 3D à part entière
   ouvrirJeu(choisi);
 });
 
