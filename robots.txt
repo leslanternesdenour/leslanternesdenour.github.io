@@ -1,0 +1,11 @@
+# Les Lanternes de Nour
+User-agent: *
+Allow: /
+Disallow: /compte/
+Disallow: /transfert/
+Disallow: /univers/
+Disallow: /admin/
+Disallow: /api/
+Disallow: /outils/
+
+Sitemap: https://leslanternesdenour.fr/sitemap.xml

@@ -23,5 +23,7 @@ if (PREPROD) { // page d'écoute des voix (outil interne, non indexée) disponib
   fs.mkdirSync(path.join(SORTIE, 'outils'), { recursive: true }); fs.copyFileSync(path.join(RACINE, 'outils/ecoute-voix.html'), path.join(SORTIE, 'outils/ecoute-voix.html')); n++;
   // la préproduction ne doit jamais être indexée par Google
   fs.appendFileSync(path.join(SORTIE, '_headers'), '\n/*\n  X-Robots-Tag: noindex, nofollow\n');
+  fs.writeFileSync(path.join(SORTIE, 'robots.txt'), '# Préproduction : rien ne doit être indexé\nUser-agent: *\nDisallow: /\n');
+  fs.rmSync(path.join(SORTIE, 'sitemap.xml'), { force: true });
 }
 console.log(`dist/ : ${n} fichiers, ${(octets / 1048576).toFixed(1)} Mo${PREPROD ? ' (préproduction)' : ''}`);

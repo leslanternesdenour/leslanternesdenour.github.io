@@ -1,0 +1,31 @@
+// Tests du service worker du calendrier : exclusions du cache, purge, hors-ligne du gratuit.
+// Serveur : LDN_TEST=1 node outils/serveur-preprod.mjs 8792   puis   node outils/tests/pwa.mjs http://localhost:8792
+import { createRequire } from 'module';
+const { chromium } = createRequire(import.meta.url)(process.env.PLAYWRIGHT || 'playwright');
+const BASE = process.argv[2] || 'http://localhost:8792';
+let ok = 0, ko = 0; const t = (n, c, d = '') => { c ? ok++ : ko++; console.log(`${c ? '✓' : '✗'} ${n}${d ? ' — ' + d : ''}`); };
+const nav = await chromium.launch({ executablePath: '/usr/bin/google-chrome' });
+const ctx = await nav.newContext(); const page = await ctx.newPage();
+await page.goto(BASE + '/calendrier/'); await page.waitForFunction(() => navigator.serviceWorker.controller || navigator.serviceWorker.ready.then(() => true), null, { timeout: 15000 });
+await page.reload(); await page.waitForFunction(() => !!navigator.serviceWorker.controller, null, { timeout: 15000 });
+t('le service worker contrôle la page du calendrier', true);
+const contenu = () => page.evaluate(async () => { const r = {}; for (const n of await caches.keys()) r[n] = (await (await caches.open(n)).keys()).map(q => new URL(q.url).pathname + new URL(q.url).search); return r; });
+await page.evaluate(async () => { for (const u of ['/api/sante', '/api/test-prive', '/compte/', '/monde/monde.css?v=5', '/calendrier/style.css?v=5']) await fetch(u); });
+await page.waitForTimeout(500);
+let c = await contenu(); const tout = Object.values(c).flat();
+t('aucune réponse /api/ en cache', !tout.some(u => u.startsWith('/api/')), tout.filter(u => u.startsWith('/api/')).join(','));
+t('/compte/ jamais en cache', !tout.some(u => u.startsWith('/compte/')));
+t('un fichier public gratuit est gardé (hors-ligne)', tout.includes('/monde/monde.css?v=5'));
+t('la coquille du calendrier est en cache', (c['lanternes-v6'] || []).length >= 8, (c['lanternes-v6'] || []).length + ' fichiers');
+t('l\'ancien cache lanternes-v5 est supprimé', !('lanternes-v5' in c));
+await page.evaluate(() => fetch('/api/test-403')); await page.waitForTimeout(500);
+c = await contenu(); t('une réponse 403 purge le cache dynamique', !(c['lanternes-dyn-v6'] || []).length, JSON.stringify(c['lanternes-dyn-v6'] || []));
+await page.evaluate(() => fetch('/monde/monde.css?v=5')); await page.waitForTimeout(300);
+const purge = await page.evaluate(() => new Promise(res => { navigator.serviceWorker.addEventListener('message', e => { if (e.data && e.data.type === 'purge-faite') res(true); }); navigator.serviceWorker.controller.postMessage({ type: 'purger' }); setTimeout(() => res(false), 4000); }));
+c = await contenu(); t('purge sur demande (déconnexion / changement de compte)', purge && !(c['lanternes-dyn-v6'] || []).length);
+t('la purge garde le calendrier gratuit hors-ligne', (c['lanternes-v6'] || []).length >= 8);
+await ctx.setOffline(true); await page.reload(); const titre = await page.title();
+t('hors-ligne : le calendrier gratuit s\'ouvre', /Allume ta lanterne/.test(titre), titre);
+const api = await page.evaluate(() => fetch('/api/sante').then(r => 'servi:' + r.status, () => 'échec réseau'));
+t('hors-ligne : aucune donnée /api/ servie depuis le cache', api === 'échec réseau', api);
+await nav.close(); console.log(`\n${ok} tests réussis, ${ko} en échec.`); process.exit(ko ? 1 : 0);

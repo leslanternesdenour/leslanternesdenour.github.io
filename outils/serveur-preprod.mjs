@@ -14,6 +14,12 @@ for (const l of fs.readFileSync(path.join(DIST, '_headers'), 'utf8').split('\n')
 const entetes = p => Object.assign({}, ...regles.filter(r => r.motif.test(p)).map(r => r.h));
 http.createServer(async (req, res) => {
   const url = new URL(req.url, 'http://x'); let p = decodeURIComponent(url.pathname);
+  // routes de TEST uniquement (LDN_TEST=1) : jamais présentes dans les fonctions déployées
+  if (process.env.LDN_TEST === '1' && p.startsWith('/api/test-')) {
+    const st = p === '/api/test-403' ? 403 : 200;
+    res.writeHead(st, { 'Content-Type': 'application/json', 'Cache-Control': p === '/api/test-prive' ? 'private, no-store' : 'no-store' });
+    return res.end(JSON.stringify({ test: p, statut: st }));
+  }
   if (p.startsWith('/api/')) {
     const f = path.join(RACINE, 'functions', p.replace(/\/$/, '') + '.js');
     if (fs.existsSync(f)) { const m = await import(pathToFileURL(f).href); const h = m['onRequest' + req.method[0] + req.method.slice(1).toLowerCase()] || m.onRequest;

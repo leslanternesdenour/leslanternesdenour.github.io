@@ -42,7 +42,7 @@ Cette durée sera écrite dans la politique de confidentialité (à faire valide
 ## 5. Coûts estimés
 | Élément | Volume estimé à 1 000 familles | Coût |
 |---|---|---|
-| R2 (stockage des sauvegardes) | < 1 Go en tout | 0 € (offre gratuite : 10 Go/mois) |
+| R2 (stockage des sauvegardes) | < 1 Go en tout (exercice : 17 Ko par sauvegarde chiffrée pour 1 000 familles fictives ; 48 sauvegardes conservées) | 0 € (offre gratuite : 10 Go/mois) |
 | Opérations R2 | quelques milliers par mois | 0 € (offre gratuite : 1 million d'écritures, 10 millions de lectures par mois) |
 | Lectures Firestore | ~5 000 par nuit | 0 € (quota Spark : 50 000 par jour) |
 | GitHub Actions (dépôt privé) | quelques minutes par jour | 0 € dans le quota gratuit mensuel (à confirmer lors de la création du dépôt) |
@@ -61,6 +61,14 @@ Les tests ont lieu sur un **projet Firebase de test séparé** (gratuit) et un e
 
 Calendrier des tests : une fois avant le lancement, **avant toute migration**, puis chaque trimestre.
 
+### Ce qui reste à tester avant l'activation (votre accord est requis)
+- Restauration **complète réelle** : export d'un projet Firebase de test → chiffrement → R2 → déchiffrement → import
+  dans un **second** projet de test → connexion d'un compte Créateur, invité, abonné et gratuit de test → vérification des droits.
+  Nécessite : le projet Firebase (Spark) et un espace R2 de test. Coût : 0 €.
+- La clé privée réelle : créée par vous (voir CLE_DE_SAUVEGARDE.md).
+
 ### Déjà réalisé le 19/11/2026
+- **Exercice de chiffrement / restauration** sur des données fictives au format prévu (1 000 familles) : 5/5 réussis,
+  dont refus d'une mauvaise clé et détection d'un fichier altéré (`outils/sauvegarde/exercice-restauration.sh`).
 - Sauvegarde complète du dépôt public (19 branches, tout l'historique, 45 Mo) en un fichier unique.
 - **Restauration testée** : `main` restaurée est identique à l'original ; `preproduction` restaurée passe toutes les vérifications automatiques.

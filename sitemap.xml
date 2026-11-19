@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://leslanternesdenour.fr/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://leslanternesdenour.fr/decouvrir/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://leslanternesdenour.fr/ablutions/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://leslanternesdenour.fr/priere/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://leslanternesdenour.fr/calendrier/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://leslanternesdenour.fr/monde/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+</urlset>
