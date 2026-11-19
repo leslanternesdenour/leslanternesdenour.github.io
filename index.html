@@ -199,6 +199,8 @@ footer { border-top: 1px solid rgba(245, 185, 66, .18); padding: 22px 0 30px; co
 @media (max-width: 720px) { .cal-cote { display: none; } }
 @media (prefers-reduced-motion: reduce) { .ciel, .gl { animation: none; } }
 </style>
+<link rel="stylesheet" href="accueil/accueil.css?v=4">
+<link rel="stylesheet" href="accueil/vie.css?v=1">
 </head>
 <body>
 <div id="intro" class="intro" tabindex="-1" role="dialog" aria-modal="true" aria-label="Bienvenue aux Lanternes de Nour">
@@ -228,62 +230,47 @@ footer { border-top: 1px solid rgba(245, 185, 66, .18); padding: 22px 0 30px; co
 </div>
 <div class="ciel" aria-hidden="true"></div>
 
-<header class="hero">
-  <a class="marque-entete" href="./" aria-label="Les Lanternes de Nour, accueil"><picture><source media="(max-width: 560px)" srcset="intro/lanterne-120.webp"><img src="intro/logo-320.webp" alt="Les Lanternes de Nour" width="320" height="215"></picture></a>
-  <img class="hero-img" src="https://yt3.googleusercontent.com/6otGy7OdabaxaRN82KGSFwmTRqoCdf5agDqZsqooEgIYQjoeugb3KYTU3U46CHTvseKWOXAW4w=w1920-k-c0xffffffff-no-nd-rj" alt="Les Lanternes de Nour : les histoires des prophètes, chantées pour les enfants">
+<header class="hero accueil-haut">
+  <div class="haut-scene">
+    <div class="haut-monde"><picture>
+      <source media="(max-width: 560px)" srcset="accueil/banniere-mobile-780.webp 780w, accueil/banniere-mobile-1122.webp 1122w" sizes="100vw" width="1122" height="1402">
+      <img class="banniere" src="accueil/banniere-1280.webp" srcset="accueil/banniere-1280.webp 1280w, accueil/banniere-2172.webp 2172w" sizes="100vw" width="2172" height="724" alt="" decoding="async" fetchpriority="high">
+    </picture></div>
+    <a class="marque-entete" href="./" aria-label="Les Lanternes de Nour, accueil"><img src="intro/logo-320.webp" srcset="intro/logo-320.webp 320w, intro/logo-640.webp 640w" sizes="(max-width: 700px) 40vw, 380px" alt="Les Lanternes de Nour" width="320" height="215"></a>
+  </div>
   <div class="wrap hero-body">
     <h1>Les histoires des prophètes, <span>racontées et chantées</span> pour les enfants de 3 à 10 ans</h1>
     <p>Dans chaque épisode, Aylan, Ismaïl, Naël, Ayline et Nelya ouvrent le grand livre et découvrent une histoire du Coran, avec une chanson à chanter ensemble et une leçon à retenir.</p>
     <div class="actions">
-      <a class="btn btn-or" href="https://www.youtube.com/playlist?list=PLdVIhxA8i064">▶ Regarder les histoires</a>
-      <a class="btn btn-ligne" href="https://www.youtube.com/@LesLanternesdeNour?sub_confirmation=1">S'abonner à la chaîne (gratuit)</a>
-      <a class="btn btn-ligne" href="decouvrir/">✨ Le Monde de Nour</a>
+      <a class="b3d b3d-or" href="https://www.youtube.com/playlist?list=PLdVIhxA8i064"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.5v17a1 1 0 0 0 1.5.86l14-8.5a1 1 0 0 0 0-1.72l-14-8.5A1 1 0 0 0 6 3.5z" fill="#3b2400"/></svg><span>Regarder les histoires</span></a>
+      <a class="b3d b3d-yt" href="https://www.youtube.com/@LesLanternesdeNour?sub_confirmation=1"><svg class="logo-yt" viewBox="0 0 64 45" aria-hidden="true"><rect width="64" height="45" rx="11" fill="#fff"/><path d="M26 12.5v20l17-10z" fill="#e50d0d"/></svg><span>S’abonner à la chaîne (gratuit)</span></a>
     </div>
+    <a class="jouer" href="monde/" aria-label="Jouer : entrer dans le Monde de Nour">
+      <span class="jouer-scene" aria-hidden="true">
+      <img class="jouer-manette" src="accueil/manette.webp" width="334" height="216" alt="" loading="lazy">
+      <img class="jouer-portail" src="accueil/portail.webp" width="256" height="344" alt="" loading="lazy">
+      </span>
+      <span class="jouer-mot">JOUER</span>
+      <span class="jouer-ruban">Entrer dans le Monde de Nour</span>
+      <span class="jouer-brille" aria-hidden="true"></span>
+    </a>
   </div>
 </header>
 
 <main>
-  <svg class="guirlande" viewBox="0 0 1000 84" preserveAspectRatio="xMidYMin meet" aria-hidden="true"><path d="M0 6Q500 56 1000 6" fill="none" stroke="rgba(245,185,66,.5)" stroke-width="2"/><g class="gl" style="animation-delay:0.00s"><path d="M60 12v10" stroke="rgba(245,185,66,.7)" stroke-width="1.5"/><use href="#lanterne" x="43.1" y="21" width="33.8" height="46.8"/></g><g class="gl" style="animation-delay:-0.45s"><path d="M170 20v22" stroke="rgba(245,185,66,.7)" stroke-width="1.5"/><use href="#lanterne" x="156.3" y="41" width="27.3" height="37.8"/></g><g class="gl" style="animation-delay:-0.90s"><path d="M280 26v14" stroke="rgba(245,185,66,.7)" stroke-width="1.5"/><use href="#lanterne" x="263.1" y="39" width="33.8" height="46.8"/></g><g class="gl" style="animation-delay:-1.35s"><path d="M390 30v26" stroke="rgba(245,185,66,.7)" stroke-width="1.5"/><use href="#lanterne" x="376.4" y="55" width="27.3" height="37.8"/></g><g class="gl" style="animation-delay:-1.80s"><path d="M500 31v18" stroke="rgba(245,185,66,.7)" stroke-width="1.5"/><use href="#lanterne" x="483.1" y="48" width="33.8" height="46.8"/></g><g class="gl" style="animation-delay:-2.25s"><path d="M610 30v26" stroke="rgba(245,185,66,.7)" stroke-width="1.5"/><use href="#lanterne" x="596.4" y="55" width="27.3" height="37.8"/></g><g class="gl" style="animation-delay:-2.70s"><path d="M720 26v14" stroke="rgba(245,185,66,.7)" stroke-width="1.5"/><use href="#lanterne" x="703.1" y="39" width="33.8" height="46.8"/></g><g class="gl" style="animation-delay:-3.15s"><path d="M830 20v22" stroke="rgba(245,185,66,.7)" stroke-width="1.5"/><use href="#lanterne" x="816.4" y="41" width="27.3" height="37.8"/></g><g class="gl" style="animation-delay:-3.60s"><path d="M940 12v10" stroke="rgba(245,185,66,.7)" stroke-width="1.5"/><use href="#lanterne" x="923.1" y="21" width="33.8" height="46.8"/></g></svg>
-  <section class="portail wrap" aria-labelledby="t-portail">
-    <style>
-      .portail{margin-top:56px;margin-bottom:8px}
-      .portail-boite{display:grid;grid-template-columns:auto 1fr auto;gap:22px;align-items:center;padding:18px 22px;border-radius:22px;
-        background:linear-gradient(120deg,#2b1f72 0%,#3a2a7d 45%,#1d6f7c 100%);border:1px solid rgba(245,185,66,.5);
-        box-shadow:0 10px 30px rgba(0,0,0,.25);position:relative;overflow:hidden}
-      .portail-boite::before{content:"";position:absolute;inset:0;background:radial-gradient(60% 120% at 10% 50%,rgba(245,185,66,.18),transparent 70%);pointer-events:none}
-      .portail-illus{width:150px;height:auto;display:block;border-radius:16px;position:relative}
-      .portail-illus .pl{animation:portail-balance 3.2s ease-in-out infinite;transform-origin:50% 0}
-      @keyframes portail-balance{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
-      .portail .sur{margin:0 0 4px;color:var(--or-doux);font-weight:800;letter-spacing:.12em;text-transform:uppercase;font-size:12px}
-      .portail h2{font-size:clamp(21px,3vw,28px);font-weight:800;margin:0 0 6px}
-      .portail h2 span{color:var(--or)}
-      .portail p{margin:0;color:var(--texte-2);max-width:56ch}
-      .portail .btn{white-space:nowrap;position:relative}
-      @media (max-width:720px){.portail-boite{grid-template-columns:1fr;text-align:center;justify-items:center;gap:14px}.portail-illus{width:190px}}
-      @media (prefers-reduced-motion:reduce){.portail-illus .pl{animation:none}}
-    </style>
-    <div class="portail-boite">
-      <svg class="portail-illus" viewBox="0 0 150 100" aria-hidden="true">
-        <defs><linearGradient id="pciel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1b1452"/><stop offset="1" stop-color="#6a4fb0"/></linearGradient></defs>
-        <rect width="150" height="100" rx="14" fill="url(#pciel)"/>
-        <path d="M118 16a10 10 0 1 0 0 18a12 12 0 0 1 0-18z" fill="#ffe3a3"/>
-        <g fill="#fff" opacity=".8"><circle cx="20" cy="14" r="1.2"/><circle cx="52" cy="24" r="1"/><circle cx="90" cy="10" r="1.3"/></g>
-        <path d="M0 70Q40 54 75 64T150 60V86a14 14 0 0 1-14 14H14A14 14 0 0 1 0 86z" fill="#3fa27a"/>
-        <g transform="translate(75 66)"><rect x="-20" y="-14" width="40" height="18" fill="#fff6d8"/><path d="M-14-14a14 14 0 0 1 28 0z" fill="#f5b942"/><rect x="24" y="-34" width="6" height="38" fill="#fff6d8"/><path d="M23-34l4-7 4 7z" fill="#f5b942"/><path d="M-5 4v-9a5 5 0 0 1 10 0v9z" fill="#1d8f9c"/></g>
-        <g transform="translate(30 72)"><rect x="-12" y="-10" width="24" height="14" fill="#e7fbff"/><path d="M-12-10a12 12 0 0 1 24 0z" fill="#2bb3c0"/></g>
-        <g transform="translate(120 74)"><path d="M-14 4l14-18 14 18z" fill="#ff8a3d"/></g>
-        <path d="M0 8Q75 40 150 8" fill="none" stroke="rgba(245,185,66,.7)" stroke-width="1"/>
-        <g class="pl"><path d="M38 20v4M42 22h8l-1 3h-6zM43 25h6c2 3 2 9 0 11h-6c-2-2-2-8 0-11z" stroke="#c98a1c" stroke-width=".8" fill="#ffcf5c" transform="translate(-8 0)"/></g>
-        <g class="pl" style="animation-delay:-1.2s"><path d="M108 20v4M112 22h8l-1 3h-6zM113 25h6c2 3 2 9 0 11h-6c-2-2-2-8 0-11z" stroke="#c98a1c" stroke-width=".8" fill="#ffcf5c" transform="translate(-14 2)"/></g>
-      </svg>
-      <div>
-        <p class="sur">Nouveau · le village des lanternes</p>
+  <section class="carte-monde wrap" aria-labelledby="t-portail">
+    <div class="carte-monde-boite">
+      <div class="carte-image"><img src="accueil/village.webp" width="888" height="664" alt="Le village des lanternes : maisons orientales, lanternes allumées et un chameau sur le chemin" loading="lazy"></div>
+      <div class="carte-texte">
+        <p class="sur"><img src="accueil/carte.webp" width="264" height="270" alt="" loading="lazy">Nouveau · le village des lanternes</p>
         <h2 id="t-portail">Découvrez le <span>Monde de Nour</span></h2>
         <p>Un village où chaque maison ouvre une activité : ablutions, prière, Ramadan… Présentation pour les parents et pour les enfants.</p>
+        <a class="b3d b3d-or" href="decouvrir/"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.2 6.3L20.5 10l-6.3 1.7L12 18l-2.2-6.3L3.5 10l6.3-1.7zM19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z" fill="#3b2400"/></svg><span>Découvrir le monde</span></a>
       </div>
-      <a class="btn btn-or" href="decouvrir/">✨ Découvrir le monde</a>
     </div>
   </section>
+  <svg class="guirlande" viewBox="0 0 1000 84" preserveAspectRatio="xMidYMin meet" aria-hidden="true"><path d="M0 6Q500 56 1000 6" fill="none" stroke="rgba(245,185,66,.5)" stroke-width="2"/><g class="gl" style="animation-delay:0.00s"><path d="M60 12v10" stroke="rgba(245,185,66,.7)" stroke-width="1.5"/><use href="#lanterne" x="43.1" y="21" width="33.8" height="46.8"/></g><g class="gl" style="animation-delay:-0.45s"><path d="M170 20v22" stroke="rgba(245,185,66,.7)" stroke-width="1.5"/><use href="#lanterne" x="156.3" y="41" width="27.3" height="37.8"/></g><g class="gl" style="animation-delay:-0.90s"><path d="M280 26v14" stroke="rgba(245,185,66,.7)" stroke-width="1.5"/><use href="#lanterne" x="263.1" y="39" width="33.8" height="46.8"/></g><g class="gl" style="animation-delay:-1.35s"><path d="M390 30v26" stroke="rgba(245,185,66,.7)" stroke-width="1.5"/><use href="#lanterne" x="376.4" y="55" width="27.3" height="37.8"/></g><g class="gl" style="animation-delay:-1.80s"><path d="M500 31v18" stroke="rgba(245,185,66,.7)" stroke-width="1.5"/><use href="#lanterne" x="483.1" y="48" width="33.8" height="46.8"/></g><g class="gl" style="animation-delay:-2.25s"><path d="M610 30v26" stroke="rgba(245,185,66,.7)" stroke-width="1.5"/><use href="#lanterne" x="596.4" y="55" width="27.3" height="37.8"/></g><g class="gl" style="animation-delay:-2.70s"><path d="M720 26v14" stroke="rgba(245,185,66,.7)" stroke-width="1.5"/><use href="#lanterne" x="703.1" y="39" width="33.8" height="46.8"/></g><g class="gl" style="animation-delay:-3.15s"><path d="M830 20v22" stroke="rgba(245,185,66,.7)" stroke-width="1.5"/><use href="#lanterne" x="816.4" y="41" width="27.3" height="37.8"/></g><g class="gl" style="animation-delay:-3.60s"><path d="M940 12v10" stroke="rgba(245,185,66,.7)" stroke-width="1.5"/><use href="#lanterne" x="923.1" y="21" width="33.8" height="46.8"/></g></svg>
+
 
   <section class="histoires wrap" aria-labelledby="t-histoires">
     <div class="titre-section">
@@ -440,5 +427,7 @@ footer { border-top: 1px solid rgba(245, 185, 66, .18); padding: 22px 0 30px; co
 })();
 </script>
 <script src="intro/intro.js?v=6" defer></script>
+<script src="accueil/miniatures.js?v=1" defer></script>
+<script src="accueil/vie.js?v=1" defer></script>
 </body>
 </html>
