@@ -30,13 +30,6 @@
 .accueil-haut .hero-body > p { color: #e6defa; font-size: clamp(16px, 2.2vw, 19px); max-width: 52ch; }
 .accueil-haut .actions { display: grid; gap: 14px; width: min(100%, 640px); margin-top: 4px; }
 
-/* lanternes d'arche, grands écrans seulement */
-
-.lan-deco { display: none; position: absolute; top: 6px; height: 330px; width: auto; max-width: none; pointer-events: none; opacity: .92; transform-origin: 50% 0; animation: acc-balance 4.5s ease-in-out infinite alternate; z-index: -1;
-  -webkit-mask-image: radial-gradient(ellipse 60% 62% at 50% 45%, #000 55%, transparent 100%), linear-gradient(180deg, transparent 0, #000 16%); -webkit-mask-composite: source-in; mask-image: radial-gradient(ellipse 60% 62% at 50% 45%, #000 55%, transparent 100%), linear-gradient(180deg, transparent 0, #000 16%); mask-composite: intersect; }
-.lan-g { left: 2%; } .lan-d { right: 2%; animation-delay: -2.2s; }
-@keyframes acc-balance { from { transform: rotate(-1.6deg); } to { transform: rotate(1.6deg); } }
-@media (min-width: 1200px) { .lan-deco { display: block; } }
 
 /* ---------- boutons 3D ---------- */
 .b3d { position: relative; display: flex; align-items: center; justify-content: center; gap: 12px; min-height: 62px; padding: 14px 26px; border-radius: 999px; text-decoration: none; overflow: hidden;
@@ -110,7 +103,7 @@
 }
 @media (max-width: 560px) { .jouer-ruban { padding: .45em 2em; } }
 @media (prefers-reduced-motion: reduce) {
-  .hero.accueil-haut::before, .haut-scene .marque-entete, .lan-deco, .b3d::after, .jouer, .jouer-manette, .jouer-brille::after, .jouer-scene::after { animation: none !important; }
+  .hero.accueil-haut::before, .haut-scene .marque-entete, .b3d::after, .jouer, .jouer-manette, .jouer-brille::after, .jouer-scene::after { animation: none !important; }
 }
 
 /* =====================  corrections (2e passe)  ===================== */
@@ -167,4 +160,21 @@
 @media (max-width: 360px) {
   .accueil-haut .hero-body h1 { font-size: 25px; }
   .b3d { padding-inline: 14px; }
+}
+
+
+/* =====================  nouvelle bannière illustrée (3e passe)  ===================== */
+.hero.accueil-haut { background: radial-gradient(120% 40% at 50% 0%, #251b70 0%, #181144 70%); }
+.haut-scene { height: auto; max-width: 1920px; }
+.haut-scene picture { display: block; }
+.haut-scene .banniere { display: block; width: 100%; height: auto; max-width: none; -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 4%, #000 96%, transparent 100%); mask-image: linear-gradient(90deg, transparent 0, #000 4%, #000 96%, transparent 100%); }
+.haut-scene .marque-entete { top: 5%; left: 50%; }
+.haut-scene .marque-entete img { width: clamp(230px, 27vw, 430px); }
+.accueil-haut .hero-body { margin-top: clamp(-44px, -3vw, -10px); }
+@media (max-width: 560px) {
+  .haut-scene { height: auto; }
+  .haut-scene .banniere { -webkit-mask-image: none; mask-image: none; }
+  .haut-scene .marque-entete { top: 4.5%; }
+  .haut-scene .marque-entete img { width: 58vw; }
+  .accueil-haut .hero-body { margin-top: -30px; }
 }

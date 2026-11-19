@@ -199,7 +199,7 @@ footer { border-top: 1px solid rgba(245, 185, 66, .18); padding: 22px 0 30px; co
 @media (max-width: 720px) { .cal-cote { display: none; } }
 @media (prefers-reduced-motion: reduce) { .ciel, .gl { animation: none; } }
 </style>
-<link rel="stylesheet" href="accueil/accueil.css?v=2">
+<link rel="stylesheet" href="accueil/accueil.css?v=3">
 </head>
 <body>
 <div id="intro" class="intro" tabindex="-1" role="dialog" aria-modal="true" aria-label="Bienvenue aux Lanternes de Nour">
@@ -231,13 +231,13 @@ footer { border-top: 1px solid rgba(245, 185, 66, .18); padding: 22px 0 30px; co
 
 <header class="hero accueil-haut">
   <div class="haut-scene">
-    <img class="sc sc-enfants" src="accueil/enfants.webp" width="612" height="704" alt="" decoding="async" fetchpriority="high">
+    <picture>
+      <source media="(max-width: 560px)" srcset="accueil/banniere-mobile-780.webp 780w, accueil/banniere-mobile-1122.webp 1122w" sizes="100vw" width="1122" height="1402">
+      <img class="banniere" src="accueil/banniere-1280.webp" srcset="accueil/banniere-1280.webp 1280w, accueil/banniere-2172.webp 2172w" sizes="100vw" width="2172" height="724" alt="" decoding="async" fetchpriority="high">
+    </picture>
     <a class="marque-entete" href="./" aria-label="Les Lanternes de Nour, accueil"><img src="intro/logo-320.webp" srcset="intro/logo-320.webp 320w, intro/logo-640.webp 640w" sizes="(max-width: 700px) 40vw, 380px" alt="Les Lanternes de Nour" width="320" height="215"></a>
-    <img class="sc sc-chateau" src="accueil/chateau.webp" width="616" height="492" alt="" decoding="async">
   </div>
   <div class="wrap hero-body">
-    <img class="lan-deco lan-g" src="accueil/lanterne-g.webp" width="172" height="456" alt="" loading="lazy">
-    <img class="lan-deco lan-d" src="accueil/lanterne-d.webp" width="172" height="456" alt="" loading="lazy">
     <h1>Les histoires des prophètes, <span>racontées et chantées</span> pour les enfants de 3 à 10 ans</h1>
     <p>Dans chaque épisode, Aylan, Ismaïl, Naël, Ayline et Nelya ouvrent le grand livre et découvrent une histoire du Coran, avec une chanson à chanter ensemble et une leçon à retenir.</p>
     <div class="actions">
