@@ -1,118 +1,118 @@
 {
 "e_niyya": [
-"../../audio/fr/priere/nour-voix-pri-001.mp3",
-0,
-12.46
+"P1-etapes.mp3",
+0.0,
+9.867
 ],
 "e_qiyam": [
-"../../audio/fr/priere/nour-voix-pri-002.mp3",
-0,
-10.423
+"P1-etapes.mp3",
+10.467,
+19.096
 ],
 "e_takbir": [
-"../../audio/fr/priere/nour-voix-pri-003.mp3",
-0,
-9.718
+"P1-etapes.mp3",
+19.696,
+27.504
 ],
 "e_fatiha": [
-"../../audio/fr/priere/nour-voix-pri-004.mp3",
-0,
-10.136
+"P1-etapes.mp3",
+28.104,
+38.824
 ],
 "e_sourate": [
-"../../audio/fr/priere/nour-voix-pri-005.mp3",
-0,
-10.789
+"P1-etapes.mp3",
+39.424,
+47.829
 ],
 "e_roukou": [
-"../../audio/fr/priere/nour-voix-pri-006.mp3",
-0,
-11.598
+"P1-etapes.mp3",
+48.429,
+59.032
 ],
 "e_itidal": [
-"../../audio/fr/priere/nour-voix-pri-007.mp3",
-0,
-9.482
+"P1-etapes.mp3",
+59.632,
+68.027
 ],
 "e_soujoud1": [
-"../../audio/fr/priere/nour-voix-pri-008.mp3",
-0,
-13.035
+"P1-etapes.mp3",
+68.627,
+82.472
 ],
 "e_jalsa": [
-"../../audio/fr/priere/nour-voix-pri-009.mp3",
-0,
-9.509
+"P1-etapes.mp3",
+83.072,
+92.277
 ],
 "e_soujoud2": [
-"../../audio/fr/priere/nour-voix-pri-010.mp3",
-0,
-9.744
+"P1-etapes.mp3",
+92.877,
+101.88
 ],
 "e_rakaa": [
-"../../audio/fr/priere/nour-voix-pri-011.mp3",
-0,
-12.904
+"P1-etapes.mp3",
+102.48,
+112.944
 ],
 "e_tachahhoud": [
-"../../audio/fr/priere/nour-voix-pri-012.mp3",
-0,
-13.714
+"P1-etapes.mp3",
+113.544,
+126.504
 ],
 "e_taslim": [
-"../../audio/fr/priere/nour-voix-pri-013.mp3",
-0,
-11.729
+"P1-etapes.mp3",
+127.104,
+137.301
 ],
 "d_ak": [
-"../../audio/fr/priere/nour-voix-pri-014.mp3",
-0,
-2.011
+"P2-paroles.mp3",
+0.0,
+1.547
 ],
 "f_ak": [
-"../../audio/fr/priere/nour-voix-pri-015.mp3",
-0,
-2.873
+"P2-paroles.mp3",
+2.147,
+4.899
 ],
 "d_rk": [
-"../../audio/fr/priere/nour-voix-pri-016.mp3",
-0,
-2.194
+"P2-paroles.mp3",
+5.499,
+7.707
 ],
 "f_rk": [
-"../../audio/fr/priere/nour-voix-pri-017.mp3",
-0,
-3.657
+"P2-paroles.mp3",
+8.307,
+12.371
 ],
 "d_sm": [
-"../../audio/fr/priere/nour-voix-pri-018.mp3",
-0,
-2.247
+"P2-paroles.mp3",
+12.971,
+15.093
 ],
 "f_sm": [
-"../../audio/fr/priere/nour-voix-pri-019.mp3",
-0,
-3.396
+"P2-paroles.mp3",
+15.693,
+19.203
 ],
 "d_rb": [
-"../../audio/fr/priere/nour-voix-pri-020.mp3",
-0,
-1.881
+"P2-paroles.mp3",
+19.803,
+21.723
 ],
 "f_rb": [
-"../../audio/fr/priere/nour-voix-pri-021.mp3",
-0,
-3.683
+"P2-paroles.mp3",
+22.323,
+25.843
 ],
 "d_sj": [
-"../../audio/fr/priere/nour-voix-pri-022.mp3",
-0,
-2.142
+"P2-paroles.mp3",
+26.443,
+28.832
 ],
 "f_sj": [
-"../../audio/fr/priere/nour-voix-pri-023.mp3",
-0,
-3.553
+"P2-paroles.mp3",
+29.432,
+33.24
 ],
 "d_gh": [
 "P2-paroles.mp3",
@@ -120,184 +120,184 @@
 36.304
 ],
 "f_gh": [
-"../../audio/fr/priere/nour-voix-pri-025.mp3",
-0,
-3.03
+"P2-paroles.mp3",
+36.904,
+39.091
 ],
 "d_th": [
-"../../audio/fr/priere/nour-voix-pri-026.mp3",
-0,
-18.181
+"P2-paroles.mp3",
+39.691,
+60.469
 ],
 "f_th": [
-"../../audio/fr/priere/nour-voix-pri-027.mp3",
-0,
-23.197
+"P2-paroles.mp3",
+61.069,
+82.029
 ],
 "d_ts": [
-"../../audio/fr/priere/nour-voix-pri-028.mp3",
-0,
-3.788
+"P2-paroles.mp3",
+82.629,
+85.712
 ],
 "f_ts": [
-"../../audio/fr/priere/nour-voix-pri-029.mp3",
-0,
-4.885
+"P2-paroles.mp3",
+86.312,
+91.357
 ],
 "h1_0": [
-"../../audio/fr/priere/nour-voix-pri-030.mp3",
-0,
-5.094
+"P3-jeux.mp3",
+0.0,
+5.28
 ],
 "h1_1": [
-"../../audio/fr/priere/nour-voix-pri-031.mp3",
-0,
-5.433
+"P3-jeux.mp3",
+5.88,
+11.363
 ],
 "h1_2": [
-"../../audio/fr/priere/nour-voix-pri-032.mp3",
-0,
-6.139
+"P3-jeux.mp3",
+11.963,
+19.141
 ],
 "h1_3": [
-"../../audio/fr/priere/nour-voix-pri-033.mp3",
-0,
-5.59
+"P3-jeux.mp3",
+19.741,
+25.245
 ],
 "h1_4": [
-"../../audio/fr/priere/nour-voix-pri-034.mp3",
-0,
-5.094
+"P3-jeux.mp3",
+25.845,
+31.904
 ],
 "h1_5": [
-"../../audio/fr/priere/nour-voix-pri-035.mp3",
-0,
-4.859
+"P3-jeux.mp3",
+32.504,
+38.328
 ],
 "h1_6": [
-"../../audio/fr/priere/nour-voix-pri-036.mp3",
-0,
-5.695
+"P3-jeux.mp3",
+38.928,
+45.563
 ],
 "g3ok_qiyam": [
-"../../audio/fr/priere/nour-voix-pri-037.mp3",
-0,
-3.918
+"P3-jeux.mp3",
+46.163,
+48.765
 ],
 "g3ko_qiyam": [
-"../../audio/fr/priere/nour-voix-pri-038.mp3",
-0,
-3.709
+"P3-jeux.mp3",
+49.365,
+53.344
 ],
 "g3ok_roukou": [
-"../../audio/fr/priere/nour-voix-pri-039.mp3",
-0,
-3.866
+"P3-jeux.mp3",
+53.944,
+56.963
 ],
 "g3ko_roukou": [
-"../../audio/fr/priere/nour-voix-pri-040.mp3",
-0,
-3.683
+"P3-jeux.mp3",
+57.563,
+61.989
 ],
 "g3ok_soujoud": [
-"../../audio/fr/priere/nour-voix-pri-041.mp3",
-0,
-3.709
+"P3-jeux.mp3",
+62.589,
+65.949
 ],
 "g3ko_soujoud": [
-"../../audio/fr/priere/nour-voix-pri-042.mp3",
-0,
-3.527
+"P3-jeux.mp3",
+66.549,
+70.805
 ],
 "g3ok_jouloûs": [
-"../../audio/fr/priere/nour-voix-pri-043.mp3",
-0,
-3.918
+"P3-jeux.mp3",
+71.405,
+74.413
 ],
 "g3ko_jouloûs": [
-"../../audio/fr/priere/nour-voix-pri-044.mp3",
-0,
-3.762
+"P3-jeux.mp3",
+75.013,
+79.451
 ],
 "rep": [
-"../../audio/fr/priere/nour-voix-pri-045.mp3",
-0,
-1.62
+"P3-jeux.mp3",
+80.051,
+81.597
 ],
 "slow": [
-"../../audio/fr/priere/nour-voix-pri-046.mp3",
-0,
-1.907
+"P3-jeux.mp3",
+82.197,
+84.576
 ],
 "sens": [
-"../../audio/fr/priere/nour-voix-pri-047.mp3",
-0,
-2.064
+"P3-jeux.mp3",
+85.176,
+86.979
 ],
 "learn_ok": [
-"../../audio/fr/priere/nour-voix-pri-048.mp3",
-0,
-3.788
+"P3-jeux.mp3",
+87.579,
+90.779
 ],
 "home": [
-"../../audio/fr/priere/nour-voix-pri-049.mp3",
-0,
-6.296
+"P3-jeux.mp3",
+91.379,
+97.757
 ],
 "done": [
-"../../audio/fr/priere/nour-voix-pri-050.mp3",
-0,
-5.799
+"P3-jeux.mp3",
+98.357,
+104.085
 ],
 "games": [
-"../../audio/fr/priere/nour-voix-pri-051.mp3",
-0,
-2.847
+"P3-jeux.mp3",
+104.685,
+107.16
 ],
 "r3": [
-"../../audio/fr/priere/nour-voix-pri-052.mp3",
-0,
-2.403
+"P3-jeux.mp3",
+107.76,
+110.288
 ],
 "r2": [
-"../../audio/fr/priere/nour-voix-pri-053.mp3",
-0,
-3.579
+"P3-jeux.mp3",
+110.888,
+114.088
 ],
 "r1": [
-"../../audio/fr/priere/nour-voix-pri-054.mp3",
-0,
-2.325
+"P3-jeux.mp3",
+114.688,
+117.056
 ],
 "g1i": [
-"../../audio/fr/priere/nour-voix-pri-055.mp3",
-0,
-4.101
+"P3-jeux.mp3",
+117.656,
+120.856
 ],
 "g1ok": [
-"../../audio/fr/priere/nour-voix-pri-056.mp3",
-0,
-1.933
+"P3-jeux.mp3",
+121.456,
+123.259
 ],
 "g3i": [
-"../../audio/fr/priere/nour-voix-pri-057.mp3",
-0,
-1.672
+"P3-jeux.mp3",
+123.859,
+125.459
 ],
 "g3q": [
-"../../audio/fr/priere/nour-voix-pri-058.mp3",
-0,
-0.81
+"P3-jeux.mp3",
+126.059,
+127.243
 ],
 "g4i": [
-"../../audio/fr/priere/nour-voix-pri-059.mp3",
-0,
-4.911
+"P3-jeux.mp3",
+127.843,
+132.397
 ],
 "g4q": [
-"../../audio/fr/priere/nour-voix-pri-060.mp3",
-0,
-1.881
+"P3-jeux.mp3",
+132.997,
+135.184
 ],
 "g4ok": [
 "P3-jeux.mp3",
@@ -305,19 +305,19 @@
 137.384
 ],
 "g4ko": [
-"../../audio/fr/priere/nour-voix-pri-062.mp3",
-0,
-2.56
+"P3-jeux.mp3",
+137.984,
+139.808
 ],
 "dip": [
-"../../audio/fr/priere/nour-voix-pri-063.mp3",
-0,
-3.736
+"P3-jeux.mp3",
+140.408,
+145.656
 ],
 "dip_no": [
-"../../audio/fr/priere/nour-voix-pri-064.mp3",
-0,
-6.975
+"P3-jeux.mp3",
+146.256,
+152.955
 ],
 "j3_h7": [
 "j3-h7.mp3",
