@@ -112,3 +112,59 @@
 @media (prefers-reduced-motion: reduce) {
   .hero.accueil-haut::before, .haut-scene .marque-entete, .lan-deco, .b3d::after, .jouer, .jouer-manette, .jouer-brille::after, .jouer-scene::after { animation: none !important; }
 }
+
+/* =====================  corrections (2e passe)  ===================== */
+
+/* ---- miniatures des histoires : fond de secours, bouton lecture, aucune zone vide ---- */
+.vignette { aspect-ratio: 16 / 9; overflow: hidden; background:
+  radial-gradient(60% 70% at 50% 45%, rgba(255, 205, 100, .38), transparent 70%),
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 36'%3E%3Cpath d='M13 1v4M9 5h8l-1 3h-6zM10 8h6c3 4 3 14 0 18h-6c-3-4-3-14 0-18zM9 28h8l1 3H8z' fill='%23ffcf5c' stroke='%23c98a1c' stroke-width='.8'/%3E%3C/svg%3E") 18% 46% / auto 54% no-repeat,
+  linear-gradient(160deg, #2d2380, #1b1352); }
+.vignette img { position: absolute; inset: 0; width: 100%; height: 100%; aspect-ratio: auto; object-fit: cover; transition: transform .35s ease; }
+.vignette:hover img { transform: scale(1.04); }
+.vignette::after { content: ""; position: absolute; left: 50%; top: 50%; width: clamp(46px, 14%, 62px); aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%; pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 6.5v11a.8.8 0 0 0 1.2.7l8.6-5.5a.8.8 0 0 0 0-1.4l-8.6-5.5A.8.8 0 0 0 9 6.5z' fill='%233b2400'/%3E%3C/svg%3E") 54% 50% / 44% no-repeat, linear-gradient(180deg, #ffe88f, #f2b02a);
+  box-shadow: 0 4px 0 #b06f0a, 0 8px 16px rgba(0, 0, 0, .45); border: 2px solid #fff1b0; transition: transform .2s ease; }
+.vignette:hover::after { transform: translate(-50%, -50%) scale(1.1); }
+.vignette.sans-image img { display: none; }
+.vignette.sans-image::before { content: "Les Lanternes de Nour"; position: absolute; left: 0; right: 0; top: 8%; text-align: center; font-family: var(--font-display); font-weight: 800; font-size: clamp(14px, 4vw, 18px); color: #ffe3a3; text-shadow: 0 2px 8px rgba(0, 0, 0, .6); }
+.duree, .nouveau { z-index: 2; }
+.episodes { grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 24px; }
+.carte { box-shadow: 0 8px 22px rgba(0, 0, 0, .28); transition: transform .2s ease, border-color .2s ease; }
+.carte:hover { transform: translateY(-3px); }
+.rang { display: inline-block; justify-self: start; padding: 3px 12px; border-radius: 999px; background: rgba(245, 185, 66, .16); border: 1px solid rgba(245, 185, 66, .45); }
+.titre-section h2 { font-size: clamp(26px, 5.4vw, 36px); line-height: 1.15; }
+.titre-section p { font-size: clamp(16px, 2vw, 18px); line-height: 1.6; }
+.regarder { display: inline-flex; align-items: center; min-height: 44px; }
+
+/* ---- version téléphone : vraie mise en page, jamais de réduction globale ---- */
+@media (max-width: 560px) {
+  body { font-size: 17.5px; }
+  .wrap { padding-inline: 18px; }
+  .haut-scene { height: 80vw; }
+  .haut-scene .marque-entete { top: 2%; left: 50%; }
+  .haut-scene .marque-entete img { width: 57vw; }
+  .haut-scene .sc-enfants { top: auto; bottom: 0; height: 60%; -webkit-mask-image: linear-gradient(90deg, #000 52%, transparent 100%), linear-gradient(180deg, transparent 0, #000 24%, #000 80%, transparent 100%); mask-image: linear-gradient(90deg, #000 52%, transparent 100%), linear-gradient(180deg, transparent 0, #000 24%, #000 80%, transparent 100%); }
+  .haut-scene .sc-chateau { top: auto; bottom: 0; height: 49%; -webkit-mask-image: linear-gradient(270deg, #000 52%, transparent 100%), linear-gradient(180deg, transparent 0, #000 24%, #000 76%, transparent 100%); mask-image: linear-gradient(270deg, #000 52%, transparent 100%), linear-gradient(180deg, transparent 0, #000 24%, #000 76%, transparent 100%); }
+  .accueil-haut .hero-body { gap: 18px; padding-block: 4px 34px; }
+  .accueil-haut .hero-body h1 { font-size: 27px; line-height: 1.18; max-width: 17ch; }
+  .accueil-haut .hero-body > p { font-size: 17.5px; line-height: 1.68; max-width: 34ch; }
+  .accueil-haut .actions { gap: 16px; }
+  .jouer { height: 42vw; min-height: 150px; }
+  .carte-texte { gap: 12px; }
+  .carte-texte h2 { font-size: 29px; }
+  .carte-texte p:not(.sur) { font-size: 17px; line-height: 1.65; color: #efeaff; }
+  .carte-texte .sur { font-size: 12.5px; line-height: 1.4; }
+  .titre-section { gap: 10px; }
+  .episodes { gap: 22px; }
+  .texte { padding: 16px 18px 20px; gap: 10px; }
+  .nom h3 { font-size: 23px; }
+  .nom h3 small { font-size: 16px; }
+  .ar { font-size: 30px; }
+  .lecon { font-size: 17px; line-height: 1.6; }
+  .sources { font-size: 14.5px; }
+}
+@media (max-width: 360px) {
+  .accueil-haut .hero-body h1 { font-size: 25px; }
+  .b3d { padding-inline: 14px; }
+}
