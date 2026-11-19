@@ -1,51 +1,15 @@
 rules_version = '2';
-// Règles de sécurité Firestore des Lanternes de Nour — BROUILLON (étape P2-0), NON DÉPLOYÉ.
-// À tester dans l'émulateur Firebase avant toute publication (tests prévus : outils/tests/regles/).
+// Règles de sécurité Firestore des Lanternes de Nour — À TESTER DANS L'ÉMULATEUR AVANT TOUTE ACTIVATION.
 //
-// Principe : le navigateur ne peut JAMAIS écrire un rôle, un droit, un abonnement, un accès offert, une invitation
-// ou un journal. Tout cela est écrit uniquement par le serveur (Worker Cloudflare, compte de service).
-// Le compte Créateur n'apparaît nulle part ici : il est vérifié côté serveur (rôle + CREATOR_UID).
+// Architecture retenue : le navigateur ne lit et n'écrit JAMAIS directement dans Firestore.
+// Toutes les opérations passent par le serveur (Cloudflare Worker, serveur/api.js), qui vérifie la session,
+// calcule les droits (serveur/droits.js) et utilise un compte de service (qui n'est pas soumis à ces règles).
+// Donc : tout est refusé à tous les clients, sans exception. Aucun rôle, droit, abonnement, invitation,
+// profil enfant ou journal ne peut être lu ou modifié depuis un navigateur.
 service cloud.firestore {
   match /databases/{database}/documents {
-
-    function connecte() { return request.auth != null; }
-    function moi(uid) { return connecte() && request.auth.uid == uid; }
-    function droits(uid) { return get(/databases/$(database)/documents/droits/$(uid)).data; }
-    function seulement(champs) { return request.resource.data.diff(resource == null ? {} : resource.data).affectedKeys().hasOnly(champs); }
-
-    // Le parent : seulement ses préférences et ses consentements horodatés (CGU, confidentialité, « je suis le parent »).
-    match /familles/{uid} {
-      allow read: if moi(uid);
-      allow create: if moi(uid) && request.resource.data.keys().hasOnly(['creeLe', 'consentements', 'preferences'])
-                    && request.resource.data.consentements.parent == true;
-      allow update: if moi(uid) && seulement(['consentements', 'preferences']);
-      allow delete: if false;                       // suppression complète : uniquement par le serveur (cascade RGPD)
-
-      // Un document par enfant. Création / suppression / gel : serveur uniquement (il vérifie la limite de profils ;
-      // illimitée pour le Créateur). Le navigateur met à jour la progression d'un profil non gelé, si la synchronisation
-      // fait partie de ses droits (formule Famille ou Créateur).
-      match /enfants/{enfantId} {
-        allow read: if moi(uid);
-        allow update: if moi(uid) && droits(uid).synchro == true && resource.data.gele != true
-                      && seulement(['progression', 'majLe'])
-                      && request.resource.data.progression is map;
-        allow create, delete: if false;
-      }
+    match /{document=**} {
+      allow read, write: if false;
     }
-
-    // Droits calculés par le serveur : lisibles par leur propriétaire (affichage), jamais écrits par le navigateur.
-    match /droits/{uid} {
-      allow read: if moi(uid);
-      allow write: if false;
-    }
-
-    // Réservé au serveur : aucun accès depuis le navigateur.
-    match /abonnements/{doc}  { allow read, write: if false; }
-    match /acces_offerts/{doc} { allow read, write: if false; }
-    match /invitations/{doc}  { allow read, write: if false; }
-    match /admin_logs/{doc}   { allow read, write: if false; }
-    match /catalogue/{doc}    { allow read, write: if false; }   // état des contenus (gratuit / premium / aperçu), servi par le Worker
-
-    match /{autre=**} { allow read, write: if false; }
   }
 }

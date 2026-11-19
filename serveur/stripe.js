@@ -1,0 +1,37 @@
+// Stripe : vérification des webhooks (signature HMAC) et appels API, en MODE TEST uniquement.
+// Une clé « sk_live_ » est refusée tant que STRIPE_MODE_REEL n'est pas explicitement « autorise » (accord du créateur).
+const enc = new TextEncoder();
+const hex = buf => [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+
+export async function verifierSignatureStripe(corps, entete, secret, maintenant = Date.now(), toleranceS = 300) {
+  if (!secret || !entete) return false;
+  const parts = Object.fromEntries(String(entete).split(',').map(x => x.split('=')).filter(x => x.length === 2).map(([k, v]) => [k.trim(), v]));
+  const v1s = String(entete).split(',').filter(x => x.trim().startsWith('v1=')).map(x => x.trim().slice(3));
+  const t = Number(parts.t);
+  if (!t || !v1s.length || Math.abs(Math.floor(maintenant / 1000) - t) > toleranceS) return false;
+  const cle = await crypto.subtle.importKey('raw', enc.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+  const attendu = hex(await crypto.subtle.sign('HMAC', cle, enc.encode(t + '.' + corps)));
+  return v1s.some(v => v.length === attendu.length && [...v].every((c, i) => c === attendu[i]));
+}
+
+export function clientStripe(env, { fetcher = fetch } = {}) {
+  const cle = env.STRIPE_CLE_SECRETE || '';
+  if (!cle) return null;
+  if (cle.startsWith('sk_live_') && env.STRIPE_MODE_REEL !== 'autorise') throw new Error('Clé Stripe RÉELLE refusée : le site doit rester en mode test sans accord du créateur.');
+  const formulaire = (o, p = '') => Object.entries(o).flatMap(([k, v]) => { const n = p ? `${p}[${k}]` : k; return v && typeof v === 'object' ? formulaire(v, n) : [[n, String(v)]]; });
+  const appel = async (chemin, params = {}, methode = 'POST') => {
+    const r = await fetcher('https://api.stripe.com/v1/' + chemin, { method: methode, headers: { Authorization: 'Bearer ' + cle, 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: methode === 'GET' ? undefined : new URLSearchParams(formulaire(params)).toString() });
+    const j = await r.json(); if (!r.ok) throw new Error('Stripe : ' + (j.error && j.error.message || r.status)); return j;
+  };
+  return {
+    modeTest: !cle.startsWith('sk_live_'),
+    creerCheckout: ({ uid, email, prix, succes, annulation, client }) => appel('checkout/sessions', {
+      mode: 'subscription', client_reference_id: uid, 'line_items': { 0: { price: prix, quantity: 1 } },
+      ...(client ? { customer: client } : { customer_email: email }), success_url: succes, cancel_url: annulation,
+      subscription_data: { metadata: { uid } }, metadata: { uid }, locale: 'fr' }),
+    creerPortail: ({ client, retour }) => appel('billing_portal/sessions', { customer: client, return_url: retour }),
+    resilierFinPeriode: abonnementId => appel('subscriptions/' + abonnementId, { cancel_at_period_end: 'true' }),
+    lireAbonnement: abonnementId => appel('subscriptions/' + abonnementId, {}, 'GET')
+  };
+}

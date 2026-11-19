@@ -1,0 +1,422 @@
+// API des Lanternes de Nour (exécutée dans Cloudflare Pages Functions, et dans les tests avec une base en mémoire).
+// Toute décision de droits passe par serveur/droits.js. Le navigateur n'écrit jamais directement dans la base.
+import { calculerDroits, peutAcceder, verifierActivationInvitation, verifierSouscription, profilsAGeler, creerCodeInvitation, empreinteCode, normaliserEmail, estCreateur, abonnementActif, accesOffertActif } from './droits.js';
+import { creerSession, lireSession, lireCookie, enteteCookie } from './session.js';
+import { connexionRecente } from './jeton.js';
+import { catalogueEffectif, niveauDuFichier, ETATS } from './catalogue.js';
+import { verifierSignatureStripe } from './stripe.js';
+
+const J = 86400000, PAGE = 20, VALIDITE_INVITATION = 14 * J;
+const FORMULE_PRIX = { premium_mensuel: 'STRIPE_PRIX_PREMIUM_MENSUEL', premium_annuel: 'STRIPE_PRIX_PREMIUM_ANNUEL', famille_annuel: 'STRIPE_PRIX_FAMILLE_ANNUEL' };
+
+// ---------- réponses ----------
+const json = (data, statut = 200, entetes = {}) => new Response(JSON.stringify(data), { status: statut, headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', ...entetes } });
+const erreur = (statut, raison) => json({ erreur: raison }, statut);
+
+// ---------- limitation simple du nombre de tentatives (par instance) ----------
+const compteurs = new Map();
+let sequence = 0;
+function tropDeTentatives(cle, max, fenetreMs, maintenant) {
+  const c = compteurs.get(cle);
+  if (!c || c.debut + fenetreMs < maintenant) { compteurs.set(cle, { debut: maintenant, n: 1 }); return false; }
+  c.n++; return c.n > max;
+}
+export function _reinitialiserCompteurs() { compteurs.clear(); }
+
+async function corpsJson(req, max = 200000) {
+  const t = await req.text(); if (t.length > max) throw new Error('trop-gros');
+  try { return t ? JSON.parse(t) : {}; } catch (e) { throw new Error('json'); }
+}
+
+// ---------- droits ----------
+async function sourcesDe(base, uid) { const d = await base.lire('droits', uid); return d ? d.sources || {} : {}; }
+async function droitsDe(ctx, session) {
+  if (!session) return null;
+  return calculerDroits({ uid: session.uid, claims: session.claims, env: ctx.env, sources: await sourcesDe(ctx.base, session.uid), maintenant: ctx.maintenant });
+}
+// Recalcule la copie des sources de droits et (dé)gèle les profils en conséquence. Ne supprime JAMAIS un profil.
+export async function majDroits(ctx, uid, { claims = {} } = {}) {
+  const offerts = (await ctx.base.chercher('acces_offerts', 'uid', uid)).map(x => ({ id: x.id, ...x.data }));
+  const abonnement = await ctx.base.lire('abonnements', uid);
+  await ctx.base.ecrire('droits', uid, { sources: { accesOfferts: offerts, abonnement: abonnement || null }, majLe: ctx.maintenant });
+  const d = calculerDroits({ uid, claims, env: ctx.env, sources: { accesOfferts: offerts, abonnement }, maintenant: ctx.maintenant });
+  await appliquerGel(ctx, uid, d.profilsMax);
+  return d;
+}
+async function tousLesEnfants(base, uid) {
+  const tout = []; let apres = null;
+  do { const p = await base.lister(`familles/${uid}/enfants`, { limite: 100, apres }); tout.push(...p.docs); apres = p.suite; } while (apres);
+  return tout;
+}
+async function appliquerGel(ctx, uid, profilsMax) {
+  const enfants = await tousLesEnfants(ctx.base, uid);
+  const famille = await ctx.base.lire('familles', uid);
+  const geler = new Set(profilsAGeler(enfants.map(e => ({ id: e.id, creeLe: e.data.creeLe })), profilsMax, famille && famille.profilActif));
+  for (const e of enfants) { const g = geler.has(e.id); if (!!e.data.gele !== g) await ctx.base.maj(`familles/${uid}/enfants`, e.id, { gele: g }); }
+}
+
+async function journal(ctx, action, details) {
+  await ctx.base.ecrire('admin_logs', String(ctx.maintenant).padStart(15, '0') + '-' + Math.random().toString(36).slice(2, 8), { t: ctx.maintenant, action, ...details });
+}
+
+// ---------- contrôles d'accès ----------
+function memeOrigine(req) {
+  if (req.headers.get('X-LDN') !== '1') return false;                 // en-tête personnalisé : impossible depuis un autre site sans autorisation
+  const o = req.headers.get('Origin'); if (!o) return true;
+  return o === new URL(req.url).origin;
+}
+function exigerCreateur(ctx, session, { recent = false } = {}) {
+  if (!session || !estCreateur(session.uid, session.claims, ctx.env)) return erreur(403, 'reserve-createur');
+  if (recent && !connexionRecente(session, ctx.maintenant)) return erreur(401, 'reconnexion-requise');
+  return null;
+}
+
+// ---------- validation des profils enfants (minimisation RGPD) ----------
+function validerEnfant(b) {
+  const surnom = String(b.surnom || '').trim();
+  if (!/^[\p{L}][\p{L} '’-]{0,19}$/u.test(surnom)) return { erreur: 'surnom-invalide' };   // un prénom ou surnom : lettres, 20 max, pas de chiffres
+  if (!['3-5', '6-10'].includes(b.tranche)) return { erreur: 'tranche-invalide' };
+  if (!['fille', 'garcon'].includes(b.avatar)) return { erreur: 'avatar-invalide' };
+  return { surnom, tranche: b.tranche, avatar: b.avatar };
+}
+
+// ======================================================================
+export async function traiter(req, ctx) {
+  const url = new URL(req.url), chemin = url.pathname.replace(/\/+$/, ''), m = req.method;
+  ctx.maintenant = ctx.maintenant || Date.now();
+  const secure = url.protocol === 'https:';
+  const ip = req.headers.get('CF-Connecting-IP') || 'local';
+  try {
+    // Webhook Stripe : authentifié par signature, pas par cookie
+    if (chemin === '/api/stripe/webhook' && m === 'POST') return webhookStripe(req, ctx);
+
+    if (m !== 'GET' && m !== 'HEAD' && !memeOrigine(req)) return erreur(403, 'origine');
+    const session = await lireSession(lireCookie(req.headers.get('Cookie')), ctx.env.SESSION_SECRET, ctx.maintenant);
+
+    // ----- session -----
+    if (chemin === '/api/session' && m === 'POST') {
+      if (tropDeTentatives('session:' + ip, 30, 10 * 60000, ctx.maintenant)) return erreur(429, 'trop-de-tentatives');
+      const b = await corpsJson(req, 10000);
+      let v; try { v = await ctx.auth.verifierIdToken(b.idToken, ctx.maintenant); } catch (e) { return erreur(401, 'jeton-invalide'); }
+      let famille = await ctx.base.lire('familles', v.uid);
+      if (!famille) {
+        const c = b.consentements || {};
+        if (!(c.parent === true && c.cgu === true && c.confidentialite === true)) return erreur(428, 'consentement-requis');
+        famille = { email: normaliserEmail(v.email), creeLe: ctx.maintenant, consentements: { parent: ctx.maintenant, cgu: ctx.maintenant, confidentialite: ctx.maintenant, version: ctx.env.VERSION_TEXTES || '2026-11' }, profilActif: null };
+        await ctx.base.ecrire('familles', v.uid, famille);
+        await majDroits(ctx, v.uid, { claims: v.claims });
+      } else if (normaliserEmail(v.email) !== famille.email) await ctx.base.maj('familles', v.uid, { email: normaliserEmail(v.email) });
+      const valeur = await creerSession({ uid: v.uid, email: v.email, emailVerifie: v.emailVerifie, role: v.claims.role, authTime: v.authTime }, ctx.env.SESSION_SECRET, ctx.maintenant);
+      return json({ ok: true }, 200, { 'Set-Cookie': enteteCookie(valeur, { secure }) });
+    }
+    if (chemin === '/api/session/fin' && m === 'POST') return json({ ok: true }, 200, { 'Set-Cookie': enteteCookie('', { secure, effacer: true }) });
+
+    // ----- qui suis-je -----
+    if (chemin === '/api/moi' && m === 'GET') {
+      if (!session) return json({ connecte: false, statut: 'visiteur' });
+      const d = await droitsDe(ctx, session); const f = await ctx.base.lire('familles', session.uid);
+      return json({ connecte: true, uid: session.uid, email: session.email, emailVerifie: session.emailVerifie, ...d,
+        profilsMax: d.profilsMax === Infinity ? null : d.profilsMax, illimite: d.profilsMax === Infinity, profilActif: f && f.profilActif || null });
+    }
+
+    // ----- catalogue (pour l'affichage : chaque contenu avec « ouvert » ou non) -----
+    if (chemin === '/api/catalogue' && m === 'GET') {
+      const cat = catalogueEffectif((await ctx.base.lire('catalogue', 'etat')) || {});
+      const d = await droitsDe(ctx, session);
+      const vue = {};
+      for (const [g, items] of Object.entries(cat)) vue[g] = Object.fromEntries(Object.entries(items).map(([id, n]) => [id, { niveau: n, ouvert: peutAcceder(n, d) || (n === 'gratuit' && !!session) }]));
+      return json({ catalogue: vue, bandeau: ((await ctx.base.lire('catalogue', 'bandeau')) || {}).texte || null });
+    }
+
+    // ----- contenus Premium (stockage privé R2) -----
+    if (chemin.startsWith('/api/premium/') && (m === 'GET' || m === 'HEAD')) {
+      const fichier = decodeURIComponent(chemin.slice('/api/premium/'.length));
+      const cat = catalogueEffectif((await ctx.base.lire('catalogue', 'etat')) || {});
+      const niveau = niveauDuFichier(fichier, cat);
+      if (!niveau) return erreur(400, 'chemin');
+      const d = await droitsDe(ctx, session);
+      const ok = peutAcceder(niveau, d) || (niveau === 'gratuit' && !!session);
+      if (!ok) return erreur(session ? 403 : 401, session ? 'premium-requis' : 'connexion-requise');
+      const obj = await ctx.stockage.get(fichier);
+      if (!obj) return erreur(404, 'introuvable');
+      return new Response(m === 'HEAD' ? null : obj.body, { headers: { 'Content-Type': obj.type || 'application/octet-stream', 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff' } });
+    }
+
+    // ===== tout ce qui suit exige d'être connecté =====
+    if (chemin.startsWith('/api/') && !session) return erreur(401, 'connexion-requise');
+    const d = await droitsDe(ctx, session);
+
+    // ----- profils enfants -----
+    if (chemin === '/api/enfants' && m === 'GET') {
+      const p = await ctx.base.lister(`familles/${session.uid}/enfants`, { limite: PAGE, apres: url.searchParams.get('apres') });
+      return json({ enfants: p.docs.map(x => ({ id: x.id, ...x.data, progression: undefined })), suite: p.suite, total: await ctx.base.compter(`familles/${session.uid}/enfants`) });
+    }
+    if (chemin === '/api/enfants' && m === 'POST') {
+      const e = validerEnfant(await corpsJson(req, 2000)); if (e.erreur) return erreur(400, e.erreur);
+      const n = await ctx.base.compter(`familles/${session.uid}/enfants`);
+      if (d.profilsMax !== Infinity && n >= d.profilsMax) return erreur(403, 'limite-profils');
+      const id = 'e' + ctx.maintenant.toString(36).padStart(9, '0') + (sequence++ % 1679616).toString(36).padStart(4, '0') + Math.random().toString(36).slice(2, 5);   // ordre de création stable
+      await ctx.base.ecrire(`familles/${session.uid}/enfants`, id, { ...e, creeLe: ctx.maintenant, gele: false, progression: {}, majLe: ctx.maintenant });
+      const f = await ctx.base.lire('familles', session.uid);
+      if (f && !f.profilActif) await ctx.base.maj('familles', session.uid, { profilActif: id });
+      return json({ id }, 201);
+    }
+    let r = /^\/api\/enfants\/([A-Za-z0-9]{1,40})(\/progression|\/actif)?$/.exec(chemin);
+    if (r) {
+      const col = `familles/${session.uid}/enfants`, enfant = await ctx.base.lire(col, r[1]);
+      if (!enfant) return erreur(404, 'profil-introuvable');
+      if (!r[2] && m === 'GET') return json({ id: r[1], ...enfant, progression: d.synchro ? enfant.progression : undefined });
+      if (r[2] === '/progression' && m === 'PUT') {
+        if (!d.synchro) return erreur(403, 'synchro-famille');
+        if (enfant.gele) return erreur(423, 'profil-gele');
+        const b = await corpsJson(req, 150000);
+        if (!b.progression || typeof b.progression !== 'object' || Array.isArray(b.progression)) return erreur(400, 'progression');
+        await ctx.base.maj(col, r[1], { progression: b.progression, majLe: ctx.maintenant });
+        return json({ ok: true });
+      }
+      if (r[2] === '/actif' && m === 'POST') {
+        await ctx.base.maj('familles', session.uid, { profilActif: r[1] });
+        await appliquerGel(ctx, session.uid, d.profilsMax);
+        return json({ ok: true });
+      }
+      if (!r[2] && m === 'PATCH') {
+        const e = validerEnfant({ ...enfant, ...(await corpsJson(req, 2000)) }); if (e.erreur) return erreur(400, e.erreur);
+        await ctx.base.maj(col, r[1], e); return json({ ok: true });
+      }
+      if (!r[2] && m === 'DELETE') {                    // seulement sur demande explicite du parent, jamais automatique
+        await ctx.base.supprimer(col, r[1]); return json({ ok: true });
+      }
+    }
+
+    // ----- invitations : activation par le proche -----
+    if (chemin === '/api/invitations/activer' && m === 'POST') {
+      if (tropDeTentatives('inv:' + session.uid, 10, 60 * 60000, ctx.maintenant)) return erreur(429, 'trop-de-tentatives');
+      const b = await corpsJson(req, 1000);
+      const id = await empreinteCode(String(b.code || '').trim());
+      const inv = await ctx.base.lire('invitations', id);
+      const abonnement = await ctx.base.lire('abonnements', session.uid);
+      const verdict = verifierActivationInvitation({ invitation: inv, compte: { email: session.email, emailVerifie: session.emailVerifie }, abonnement, maintenant: ctx.maintenant });
+      if (!verdict.ok) { if (verdict.raison === 'abonnement-actif') await journal(ctx, 'invitation-bloquee-abonnement', { uid: session.uid, invitation: id }); return erreur(409, verdict.raison); }
+      const accesId = 'a' + id.slice(0, 20);
+      const cree = await ctx.base.creerSiAbsent('acces_offerts', accesId, { uid: session.uid, email: normaliserEmail(session.email), niveau: inv.niveau, debut: ctx.maintenant,
+        fin: inv.dureeJours ? ctx.maintenant + inv.dureeJours * J : null, libelle: inv.libelle || '', invitation: id, creeLe: ctx.maintenant, revoqueLe: null, historique: [{ t: ctx.maintenant, action: 'activation' }] });
+      if (!cree) return erreur(409, 'deja-utilisee');                              // deux clics simultanés : un seul passe
+      await ctx.base.maj('invitations', id, { utiliseeLe: ctx.maintenant, utiliseePar: session.uid });
+      await majDroits(ctx, session.uid, { claims: session.claims });
+      await journal(ctx, 'invitation-activee', { uid: session.uid, invitation: id, niveau: inv.niveau });
+      return json({ ok: true, niveau: inv.niveau });
+    }
+
+    // ----- abonnement (Stripe, mode test) -----
+    if (chemin === '/api/paiement/session' && m === 'POST') {
+      if (!ctx.stripe) return erreur(503, 'paiement-non-configure');
+      if (!session.emailVerifie) return erreur(403, 'email-non-verifie');
+      const b = await corpsJson(req, 2000);
+      const v = verifierSouscription({ droits: d, formule: b.formule }); if (!v.ok) return erreur(409, v.raison);
+      if (!(b.consentements && b.consentements.cgv === true && b.consentements.executionImmediate === true)) return erreur(428, 'consentement-requis');
+      const prix = ctx.env[FORMULE_PRIX[b.formule]]; if (!prix) return erreur(503, 'prix-non-configure');
+      const ab = await ctx.base.lire('abonnements', session.uid);
+      const s = await ctx.stripe.creerCheckout({ uid: session.uid, email: session.email, prix, client: ab && ab.stripeClient, succes: url.origin + '/compte/?paiement=ok', annulation: url.origin + '/tarifs/?paiement=annule' });
+      await ctx.base.ecrire('consentements_achat', s.id, { uid: session.uid, formule: b.formule, cgv: ctx.maintenant, executionImmediate: ctx.maintenant, version: ctx.env.VERSION_TEXTES || '2026-11' });
+      return json({ url: s.url });
+    }
+    if (chemin === '/api/abonnement/resilier' && m === 'POST') {
+      const ab = await ctx.base.lire('abonnements', session.uid);
+      if (!ab || !abonnementActif(ab, ctx.maintenant)) return erreur(404, 'aucun-abonnement');
+      if (ctx.stripe) await ctx.stripe.resilierFinPeriode(ab.stripeAbonnement);
+      await ctx.base.maj('abonnements', session.uid, { annulationFinPeriode: true, resilieLe: ctx.maintenant });
+      await majDroits(ctx, session.uid, { claims: session.claims });
+      return json({ ok: true, finAcces: ab.finPeriode });
+    }
+    if (chemin === '/api/abonnement/portail' && m === 'POST') {
+      const ab = await ctx.base.lire('abonnements', session.uid);
+      if (!ctx.stripe || !ab || !ab.stripeClient) return erreur(404, 'aucun-abonnement');
+      return json({ url: (await ctx.stripe.creerPortail({ client: ab.stripeClient, retour: url.origin + '/compte/' })).url });
+    }
+
+    // ----- suppression complète du compte (RGPD) -----
+    if (chemin === '/api/compte' && m === 'DELETE') {
+      if (!connexionRecente(session, ctx.maintenant)) return erreur(401, 'reconnexion-requise');
+      const ab = await ctx.base.lire('abonnements', session.uid);
+      if (ab && abonnementActif(ab, ctx.maintenant) && !ab.annulationFinPeriode) return erreur(409, 'abonnement-actif');
+      await supprimerToutesLesDonnees(ctx, session.uid);
+      return json({ ok: true }, 200, { 'Set-Cookie': enteteCookie('', { secure, effacer: true }) });
+    }
+
+    // ===== administration : Créateur uniquement =====
+    if (chemin.startsWith('/api/admin/')) return administration(req, ctx, session, chemin, url);
+
+    return erreur(404, 'inconnu');
+  } catch (e) {
+    if (e && (e.message === 'json' || e.message === 'trop-gros')) return erreur(400, e.message);
+    console.error(e); return erreur(500, 'erreur-serveur');
+  }
+}
+
+export async function supprimerToutesLesDonnees(ctx, uid) {
+  for (const e of await tousLesEnfants(ctx.base, uid)) await ctx.base.supprimer(`familles/${uid}/enfants`, e.id);   // Firestore ne supprime pas les sous-collections tout seul
+  for (const a of await ctx.base.chercher('acces_offerts', 'uid', uid)) await ctx.base.supprimer('acces_offerts', a.id);
+  for (const i of await ctx.base.chercher('invitations', 'utiliseePar', uid)) await ctx.base.maj('invitations', i.id, { email: null, utiliseePar: null });
+  // journal et invitations : on efface l'identifiant et l'adresse (le journal garde seulement l'action, anonymisée)
+  const famille = await ctx.base.lire('familles', uid), email = famille && famille.email;
+  if (email) for (const i of await ctx.base.chercher('invitations', 'email', email)) await ctx.base.maj('invitations', i.id, { email: null });
+  let apres = null;
+  do {
+    const pg = await ctx.base.lister('admin_logs', { limite: 200, apres });
+    for (const l of pg.docs) if (l.data.uid === uid || (email && l.data.email === email)) await ctx.base.maj('admin_logs', l.id, { uid: l.data.uid === uid ? 'anonymise' : l.data.uid, email: email && l.data.email === email ? null : l.data.email });
+    apres = pg.suite;
+  } while (apres);
+  await ctx.base.supprimer('droits', uid);
+  await ctx.base.supprimer('abonnements', uid);
+  await ctx.base.supprimer('familles', uid);
+  await ctx.base.supprimerUtilisateur(uid);
+  await journal(ctx, 'compte-supprime', { uid: 'anonymise' });
+}
+
+// ======================================================================
+async function administration(req, ctx, session, chemin, url) {
+  const m = req.method, ecriture = m !== 'GET';
+  const refus = exigerCreateur(ctx, session, { recent: ecriture }); if (refus) return refus;
+  const apres = url.searchParams.get('apres');
+
+  if (chemin === '/api/admin/resume' && m === 'GET') {
+    const abos = (await ctx.base.chercher('abonnements', 'statut', 'active', 10000)).concat(await ctx.base.chercher('abonnements', 'statut', 'trialing', 10000)).filter(a => abonnementActif(a.data, ctx.maintenant));
+    const parFormule = {}; for (const a of abos) parFormule[a.data.formule] = (parFormule[a.data.formule] || 0) + 1;
+    const offerts = [];
+    let p = null; do { const pg = await ctx.base.lister('acces_offerts', { limite: 100, apres: p }); offerts.push(...pg.docs); p = pg.suite; } while (p);
+    const actifs = offerts.filter(o => accesOffertActif(o.data, ctx.maintenant));
+    const familles = await ctx.base.compter('familles');
+    return json({ familles, payants: abos.length, parFormule, accesOffertsActifs: actifs.length, gratuits: Math.max(0, familles - abos.length - new Set(actifs.map(o => o.data.uid)).size) });
+  }
+  if (chemin === '/api/admin/comptes' && m === 'GET') {
+    const pg = await ctx.base.lister('familles', { limite: PAGE, apres });
+    const comptes = [];
+    for (const f of pg.docs) {
+      const dr = calculerDroits({ uid: f.id, claims: {}, env: ctx.env, sources: await sourcesDe(ctx.base, f.id), maintenant: ctx.maintenant });
+      comptes.push({ uid: f.id, email: f.data.email, creeLe: f.data.creeLe, statut: f.id === ctx.env.CREATOR_UID ? 'creator' : dr.statut, niveau: dr.niveau, expire: dr.expire, enfants: await ctx.base.compter(`familles/${f.id}/enfants`) });
+    }
+    return json({ comptes, suite: pg.suite });
+  }
+  let r = /^\/api\/admin\/comptes\/([A-Za-z0-9_-]{1,128})$/.exec(chemin);
+  if (r && m === 'GET') {
+    const f = await ctx.base.lire('familles', r[1]); if (!f) return erreur(404, 'compte-introuvable');
+    const pg = await ctx.base.lister(`familles/${r[1]}/enfants`, { limite: PAGE, apres });
+    const ab = await ctx.base.lire('abonnements', r[1]);
+    return json({ uid: r[1], email: f.email, creeLe: f.creeLe, consentements: f.consentements, abonnement: ab ? { statut: ab.statut, formule: ab.formule, finPeriode: ab.finPeriode, annulationFinPeriode: !!ab.annulationFinPeriode } : null,
+      acces: (await ctx.base.chercher('acces_offerts', 'uid', r[1])).map(a => ({ id: a.id, ...a.data })),
+      enfants: pg.docs.map(e => ({ id: e.id, surnom: e.data.surnom, tranche: e.data.tranche, avatar: e.data.avatar, gele: !!e.data.gele, creeLe: e.data.creeLe })), suite: pg.suite,
+      totalEnfants: await ctx.base.compter(`familles/${r[1]}/enfants`) });
+  }
+
+  // invitations
+  if (chemin === '/api/admin/invitations' && m === 'POST') {
+    const b = await corpsJson(req, 2000);
+    const email = normaliserEmail(b.email);
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return erreur(400, 'email-invalide');
+    if (!['premium', 'famille'].includes(b.niveau)) return erreur(400, 'niveau-invalide');
+    const duree = b.dureeJours == null ? null : Number(b.dureeJours);
+    if (duree !== null && !(Number.isInteger(duree) && duree >= 1 && duree <= 3650)) return erreur(400, 'duree-invalide');
+    const code = creerCodeInvitation(), id = await empreinteCode(code);
+    await ctx.base.ecrire('invitations', id, { email, niveau: b.niveau, dureeJours: duree, libelle: String(b.libelle || '').slice(0, 60), creeLe: ctx.maintenant, expireLe: ctx.maintenant + VALIDITE_INVITATION, utiliseeLe: null, utiliseePar: null, annuleeLe: null });
+    await journal(ctx, 'invitation-creee', { invitation: id, email, niveau: b.niveau, dureeJours: duree });
+    return json({ id, lien: url.origin + '/compte/?invite=' + encodeURIComponent(code), expireLe: ctx.maintenant + VALIDITE_INVITATION }, 201);   // le code n'est montré qu'une fois
+  }
+  if (chemin === '/api/admin/invitations' && m === 'GET') {
+    const pg = await ctx.base.lister('invitations', { limite: PAGE, apres });
+    return json({ invitations: pg.docs.map(i => ({ id: i.id, ...i.data, etat: i.data.annuleeLe ? 'annulee' : i.data.utiliseeLe ? 'utilisee' : i.data.expireLe <= ctx.maintenant ? 'expiree' : 'en-attente' })), suite: pg.suite });
+  }
+  r = /^\/api\/admin\/invitations\/([0-9a-f]{64})$/.exec(chemin);
+  if (r && m === 'DELETE') {
+    const inv = await ctx.base.lire('invitations', r[1]); if (!inv) return erreur(404, 'invitation-introuvable');
+    if (inv.utiliseeLe) return erreur(409, 'deja-utilisee');
+    await ctx.base.maj('invitations', r[1], { annuleeLe: ctx.maintenant }); await journal(ctx, 'invitation-annulee', { invitation: r[1] });
+    return json({ ok: true });
+  }
+
+  // accès offerts
+  if (chemin === '/api/admin/acces' && m === 'GET') {
+    const pg = await ctx.base.lister('acces_offerts', { limite: PAGE, apres });
+    return json({ acces: pg.docs.map(a => ({ id: a.id, ...a.data, actif: accesOffertActif(a.data, ctx.maintenant) })), suite: pg.suite });
+  }
+  if (chemin === '/api/admin/acces' && m === 'POST') {                 // attribution directe à un compte existant
+    const b = await corpsJson(req, 2000), email = normaliserEmail(b.email);
+    const cible = (await ctx.base.chercher('familles', 'email', email, 2))[0];
+    if (!cible) return erreur(404, 'compte-introuvable');
+    if (!['premium', 'famille'].includes(b.niveau)) return erreur(400, 'niveau-invalide');
+    if (abonnementActif(await ctx.base.lire('abonnements', cible.id), ctx.maintenant)) return erreur(409, 'abonnement-actif');
+    const duree = b.dureeJours == null ? null : Number(b.dureeJours);
+    if (duree !== null && !(Number.isInteger(duree) && duree >= 1 && duree <= 3650)) return erreur(400, 'duree-invalide');
+    const id = 'd' + ctx.maintenant.toString(36) + Math.random().toString(36).slice(2, 7);
+    await ctx.base.ecrire('acces_offerts', id, { uid: cible.id, email, niveau: b.niveau, debut: ctx.maintenant, fin: duree ? ctx.maintenant + duree * J : null, libelle: String(b.libelle || '').slice(0, 60), invitation: null, creeLe: ctx.maintenant, revoqueLe: null, historique: [{ t: ctx.maintenant, action: 'attribution-directe' }] });
+    await majDroits(ctx, cible.id); await journal(ctx, 'acces-attribue', { acces: id, uid: cible.id, niveau: b.niveau, dureeJours: duree });
+    return json({ id }, 201);
+  }
+  r = /^\/api\/admin\/acces\/([A-Za-z0-9]{1,40})\/(prolonger|revoquer)$/.exec(chemin);
+  if (r && m === 'POST') {
+    const a = await ctx.base.lire('acces_offerts', r[1]); if (!a) return erreur(404, 'acces-introuvable');
+    if (r[2] === 'revoquer') {
+      if (a.revoqueLe) return json({ ok: true });
+      await ctx.base.maj('acces_offerts', r[1], { revoqueLe: ctx.maintenant, historique: [...(a.historique || []), { t: ctx.maintenant, action: 'revocation' }] });
+      await majDroits(ctx, a.uid); await journal(ctx, 'acces-revoque', { acces: r[1], uid: a.uid });
+      return json({ ok: true });
+    }
+    const b = await corpsJson(req, 500);
+    const fin = b.permanent === true ? null : Number(b.fin);
+    if (fin !== null && !(fin > ctx.maintenant)) return erreur(400, 'fin-invalide');
+    await ctx.base.maj('acces_offerts', r[1], { fin, revoqueLe: null, historique: [...(a.historique || []), { t: ctx.maintenant, action: fin === null ? 'permanent' : 'prolongation', fin }] });
+    await majDroits(ctx, a.uid); await journal(ctx, 'acces-prolonge', { acces: r[1], uid: a.uid, fin });
+    return json({ ok: true });
+  }
+
+  // contenus et bandeau
+  if (chemin === '/api/admin/catalogue' && m === 'GET') return json({ catalogue: catalogueEffectif((await ctx.base.lire('catalogue', 'etat')) || {}), bandeau: ((await ctx.base.lire('catalogue', 'bandeau')) || {}).texte || null });
+  if (chemin === '/api/admin/catalogue' && m === 'POST') {
+    const b = await corpsJson(req, 5000), cat = catalogueEffectif({});
+    if (!cat[b.groupe] || !(b.id in cat[b.groupe]) || !ETATS.includes(b.niveau)) return erreur(400, 'contenu-invalide');
+    const etat = (await ctx.base.lire('catalogue', 'etat')) || {};
+    etat[b.groupe] = { ...(etat[b.groupe] || {}), [b.id]: b.niveau };
+    await ctx.base.ecrire('catalogue', 'etat', etat); await journal(ctx, 'catalogue', { groupe: b.groupe, id: b.id, niveau: b.niveau });
+    return json({ ok: true });
+  }
+  if (chemin === '/api/admin/bandeau' && m === 'POST') {
+    const b = await corpsJson(req, 2000), texte = b.texte ? String(b.texte).slice(0, 200) : null;
+    await ctx.base.ecrire('catalogue', 'bandeau', { texte, majLe: ctx.maintenant }); await journal(ctx, 'bandeau', { texte });
+    return json({ ok: true });
+  }
+  if (chemin === '/api/admin/journal' && m === 'GET') {
+    const pg = await ctx.base.lister('admin_logs', { limite: 50, apres });
+    return json({ journal: pg.docs.map(x => ({ id: x.id, ...x.data })), suite: pg.suite });
+  }
+  return erreur(404, 'inconnu');
+}
+
+// ======================================================================
+// Webhooks Stripe : seule source de vérité des abonnements payants.
+async function webhookStripe(req, ctx) {
+  const corps = await req.text();
+  if (!(await verifierSignatureStripe(corps, req.headers.get('Stripe-Signature'), ctx.env.STRIPE_SECRET_WEBHOOK, ctx.maintenant))) return erreur(400, 'signature');
+  const ev = JSON.parse(corps);
+  if (ev.livemode === true && ctx.env.STRIPE_MODE_REEL !== 'autorise') return erreur(400, 'mode-reel-refuse');
+  if (!(await ctx.base.creerSiAbsent('stripe_evenements', ev.id, { t: ctx.maintenant, type: ev.type }))) return json({ ok: true, doublon: true });   // chaque événement traité une seule fois
+  const o = ev.data && ev.data.object || {};
+  const formuleDuPrix = prix => Object.entries(FORMULE_PRIX).find(([, cle]) => ctx.env[cle] === prix)?.[0] || null;
+  let uid = (o.metadata && o.metadata.uid) || o.client_reference_id || null;
+  if (!uid && o.customer) { const c = await ctx.base.lire('stripe_clients', o.customer); uid = c && c.uid; }
+  if (!uid) { await journal(ctx, 'stripe-sans-compte', { evenement: ev.id, type: ev.type }); return json({ ok: true }); }
+  if (o.customer) await ctx.base.ecrire('stripe_clients', o.customer, { uid });
+
+  if (ev.type === 'customer.subscription.created' || ev.type === 'customer.subscription.updated' || ev.type === 'customer.subscription.deleted') {
+    const prix = o.items && o.items.data && o.items.data[0] && o.items.data[0].price && o.items.data[0].price.id;
+    const statut = ev.type === 'customer.subscription.deleted' ? 'canceled' : o.status;
+    await ctx.base.ecrire('abonnements', uid, { statut, formule: formuleDuPrix(prix), finPeriode: (o.current_period_end || 0) * 1000, stripeClient: o.customer, stripeAbonnement: o.id, annulationFinPeriode: !!o.cancel_at_period_end, majLe: ctx.maintenant });
+    // garde-fou : un abonnement payé alors qu'un accès offert est actif → signalé au Créateur (aucun remboursement automatique)
+    if (statut === 'active' && (await ctx.base.chercher('acces_offerts', 'uid', uid)).some(a => accesOffertActif(a.data, ctx.maintenant)))
+      await journal(ctx, 'alerte-double-acces', { uid, abonnement: o.id });
+    await majDroits(ctx, uid);
+  } else if (ev.type === 'checkout.session.completed') {
+    await journal(ctx, 'paiement-confirme', { uid, session: o.id });
+  } else if (ev.type === 'invoice.payment_failed') {
+    await journal(ctx, 'paiement-echoue', { uid, facture: o.id });
+  }
+  return json({ ok: true });
+}

@@ -91,7 +91,7 @@ export function verifierSouscription({ droits, formule }) {
 // enfants : [{ id, creeLe }] ; garder : id choisi par le parent (sinon le plus ancien).
 export function profilsAGeler(enfants, profilsMax, garder = null) {
   if (!Array.isArray(enfants) || profilsMax === Infinity || enfants.length <= profilsMax) return [];
-  const tries = [...enfants].sort((a, b) => (enMs(a.creeLe) ?? 0) - (enMs(b.creeLe) ?? 0));
+  const tries = [...enfants].sort((a, b) => ((enMs(a.creeLe) ?? 0) - (enMs(b.creeLe) ?? 0)) || String(a.id).localeCompare(String(b.id)));
   const actifs = [];
   if (garder && tries.some(e => e.id === garder)) actifs.push(garder);
   for (const e of tries) { if (actifs.length >= profilsMax) break; if (!actifs.includes(e.id)) actifs.push(e.id); }
