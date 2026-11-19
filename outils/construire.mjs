@@ -7,7 +7,7 @@ const SORTIE = path.join(RACINE, 'dist');
 const PREPROD = process.env.LDN_PREPROD === '1' || (process.env.CF_PAGES_BRANCH && process.env.CF_PAGES_BRANCH !== 'main');
 // jamais publiés : outillage, fonctions serveur (Cloudflare les prend à part), configuration, documents de travail
 const EXCLUS = new Set(['.git', '.github', 'dist', 'node_modules', 'functions', 'outils', 'wrangler.toml', 'package.json', 'package-lock.json',
-  'firestore.rules', 'firestore.indexes.json', 'firebase.json', '.gitignore', '.dev.vars', 'CNAME']);
+  '_documentation', 'premium', 'firestore.rules', 'firestore.indexes.json', 'firebase.json', '.gitignore', '.dev.vars', 'CNAME']);
 const exclu = rel => EXCLUS.has(rel.split('/')[0]) || /\.(md|patch|mjs)$/.test(rel) || /(^|\/)\.env/.test(rel);
 fs.rmSync(SORTIE, { recursive: true, force: true }); fs.mkdirSync(SORTIE);
 let n = 0, octets = 0;
