@@ -124,28 +124,20 @@
     }
 
     var voixAudio = null;
+    // Voix enregistrée « Ahlan wa sahlan » (monde/voix/ahlan.mp3). Si le fichier n'existe pas encore :
+    // on ne dit rien (jamais de voix de synthèse pour l'arabe) et la légende écrite reste affichée.
     function parler() {
       var v = volumeVoix();
       if (v === 0) return;
-      // Voix enregistrée si elle existe (voix/ahlan.mp3), sinon la voix arabe de l'appareil.
       voixAudio = new Audio('voix/ahlan.mp3');
       voixAudio.volume = v;
-      voixAudio.onerror = function () { voixAudio = null; synthese(v); };
-      voixAudio.play().catch(function () { voixAudio = null; synthese(v); });
-    }
-    function synthese(v) {
-      if (!('speechSynthesis' in window)) return;
-      var voix = speechSynthesis.getVoices().filter(function (x) { return /^ar/i.test(x.lang); });
-      if (!voix.length) return; // pas de voix arabe sur l'appareil : on reste silencieux
-      var u = new SpeechSynthesisUtterance('أَهْلًا وَسَهْلًا');
-      u.lang = voix[0].lang; u.voice = voix[0]; u.rate = .85; u.volume = v;
-      speechSynthesis.speak(u);
+      voixAudio.onerror = function () { voixAudio = null; };
+      voixAudio.play().catch(function () { voixAudio = null; });
     }
 
     function ouvrir() {
       if (o.classList.contains('joue')) return;
       o.classList.add('joue');
-      try { speechSynthesis.getVoices(); } catch (e) {}
       var lanternes = o.querySelectorAll('.ouv-l');
       var ordre = [3, 2, 4, 1, 5, 0, 6]; // du centre vers les côtés
       ordre.forEach(function (n, k) { plus_tard(300 + k * 260, function () { lanternes[n].classList.add('allumee'); }); });

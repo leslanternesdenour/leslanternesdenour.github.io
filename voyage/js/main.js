@@ -11,7 +11,7 @@ import { creerFaucon } from './faucon.js?v=3';
 import * as S from './sons.js?v=3';
 import { chargerVoixVoyage, direTextes, direIds, direMotArabe, arreterVoixVoyage } from './voix.js?v=3';
 import { ZONES, POINTS, BIENTOT } from './contenu.js?v=3';
-import { sauvegarde } from '../../monde/socle/sauvegarde.js?v=2';
+import { sauvegarde } from '../../monde/socle/sauvegarde.js?v=3';
 import { qualiteAuto, surveillerFluidite } from '../../monde/socle/qualite.js?v=2';
 import { textureSol, normalesEau, textureNuage } from './textures.js?v=3';
 import { creerEffets } from './effets.js?v=3';
@@ -366,15 +366,17 @@ async function demarrer() {
   // chaque personnage a sa façon de parler (en attendant les vraies voix enregistrées)
   const VOIX = { nour: { pitch: 1.45, rate: 0.98 }, hakim: { pitch: 0.7, rate: 0.82 }, salim: { pitch: 0.9, rate: 0.95 }, karim: { pitch: 1.0, rate: 1.0 },
     amina: { pitch: 1.25, rate: 0.95 }, layla: { pitch: 1.2, rate: 0.9 }, samira: { pitch: 1.1, rate: 0.92 }, hassan: { pitch: 0.8, rate: 0.9 }, nabil: { pitch: 0.85, rate: 0.95 } };
+  // Règle du projet : un mot arabe n'est JAMAIS prononcé par une voix de synthèse.
+  // S'il n'a pas encore sa voix enregistrée (NOUR-VOIX-ARB / INV), on invite à lire la prononciation écrite.
   function parlerArabe(mot) {
     if (direMotArabe(mot)) return;
-    try {
-      const v = speechSynthesis.getVoices().find(v => v.lang && v.lang.toLowerCase().startsWith('ar'));
-      if (!v) { montrerIndice('Ton appareil n\'a pas de voix arabe : lis la prononciation écrite sous le mot.', 3500); return; }
-      speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(mot); u.voice = v; u.lang = v.lang; u.rate = 0.75; u.volume = sauvegarde.get().sons.voix ?? 1; speechSynthesis.speak(u);
-    } catch (e) {}
+    try { speechSynthesis.cancel(); } catch (e) {}
+    montrerIndice('La voix de ce mot arrive bientôt : lis la prononciation écrite sous le mot.', 3500);
   }
+  // Jamais de synthèse pour un texte religieux ou translittéré de l'arabe (même filtre que les leçons ablutions et prière)
+  const RELIGIEUX = /[\u0600-\u06FF]|[âîûÂÎÛ‘ʿʾ]|\b(allah|bismi|ramadan|coran|sourate|f[aâ]tiha|sal[aâ]t|wudu|inch|assal|as-sal|soubh|alhamd|al-hamd|m[aâ]ch|prophète|qibla|kaaba)/i;
   function parler(texte, voix) {
+    if (RELIGIEUX.test(String(texte))) return;
     try {
       speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(texte), vx = VOIX[voix] || {};

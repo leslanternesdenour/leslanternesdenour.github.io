@@ -56,6 +56,16 @@ export const sauvegarde = {
     if (etat.historique.length > 300) etat.historique = etat.historique.slice(-300);
     enregistrer();
   },
+  // Récompenses recalculées à partir des jeux (voir recompenses.js) : on remplace, on n'additionne jamais.
+  appliquerRecompenses(r) {
+    if (!r) return false;
+    const avant = JSON.stringify([etat.etoiles, etat.lanternes, etat.jeux]);
+    etat.etoiles = r.etoiles; etat.lanternes = r.lanternes;
+    for (const [id, d] of Object.entries(r.jeux || {})) etat.jeux[id] = Object.assign({}, etat.jeux[id], d);
+    if (JSON.stringify([etat.etoiles, etat.lanternes, etat.jeux]) === avant) return false;
+    enregistrer();
+    return true;
+  },
   jeu(id) { return etat.jeux[id] || {}; },
   majJeu(id, donnees) { etat.jeux[id] = Object.assign({}, etat.jeux[id], donnees); enregistrer(); },
   effacer() { etat = defauts(); enregistrer(); }

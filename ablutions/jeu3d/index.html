@@ -65,6 +65,7 @@
   <p class="note">Les personnages et la cour sont des créations du jeu. Les textes et leurs sources sont ceux de la leçon des ablutions.</p>
 </div></div>
 
+<script type="module">/* Si la bibliothèque 3D ne se charge pas (pas de connexion, CDN indisponible) : écran de secours au lieu d'un chargement sans fin */import('three').catch(()=>{const c=document.getElementById('chargement'),e=document.getElementById('erreur');if(c)c.classList.add('cache');if(e)e.classList.remove('cache')});</script>
 <script type="module" src="jeu.js?v=1"></script>
 <noscript><p style="padding:2em">Active JavaScript pour jouer. <a href="../">Retour aux ablutions</a></p></noscript>
 </body>

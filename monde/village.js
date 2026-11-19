@@ -1,5 +1,6 @@
 // Démarrage du Monde des Lanternes : écrans, réglages, sons, panneaux, jeux, liaison avec la scène 3D.
-import { sauvegarde } from './socle/sauvegarde.js?v=2';
+import { sauvegarde } from './socle/sauvegarde.js?v=3';
+import { calculerRecompenses, lireLocal } from './socle/recompenses.js?v=1';
 import { reveiller, reglerVolume, retirer } from './socle/audio.js?v=1';
 import { prechargerMusique, jouerMusique, arreterMusique, musiqueIndisponible } from './socle/musique.js?v=1';
 import { demarrerAmbiance, goutte, majAmbiance } from './socle/ambiance.js?v=2';
@@ -51,8 +52,17 @@ function appliquerVolumes() {
 }
 appliquerVolumes();
 
-async function init() {
+// Les étoiles et lanternes du village viennent des jeux eux-mêmes (relues à chaque retour au village)
+function synchroRecompenses() {
+  try { sauvegarde.appliquerRecompenses(calculerRecompenses(lireLocal)); } catch (e) { /* stockage illisible : on garde l'affichage actuel */ }
   majCompteurs();
+}
+addEventListener('pageshow', synchroRecompenses);
+addEventListener('storage', e => { if (!e.key || /^(ablutions|priere|lanternes2|monde_voyage)$/.test(e.key)) synchroRecompenses(); });
+document.addEventListener('visibilitychange', () => { if (!document.hidden) synchroRecompenses(); });
+
+async function init() {
+  synchroRecompenses();
   sauvegarde.abonner(majCompteurs);
   majPanneauSon();
   if (!webglOK()) return montrerErreur();
@@ -240,6 +250,7 @@ function fermerJeu(rendreLeVillage = true) {
   choisi = null;
   village.deselectionner();
   village.pause(false);
+  synchroRecompenses(); // les étoiles gagnées dans le jeu apparaissent tout de suite
   if (sons().musiqueActive) jouerMusique().then(majPanneauSon); // reprend là où elle s'était arrêtée
   goutte(0.9);
 }

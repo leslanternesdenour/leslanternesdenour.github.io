@@ -1,0 +1,456 @@
+{
+"s0": [
+"../../audio/fr/ablutions/nour-voix-abl-001.mp3",
+0,
+7.471,
+"NOUR-VOIX-ABL-001"
+],
+"s1": [
+"../../audio/fr/ablutions/nour-voix-abl-002.mp3",
+0,
+8.02,
+"NOUR-VOIX-ABL-002"
+],
+"s2": [
+"../../audio/fr/ablutions/nour-voix-abl-003.mp3",
+0,
+8.829,
+"NOUR-VOIX-ABL-003"
+],
+"s3": [
+"../../audio/fr/ablutions/nour-voix-abl-004.mp3",
+0,
+7.079,
+"NOUR-VOIX-ABL-004"
+],
+"s4": [
+"../../audio/fr/ablutions/nour-voix-abl-005.mp3",
+0,
+6.504,
+"NOUR-VOIX-ABL-005"
+],
+"s5": [
+"../../audio/fr/ablutions/nour-voix-abl-006.mp3",
+0,
+6.792,
+"NOUR-VOIX-ABL-006"
+],
+"s6": [
+"../../audio/fr/ablutions/nour-voix-abl-007.mp3",
+0,
+9.848,
+"NOUR-VOIX-ABL-007"
+],
+"s7": [
+"../../audio/fr/ablutions/nour-voix-abl-008.mp3",
+0,
+15.334,
+"NOUR-VOIX-ABL-008"
+],
+"s8": [
+"../../audio/fr/ablutions/nour-voix-abl-009.mp3",
+0,
+11.102,
+"NOUR-VOIX-ABL-009"
+],
+"t0": [
+"../../audio/fr/ablutions/nour-voix-abl-010.mp3",
+0,
+4.493,
+"NOUR-VOIX-ABL-010"
+],
+"t1": [
+"../../audio/fr/ablutions/nour-voix-abl-011.mp3",
+0,
+2.325,
+"NOUR-VOIX-ABL-011"
+],
+"t2": [
+"../../audio/fr/ablutions/nour-voix-abl-012.mp3",
+0,
+5.799,
+"NOUR-VOIX-ABL-012"
+],
+"t3": [
+"../../audio/fr/ablutions/nour-voix-abl-013.mp3",
+0,
+2.22,
+"NOUR-VOIX-ABL-013"
+],
+"t4": [
+"../../audio/fr/ablutions/nour-voix-abl-014.mp3",
+0,
+2.534,
+"NOUR-VOIX-ABL-014"
+],
+"t5": [
+"../../audio/fr/ablutions/nour-voix-abl-015.mp3",
+0,
+3.788,
+"NOUR-VOIX-ABL-015"
+],
+"t6": [
+"../../audio/fr/ablutions/nour-voix-abl-016.mp3",
+0,
+2.011,
+"NOUR-VOIX-ABL-016"
+],
+"t7": [
+"../../audio/fr/ablutions/nour-voix-abl-017.mp3",
+0,
+6.06,
+"NOUR-VOIX-ABL-017"
+],
+"t8": [
+"../../audio/fr/ablutions/nour-voix-abl-018.mp3",
+0,
+4.441,
+"NOUR-VOIX-ABL-018"
+],
+"home": [
+"../../audio/fr/ablutions/nour-voix-abl-019.mp3",
+0,
+7.549,
+"NOUR-VOIX-ABL-019"
+],
+"done": [
+"../../audio/fr/ablutions/nour-voix-abl-020.mp3",
+0,
+12.904,
+"NOUR-VOIX-ABL-020"
+],
+"why": [
+"../../audio/fr/ablutions/nour-voix-abl-021.mp3",
+0,
+15.778,
+"NOUR-VOIX-ABL-021"
+],
+"games": [
+"../../audio/fr/ablutions/nour-voix-abl-022.mp3",
+0,
+2.456,
+"NOUR-VOIX-ABL-022"
+],
+"r3": [
+"../../audio/fr/ablutions/nour-voix-abl-023.mp3",
+0,
+3.135,
+"NOUR-VOIX-ABL-023"
+],
+"r2": [
+"../../audio/fr/ablutions/nour-voix-abl-024.mp3",
+0,
+3.553,
+"NOUR-VOIX-ABL-024"
+],
+"r1": [
+"../../audio/fr/ablutions/nour-voix-abl-025.mp3",
+0,
+2.821,
+"NOUR-VOIX-ABL-025"
+],
+"g1i": [
+"../../audio/fr/ablutions/nour-voix-abl-026.mp3",
+0,
+5.381,
+"NOUR-VOIX-ABL-026"
+],
+"g1ok": [
+"../../audio/fr/ablutions/nour-voix-abl-027.mp3",
+0,
+4.389,
+"NOUR-VOIX-ABL-027"
+],
+"h0": [
+"../../audio/fr/ablutions/nour-voix-abl-028.mp3",
+0,
+4.101,
+"NOUR-VOIX-ABL-028"
+],
+"h1": [
+"../../audio/fr/ablutions/nour-voix-abl-029.mp3",
+0,
+6.348,
+"NOUR-VOIX-ABL-029"
+],
+"h2": [
+"../../audio/fr/ablutions/nour-voix-abl-030.mp3",
+0,
+4.911,
+"NOUR-VOIX-ABL-030"
+],
+"h3": [
+"../../audio/fr/ablutions/nour-voix-abl-031.mp3",
+0,
+5.198,
+"NOUR-VOIX-ABL-031"
+],
+"h4": [
+"../../audio/fr/ablutions/nour-voix-abl-032.mp3",
+0,
+6.087,
+"NOUR-VOIX-ABL-032"
+],
+"h5": [
+"../../audio/fr/ablutions/nour-voix-abl-033.mp3",
+0,
+5.538,
+"NOUR-VOIX-ABL-033"
+],
+"h6": [
+"../../audio/fr/ablutions/nour-voix-abl-034.mp3",
+0,
+5.695,
+"NOUR-VOIX-ABL-034"
+],
+"h7": [
+"../../audio/fr/ablutions/nour-voix-abl-035.mp3",
+0,
+6.296,
+"NOUR-VOIX-ABL-035"
+],
+"h8": [
+"../../audio/fr/ablutions/nour-voix-abl-036.mp3",
+0,
+4.571,
+"NOUR-VOIX-ABL-036"
+],
+"q2_mains": [
+"../../audio/fr/ablutions/nour-voix-abl-037.mp3",
+0,
+4.31,
+"NOUR-VOIX-ABL-037"
+],
+"q2_bouche": [
+"../../audio/fr/ablutions/nour-voix-abl-038.mp3",
+0,
+5.042,
+"NOUR-VOIX-ABL-038"
+],
+"q2_nez": [
+"../../audio/fr/ablutions/nour-voix-abl-039.mp3",
+0,
+4.624,
+"NOUR-VOIX-ABL-039"
+],
+"q2_visage": [
+"../../audio/fr/ablutions/nour-voix-abl-040.mp3",
+0,
+4.336,
+"NOUR-VOIX-ABL-040"
+],
+"q2_bras": [
+"../../audio/fr/ablutions/nour-voix-abl-041.mp3",
+0,
+5.825,
+"NOUR-VOIX-ABL-041"
+],
+"q2_tete": [
+"../../audio/fr/ablutions/nour-voix-abl-042.mp3",
+0,
+5.721,
+"NOUR-VOIX-ABL-042"
+],
+"q2_oreilles": [
+"../../audio/fr/ablutions/nour-voix-abl-043.mp3",
+0,
+4.075,
+"NOUR-VOIX-ABL-043"
+],
+"q2_pieds": [
+"../../audio/fr/ablutions/nour-voix-abl-044.mp3",
+0,
+3.997,
+"NOUR-VOIX-ABL-044"
+],
+"g2ok3": [
+"../../audio/fr/ablutions/nour-voix-abl-045.mp3",
+0,
+4.702,
+"NOUR-VOIX-ABL-045"
+],
+"g2ko3": [
+"../../audio/fr/ablutions/nour-voix-abl-046.mp3",
+0,
+4.624,
+"NOUR-VOIX-ABL-046"
+],
+"g2okt": [
+"../../audio/fr/ablutions/nour-voix-abl-047.mp3",
+0,
+4.101,
+"NOUR-VOIX-ABL-047"
+],
+"g2kot": [
+"../../audio/fr/ablutions/nour-voix-abl-048.mp3",
+0,
+5.277,
+"NOUR-VOIX-ABL-048"
+],
+"g2oke": [
+"../../audio/fr/ablutions/nour-voix-abl-049.mp3",
+0,
+4.493,
+"NOUR-VOIX-ABL-049"
+],
+"g2koe": [
+"../../audio/fr/ablutions/nour-voix-abl-050.mp3",
+0,
+4.545,
+"NOUR-VOIX-ABL-050"
+],
+"q3_start": [
+"../../audio/fr/ablutions/nour-voix-abl-051.mp3",
+0,
+2.194,
+"NOUR-VOIX-ABL-051"
+],
+"q3_mains": [
+"../../audio/fr/ablutions/nour-voix-abl-052.mp3",
+0,
+2.325,
+"NOUR-VOIX-ABL-052"
+],
+"q3_bouche": [
+"../../audio/fr/ablutions/nour-voix-abl-053.mp3",
+0,
+2.482,
+"NOUR-VOIX-ABL-053"
+],
+"q3_nez": [
+"../../audio/fr/ablutions/nour-voix-abl-054.mp3",
+0,
+2.247,
+"NOUR-VOIX-ABL-054"
+],
+"q3_visage": [
+"../../audio/fr/ablutions/nour-voix-abl-055.mp3",
+0,
+2.534,
+"NOUR-VOIX-ABL-055"
+],
+"q3_bras": [
+"../../audio/fr/ablutions/nour-voix-abl-056.mp3",
+0,
+2.325,
+"NOUR-VOIX-ABL-056"
+],
+"q3_tete": [
+"../../audio/fr/ablutions/nour-voix-abl-057.mp3",
+0,
+3.004,
+"NOUR-VOIX-ABL-057"
+],
+"g3ok": [
+"../../audio/fr/ablutions/nour-voix-abl-058.mp3",
+0,
+1.541,
+"NOUR-VOIX-ABL-058"
+],
+"g3ko_mains": [
+"../../audio/fr/ablutions/nour-voix-abl-059.mp3",
+0,
+1.646,
+"NOUR-VOIX-ABL-059"
+],
+"g3ko_bouche": [
+"../../audio/fr/ablutions/nour-voix-abl-060.mp3",
+0,
+1.802,
+"NOUR-VOIX-ABL-060"
+],
+"g3ko_nez": [
+"../../audio/fr/ablutions/nour-voix-abl-061.mp3",
+0,
+1.724,
+"NOUR-VOIX-ABL-061"
+],
+"g3ko_visage": [
+"../../audio/fr/ablutions/nour-voix-abl-062.mp3",
+0,
+1.881,
+"NOUR-VOIX-ABL-062"
+],
+"g3ko_bras": [
+"../../audio/fr/ablutions/nour-voix-abl-063.mp3",
+0,
+1.724,
+"NOUR-VOIX-ABL-063"
+],
+"g3ko_tete": [
+"../../audio/fr/ablutions/nour-voix-abl-064.mp3",
+0,
+1.75,
+"NOUR-VOIX-ABL-064"
+],
+"g3ko_pieds": [
+"../../audio/fr/ablutions/nour-voix-abl-065.mp3",
+0,
+1.698,
+"NOUR-VOIX-ABL-065"
+],
+"g4i": [
+"../../audio/fr/ablutions/nour-voix-abl-066.mp3",
+0,
+4.049,
+"NOUR-VOIX-ABL-066"
+],
+"g4ok": [
+"../../audio/fr/ablutions/nour-voix-abl-067.mp3",
+0,
+1.724,
+"NOUR-VOIX-ABL-067"
+],
+"g4ko_nez": [
+"../../audio/fr/ablutions/nour-voix-abl-068.mp3",
+0,
+2.978,
+"NOUR-VOIX-ABL-068"
+],
+"g4ko_bras": [
+"../../audio/fr/ablutions/nour-voix-abl-069.mp3",
+0,
+3.527,
+"NOUR-VOIX-ABL-069"
+],
+"g4ko_pieds": [
+"../../audio/fr/ablutions/nour-voix-abl-070.mp3",
+0,
+2.952,
+"NOUR-VOIX-ABL-070"
+],
+"g4ko_ordre": [
+"../../audio/fr/ablutions/nour-voix-abl-071.mp3",
+0,
+3.762,
+"NOUR-VOIX-ABL-071"
+],
+"g4ko_oreilles": [
+"../../audio/fr/ablutions/nour-voix-abl-072.mp3",
+0,
+3.135,
+"NOUR-VOIX-ABL-072"
+],
+"g4ko_juste": [
+"../../audio/fr/ablutions/nour-voix-abl-073.mp3",
+0,
+2.664,
+"NOUR-VOIX-ABL-073"
+],
+"g4ko_visage": [
+"../../audio/fr/ablutions/nour-voix-abl-074.mp3",
+0,
+3.709,
+"NOUR-VOIX-ABL-074"
+],
+"j3_fin0": [
+"j3-fin0.mp3",
+0.0,
+5.303
+],
+"j3_fin": [
+"j3-fin.mp3",
+0.0,
+4.389
+]
+}

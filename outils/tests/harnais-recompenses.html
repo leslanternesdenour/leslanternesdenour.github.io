@@ -1,0 +1,10 @@
+<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="robots" content="noindex"><title>Harnais de test · récompenses</title></head>
+<body><p>⭐ <b id="nb-etoiles">?</b> · 🏮 <b id="nb-lanternes">?</b></p>
+<script type="module">
+// Même chemin de code que monde/village.js : calculerRecompenses(lireLocal) → sauvegarde.appliquerRecompenses → compteurs
+import { sauvegarde } from '../../monde/socle/sauvegarde.js?v=3';
+import { calculerRecompenses, lireLocal } from '../../monde/socle/recompenses.js?v=1';
+const maj = () => { const s = sauvegarde.get(); document.getElementById('nb-etoiles').textContent = s.etoiles; document.getElementById('nb-lanternes').textContent = s.lanternes; };
+sauvegarde.appliquerRecompenses(calculerRecompenses(lireLocal)); maj();
+window.__pret = true;
+</script></body></html>

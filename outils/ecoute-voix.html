@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex"><title>Écoute comparée des voix · outil interne</title>
+<style>body{font:15px Nunito,system-ui,sans-serif;background:#191345;color:#f4efff;margin:0;padding:20px}h1{font-size:20px}table{border-collapse:collapse;width:100%}td,th{border-bottom:1px solid #3a2a7d;padding:6px;text-align:left}button{background:#f5b942;border:0;border-radius:999px;padding:5px 12px;font-weight:700;cursor:pointer}select{font-size:15px;padding:4px}.n{color:#c9bfe8;font-size:13px}</style></head>
+<body>
+<h1>Écoute comparée : voix actuelles ↔ voix du catalogue (NOUR-VOIX-ABL / PRI)</h1>
+<p class="n">Outil interne (non lié au site). Pour chaque extrait, écoutez la voix actuelle de la page puis la nouvelle voix du catalogue. Les deux doivent dire la même phrase. La correspondance a été déduite de l'ordre des fichiers (corrélation des durées 0,97) : elle doit être validée à l'oreille avant tout branchement.</p>
+<p><select id="page"><option value="ablutions">Ablutions</option><option value="priere">Prière</option></select></p>
+<table><thead><tr><th>Extrait</th><th>Actuelle</th><th>Catalogue</th><th>Fichier catalogue</th></tr></thead><tbody id="t"></tbody></table>
+<script>
+const A=new Audio();let stop=0;
+function jouer(src,d,f){clearTimeout(stop);A.src=src;A.currentTime=0;A.onloadedmetadata=()=>{A.currentTime=d;A.play();stop=setTimeout(()=>A.pause(),(f-d)*1000+100)};A.load()}
+async function charger(p){const [a,c]=await Promise.all([fetch('../'+p+'/voix/voix.json').then(r=>r.json()),fetch('../'+p+'/voix/voix-catalogue.json').then(r=>r.json())]);
+ const t=document.getElementById('t');t.innerHTML='';
+ for(const k of Object.keys(c)){const x=a[k],y=c[k];const tr=document.createElement('tr');
+  tr.innerHTML=`<td>${k}</td><td>${x?'<button>▶ actuelle</button>':'—'}</td><td><button>▶ catalogue</button></td><td class="n">${y[3]||y[0]}</td>`;
+  const b=tr.querySelectorAll('button');
+  if(x)b[0].onclick=()=>jouer('../'+p+'/voix/'+x[0],x[1],x[2]);
+  b[b.length-1].onclick=()=>jouer('../'+p+'/voix/'+y[0],y[1],y[2]);
+  t.appendChild(tr)}}
+document.getElementById('page').onchange=e=>charger(e.target.value);charger('ablutions');
+</script></body></html>
