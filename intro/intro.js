@@ -50,6 +50,8 @@
     var b = $('intro-son'), t = { invite: '🔊 Activer le son', joue: '🔇 Couper le son', fini: '🔊 Réécouter', coupe: '🔊 Activer le son' }[etat.son];
     b.textContent = t; b.setAttribute('aria-label', t.replace(/^\S+\s/, ''));
     b.classList.toggle('invite', etat.son === 'invite' || etat.son === 'coupe');
+    var aide = $('intro-aide');
+    if (aide) { aide.textContent = (window.matchMedia && matchMedia('(pointer: coarse)').matches) ? '🔊 Touche l’écran pour écouter' : '🔊 Clique n’importe où pour écouter'; aide.classList.toggle('visible', etat.son === 'invite'); }
   }
   function arreterVoix(fondu) {
     var a = etat.voix; if (!a) return;

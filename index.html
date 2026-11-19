@@ -9,7 +9,7 @@
 <link rel="icon" type="image/png" sizes="48x48" href="intro/favicon-48.png">
 <link rel="apple-touch-icon" href="intro/apple-touch-icon.png">
 <meta name="theme-color" content="#191345">
-<link rel="stylesheet" href="intro/intro.css?v=3">
+<link rel="stylesheet" href="intro/intro.css?v=4">
 <script>
 /* Introduction d'accueil : décide avant le premier affichage pour éviter tout clignotement. Si elle n'est pas prête sous 5 s, on l'abandonne. */
 (function(){var H=document.documentElement,m={},mode=null;try{m=JSON.parse(localStorage.getItem('lanternes_intro')||'{}')||{}}catch(e){}
@@ -216,6 +216,7 @@ footer { border-top: 1px solid rgba(245, 185, 66, .18); padding: 22px 0 30px; co
         <p class="intro-ar" id="intro-ar" lang="ar" dir="rtl">السَّلَامُ عَلَيْكُمْ</p>
         <p class="intro-fr" id="intro-fr" lang="fr">Bienvenue dans le merveilleux univers des Lanternes de Nour !</p>
       </div>
+      <p class="intro-aide" id="intro-aide" aria-hidden="true">🔊 Touche l’écran pour écouter</p>
       <button type="button" class="intro-entrer" id="intro-entrer" disabled>ENTRER DANS LE MONDE DE NOUR</button>
     </div>
   </div>
@@ -438,6 +439,6 @@ footer { border-top: 1px solid rgba(245, 185, 66, .18); padding: 22px 0 30px; co
   });
 })();
 </script>
-<script src="intro/intro.js?v=5" defer></script>
+<script src="intro/intro.js?v=6" defer></script>
 </body>
 </html>
