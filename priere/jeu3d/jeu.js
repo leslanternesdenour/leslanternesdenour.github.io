@@ -2,11 +2,11 @@
 // Trois modes : Guidé (l'ami montre, l'enfant fait pareil), S'entraîner (une prière de 2 rak‘at dans l'ordre), Libre.
 // Les textes, les paroles, les sources et les voix sont ceux de la leçon /priere/ (rien n'est inventé ici).
 import * as THREE from 'three';
-import { Voyageur } from '../../voyage/js/voyageur.js?v=3';
+import { Voyageur } from '../../voyage/js/voyageur.js?v=4';
 import { mascotte } from '../../monde/mascottes.js?v=1';
-import { Gestes } from '../../ablutions/jeu3d/gestes.js?v=1';
+import { Gestes } from '../../ablutions/jeu3d/gestes.js?v=2';
 import { creerSalle } from './salle.js?v=1';
-import { POSTURES, chemin, SALAM } from './postures.js?v=1';
+import { POSTURES, chemin, SALAM } from './postures.js?v=2';
 import { ST, DH, SUR, ayUrl, H1, NOTE_ECOLES } from './contenu.js?v=1';
 
 const $ = id => document.getElementById(id);

@@ -2,6 +2,8 @@
 // Les bras et les jambes sont placés par « cinématique inverse » : on dit où vont les mains et les pieds,
 // le calcul plie l'épaule, le coude, la hanche et le genou de façon naturelle (pas de bras tordus).
 import * as THREE from 'three';
+import { majIndex } from './doigt.js?v=1';
+import { cibleCheville } from './cheville.js?v=1';
 
 // ---------- repères (en mètres, dans le repère du personnage : +z devant lui, +y en haut) ----------
 // Le personnage regarde +z. Sa main DROITE est du côté x négatif (bras[0]), sa main GAUCHE côté x positif (bras[1]).
@@ -11,7 +13,7 @@ const SOUS_ROBINET = [0, 0.43, 0.43];                        // là où l'on met
 const L_BRAS = [0.24, 0.25], L_JAMBE = [0.3, 0.29];         // épaule→coude→main, hanche→genou→cheville
 
 // ---------- une petite cinématique inverse à deux segments ----------
-const _v = new THREE.Vector3(), _h = new THREE.Vector3(), _q = new THREE.Quaternion(), _e = new THREE.Vector3(), _p = new THREE.Vector3(), _a = new THREE.Vector3();
+const _v = new THREE.Vector3(), _h = new THREE.Vector3(), _q = new THREE.Quaternion(), _e = new THREE.Vector3(), _p = new THREE.Vector3(), _a = new THREE.Vector3(), _inv = new THREE.Matrix4();
 // haut : groupe de l'épaule (ou de la hanche) ; bas : groupe du coude (ou du genou) ; cible : position dans le repère du PARENT de haut
 // plie : -1 pour un coude (l'avant-bras se plie vers l'avant), +1 pour un genou ; pole : direction préférée du coude/genou (repère parent)
 export function ik(haut, bas, cible, L, plie, pole) {
@@ -117,7 +119,7 @@ const lisse = (a, b, k) => a + (b - a) * k;
 //   depart : la posture de départ quand le moteur prend la main ; repos : celle qu'il garde entre deux gestes.
 export class Gestes {
   constructor(v, { postures = POSTURES, sequences = SEQUENCES, depart = 'debout', repos = 'assis' } = {}) {
-    this.v = v;                                   // le Voyageur (personnage du Grand Voyage)
+    this.v = v;                               // le Voyageur (personnage du Grand Voyage)
     this.P = postures; this.S = sequences; this.depart = depart; this.repos = repos;
     this.etat = null; this.cible = this.P[repos]; this.seq = null; this.opt = {}; this.t = 0;
     this.mainsMonde = [new THREE.Vector3(), new THREE.Vector3()];
@@ -180,6 +182,12 @@ export class Gestes {
       const loc = e.pieds[i].clone(); v.racine.localToWorld(loc); v.bassin.worldToLocal(loc);
       ik(j.haut, j.bas, loc, L_JAMBE, 1, c.genou ? new THREE.Vector3(j.s * c.genou[0], c.genou[1], c.genou[2]).normalize() : new THREE.Vector3(j.s * 0.15, 0.2, 1).normalize());
       this.piedsMonde[i].copy(e.pieds[i]); v.racine.localToWorld(this.piedsMonde[i]);
+      // la cheville : 0 = pied à angle droit ; positif = le pied s'étend dans le prolongement de la jambe (à genoux)
+      if (!e.cheville) e.cheville = [0, 0];
+      _p.set(0, 0, 1);
+      if (c.piedsPlats) { j.haut.updateMatrixWorld(true); _p.transformDirection(j.bas.matrixWorld).transformDirection(_inv.copy(v.racine.matrixWorld).invert()); }   // le « devant » du pied, dans le repère du personnage
+      e.cheville[i] = lisse(e.cheville[i], cibleCheville(c, i, _p.y, _p.z), k);
+      if (j.cheville) j.cheville.rotation.set(e.cheville[i], 0, 0);
     }
 
     // les mains (bras : épaule → coude → main)
@@ -199,5 +207,6 @@ export class Gestes {
       ik(b.haut, b.bas, loc, L_BRAS, -1, new THREE.Vector3(b.s * 0.8, -0.6, -0.25).normalize());
       this.mainsMonde[i].copy(e.mains[i]); v.racine.localToWorld(this.mainsMonde[i]);
     }
+    majIndex(v.bras[0].index, e, c, k);   // l'index levé (tachahhoud), main droite
   }
 }

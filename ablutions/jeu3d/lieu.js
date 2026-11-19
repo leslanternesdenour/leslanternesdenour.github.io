@@ -1,7 +1,7 @@
 // La cour des ablutions : sol dallé, mur décoré, robinets en cuivre, tabourets de pierre, rigole d'eau, plantes et lanternes.
 // Tout est dessiné par le code (aucune image à télécharger).
 import * as THREE from 'three';
-import { ROBINET } from './gestes.js?v=1';
+import { ROBINET } from './gestes.js?v=2';
 
 const STATION_ECART = 2.2, NB = 3, MUR_Z = 0.64;              // le mur est à 0,64 m devant le tabouret
 export const STATIONS = Array.from({ length: NB }, (_, i) => ({ i, x: (i - (NB - 1) / 2) * STATION_ECART, z: 0 }));
