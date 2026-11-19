@@ -1,0 +1,89 @@
+/* Donner vie : animations légères (opacité et déplacement uniquement), coupées si le visiteur demande moins de mouvement. */
+.haut-scene { overflow: hidden; }
+.haut-monde { position: relative; transform-origin: 50% 100%; transform: scale(1.045); will-change: transform; }
+.vie { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
+.haut-scene .marque-entete { z-index: 4; }
+.vie > * { position: absolute; display: block; pointer-events: none; }
+
+/* lune */
+.lune-halo { width: calc(var(--s) * 1%); aspect-ratio: 1; margin-left: calc(var(--s) * -.5%); margin-top: calc(var(--s) * -.5%); border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 238, 170, .55) 0%, rgba(255, 224, 130, .2) 36%, transparent 68%); animation: v-halo 6s ease-in-out infinite alternate; }
+@keyframes v-halo { from { opacity: .55; transform: scale(.94); } to { opacity: 1; transform: scale(1.08); } }
+
+/* étoiles */
+.etoile { width: var(--t); height: var(--t); border-radius: 50%; background: #fffbe6; box-shadow: 0 0 6px 2px rgba(255, 236, 170, .85); opacity: .2; animation: v-scintille var(--d) ease-in-out infinite; }
+@keyframes v-scintille { 0%, 100% { opacity: .15; transform: scale(.7); } 50% { opacity: 1; transform: scale(1.25); } }
+
+/* lanternes et fenêtres */
+.lueur { width: calc(var(--s) * 1%); aspect-ratio: 1; margin-left: calc(var(--s) * -.5%); margin-top: calc(var(--s) * -.5%); border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 226, 140, .8) 0%, rgba(255, 176, 56, .32) 36%, transparent 70%); animation: v-vacille var(--d) linear infinite; }
+@keyframes v-vacille { 0% { opacity: .5; transform: scale(.94); } 14% { opacity: .95; } 27% { opacity: .62; transform: scale(.98); } 43% { opacity: 1; transform: scale(1.06); } 58% { opacity: .66; } 74% { opacity: .92; transform: scale(1.02); } 100% { opacity: .5; transform: scale(.94); } }
+.fenetre { width: calc(var(--s) * 1%); aspect-ratio: 1; margin-left: calc(var(--s) * -.5%); margin-top: calc(var(--s) * -.5%); border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 232, 150, .75), rgba(255, 190, 70, .2) 50%, transparent 72%); animation: v-fen var(--d) ease-in-out infinite alternate; }
+@keyframes v-fen { from { opacity: .1; } to { opacity: .85; } }
+
+/* cascade et eau */
+.cascade { overflow: hidden; border-radius: 35% 35% 20% 20%; -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 16%, #000 82%, transparent 100%); mask-image: linear-gradient(180deg, transparent 0, #000 16%, #000 82%, transparent 100%);
+  background:
+    linear-gradient(180deg, transparent 0, rgba(255, 255, 255, .42) 50%, transparent 100%) 0 0 / 100% 46% repeat-y,
+    repeating-linear-gradient(90deg, transparent 0 .22em, rgba(255, 255, 255, .22) .22em .32em, transparent .32em .62em);
+  animation: v-chute 1.1s linear infinite; }
+@keyframes v-chute { from { background-position: 0 0, 0 0; } to { background-position: 0 100%, 0 0; } }
+.cascade .brume { left: -10%; right: -10%; bottom: -4%; height: 22%; background: radial-gradient(ellipse at 50% 100%, rgba(255, 255, 255, .7), transparent 70%); animation: v-halo 2.6s ease-in-out infinite alternate; }
+.eau { border-radius: 50%; overflow: hidden; -webkit-mask-image: radial-gradient(ellipse at center, #000 40%, transparent 72%); mask-image: radial-gradient(ellipse at center, #000 40%, transparent 72%);
+  background: repeating-linear-gradient(98deg, transparent 0 22px, rgba(190, 232, 255, .22) 22px 25px, transparent 25px 60px); background-size: 60px 100%; animation: v-onde 7s linear infinite; }
+@keyframes v-onde { to { background-position: 60px 0; } }
+
+/* lucioles */
+.luciole { width: 5px; height: 5px; border-radius: 50%; background: #fff2a0; box-shadow: 0 0 8px 3px rgba(255, 218, 90, .8); opacity: .2;
+  animation: v-derive var(--v) ease-in-out infinite alternate, v-clignote var(--c) ease-in-out infinite; }
+@keyframes v-derive { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(var(--dx), var(--dy), 0); } }
+@keyframes v-clignote { 0%, 100% { opacity: .08; } 45%, 60% { opacity: .95; } }
+
+/* feuillage qui balance (copie fondue sur l'original) */
+.feuille { position: absolute; inset: 0; pointer-events: none; z-index: 0; will-change: transform;
+  -webkit-mask-image: radial-gradient(ellipse var(--rx) var(--ry) at var(--cx) var(--cy), #000 42%, transparent 100%); mask-image: radial-gradient(ellipse var(--rx) var(--ry) at var(--cx) var(--cy), #000 42%, transparent 100%); }
+.feuille img { display: block; width: 100%; height: auto; max-width: none; -webkit-mask-image: none; mask-image: none; }
+.feuille-g { transform-origin: 0 0; animation: v-bal-g 8s ease-in-out infinite alternate; }
+.feuille-d { transform-origin: 100% 0; animation: v-bal-d 9.5s ease-in-out infinite alternate; }
+@keyframes v-bal-g { from { transform: rotate(-.45deg); } to { transform: rotate(.55deg); } }
+@keyframes v-bal-d { from { transform: rotate(.5deg); } to { transform: rotate(-.5deg); } }
+.vie { z-index: 2; }
+
+/* pause hors écran */
+[data-pause] *, [data-pause] { animation-play-state: paused !important; }
+
+/* logo : apparition, lumière dorée, reflet qui traverse */
+html:not(.intro-on) .haut-scene .marque-entete img { animation: v-logo-entre 1.5s cubic-bezier(.2, .7, .2, 1) both; }
+@keyframes v-logo-entre { from { opacity: 0; transform: translateY(16px) scale(.93); filter: brightness(1.6) blur(2px); } to { opacity: 1; transform: none; filter: none; } }
+.haut-scene .marque-entete { transform: translate(calc(-50% + var(--lx, 0px)), var(--ly, 0px)); }
+.haut-scene .marque-entete:hover { transform: translate(calc(-50% + var(--lx, 0px)), calc(var(--ly, 0px) - 2px)) scale(1.03); }
+.haut-scene .marque-entete::after { content: ""; position: absolute; inset: 0; pointer-events: none; -webkit-mask: url("../intro/logo-640.webp") center / contain no-repeat; mask: url("../intro/logo-640.webp") center / contain no-repeat;
+  background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, .85) 50%, transparent 60%) 120% 0 / 260% 100% no-repeat; opacity: .75; animation: v-reflet 6s ease-in-out infinite 2.6s; }
+@keyframes v-reflet { 0% { background-position: 120% 0; } 38%, 100% { background-position: -40% 0; } }
+
+/* boutons */
+.jouer::before { content: ""; position: absolute; inset: 2px; border-radius: 999px; z-index: -2; box-shadow: 0 0 56px 16px rgba(255, 196, 70, .6); animation: v-souffle 3.6s ease-in-out infinite alternate; }
+@keyframes v-souffle { from { opacity: .35; transform: scale(.985); } to { opacity: 1; transform: scale(1.03); } }
+.b3d-yt .logo-yt { transition: transform .25s ease; }
+.b3d-yt:hover .logo-yt { transform: scale(1.12) rotate(-4deg); }
+.b3d-or { transform-style: preserve-3d; }
+
+/* village : lumières et lucioles par-dessus l'illustration */
+.carte-image { overflow: hidden; }
+.carte-vie { position: absolute; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
+.carte-vie > * { position: absolute; display: block; }
+.lueur-v { border-radius: 50%; background: radial-gradient(circle, rgba(255, 228, 140, .85) 0%, rgba(255, 176, 56, .3) 40%, transparent 70%); animation: v-vacille var(--d) linear infinite; }
+
+/* apparitions au défilement (jamais appliquées à ce qui est déjà visible) */
+.rev { opacity: 0; transform: translateY(26px) scale(.98); transition: opacity .75s ease, transform .75s cubic-bezier(.2, .7, .2, 1); transition-delay: calc(var(--i, 0) * 90ms); }
+.rev.vu { opacity: 1; transform: none; }
+.carte { transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease; }
+.carte:hover { box-shadow: 0 16px 34px rgba(0, 0, 0, .42), 0 0 22px rgba(245, 185, 66, .18); }
+
+@media (prefers-reduced-motion: reduce) {
+  .vie, .carte-vie, .feuille { display: none !important; }
+  .haut-monde { transform: none !important; will-change: auto; }
+  .rev { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .jouer::before, .haut-scene .marque-entete::after, html:not(.intro-on) .haut-scene .marque-entete img { animation: none !important; }
+}
