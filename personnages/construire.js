@@ -102,7 +102,17 @@ export function construirePersonnage(genre) {
     piece('bonnet_bande', new THREE.TorusGeometry(0.214 * Math.sin(Math.PI * 0.3), 0.01, 8, 48), or, [0, 0.012 + 0.214 * Math.cos(Math.PI * 0.3), -0.012], [Math.PI / 2, 0, 0]);
   } else {
     const voile = matiere('#f2e9d6', 0.9), bord = matiere('#c9b48a', 0.85);
-    piece('hijab', plis(new THREE.SphereGeometry(0.218, 44, 30, Math.PI / 2 + 0.85, Math.PI * 2 - 1.7, 0, Math.PI * 0.72), 0.03, 6, 0.05), voile, [0, -0.005, -0.008]);
+    // le voile couvre toute la tête ; on retire seulement l'ouverture du visage (une ellipse devant, du front au menton)
+    // les triangles entièrement dans l'ouverture disparaissent ; les sommets qui dépassent sont ramenés exactement sur le bord de l'ellipse : le bord est net
+    const ouverture = (x, y, z) => z > 0.08 && (x / 0.125) ** 2 + ((y + 0.02) / 0.17) ** 2 < 1;
+    const percer = (g, dans) => {
+      const idx = g.index.array, p = g.getAttribute('position'), dedans = new Uint8Array(p.count), reste = [];
+      for (let i = 0; i < p.count; i++) dedans[i] = dans(p.getX(i), p.getY(i), p.getZ(i)) ? 1 : 0;
+      for (let i = 0; i < idx.length; i += 3) if (!(dedans[idx[i]] && dedans[idx[i + 1]] && dedans[idx[i + 2]])) reste.push(idx[i], idx[i + 1], idx[i + 2]);
+      for (let i = 0; i < p.count; i++) if (dedans[i]) { const x = p.getX(i), y = p.getY(i), k = 1 / Math.hypot(x / 0.125, (y + 0.02) / 0.17); p.setXY(i, x * k, -0.02 + (y + 0.02) * k); }
+      g.setIndex(reste); g.computeVertexNormals(); return g;
+    };
+    piece('hijab', percer(plis(new THREE.SphereGeometry(0.218, 48, 32, 0, Math.PI * 2, 0, Math.PI * 0.72), 0.03, 6, 0.05), ouverture), voile, [0, -0.005, -0.008]);
     piece('hijab_cadre', new THREE.TorusGeometry(0.172, 0.014, 10, 48, Math.PI * 1.22), bord, [0, 0, 0.055], [0, 0, -0.11 * Math.PI]);
     const epaules = new THREE.CylinderGeometry(0.115, 0.275, 0.29, 48, 8, true); epaules.translate(0, -0.145, 0);
     piece('hijab_epaules', plis(epaules, 0.045, 7, 1), voile, [0, 0.52, 0.0], [0, 0, 0], sq.buste, [1, 1, 0.86]);

@@ -51,6 +51,27 @@ test("la robe de la fille descend plus bas que la tunique du garçon ; l'index e
   for (const n of ['doigts_d', 'doigts_g', 'pouce_d', 'pouce_g']) assert.ok(noms.includes(n), 'manque ' + n);
 });
 
+test("le hijab couvre le haut du front (aucun trou au-dessus de la tête) mais laisse le visage dégagé", async () => {
+  const { construirePersonnage } = await import('./construire.js');
+  const THREE = await import('three');
+  const p = construirePersonnage('fille'); p.racine.updateMatrixWorld(true);
+  let hijab = null; p.racine.traverse(o => { if (o.name === 'hijab') hijab = o; });
+  const rc = new THREE.Raycaster();
+  const touche = (origine, dir, filtre = () => true) => { rc.set(new THREE.Vector3(...origine), new THREE.Vector3(...dir)); return rc.intersectObject(hijab, false).some(h => filtre(h.point)); };
+  for (const z of [0.04, 0.085, 0.12]) assert.ok(touche([0, 2, z], [0, -1, 0]), 'haut de la tête non couvert à z=' + z);
+  assert.ok(!touche([0, 1.27, 1], [0, 0, -1], pt => pt.z > 0.1), 'le visage doit rester visible');
+});
+
+test("le bord de l'ouverture du hijab est net : tous les sommets restent sur ou hors de l'ellipse du visage (pas de dents de scie)", async () => {
+  const { construirePersonnage } = await import('./construire.js');
+  const p = construirePersonnage('fille');
+  let hijab = null; p.racine.traverse(o => { if (o.name === 'hijab') hijab = o; });
+  const pos = hijab.geometry.getAttribute('position'), idx = hijab.geometry.index.array, utilises = new Set(idx);
+  let dedans = 0;
+  for (const i of utilises) { const x = pos.getX(i), y = pos.getY(i), z = pos.getZ(i); if (z > 0.08 && (x / 0.125) ** 2 + ((y + 0.02) / 0.17) ** 2 < 0.96) dedans++; }
+  assert.equal(dedans, 0);
+});
+
 test("la tête a une forme corrective « sourire » qui remonte les coins de la bouche, et le personnage reste sous 60 000 triangles", async () => {
   const { construirePersonnage } = await import('./construire.js');
   for (const genre of ['fille', 'garcon']) {
