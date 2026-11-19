@@ -1,0 +1,13 @@
+# En-têtes HTTP de sécurité (Cloudflare Pages). Ignoré par GitHub Pages.
+# Chaque domaine externe autorisé est réellement utilisé par le site (voir 3_ARCHITECTURE_TECHNIQUE.md § 1).
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: SAMEORIGIN
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://i.ytimg.com https://yt3.googleusercontent.com; media-src 'self' data: blob: https://cdn.islamic.network; connect-src 'self' https://cdn.jsdelivr.net https://api.alquran.cloud https://cdn.islamic.network https://www.gstatic.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com; frame-src 'self' https://www.youtube-nocookie.com; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'
+
+# Le service worker du calendrier doit toujours être relu
+/calendrier/sw.js
+  Cache-Control: no-cache

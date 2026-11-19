@@ -1,0 +1,7 @@
+dist/
+node_modules/
+.dev.vars
+.env*
+# clés de service Firebase / Stripe : ne JAMAIS les versionner
+*-service-account*.json
+cles/

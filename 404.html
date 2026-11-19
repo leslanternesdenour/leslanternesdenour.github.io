@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Page introuvable · Les Lanternes de Nour</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#191345">
+<link rel="icon" type="image/png" sizes="48x48" href="/intro/favicon-48.png">
+<style>
+:root{--nuit:#191345;--nuit-2:#241a5e;--or:#f5b942;--or-doux:#ffe3a3;--texte:#f4efff;--texte-2:#c9bfe8}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%}
+body{background:radial-gradient(120% 80% at 50% 0%,#2a1f6e 0%,var(--nuit) 60%);color:var(--texte);font:17px/1.55 Nunito,"Segoe UI",system-ui,sans-serif;display:grid;place-items:center;min-height:100vh;padding:24px;text-align:center}
+main{max-width:520px;display:grid;gap:16px;justify-items:center}
+h1{font:800 clamp(26px,6vw,36px)/1.2 Poppins,"Segoe UI",system-ui,sans-serif;margin:0}
+p{margin:0;color:var(--texte-2)}
+.lanterne{width:70px;height:96px;transform-origin:50% 0;animation:b 4.5s ease-in-out infinite}
+@keyframes b{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
+@media (prefers-reduced-motion:reduce){.lanterne{animation:none}}
+.actions{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:8px}
+a{display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:999px;font:600 16px Poppins,system-ui,sans-serif;text-decoration:none}
+.or{background:var(--or);color:#2a1d00}.ligne{border:2px solid rgba(245,185,66,.55);color:var(--texte)}
+a:focus-visible{outline:3px solid var(--or);outline-offset:3px}
+</style>
+</head>
+<body>
+<main>
+  <svg class="lanterne" viewBox="0 0 26 36" aria-hidden="true"><line x1="13" y1="0" x2="13" y2="6" stroke="#f5b942" stroke-width="1.6"/><path d="M7 8h12l2 4H5z" fill="#d9952a"/><rect x="5" y="12" width="16" height="17" rx="3" fill="#ffe3a3"/><path d="M9 12v17M13 12v17M17 12v17" stroke="#d9952a" stroke-width="1.3"/><path d="M6 29h14l-3 5H9z" fill="#d9952a"/></svg>
+  <h1>Oups, cette page s'est perdue dans le désert</h1>
+  <p>La page demandée n'existe pas ou a changé d'adresse. La lanterne te ramène sur le bon chemin.</p>
+  <div class="actions">
+    <a class="or" href="/">🏠 Retour à l'accueil</a>
+    <a class="ligne" href="/monde/">🏘️ Entrer dans le village</a>
+  </div>
+</main>
+</body>
+</html>

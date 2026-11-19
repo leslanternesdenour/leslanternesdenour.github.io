@@ -13,13 +13,15 @@ for (const [nomE, e] of Object.entries(ECRANS)) {
   const ctx = await nav.newContext({ viewport: { width: e.width, height: e.height }, isMobile: !!e.isMobile, hasTouch: !!e.hasTouch, locale: 'fr-FR' });
   await ctx.addInitScript(() => { try { localStorage.setItem('lanternes_intro', JSON.stringify({ off: 1 })); localStorage.setItem('ldn_ouverture_vue', '1'); } catch (e) {} });
   for (const p of PAGES) {
-    const page = await ctx.newPage(); const errs = [], manquants = [];
+    const page = await ctx.newPage(); const errs = [], manquants = [], csp = [];
     page.on('pageerror', x => errs.push(x.message));
+    page.on('console', m => { if (/Content Security Policy|Refused to/i.test(m.text())) csp.push(m.text().slice(0, 160)); });
     page.on('response', r => { if (r.status() >= 400 && !EXTERNE.test(r.url())) manquants.push(r.status() + ' ' + r.url().replace(BASE, '')); });
     try { await page.goto(BASE + p, { waitUntil: 'load', timeout: 20000 }); await page.waitForTimeout(3000); } catch (x) { errs.push('chargement: ' + x.message); }
     const largeur = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth).catch(() => 0);
     const visibles = await page.evaluate(() => [...document.querySelectorAll('.ecran:not(.cache) .titre-ecran')].map(x => x.textContent.trim()).join(' | ')).catch(() => '');
     t(`[${nomE}] ${p} : aucune erreur JavaScript`, errs.length === 0, errs.slice(0, 2).join(' / '));
+    t(`[${nomE}] ${p} : aucune violation de la politique de sécurité (CSP)`, csp.length === 0, csp.slice(0, 2).join(' / '));
     t(`[${nomE}] ${p} : aucun fichier local manquant`, manquants.length === 0, manquants.slice(0, 3).join(', '));
     t(`[${nomE}] ${p} : pas de défilement horizontal`, largeur <= 1, largeur > 1 ? `déborde de ${largeur}px` : '');
     if (/monde|voyage|jeu3d/.test(p)) { const bloque = await page.evaluate(() => { const c = document.getElementById('chargement'); return !!c && !c.classList.contains('cache'); }).catch(() => false);
@@ -33,7 +35,7 @@ for (const [nomE, e] of Object.entries(ECRANS)) {
 // Récompenses : données écrites au format exact des jeux, puis lecture par le chemin de code du village
 {
   const ctx = await nav.newContext(); const page = await ctx.newPage();
-  await page.goto(BASE + '/outils/tests/harnais-recompenses.html');
+  await page.goto((process.env.HARNAIS_BASE || BASE) + '/outils/tests/harnais-recompenses.html');
   await page.evaluate(() => { localStorage.clear();
     localStorage.setItem('ablutions', JSON.stringify({ g1: 3, g2: 3, g3: 2, g4: 1, learned: 1 }));
     localStorage.setItem('priere', JSON.stringify({ g1: 3, g3: 3, g4: 3, learn: 1 }));
