@@ -18,3 +18,12 @@ test("il y a aussi le profil droit, les deux trois-quarts, et des gros plans : v
   assert.ok(VUES.mains.cible[1] > 0.3 && VUES.mains.cible[1] < 0.8 && VUES.mains.distance < 1.5);
   assert.ok(VUES.pieds.cible[1] < 0.2 && VUES.pieds.distance < 1.5);
 });
+
+test("trois vues rapprochées du visage : de face, de profil et de trois-quarts, à hauteur des yeux", async () => {
+  const { VUES, positionCamera } = await import('./vues.js');
+  const f = positionCamera(VUES.visageFace), p = positionCamera(VUES.visageProfil), t = positionCamera(VUES.visageTroisQuarts);
+  for (const v of [VUES.visageFace, VUES.visageProfil, VUES.visageTroisQuarts]) assert.ok(v.distance < 1.0 && v.cible[1] > 1.2 && v.cible[1] < 1.3 && v.pitch < 0.1);
+  assert.ok(f[2] > 0.5 && Math.abs(f[0]) < 1e-9);
+  assert.ok(Math.abs(p[0]) > 0.5 && Math.abs(p[2] - VUES.visageProfil.cible[2]) < 1e-9);
+  assert.ok(t[0] > 0.2 && t[2] > 0.5);
+});

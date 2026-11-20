@@ -72,6 +72,56 @@ test("le bord de l'ouverture du hijab est net : tous les sommets restent sur ou 
   assert.equal(dedans, 0);
 });
 
+test("le visage est affiné : joues sensiblement moins larges, mâchoire qui se resserre, petit menton (plus de boule), crâne inchangé", async () => {
+  const { construirePersonnage } = await import('./construire.js');
+  for (const genre of ['fille', 'garcon']) {
+    const tete = (() => { let t = null; construirePersonnage(genre).racine.traverse(o => { if (o.name === 'tete') t = o; }); return t; })();
+    const pos = tete.geometry.getAttribute('position');
+    const demi = yRel => { let m = 0; for (let i = 0; i < pos.count; i++) if (Math.abs(pos.getY(i) - 1.265 - yRel) < 0.012) m = Math.max(m, Math.abs(pos.getX(i))); return m; };
+    assert.ok(demi(0.0) > 0.17, genre + ' : crâne trop étroit ' + demi(0));
+    assert.ok(demi(-0.06) <= 0.16, genre + ' : joues trop larges ' + demi(-0.06));
+    assert.ok(demi(-0.13) <= 0.105, genre + ' : mâchoire trop large ' + demi(-0.13));
+    assert.ok(demi(-0.17) <= 0.06, genre + ' : menton trop large ' + demi(-0.17));
+  }
+});
+
+test("les proportions du visage sont naturelles (yeux plus petits, nez à mi-chemin, petite bouche basse) et les traits sont posés sur la surface du visage", async () => {
+  const { construirePersonnage } = await import('./construire.js');
+  const THREE = await import('three');
+  for (const genre of ['fille', 'garcon']) {
+    const p = construirePersonnage(genre); p.racine.updateMatrixWorld(true);
+    const nom = {}; p.racine.traverse(o => { if (o.isMesh) nom[o.name] = o; });
+    const w = n => nom[n].getWorldPosition(new THREE.Vector3());
+    const tete = nom.tete, pos = tete.geometry.getAttribute('position');
+    let menton = 1e9; for (let i = 0; i < pos.count; i++) menton = Math.min(menton, pos.getY(i));
+    const yO = w('oeil_d').y, r1 = (yO - w('nez').y) / (yO - menton), r2 = (yO - w('bouche').y) / (yO - menton);
+    assert.ok(r1 > 0.36 && r1 < 0.48, genre + ' : nez à ' + r1.toFixed(2));
+    assert.ok(r2 > 0.58 && r2 < 0.7, genre + ' : bouche à ' + r2.toFixed(2));
+    assert.ok(nom.oeil_d.geometry.parameters.radius <= 0.031, 'yeux trop grands');
+    const ecart = w('oeil_g').x - w('oeil_d').x; assert.ok(ecart > 0.11 && ecart < 0.14, 'écart des yeux ' + ecart.toFixed(3));
+    assert.ok(nom.bouche.geometry.parameters.radius * 2 <= 0.06, 'bouche trop large');
+    assert.ok(nom.joue_d.geometry.parameters.radius <= 0.024, 'joues (rougeurs) trop grosses');
+    // les traits sont posés sur la peau : ni enfoncés, ni flottants
+    const surf = new THREE.Mesh(tete.geometry), rc = new THREE.Raycaster();
+    for (const n of ['nez', 'bouche', 'joue_d', 'sourcil_d']) {
+      const c = w(n); rc.set(new THREE.Vector3(c.x, c.y, 2), new THREE.Vector3(0, 0, -1));
+      const h = rc.intersectObject(surf)[0]; assert.ok(h, n + ' : hors du visage');
+      const d = c.z - h.point.z; assert.ok(d > -0.012 && d < 0.03, n + ' : à ' + d.toFixed(3) + ' de la peau');
+    }
+  }
+});
+
+test("le sourire déplace les lèvres, à la hauteur de la bouche (et pas ailleurs sur le visage)", async () => {
+  const { construirePersonnage } = await import('./construire.js');
+  const THREE = await import('three');
+  const p = construirePersonnage('fille'); p.racine.updateMatrixWorld(true);
+  const nom = {}; p.racine.traverse(o => { if (o.isMesh) nom[o.name] = o; });
+  const yBouche = nom.bouche.getWorldPosition(new THREE.Vector3()).y;
+  const pos = nom.tete.geometry.getAttribute('position'), d = nom.tete.geometry.morphAttributes.position[0];
+  let somme = 0, poids = 0; for (let i = 0; i < d.count; i++) { const m = Math.abs(d.getY(i)); somme += m * pos.getY(i); poids += m; }
+  assert.ok(Math.abs(somme / poids - yBouche) < 0.015, 'le sourire agit à ' + (somme / poids).toFixed(3) + ' au lieu de ' + yBouche.toFixed(3));
+});
+
 test("la tête a une forme corrective « sourire » qui remonte les coins de la bouche, et le personnage reste sous 60 000 triangles", async () => {
   const { construirePersonnage } = await import('./construire.js');
   for (const genre of ['fille', 'garcon']) {

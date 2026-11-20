@@ -49,13 +49,29 @@ export function construirePersonnage(genre) {
   torse.scale(epaule / 0.16, 1, 0.88); torse.computeVertexNormals();
   partie('torse', torse, tissu);
   partie('cou', tube({ chemin: [[0, 1.15, 0.005], [0, 1.22, 0.005], [0, 1.3, 0.005]], rayons: [0.052, 0.05, 0.05], os: [[J('buste'), J('buste'), 0], [J('buste'), J('tete'), 0.5], [J('tete'), J('tete'), 0]], cotes: 14 }), peau);
-  const tete = partie('tete', rigide(new THREE.SphereGeometry(0.19, 32, 24), [0, 1.265, 0.005], 'tete', [1, 1.03, 0.98]), peau);
+  // Le visage est sculpté à partir d'une sphère : au-dessus des yeux le crâne reste rond ; en dessous, le visage se resserre vers un petit menton
+  // (plus de joues gonflées), avec des pommettes douces et un léger creux dessous.
+  const modelerVisage = g => {
+    const p = g.getAttribute('position');
+    for (let i = 0; i < p.count; i++) {
+      let x = p.getX(i), y = p.getY(i), z = p.getZ(i);
+      const u = Math.min(1, Math.max(0, -y / 0.19)), f = 1 - 0.6 * u - 0.25 * u ** 3;
+      x *= f; z *= 1 - 0.08 * u;
+      const avant = Math.max(0, z) / 0.19, ax = Math.abs(x);
+      const bosse = Math.exp(-(((ax - 0.085) / 0.035) ** 2 + ((y + 0.025) / 0.035) ** 2)) * avant;
+      const creux = Math.exp(-(((ax - 0.075) / 0.04) ** 2 + ((y + 0.09) / 0.04) ** 2)) * avant;
+      const k = 1 + 0.045 * bosse - 0.03 * creux;
+      p.setXYZ(i, x * k, y * k, z * k);
+    }
+    g.computeVertexNormals(); return g;
+  };
+  const tete = partie('tete', rigide(modelerVisage(new THREE.SphereGeometry(0.19, 56, 40)), [0, 1.265, 0.005], 'tete', [1, 1.03, 0.98]), peau);
   {
     // forme corrective « sourire » : les coins de la bouche et les pommettes remontent un peu (déplacements relatifs, comme dans glTF)
     const p = tete.geometry.getAttribute('position'), d = new Float32Array(p.count * 3);
     for (let i = 0; i < p.count; i++) {
       const x = p.getX(i), y = p.getY(i) - 1.265, z = p.getZ(i) - 0.005;
-      const bouche = Math.exp(-((y + 0.075) ** 2) / 0.0012) * Math.min(1, Math.max(0, (z - 0.08) / 0.06)) * Math.min(1, Math.abs(x) / 0.05);
+      const bouche = Math.exp(-((y + 0.125) ** 2) / 0.0012) * Math.min(1, Math.max(0, (z - 0.08) / 0.06)) * Math.min(1, Math.abs(x) / 0.05);
       d[i * 3] = Math.sign(x) * 0.008 * bouche; d[i * 3 + 1] = 0.016 * bouche; d[i * 3 + 2] = 0.004 * bouche;
     }
     const cible = new THREE.Float32BufferAttribute(d, 3); cible.name = 'sourire';
@@ -67,17 +83,25 @@ export function construirePersonnage(genre) {
     const m = new THREE.Mesh(geometrie, materiau); m.name = nom; m.position.set(...p); m.rotation.set(...r); m.scale.set(...echelle); parent.add(m); return m;
   };
   const blanc = matiere('#fbf7ef', 0.3), iris = matiere(genre === 'garcon' ? '#4a2c1a' : '#3a2418', 0.3), noir = matiere('#140c0a', 0.2), rose = matiere('#f0948a', 0.7), brun = matiere('#4a3020'), levres = matiere('#b4584a', 0.5);
+  // Les traits sont posés sur la surface sculptée du visage (on lance un rayon vers la peau pour trouver sa profondeur),
+  // avec des proportions d'enfant plus grand : yeux modestes, nez à mi-chemin entre les yeux et le menton, petite bouche basse.
+  const surface = new THREE.Mesh(tete.geometry), rayon = new THREE.Raycaster();
+  const peauZ = (x, y) => { rayon.set(new THREE.Vector3(x, 1.265 + y, 2), new THREE.Vector3(0, 0, -1)); const h = rayon.intersectObject(surface)[0]; return h ? h.point.z - 0.005 : 0.15; };
+  let menton = 0; { const p = tete.geometry.getAttribute('position'); for (let i = 0; i < p.count; i++) menton = Math.min(menton, p.getY(i) - 1.265); }
+  const yOeil = -0.006, yNez = yOeil - 0.42 * (yOeil - menton), yBouche = yOeil - 0.65 * (yOeil - menton);
+  sq.yeux.position.set(0, yOeil, 0);
   for (const s of [-1, 1]) {
     const c = s < 0 ? 'd' : 'g';
-    const oeil = piece('oeil_' + c, new THREE.SphereGeometry(0.036, 20, 14), blanc, [s * 0.066, 0, 0], [0, 0, 0], sq.yeux, [1, 1.12, 0.55]);
-    piece('iris_' + c, new THREE.SphereGeometry(0.026, 18, 12), iris, [0, -0.002, 0.03], [0, 0, 0], oeil, [1, 1, 0.5]);
-    piece('pupille_' + c, new THREE.SphereGeometry(0.013, 12, 8), noir, [0, -0.002, 0.04], [0, 0, 0], oeil, [1, 1, 0.5]);
-    piece('reflet_' + c, new THREE.SphereGeometry(0.007, 8, 6), blanc, [0.01, 0.012, 0.045], [0, 0, 0], oeil);
-    piece('sourcil_' + c, new THREE.BoxGeometry(0.055, 0.011, 0.01), brun, [s * 0.065, 0.068, 0.178], [0.1, -s * 0.25, -s * 0.12]);
-    piece('joue_' + c, new THREE.SphereGeometry(0.032, 14, 10), rose, [s * 0.105, -0.055, 0.145], [0, 0, 0], sq.tete, [1.2, 0.8, 0.5]);
+    const oeil = piece('oeil_' + c, new THREE.SphereGeometry(0.029, 24, 16), blanc, [s * 0.062, 0, peauZ(0.062, yOeil) - 0.014], [0, 0, 0], sq.yeux, [1, 1.12, 0.55]);
+    piece('iris_' + c, new THREE.SphereGeometry(0.0215, 20, 14), iris, [0, -0.002, 0.026], [0, 0, 0], oeil, [1, 1, 0.5]);
+    piece('pupille_' + c, new THREE.SphereGeometry(0.0105, 12, 8), noir, [0, -0.002, 0.034], [0, 0, 0], oeil, [1, 1, 0.5]);
+    piece('reflet_' + c, new THREE.SphereGeometry(0.006, 8, 6), blanc, [0.008, 0.01, 0.04], [0, 0, 0], oeil);
+    piece('sourcil_' + c, new THREE.BoxGeometry(0.05, 0.009, 0.009), brun, [s * 0.06, yOeil + 0.047, peauZ(0.06, yOeil + 0.047) + 0.002], [0.12, -s * 0.28, -s * 0.1]);
+    piece('joue_' + c, new THREE.SphereGeometry(0.022, 14, 10), rose, [s * 0.072, yOeil - 0.052, peauZ(0.072, yOeil - 0.052) - 0.001], [0, 0, 0], sq.tete, [1.2, 0.8, 0.35]);
   }
-  piece('nez', new THREE.SphereGeometry(0.02, 14, 10), peau, [0, -0.025, 0.188], [0, 0, 0], sq.tete, [1.1, 0.9, 1]);
-  piece('bouche', new THREE.TorusGeometry(0.03, 0.006, 8, 18, Math.PI), levres, [0, -0.07, 0.176], [0.2, 0, Math.PI]);
+  piece('nez', new THREE.SphereGeometry(0.016, 16, 12), peau, [0, yNez, peauZ(0, yNez) + 0.004], [0, 0, 0], sq.tete, [1.1, 1, 1.1]);
+  const pente = Math.atan((peauZ(0, yBouche + 0.01) - peauZ(0, yBouche - 0.01)) / 0.02);
+  piece('bouche', new THREE.TorusGeometry(0.024, 0.0055, 8, 18, Math.PI), levres, [0, yBouche, peauZ(0, yBouche) + 0.002], [pente, 0, Math.PI]);
 
   // ----- cheveux et coiffe (rigides, attachés à la tête) -----
   // plis : on gonfle ou on creuse la surface, autour de l'axe vertical, selon l'angle (ondulations régulières + irrégularité)
