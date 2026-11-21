@@ -39,3 +39,4 @@ Les clips validés peuvent être branchés (après accord). Les refusés sont à
 - **Lot 8 (19 phrases)** : 18/19 validées (calendrier mb13, ms14 à ms16, mb15, mb16, mb18, ms19 à ms24, mb19 à mb24) ; **ablutions/s1 refusée de nouveau** (« alleh » au lieu d'« Allah » avec « (au nom de اللَّه) »). 3 variantes de s1 générées dans le lot 16. Cumul validé : 112 phrases.
 - **Lot 16 (variantes de ablutions/s1)** : variantes A et C validées, B refusée. **Retenue : A** (« …(au nom de اللَّهِ). »). Cumul validé : 113 phrases.
 - **Lot 9 (20 phrases)** : 18/20 validées (calendrier ms25 à ms30, mb25 à mb30, cheer0 à cheer4, l10) ; **msstar et mbstar refusées : le texte envoyé commençait par « undefined » (bug du script, corrigé)**. Régénérées dans le lot 17. Cumul validé : 131 phrases.
+- **Lot 17 (2 phrases)** : 2/2 validées — calendrier/msstar, mbstar. Cumul validé : 133 phrases.
