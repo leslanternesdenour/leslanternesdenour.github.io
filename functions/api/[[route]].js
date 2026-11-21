@@ -21,12 +21,19 @@ export function stockagePremium(env) {
 export async function onRequest({ request, env }) {
   if (!env.SESSION_SECRET || !env.FIREBASE_PROJET || !env.FIREBASE_COMPTE_SERVICE)
     return new Response(JSON.stringify({ erreur: 'comptes-non-configures' }), { status: 503, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
-  if (!base) base = baseFirestore({ projet: env.FIREBASE_PROJET, compte: JSON.parse(env.FIREBASE_COMPTE_SERVICE) });
-  const ctx = {
-    env, base,
-    auth: { verifierIdToken: (jeton, maintenant) => verifierJeton(jeton, { projet: env.FIREBASE_PROJET, type: 'id', obtenirCle: cleGoogle, maintenant }) },
-    stockage: stockagePremium(env),
-    stripe: clientStripe(env)
-  };
+  // Configuration invalide (JSON du compte de service mal collé, clé Stripe réelle refusée…) : réponse neutre, jamais de détail ni d'extrait du secret dans la réponse ou les journaux.
+  let ctx;
+  try {
+    if (!base) base = baseFirestore({ projet: env.FIREBASE_PROJET, compte: JSON.parse(env.FIREBASE_COMPTE_SERVICE) });
+    ctx = {
+      env, base,
+      auth: { verifierIdToken: (jeton, maintenant) => verifierJeton(jeton, { projet: env.FIREBASE_PROJET, type: 'id', obtenirCle: cleGoogle, maintenant }) },
+      stockage: stockagePremium(env),
+      stripe: clientStripe(env)
+    };
+  } catch (e) {
+    console.error('Configuration des secrets invalide (détail volontairement omis).');
+    return new Response(JSON.stringify({ erreur: 'configuration-invalide' }), { status: 503, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
+  }
   return traiter(request, ctx);
 }

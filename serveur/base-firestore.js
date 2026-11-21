@@ -70,7 +70,8 @@ export function baseFirestore({ projet, compte, fetcher = fetch, jeton = jetonGo
     async ecrire(col, id, data) { await appel(url(col, id), { method: 'PATCH', body: JSON.stringify({ fields: champs(data) }) }); },
     async maj(col, id, partiel) {
       const masque = Object.keys(partiel).map(k => 'updateMask.fieldPaths=' + encodeURIComponent('`' + k + '`')).join('&');
-      await appel(url(col, id) + '?currentDocument.exists=true&' + masque, { method: 'PATCH', body: JSON.stringify({ fields: champs(partiel) }) });
+      // Firestore répond 404 quand le document n'existe pas (précondition exists=true) : on lève, comme la base mémoire de référence, au lieu d'ignorer.
+      if (await appel(url(col, id) + '?currentDocument.exists=true&' + masque, { method: 'PATCH', body: JSON.stringify({ fields: champs(partiel) }) }) === null) throw new Error('document absent : ' + col + '/' + id);
     },
     async creerSiAbsent(col, id, data) {
       const r = await fetcher(url(col, id) + '?currentDocument.exists=false', { method: 'PATCH', headers: { Authorization: 'Bearer ' + await jeton(), 'Content-Type': 'application/json' }, body: JSON.stringify({ fields: champs(data) }) });

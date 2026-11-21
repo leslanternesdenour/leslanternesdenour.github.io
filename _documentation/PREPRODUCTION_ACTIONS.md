@@ -44,5 +44,5 @@ Le pack est prêt (5 zones : 5 `contenu.json` + 21 voix ; maison « Chasse aux m
 Sans R2 la préproduction fonctionne pleinement pour le gratuit, les comptes et l'administration ; les zones Premium restent fermées et la Chasse aux mots indisponible.
 
 ## Limites connues
-- Règles Firestore : « tout refusé » (le serveur passe par le compte de service) ; test exhaustif avec l'émulateur officiel Firebase non lancé ici (outil non installable sans réseau).
+- Règles Firestore « tout refusé » : testées dans l'émulateur officiel Firebase (6 profils × lecture/liste/écriture/lot/transaction, sous-collections, collectionGroup ; mutation vérifiée). Lancer : `EMULATEURS_FIREBASE=1 bash outils/tests/tout.sh` (Java requis ; outils installés hors dépôt). Même suite : base REST réelle, restauration, script du rôle Créateur (émulateur Auth).
 - Rendu 3D, vraie connexion Firebase, vrai Stripe test et R2 réel : à valider une fois A–E faits.

@@ -14,5 +14,7 @@ etape "Restauration de la base des comptes (export → age → import → API)" 
 etape "Dossier publié (aucune fuite)" bash -c 'node outils/construire.mjs >/dev/null && node outils/tests/verifier-dist.mjs | tail -1'
 etape "Aucune fuite Premium (dépôt public + dist)" bash -c 'node outils/tests/fuite-premium.mjs | tail -1; node outils/tests/fuite-premium.mjs >/dev/null'
 etape "Exercice de restauration chiffrée" bash -c 'bash outils/sauvegarde/exercice-restauration.sh | tail -1'
+etape "Secrets : configuration invalide sans fuite" bash -c 'node --test outils/tests/secrets.test.mjs 2>&1 | grep -E "^# (pass|fail)" | tr "\n" " "; echo; node --test outils/tests/secrets.test.mjs >/dev/null 2>&1'
+if [ "${EMULATEURS_FIREBASE:-0}" = 1 ]; then etape "Émulateurs officiels Firebase : règles, base REST, restauration, rôle Créateur" bash -c 'bash outils/tests/emulateurs-firebase.sh | tail -3'; fi
 if [ "${NAVIGATEUR:-0}" = 1 ]; then etape "Parcours complets dans Chrome (émulateur local)" bash -c 'bash outils/tests/parcours.sh | tail -1'; etape "Bloc 3 dans Chrome : Premium, Chasse aux mots, aperçu Créateur, ordinateur + téléphone" bash -c 'bash outils/tests/parcours-bloc3.sh | tail -1'; fi
 [ $echec -eq 0 ] && echo "TOUT EST VERT" || echo "AU MOINS UNE VÉRIFICATION A ÉCHOUÉ"; exit $echec
