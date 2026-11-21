@@ -54,6 +54,7 @@ service cloud.firestore {
 ## Étape 5 — Application web (clé publique)
 Paramètres du projet (roue dentée) → Général → « Vos applications » → **Web (`</>`)** → surnom `lanternes-de-nour-web` → **sans** Firebase Hosting → Enregistrer.
 Copiez l'objet `firebaseConfig` affiché et **envoyez-le-moi** : ces valeurs sont publiques par nature, je les inscris dans `compte/config.js`.
+Dès que je l'ai, **je vérifie moi-même** la console avec `node outils/admin/verifier-firebase.mjs` : domaines autorisés, e-mail/mot de passe, Google activé, Apple et Anonyme désactivés, règle de mot de passe, puis un vrai cycle inscription → connexion → suppression par e-mail (compte de test toujours supprimé).
 
 ## Étape 6 — Clé du serveur (la seule chose secrète)
 Paramètres du projet → **Comptes de service** → **Générer une nouvelle clé privée**. Un fichier `.json` se télécharge.
