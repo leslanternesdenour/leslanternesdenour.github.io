@@ -50,6 +50,8 @@ for (const [f, nom] of sources) {
     let t = r[iTexte], v = t, termes = [];
     for (const [re, ar] of VALIDES) v = v.replace(re, m => { compte[m.toLowerCase()] = (compte[m.toLowerCase()] || 0) + 1; return ar; });
     for (const [re, ar] of EXTRA) v = v.replace(re, ar);
+    // apostrophe collée à un mot arabe (« d'اللَّه », « qu'اللَّه ») : la voix déforme le mot (constaté sur s1) → « de اللَّه » / « que اللَّه ». Exception : ablutions/why, déjà validée à l'oreille telle quelle.
+    if (!(nom === 'jeux' && r[0] === 'ablutions' && r[1] === 'why')) v = v.replace(/\b([dD])['’‘](?=[\u0600-\u06FF])/g, '$1e ').replace(/\b(qu)['’‘](?=[\u0600-\u06FF])/gi, '$1e ');
     const sur = SURCHARGES[(nom === 'jeux' ? r[0] + '/' : 'calendrier/') + r[nom === 'jeux' ? 1 : 1]]; if (sur) { v = sur; termes.push('texte arabe du jeu / texte unique'); }
     for (const [k, re] of Object.entries(A_TESTER)) if (new RegExp(re.source, re.flags).test(t)) { termes.push(k); aTesterCount[k] = (aTesterCount[k] || 0) + 1; (aTesterEx[k] ||= []).push(r[1] || r[0]); }
     total++; if (v !== t) avecArabe++; caracteres += v.length;
