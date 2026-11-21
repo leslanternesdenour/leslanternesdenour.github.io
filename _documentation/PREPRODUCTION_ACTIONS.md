@@ -6,7 +6,7 @@ Rien n'est déployé. `main`, les DNS et le site officiel ne sont pas touchés. 
 Blocs 1, 2 et 3 présents. Build `node outils/construire.mjs` → `dist/` (aucun Premium, aucune fuite) ; Functions empaquetables (55 Ko, sans module Node) ;
 sans secrets l'API répond 503 « comptes-non-configurés » et le site gratuit fonctionne comme avant ; sans R2 aucun contenu Premium n'est servi.
 
-## État au 21/11/2026
+## État au 21/11/2026 (secrets : FIREBASE_COMPTE_SERVICE et SESSION_SECRET enregistrés dans Cloudflare)
 - **A. Cloudflare Pages : FAIT.** `https://lanternes-de-nour.pages.dev` (branche `preproduction`, Git, gratuit). Vérifié en ligne : `/api/sante`, `noindex`, 404, fichiers internes en 404, aucun Premium, 6 en-têtes de sécurité (CSP incluse, 0 violation sur 18 pages).
 - **Reste à faire par le propriétaire :** Settings → Builds → *Preview branch* = **None** (aucune autre branche, dont `main`, ne doit être construite).
 - **Règle apprise :** Cloudflare ne garde qu'UN bloc par chemin dans `_headers` (le dernier). Ne jamais ajouter un second bloc `/*` : fusionner dans le bloc existant (testé dans `garde-branche.test.mjs`).
