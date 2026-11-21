@@ -98,3 +98,5 @@ Console Google Cloud (lien « Gérer… » depuis Firebase) → API et services 
 > Clé du serveur : coller le contenu COMPLET du fichier JSON, de la première accolade `{` à la dernière `}`. Sans les accolades, le site répond `configuration-invalide`. Ne jamais coller la clé dans une conversation, un e-mail ou une note ordinaire ; si cela arrive, supprimer la clé dans Google Cloud (compte de service → Clés) et en générer une nouvelle.
 
 > Clé du serveur remplacée (nouvelle clé) ; l'ancienne, exposée, est refusée par le site (`serveur/cles-revoquees.js`) et doit être supprimée dans Google Cloud (compte de service → Clés).
+
+> Astuce Cloudflare : modifier plusieurs secrets dans la même page peut en réécrire un autre. Après chaque enregistrement, relire `/api/sante` : `sessionsEtat` doit être `ok` et `firebaseCompteDeService` `true`.
