@@ -32,7 +32,7 @@ let ST={};try{ST=JSON.parse(localStorage.getItem('validation-voix')||'{}')}catch
 const sauve=()=>{try{localStorage.setItem('validation-voix',JSON.stringify(ST))}catch(e){}};
 let D=null;
 async function charger(){const [tx,...r]=await Promise.all([fetch('textes-ecoute.json').then(r=>r.json()),...['ablutions','priere'].flatMap(p=>[fetch('../../'+p+'/voix/voix-catalogue.json').then(r=>r.json()),fetch('../../'+p+'/voix/voix-ancienne.json').then(r=>r.json())])]);
- D={ablutions:{tx:tx.ablutions,nv:r[0],an:r[1]},priere:{tx:tx.priere,nv:r[2],an:r[3]}};dessiner()}
+ D={ablutions:{tx:tx.ablutions,nv:r[0],an:r[1],va:tx.variable.ablutions},priere:{tx:tx.priere,nv:r[2],an:r[3],va:tx.variable.priere}};dessiner()}
 function dessiner(){const p=jeu.value,d=D[p],f=filtre.value,L=liste;L.innerHTML='';let n=0,ok=0,ko=0;
  for(const k of Object.keys(d.nv)){const e=ST[p+'/'+k]||{};n++;if(e.v==='ok')ok++;if(e.v==='ko'||e.v==='dt')ko++;
   const pr=PRIO[p].includes(k)||(p==='priere'&&k.startsWith('d_'));
@@ -40,7 +40,7 @@ function dessiner(){const p=jeu.value,d=D[p],f=filtre.value,L=liste;L.innerHTML=
   const nv=d.nv[k],an=d.an[k],txt=d.tx[k];
   const row=document.createElement('div');row.className='row '+(e.v||'');
   row.innerHTML=`<div><span class="k">${k}</span>${pr?'<span class="pr">à écouter en priorité</span>':''} <span class="n">${nv[3]||''}</span></div>
-  <div class="t ${txt?'':'vide'}">${txt?txt.replace(/</g,'&lt;'):'(texte construit par le jeu selon la situation : compare avec l\'ancienne voix)'}</div>
+  <div class="t ${txt?'':'vide'}">${txt?txt.replace(/</g,'&lt;'):'(texte non disponible)'}</div>${d.va.includes(k)?'<div class="n">⚠ Le jeu dit plusieurs variantes avec ce seul clip : écoute si la nouvelle voix dit bien l\'une d\'elles.</div>':''}
   <div class="btns"><button data-a="nv">▶ Nouvelle voix</button><button data-a="an">▶ Ancienne voix</button></div>
   <div class="btns"><button data-v="ok" class="${e.v==='ok'?'on':''}">✓ Je valide</button><button data-v="dt" class="${e.v==='dt'?'on':''}">? Doute</button><button data-v="ko" class="${e.v==='ko'?'on':''}">✗ Je refuse</button></div>
   <input type="text" placeholder="Remarque (ex. mot mal prononcé, phrase coupée, mauvaise phrase…)" value="${(e.c||'').replace(/"/g,'&quot;')}">`;
