@@ -106,7 +106,10 @@ export function baseFirestore({ projet, compte, fetcher = fetch, jeton = jetonGo
     // Suppression d'un compte Firebase Authentication (RGPD)
     async supprimerUtilisateur(uid) {
       const r = await fetcher(`https://identitytoolkit.googleapis.com/v1/projects/${projet}/accounts:delete`, { method: 'POST', headers: { Authorization: 'Bearer ' + await jeton(), 'Content-Type': 'application/json' }, body: JSON.stringify({ localId: uid }) });
-      if (!r.ok && r.status !== 404) throw new Error('suppression du compte refusée : ' + r.status);
+      if (r.ok || r.status === 404) return;
+      // Compte déjà supprimé (reprise après une panne partielle) : Firebase répond 400 USER_NOT_FOUND. La suppression doit rester rejouable.
+      const j = await r.json().catch(() => ({})); if (r.status === 400 && /USER_NOT_FOUND/.test(JSON.stringify(j))) return;
+      throw new Error('suppression du compte refusée : ' + r.status);
     }
   };
 }

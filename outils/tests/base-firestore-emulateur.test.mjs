@@ -53,3 +53,14 @@ test('poserRoleCreateur (vraie méthode serveur) : le rôle apparaît dans le je
   assert.equal(claims(c.idToken).role, 'creator');
   await assert.rejects(nouvelle('demo-ldn').poserRoleCreateur('uid-inexistant'), /refusée/);
 });
+
+test('supprimerUtilisateur (RGPD) : le compte Firebase Authentication disparaît vraiment ; compte déjà absent = sans erreur', async () => {
+  const api = (c, b) => fetch(`http://${HA}/identitytoolkit.googleapis.com/v1/${c}?key=fake`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(b) }).then(r => r.json());
+  const u = await api('accounts:signUp', { email: 'efface@exemple.fr', password: 'motdepasse-long-1', returnSecureToken: true });
+  const b = nouvelle('demo-ldn');
+  await b.supprimerUtilisateur(u.localId);
+  const apres = await api('accounts:signInWithPassword', { email: 'efface@exemple.fr', password: 'motdepasse-long-1', returnSecureToken: true });
+  assert.ok(apres.error && /EMAIL_NOT_FOUND|INVALID_LOGIN/.test(apres.error.message), 'connexion impossible après suppression : ' + JSON.stringify(apres.error));
+  await b.supprimerUtilisateur(u.localId);                 // déjà supprimé
+  await b.supprimerUtilisateur('uid-qui-n-a-jamais-existe');
+});

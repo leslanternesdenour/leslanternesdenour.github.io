@@ -19,7 +19,11 @@ sans secrets l'API répond 503 « comptes-non-configurés » et le site gratuit 
    variables de build `NODE_VERSION=22`, `LDN_PREPROD=1`. Branches de prévisualisation : **Aucune**.
 4. Envoyez-moi l'adresse `https://….pages.dev` : je vérifie `/api/sante`, les en-têtes, la 404, et je lance les tests complets (Three.js réel).
 
-## B. Firebase (offre Spark, sans carte) — après A, ou en parallèle
+## B. Firebase — voir **GUIDE_FIREBASE.md** (pas à pas, une manipulation à la fois)
+Prêt côté dépôt : règles « tout refusé » testées dans l'émulateur officiel ; API, droits, Premium et suppression RGPD rejoués sur le **vrai Firestore** (émulateur) ; compte Créateur en un clic ; parcours de compte complet prêt (`outils/tests/parcours-reel.mjs`, supprime toujours son compte de test) ; contrôle de configuration (`outils/admin/verifier-configuration.mjs <site>`) ; CSP compatible avec le SDK Firebase (mesuré : aucune violation).
+**À faire par vous :** étapes 1 à 7 du guide. **Je fais :** tout le reste (valeurs publiques, tests réels, vérifications).
+Ancien détail (conservé pour référence) :
+## B (détail). Firebase (offre Spark, sans carte) — après A, ou en parallèle
 1. https://console.firebase.google.com → nouveau projet (sans Google Analytics) ; notez l'**identifiant du projet**.
 2. Authentication → Méthode de connexion → **E-mail/Mot de passe** (pas Identity Platform, pas de SMS). Paramètres → Domaines autorisés : ajouter `….pages.dev`.
 3. Firestore Database → Créer → **mode production**, région `eur3` (Europe). Onglet Règles → coller le contenu de `firestore.rules` (tout refusé : seul le serveur écrit) → Publier.

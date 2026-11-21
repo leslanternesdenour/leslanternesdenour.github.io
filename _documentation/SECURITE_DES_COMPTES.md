@@ -29,3 +29,9 @@ Règles :
 Firebase ne propose la double authentification (TOTP ou SMS) qu'avec l'option payante « Identity Platform ».
 Je vous présenterai le coût exact et les alternatives (par exemple une protection Cloudflare devant `/admin/`)
 avant toute décision. Rien n'est activé.
+
+
+## Compléments (21/11/2026)
+- **Suppression de compte** : rejouable (un compte Firebase déjà supprimé n'est plus une erreur) ; efface aussi le lien client Stripe ; la preuve de consentement d'achat est conservée mais détachée du compte (`uid: anonymise`). Un événement Stripe tardif pour un compte supprimé est ignoré (rien n'est recréé).
+- **Rôle Créateur** : activation en un clic réservée au compte désigné par `CREATOR_UID`, adresse vérifiée, connexion récente ; journalisée ; double verrou conservé (UID Cloudflare + rôle Firebase).
+- **Vérifié contre le vrai Firestore (émulateur officiel)** : règles, API, droits, Premium, restauration. **Non vérifié tant que Firebase n'est pas branché** : connexion avec le vrai fournisseur d'identité, envoi des e-mails de vérification, quotas réels.

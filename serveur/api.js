@@ -317,6 +317,9 @@ export async function supprimerToutesLesDonnees(ctx, uid) {
     for (const l of pg.docs) if (l.data.uid === uid || (email && l.data.email === email)) await ctx.base.maj('admin_logs', l.id, { uid: l.data.uid === uid ? 'anonymise' : l.data.uid, email: email && l.data.email === email ? null : l.data.email });
     apres = pg.suite;
   } while (apres);
+  // Stripe : le lien client → compte est effacé ; la preuve de consentement d'achat est CONSERVÉE (obligation légale, clé = identifiant de session Stripe) mais détachée du compte.
+  for (const c of await ctx.base.chercher('stripe_clients', 'uid', uid)) await ctx.base.supprimer('stripe_clients', c.id);
+  for (const c of await ctx.base.chercher('consentements_achat', 'uid', uid)) await ctx.base.maj('consentements_achat', c.id, { uid: 'anonymise' });
   await ctx.base.supprimer('droits', uid);
   await ctx.base.supprimer('abonnements', uid);
   await ctx.base.supprimer('familles', uid);
@@ -460,6 +463,8 @@ async function webhookStripe(req, ctx) {
   let uid = (o.metadata && o.metadata.uid) || o.client_reference_id || null;
   if (!uid && o.customer) { const c = await ctx.base.lire('stripe_clients', o.customer); uid = c && c.uid; }
   if (!uid) { await journal(ctx, 'stripe-sans-compte', { evenement: ev.id, type: ev.type }); return json({ ok: true }); }
+  // Compte supprimé entre-temps (événement tardif, par exemple la fin d'une période résiliée) : on n'écrit plus rien, pour ne pas recréer de données personnelles.
+  if (!(await ctx.base.lire('familles', uid))) { await journal(ctx, 'stripe-compte-supprime', { evenement: ev.id, type: ev.type }); return json({ ok: true, ignore: true }); }
   if (o.customer) await ctx.base.ecrire('stripe_clients', o.customer, { uid });
 
   if (ev.type === 'customer.subscription.created' || ev.type === 'customer.subscription.updated' || ev.type === 'customer.subscription.deleted') {

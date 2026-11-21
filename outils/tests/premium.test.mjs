@@ -4,7 +4,7 @@
 // seules la base, le stockage et Stripe sont simulés en mémoire). node --test outils/tests/api.test.mjs
 import test from 'node:test'; import assert from 'node:assert/strict';
 import { traiter, _reinitialiserCompteurs } from '../../serveur/api.js';
-import { baseMemoire } from '../../serveur/base-memoire.js';
+import { creerBase } from './base-testee.mjs';
 import { verifierJeton } from '../../serveur/jeton.js';
 import { clientStripe } from '../../serveur/stripe.js';
 import { chargerPremium, appliquerPack, ZONES_PREMIUM } from '../../voyage/js/premium.js';
@@ -27,7 +27,7 @@ const fichiers = { 'voyage/camp/contenu.json': JSON.stringify({ format: 'ldn-pac
   'maisons/mots/index.html': '<!doctype html><title>mots</title>', 'maisons/mots/mots.json': '{"mots":[]}', 'maisons/sons/jeu.js': 'export const x=1' };
 const appelsStripe = [];
 const fauxStripe = async (u, o) => { appelsStripe.push({ u, o }); return new Response(JSON.stringify(u.includes('checkout') ? { id: 'cs_test_1', url: 'https://checkout.stripe.com/c/test' } : { id: 'sub_1' }), { status: 200 }); };
-const base = baseMemoire();
+const base = creerBase();
 let lent = false;
 const baseLente = new Proxy(base, { get(t, k) { const v = t[k]; return typeof v === 'function' ? async (...a) => { if (lent && k === 'lire') await new Promise(r => setTimeout(r, 15)); return v.apply(t, a); } : v; } });
 const ctx = () => ({ env, base: baseLente, maintenant,

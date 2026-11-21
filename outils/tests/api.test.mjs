@@ -2,7 +2,7 @@
 // seules la base, le stockage et Stripe sont simulés en mémoire). node --test outils/tests/api.test.mjs
 import test from 'node:test'; import assert from 'node:assert/strict';
 import { traiter, _reinitialiserCompteurs } from '../../serveur/api.js';
-import { baseMemoire } from '../../serveur/base-memoire.js';
+import { creerBase, instantane } from './base-testee.mjs';
 import { verifierJeton } from '../../serveur/jeton.js';
 import { clientStripe } from '../../serveur/stripe.js';
 
@@ -20,7 +20,7 @@ async function jeton(uid, { email = uid + '@exemple.fr', verifie = true, role, a
 const fichiers = { 'voyage/camp/zone.json': '{"zone":"camp"}', 'maisons/sons/jeu.js': 'export const x=1', 'voyage/village/zone.json': '{}' };
 const appelsStripe = [];
 const fauxStripe = async (u, o) => { appelsStripe.push({ u, o }); return new Response(JSON.stringify(u.includes('checkout') ? { id: 'cs_test_1', url: 'https://checkout.stripe.com/c/test' } : { id: 'sub_1' }), { status: 200 }); };
-const base = baseMemoire();
+const base = creerBase();
 let lent = false;
 const baseLente = new Proxy(base, { get(t, k) { const v = t[k]; return typeof v === 'function' ? async (...a) => { if (lent && k === 'lire') await new Promise(r => setTimeout(r, 15)); return v.apply(t, a); } : v; } });
 const ctx = () => ({ env, base: baseLente, maintenant,
@@ -225,9 +225,10 @@ test('Suppression RGPD complète en cascade', async () => {
   assert.equal((await appel('DELETE', '/api/compte', { cookie: await connecter('uid-tante', { email: 'tante@exemple.fr', authAgo: 3600 }) })).j.erreur, 'reconnexion-requise');
   const r = await appel('DELETE', '/api/compte', { cookie: t });
   assert.equal(r.s, 200); assert.match(r.h.get('Set-Cookie'), /Max-Age=0/);
-  const restes = [...base._donnees.keys()].filter(k => k.includes('uid-tante'));
+  const donnees = await instantane(base);
+  const restes = Object.keys(donnees).filter(k => k.includes('uid-tante'));
   assert.deepEqual(restes, [], 'plus aucune donnée liée au compte');
-  assert.equal(JSON.stringify([...base._donnees.values()]).includes('tante@exemple.fr'), false, 'plus aucune trace de l\'adresse');
+  assert.equal(JSON.stringify(Object.values(donnees)).includes('tante@exemple.fr'), false, 'plus aucune trace de l\'adresse');
   assert.ok(base.utilisateursSupprimes.includes('uid-tante'), 'compte Firebase supprimé');
   // un abonné actif doit d'abord résilier
   await connecter('uid-abo3'); await webhook(abo('uid-abo3', 'price_pa'));
@@ -288,4 +289,23 @@ test('activation Créateur : sans CREATOR_UID configuré, personne ne peut l\'ut
 test('activation Créateur : refusée sans en-tête X-LDN (protection contre les requêtes d\'un autre site)', async () => {
   const c = await connecter(CREATEUR);
   const r = await traiter(new Request(O + '/api/createur/activer', { method: 'POST', headers: { Cookie: c, Origin: 'https://autre-site.exemple' } }), ctx()); assert.equal(r.status, 403);
+});
+
+test('Suppression RGPD et Stripe : aucun lien client conservé, preuve d\'achat détachée du compte, événement tardif sans effet', async () => {
+  const c = await connecter('uid-abo4', { email: 'abo4@exemple.fr' });
+  const s = await appel('POST', '/api/paiement/session', { cookie: c, corps: { formule: 'premium_annuel', consentements: { cgv: true, executionImmediate: true } } }); assert.equal(s.s, 200, JSON.stringify(s.j));
+  await webhook(abo('uid-abo4', 'price_pa'));
+  assert.ok(Object.keys(await instantane(base)).some(k => k.startsWith('stripe_clients/')), 'lien client créé');
+  assert.equal((await appel('POST', '/api/abonnement/resilier', { cookie: c })).s, 200);         // résilié en fin de période : suppression possible
+  assert.equal((await appel('DELETE', '/api/compte', { cookie: c })).s, 200);
+  let d = await instantane(base);
+  assert.deepEqual(Object.entries(d).filter(([k, v]) => k.startsWith('stripe_clients/') && v.uid === 'uid-abo4'), [], 'lien client effacé');
+  const achats = Object.entries(d).filter(([k]) => k.startsWith('consentements_achat/')).map(([, v]) => v);
+  assert.ok(achats.length >= 1 && achats.every(v => v.uid !== 'uid-abo4'), 'preuve d\'achat conservée mais détachée du compte');
+  // fin de période : Stripe envoie « abonnement terminé » pour un compte qui n'existe plus
+  const r = await webhook(abo('uid-abo4', 'price_pa', 'canceled'));
+  assert.equal(r.s, 200); assert.equal(r.j.ignore, true);
+  d = await instantane(base);
+  assert.deepEqual(Object.keys(d).filter(k => k.includes('uid-abo4')), [], 'rien recréé pour le compte supprimé');
+  assert.equal(JSON.stringify(Object.values(d)).includes('abo4@exemple.fr'), false);
 });
