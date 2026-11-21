@@ -35,3 +35,4 @@ Les clips validés peuvent être branchés (après accord). Les refusés sont à
 - **Lot 5 (20 phrases)** : 20/20 validées — priere/h1_5, h1_6, home, sens, d_rb, d_sj, d_th, e_taslim ; calendrier/ms1 à ms6 et mb1 à mb6.
 - **Cumul validé : 78 phrases** (lots 1 à 5, hors ablutions/s1 à réécouter dans le lot 8 et priere/e_jalsa non jugée). Restent à écouter : lots 6 à 15.
 - **Lot 6 (14 phrases)** : 13/14 validées ; **non jugée : calendrier/ms10**. Cumul validé : 91 phrases.
+- **Lot 7 (3 phrases)** : 3/3 validées — calendrier/ms17, mb17, ms18. Cumul validé : 94 phrases.
