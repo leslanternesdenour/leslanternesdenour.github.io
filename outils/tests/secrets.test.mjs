@@ -18,3 +18,17 @@ test('clé Stripe réelle refusée : 503 neutre, clé jamais répétée', async 
   const r = await appeler({ ...base, FIREBASE_COMPTE_SERVICE: JSON.stringify({ project_id: 'p', client_email: 'a@b', private_key: 'k' }), STRIPE_CLE_SECRETE: 'sk_live_' + SECRET });
   assert.equal(r.statut, 503); assert.ok(!(r.corps + r.journal).includes('SECRETXYZ'));
 });
+
+import { onRequestGet, etatConfiguration } from '../../functions/api/sante.js';
+const lire = async (env) => JSON.parse(await (await onRequestGet({ env })).text());
+test('/api/sante : état OUI/NON en préproduction, jamais une valeur ; rien en production', async () => {
+  const plein = { ENVIRONNEMENT: 'preproduction', SESSION_SECRET: 'S'.repeat(40) + 'SECRETXYZ', FIREBASE_PROJET: 'ldn', CREATOR_UID: 'UIDXYZ-123', STRIPE_CLE_SECRETE: 'sk_test_SECRETXYZ', STRIPE_SECRET_WEBHOOK: 'whsec_SECRETXYZ',
+    FIREBASE_COMPTE_SERVICE: JSON.stringify({ type: 'service_account', project_id: 'ldn', client_email: 'a@b.iam', private_key: 'SECRETXYZ' }) };
+  const j = await lire(plein); const brut = JSON.stringify(j);
+  assert.deepEqual(j.configuration, { sessions: true, firebaseProjet: true, firebaseCompteDeService: true, createurDesigne: true, stripe: 'test', stripeWebhook: true, stockagePremium: 'non' });
+  assert.ok(!brut.includes('SECRETXYZ') && !brut.includes('UIDXYZ') && !brut.includes('sk_test'), 'aucune valeur dans la réponse');
+  assert.deepEqual((await lire({ ENVIRONNEMENT: 'preproduction' })).configuration, { sessions: false, firebaseProjet: false, firebaseCompteDeService: false, createurDesigne: false, stripe: 'non', stripeWebhook: false, stockagePremium: 'non' });
+  assert.equal(etatConfiguration({ STRIPE_CLE_SECRETE: 'sk_live_x', SESSION_SECRET: 'court' }).stripe, 'cle-invalide');
+  assert.equal(etatConfiguration({ FIREBASE_COMPTE_SERVICE: '{"private_key":"x' }).firebaseCompteDeService, false);
+  assert.equal((await lire({ ENVIRONNEMENT: 'production', ...plein, ENVIRONNEMENT: 'production' })).configuration, undefined, 'rien en production');
+});

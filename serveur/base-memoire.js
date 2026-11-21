@@ -8,6 +8,7 @@ export function baseMemoire(initial = {}) {
   return {
     type: 'memoire', _donnees: d, utilisateursSupprimes: [],
     async supprimerUtilisateur(uid) { this.utilisateursSupprimes.push(uid); },
+    rolesCreateurPoses: [], async poserRoleCreateur(uid) { this.rolesCreateurPoses.push(uid); },
     async lire(col, id) { return copie(d.get(cle(col, id))); },
     async ecrire(col, id, data) { d.set(cle(col, id), copie(data)); },
     async maj(col, id, partiel) { const k = cle(col, id); if (!d.has(k)) throw new Error('document absent : ' + k); d.set(k, { ...d.get(k), ...copie(partiel) }); },

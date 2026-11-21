@@ -98,6 +98,11 @@ export function baseFirestore({ projet, compte, fetcher = fetch, jeton = jetonGo
       const res = (await appel(p + ':runQuery', { method: 'POST', body: JSON.stringify(q) })) || [];
       return res.filter(x => x.document).map(x => docVersObjet(x.document));
     },
+    // Pose le rôle « creator » (revendication personnalisée) sur un compte Firebase Authentication. Le jeton le contient à la prochaine reconnexion.
+    async poserRoleCreateur(uid) {
+      const r = await fetcher(`https://identitytoolkit.googleapis.com/v1/projects/${projet}/accounts:update`, { method: 'POST', headers: { Authorization: 'Bearer ' + await jeton(), 'Content-Type': 'application/json' }, body: JSON.stringify({ localId: uid, customAttributes: JSON.stringify({ role: 'creator' }) }) });
+      if (!r.ok) throw new Error('pose du rôle refusée : ' + r.status);
+    },
     // Suppression d'un compte Firebase Authentication (RGPD)
     async supprimerUtilisateur(uid) {
       const r = await fetcher(`https://identitytoolkit.googleapis.com/v1/projects/${projet}/accounts:delete`, { method: 'POST', headers: { Authorization: 'Bearer ' + await jeton(), 'Content-Type': 'application/json' }, body: JSON.stringify({ localId: uid }) });

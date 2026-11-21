@@ -251,3 +251,41 @@ test('Invitation : deux activations simultanées du même lien, une seule réuss
   assert.deepEqual(r.map(x => x.s).sort(), [200, 409, 409]);
   assert.equal((await base.chercher('acces_offerts', 'uid', 'uid-jumeau')).length, 1, 'un seul accès créé');
 });
+
+// ---------- activation du rôle Créateur en un clic ----------
+test('activation Créateur : seul le compte désigné par CREATOR_UID, adresse vérifiée, connexion récente ; double verrou conservé', async () => {
+  base.rolesCreateurPoses.length = 0;
+  // un inconnu, même connecté et vérifié : refusé, rien posé, et aucune proposition d'activation dans /api/moi
+  const autre = await connecter('uid-curieux');
+  assert.equal((await appel('POST', '/api/createur/activer', { cookie: autre })).s, 403);
+  assert.equal((await appel('GET', '/api/moi', { cookie: autre })).j.activationCreateur, false);
+  assert.equal((await appel('POST', '/api/createur/activer')).s, 403, 'sans session');
+  // le compte désigné mais adresse non vérifiée : refusé
+  const nv = await connecter(CREATEUR, { verifie: false });
+  assert.equal((await appel('POST', '/api/createur/activer', { cookie: nv })).j.erreur, 'adresse-non-verifiee');
+  // connexion ancienne : reconnexion demandée
+  const vieux = await connecter(CREATEUR, { authAgo: 3600 });
+  assert.equal((await appel('POST', '/api/createur/activer', { cookie: vieux })).j.erreur, 'reconnexion-requise');
+  assert.equal(base.rolesCreateurPoses.length, 0, 'rien posé jusque-là');
+  // le bon compte, avant activation : n'est PAS Créateur (le rôle manque), mais l'activation est proposée
+  const c = await connecter(CREATEUR);
+  const avant = (await appel('GET', '/api/moi', { cookie: c })).j; assert.notEqual(avant.statut, 'creator'); assert.equal(avant.activationCreateur, true);
+  assert.equal((await appel('GET', '/api/admin/comptes', { cookie: c })).s, 403);
+  const r = await appel('POST', '/api/createur/activer', { cookie: c }); assert.equal(r.s, 200); assert.equal(r.j.reconnexion, true);
+  assert.deepEqual(base.rolesCreateurPoses, [CREATEUR]);
+  // après reconnexion avec le rôle dans le jeton : Créateur, plus de proposition, activation idempotente
+  const c2 = await connecter(CREATEUR, { role: 'creator' });
+  const apres = (await appel('GET', '/api/moi', { cookie: c2 })).j; assert.equal(apres.statut, 'creator'); assert.equal(apres.activationCreateur, false);
+  assert.equal((await appel('POST', '/api/createur/activer', { cookie: c2 })).j.deja, true); assert.equal(base.rolesCreateurPoses.length, 1);
+  // le journal garde la trace
+  const log = (await base.lister('admin_logs', { limite: 500 })).docs.filter(d => d.data.action === 'role-createur-pose'); assert.equal(log.length, 1);
+});
+test('activation Créateur : sans CREATOR_UID configuré, personne ne peut l\'utiliser', async () => {
+  const avant = env.CREATOR_UID; env.CREATOR_UID = '';
+  try { const c = await connecter('uid-quelconque'); assert.equal((await appel('POST', '/api/createur/activer', { cookie: c })).s, 403); assert.equal((await appel('GET', '/api/moi', { cookie: c })).j.activationCreateur, false); }
+  finally { env.CREATOR_UID = avant; }
+});
+test('activation Créateur : refusée sans en-tête X-LDN (protection contre les requêtes d\'un autre site)', async () => {
+  const c = await connecter(CREATEUR);
+  const r = await traiter(new Request(O + '/api/createur/activer', { method: 'POST', headers: { Cookie: c, Origin: 'https://autre-site.exemple' } }), ctx()); assert.equal(r.status, 403);
+});

@@ -5,7 +5,11 @@ import { baseFirestore } from '../../serveur/base-firestore.js';
 import { baseMemoire } from '../../serveur/base-memoire.js';
 import { exporter, importer, comparer } from '../sauvegarde/restauration.mjs';
 const H = process.env.FIRESTORE_EMULATOR_HOST || '127.0.0.1:8089';
-const fetcher = (u, o) => { assert.ok(u.startsWith('https://firestore.googleapis.com/')); return fetch(u.replace('https://firestore.googleapis.com', 'http://' + H), o); };
+const HA = process.env.FIREBASE_AUTH_EMULATOR_HOST || '127.0.0.1:9099';
+const fetcher = (u, o) => {
+  if (u.startsWith('https://identitytoolkit.googleapis.com/')) return fetch(u.replace('https://identitytoolkit.googleapis.com', 'http://' + HA + '/identitytoolkit.googleapis.com'), o);
+  assert.ok(u.startsWith('https://firestore.googleapis.com/')); return fetch(u.replace('https://firestore.googleapis.com', 'http://' + H), o);
+};
 const nouvelle = (projet) => baseFirestore({ projet, compte: {}, fetcher, jeton: async () => 'owner' });
 const vider = (projet) => fetch(`http://${H}/emulator/v1/projects/${projet}/databases/(default)/documents`, { method: 'DELETE' });
 
@@ -37,4 +41,15 @@ test('restauration : export → import dans un projet vide → comparaison ident
   await assert.rejects(importer(cible, json), /non vide/, 'import refusé sur une base non vide');
   await cible.supprimer('droits', 'u1'); assert.deepEqual(comparer(json, await exporter(cible)).map(d => d.type), ['manquant'], 'une perte est détectée');
   await assert.rejects(importer(cible, { format: 'autre' }), /format/);
+});
+
+test('poserRoleCreateur (vraie méthode serveur) : le rôle apparaît dans le jeton après reconnexion ; compte inexistant refusé', async () => {
+  const api = (c, b) => fetch(`http://${HA}/identitytoolkit.googleapis.com/v1/${c}?key=fake`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(b) }).then(r => r.json());
+  const claims = t => JSON.parse(Buffer.from(t.split('.')[1], 'base64url'));
+  const u = await api('accounts:signUp', { email: 'activation@exemple.fr', password: 'motdepasse-long-1', returnSecureToken: true });
+  assert.equal(claims(u.idToken).role, undefined);
+  await nouvelle('demo-ldn').poserRoleCreateur(u.localId);
+  const c = await api('accounts:signInWithPassword', { email: 'activation@exemple.fr', password: 'motdepasse-long-1', returnSecureToken: true });
+  assert.equal(claims(c.idToken).role, 'creator');
+  await assert.rejects(nouvelle('demo-ldn').poserRoleCreateur('uid-inexistant'), /refusée/);
 });

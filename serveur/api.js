@@ -143,12 +143,30 @@ export async function traiter(req, ctx) {
     }
     if (chemin === '/api/session/fin' && m === 'POST') return json({ ok: true }, 200, { 'Set-Cookie': enteteCookie('', { secure, effacer: true }) });
 
+    // ----- activation du rôle Créateur (une fois, en un clic depuis /compte/) -----
+    // Double verrou conservé : il faut À LA FOIS l'UID dans le secret CREATOR_UID (posé par le propriétaire dans Cloudflare)
+    // et le rôle « creator » dans Firebase. Cette route pose le second, uniquement pour le compte désigné par le premier,
+    // adresse e-mail vérifiée et connexion récente. Aucun autre compte ne peut s'en servir.
+    if (chemin === '/api/createur/activer' && m === 'POST') {
+      const attendu = typeof ctx.env.CREATOR_UID === 'string' ? ctx.env.CREATOR_UID.trim() : '';
+      if (!session || !attendu || session.uid !== attendu) return erreur(403, 'reserve-createur');
+      if (tropDeTentatives('createur:' + ip, 10, 60 * 60000, ctx.maintenant)) return erreur(429, 'trop-de-tentatives');
+      if (!session.emailVerifie) return erreur(403, 'adresse-non-verifiee');
+      if (estCreateur(session.uid, session.claims, ctx.env)) return json({ ok: true, deja: true });
+      if (!connexionRecente(session, ctx.maintenant)) return erreur(401, 'reconnexion-requise');
+      if (typeof ctx.base.poserRoleCreateur !== 'function') return erreur(501, 'non-disponible');
+      await ctx.base.poserRoleCreateur(session.uid);
+      await journal(ctx, 'role-createur-pose', { uid: session.uid });
+      return json({ ok: true, reconnexion: true });
+    }
+
     // ----- qui suis-je -----
     if (chemin === '/api/moi' && m === 'GET') {
       if (!session) return json({ connecte: false, statut: 'visiteur' });
       const d = await droitsDe(ctx, session); const f = await ctx.base.lire('familles', session.uid);
       return json({ connecte: true, uid: session.uid, email: session.email, emailVerifie: session.emailVerifie, ...d, vue: vueDemandee(req, ctx, session),
-        profilsMax: d.profilsMax === Infinity ? null : d.profilsMax, illimite: d.profilsMax === Infinity, profilActif: f && f.profilActif || null });
+        profilsMax: d.profilsMax === Infinity ? null : d.profilsMax, illimite: d.profilsMax === Infinity, profilActif: f && f.profilActif || null,
+        activationCreateur: d.statut !== 'creator' && session.emailVerifie && !!String(ctx.env.CREATOR_UID || '').trim() && session.uid === String(ctx.env.CREATOR_UID).trim() });
     }
 
     // ----- catalogue (pour l'affichage : chaque contenu avec « ouvert » ou non) -----

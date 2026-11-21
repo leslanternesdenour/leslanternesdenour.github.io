@@ -109,6 +109,10 @@ input[type=text],select{width:100%;border-radius:14px;border:2px solid #3a2a7d;b
     <h2>Bonjour ! <span class="badge" id="e-statut"></span></h2>
     <p>Connecté avec <b id="e-email"></b>.</p>
     <p class="petit" id="e-offre"></p>
+    <div id="e-createur" class="choix cache">
+      <p><b>Ce compte est désigné comme Créateur.</b> Touchez le bouton une seule fois pour activer l'espace Créateur (administration et aperçu).</p>
+      <button id="createur-activer">Activer l'espace Créateur</button>
+    </div>
     <div id="e-verif" class="choix cache">
       <p><b>Adresse e-mail à valider.</b> Ouvrez le lien reçu par e-mail, puis touchez « C'est fait ».</p>
       <div class="rangee"><button class="doux" id="verif-fait">C'est fait</button><button class="doux" id="verif-renvoyer">Renvoyer le lien</button></div>
@@ -186,6 +190,7 @@ async function demarrer() {
   if (params.get('paiement') === 'ok') etat('Merci ! Le paiement (mode test) est confirmé. La formule s\'affiche dès que la banque l\'a validé.');
   $('e-email').textContent = D.email; $('e-statut').textContent = C.NOMS_STATUT[D.statut] + (D.niveau !== 'gratuit' && D.statut !== 'creator' ? ' · ' + C.NOMS_NIVEAU[D.niveau] : '');
   $('e-verif').classList.toggle('cache', !!D.emailVerifie);
+  $('e-createur').classList.toggle('cache', !D.activationCreateur);
   $('e-offre').textContent = D.statut === 'creator' ? 'Toutes les fonctions, profils illimités, aperçu des contenus en préparation.'
     : D.synchro ? 'La progression de chaque enfant est enregistrée dans le compte et se retrouve sur vos autres appareils.'
     : 'La progression reste gardée sur cet appareil (la synchronisation entre appareils fait partie de la formule Famille).';
@@ -227,6 +232,13 @@ $('f-oubli').onsubmit = e => { e.preventDefault(); occupe(e.submitter, async () 
 $('verif-fait').onclick = e => occupe(e.target, async () => { await ouvrir(await C.auth.rafraichir()); if (!D.emailVerifie) etat('L\'adresse n\'est pas encore validée. Ouvrez le lien reçu par e-mail.', true); });
 $('verif-renvoyer').onclick = e => occupe(e.target, async () => { await C.auth.renvoyerVerification(); etat('Un nouveau lien vient d\'être envoyé.'); });
 $('verif-simuler').onclick = e => occupe(e.target, async () => { await C.auth.simulerClicVerification(); etat('SIMULATION : lien « cliqué ». Touchez « C\'est fait ».'); });
+
+// ---------- activation du rôle Créateur ----------
+$('createur-activer').onclick = e => occupe(e.target, async () => {
+  await C.api('/api/createur/activer', { methode: 'POST' });
+  await ouvrir(await C.auth.rafraichir());             // nouveau jeton : il contient maintenant le rôle
+  etat(D.statut === 'creator' ? 'Espace Créateur activé.' : 'Rôle posé. Déconnectez-vous puis reconnectez-vous pour l\'activer.', D.statut !== 'creator');
+});
 
 // ---------- invitation ----------
 $('inv-activer').onclick = e => occupe(e.target, async () => {

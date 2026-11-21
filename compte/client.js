@@ -25,7 +25,7 @@ const MESSAGES = {
   'abonnement-actif': 'Un abonnement payant est déjà actif sur ce compte : rien à faire de plus.', 'deja-premium': 'Votre compte a déjà cet accès.', 'deja-abonne': 'Un abonnement est déjà actif.',
   'acces-offert-actif': 'Votre compte a déjà un accès offert : inutile de payer.', 'limite-profils': 'Nombre maximum de profils atteint pour votre formule.', 'surnom-invalide': 'Prénom ou surnom : des lettres seulement, 20 au maximum.',
   'profil-gele': 'Ce profil est en pause avec la formule actuelle.', 'paiement-non-configure': 'Le paiement n\'est pas encore ouvert.', 'comptes-non-configures': 'Les comptes ne sont pas encore ouverts.',
-  'reseau': 'Pas de connexion internet.', 'reserve-createur': 'Réservé au compte Créateur.'
+  'reseau': 'Pas de connexion internet.', 'reserve-createur': 'Réservé au compte Créateur.', 'adresse-non-verifiee': 'Validez d\'abord votre adresse e-mail (lien reçu par e-mail).', 'non-disponible': 'Fonction indisponible pour le moment.'
 };
 export const messageErreur = e => MESSAGES[(e && (e.raison || e.code)) || ''] || MESSAGES[String(e && e.message || '').replace(/^Firebase: .*\((.*)\)\.?$/, '$1')] || 'Une erreur est survenue. Réessayez.';
 export const NOMS_STATUT = { creator: 'Créateur', invite: 'Accès offert', abonne: 'Abonné', gratuit: 'Gratuit', visiteur: 'Visiteur' };

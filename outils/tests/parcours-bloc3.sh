@@ -6,4 +6,4 @@ PACK=${LDN_PREMIUM_DIR:-$(cd .. && pwd)/premium-lanternes}
 node outils/construire.mjs >/dev/null
 LDN_EMULATEUR=1 LDN_EMUL_MDP_CREATEUR=createur-local-123 LDN_PREMIUM_DIR="$PACK" node outils/serveur-preprod.mjs $PORT >/tmp/ldn-emulateur-b3.log 2>&1 & PID=$!
 trap 'kill $PID 2>/dev/null' EXIT; sleep 1.5
-PLAYWRIGHT=${PLAYWRIGHT:-/opt/npm-tools/node_modules/playwright} node outils/tests/parcours-bloc3.mjs http://localhost:$PORT
+PLAYWRIGHT=${PLAYWRIGHT:-$(node -e "try{console.log(require.resolve(\"playwright\").replace(/\\/index\\.js$/,\"\"))}catch(e){console.log(\"/opt/npm-tools/node_modules/playwright\")}")} node outils/tests/parcours-bloc3.mjs http://localhost:$PORT
