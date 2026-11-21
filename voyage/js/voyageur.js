@@ -6,6 +6,7 @@
 import * as THREE from 'three';
 import { piece, fusion, materiau, M } from './formes.js?v=3';
 import { article } from './catalogue.js?v=3';
+import { echellePan } from './pan-ceinture.js?v=1';
 
 const mat = materiau({ finesse: 2.2 });
 const B = () => new THREE.BoxGeometry(1, 1, 1);
@@ -64,15 +65,18 @@ export class Voyageur {
       const haut = new THREE.Group(); haut.position.set(s * 0.085, 0, 0); this.bassin.add(haut);
       ajoute(haut, [piece(CAP(rJ, 0.17), sous, { m: M.tissu })]);
       const bas = new THREE.Group(); bas.position.y = -0.3; haut.add(bas);
+      ajoute(bas, [piece(CAP(rJ * 0.92, 0.15), sous, { m: M.tissu })]);
+      // le pied est dans un groupe à part, articulé à la cheville (rotation 0 = pied à angle droit de la jambe, comme avant) :
+      // à genoux, on l'étend dans le prolongement de la jambe (le dessus du pied sur le sol)
+      const cheville = new THREE.Group(); cheville.position.y = -0.285; bas.add(cheville);
       const pied = [
-        piece(CAP(rJ * 0.92, 0.15), sous, { m: M.tissu }),
-        piece(SPH(0.058, 10, 8), peau, { p: [0, -0.285, 0.035], s: [0.95, 0.6, 1.45] }),
-        piece(B(), cuir, { p: [0, -0.318, 0.04], s: [0.12, 0.028, 0.23], m: M.cuir }),             // semelle
-        piece(B(), cuir2, { p: [0, -0.28, 0.07], s: [0.125, 0.02, 0.03], m: M.cuir }),              // lanière
-        piece(B(), cuir2, { p: [0, -0.27, -0.03], r: [0.5, 0, 0], s: [0.122, 0.02, 0.03], m: M.cuir })];
-      if (piedsA && piedsA.id === 'sandales-tressees') pied.push(...[0, 1, 2].map(i => piece(B(), cuir2, { p: [0, -0.255 + i * 0.03, -0.01 - i * 0.012], s: [0.115, 0.014, 0.1], m: M.cuir })));
-      ajoute(bas, pied);
-      return { haut, bas, s };
+        piece(SPH(0.058, 10, 8), peau, { p: [0, 0, 0.035], s: [0.95, 0.6, 1.45] }),
+        piece(B(), cuir, { p: [0, -0.033, 0.04], s: [0.12, 0.028, 0.23], m: M.cuir }),             // semelle
+        piece(B(), cuir2, { p: [0, 0.005, 0.07], s: [0.125, 0.02, 0.03], m: M.cuir }),              // lanière
+        piece(B(), cuir2, { p: [0, 0.015, -0.03], r: [0.5, 0, 0], s: [0.122, 0.02, 0.03], m: M.cuir })];
+      if (piedsA && piedsA.id === 'sandales-tressees') pied.push(...[0, 1, 2].map(i => piece(B(), cuir2, { p: [0, 0.03 + i * 0.03, -0.01 - i * 0.012], s: [0.115, 0.014, 0.1], m: M.cuir })));
+      ajoute(cheville, pied);
+      return { haut, bas, cheville, s };
     });
     // ---------- le bas du vêtement (robe ou tunique) : il flotte un peu en marchant ----------
     this.jupe = new THREE.Group(); this.bassin.add(this.jupe);
@@ -106,7 +110,12 @@ export class Voyageur {
       const cc = ceintA ? ceintA.couleurs : [T.ceinture, habit2];
       p.push(piece(TOR(0.172, 0.03, Math.PI * 2, 26), cc[0], { p: [0, 0.05, 0], r: [Math.PI / 2, 0, 0], s: [1, 0.86, 1], m: ceintA && ceintA.id === 'ceinture-cuir' ? M.cuir : M.tissu }));
       if (ceintA && ceintA.id === 'ceinture-cuir') p.push(piece(B(), cc[1], { p: [0, 0.05, 0.16], s: [0.06, 0.05, 0.02] }));
-      else p.push(piece(B(), cc[0], { p: [0.07, -0.06, 0.15], r: [0.1, 0, 0.12], s: [0.04, 0.2, 0.015], m: M.tissu }), piece(B(), cc[1], { p: [0.075, -0.155, 0.152], r: [0.1, 0, 0.12], s: [0.045, 0.025, 0.017] }));
+      else {
+        // le bout de la ceinture : pièce à part, attachée au nœud ; il rétrécit quand le dos est très penché (sinon il dépasse du corps comme une tige)
+        this.pan = new THREE.Group(); this.pan.position.set(0.07, 0.05, 0.15); this.buste.add(this.pan);
+        const m = ajoute(this.pan, [piece(B(), cc[0], { p: [0, -0.11, 0], r: [0.1, 0, 0.12], s: [0.04, 0.2, 0.015], m: M.tissu }), piece(B(), cc[1], { p: [0.005, -0.205, 0.002], r: [0.1, 0, 0.12], s: [0.045, 0.025, 0.017] })]);
+        m.onBeforeRender = () => this.pan.scale.setScalar(echellePan(this.buste.rotation.x));
+      }
       if (ceintA && ceintA.id === 'ceinture-tissee') for (let i = 0; i < 10; i++) { const a = i / 10 * Math.PI * 2; p.push(piece(B(), cc[1], { p: [Math.sin(a) * 0.17, 0.05, Math.cos(a) * 0.146], r: [0, a, Math.PI / 4], s: [0.03, 0.03, 0.01] })); }
       // le voile descend sur les épaules et la poitrine (fille)
       if (f) {
@@ -159,7 +168,13 @@ export class Voyageur {
           piece(TOR(0.09, 0.012, Math.PI), mainA.couleurs[1], { p: [0, -0.3, 0.04], r: [0, Math.PI / 2, 0] }));
       }
       ajoute(bas, p);
-      return { haut, bas, s };
+      // l'index (main droite) : caché sauf pendant le tachahhoud ; il prolonge l'avant-bras, un peu relevé
+      let index = null;
+      if (s < 0) {
+        index = new THREE.Group(); index.position.set(0, -0.27, 0.01); index.rotation.x = 0; index.visible = false; bas.add(index);
+        ajoute(index, [piece(CAP(0.022, 0.065, 8), peau, { p: [0, -0.005, 0] })]);
+      }
+      return { haut, bas, index, s };
     });
     // ---------- la tête ----------
     this.tete = new THREE.Group(); this.tete.position.set(0, 0.64, 0.005); this.buste.add(this.tete);

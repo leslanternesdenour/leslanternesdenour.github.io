@@ -2,15 +2,24 @@
 // Repère du personnage : il regarde +z (la qibla). Main droite = côté x négatif.
 // Les mains et les pieds sont placés par le moteur de gestes (cinématique inverse) : genoux et coudes plient naturellement.
 
-const base = { bassinY: 0.62, bassinZ: 0, busteX: 0.02, busteY: 0, teteX: 0.14, teteY: 0, teteZ: 0, robe: true,
-  pieds: { d: [-0.09, 0.033, 0], g: [0.09, 0.033, 0] },
+// piedsPlats : les pieds restent à plat sur le sol (la cheville compense l'inclinaison de la jambe) ; la cheville est à 6 cm du sol (hauteur de la semelle)
+const base = { bassinY: 0.62, bassinZ: 0, busteX: 0.02, busteY: 0, teteX: 0.14, teteY: 0, teteZ: 0, robe: true, piedsPlats: true,
+  pieds: { d: [-0.09, 0.06, 0], g: [0.09, 0.06, 0] },
   mains: { ref: 'corps', d: [-0.2, 0.42, 0.03], g: [0.2, 0.42, 0.03] } };
 const P = o => ({ ...base, ...o });
 // les genoux vers l'avant et vers le bas (à genoux, assis, prosterné)
 const AGENOU = [0.1, -0.35, 1];
-// à genoux / assis : les pieds derrière, sous le corps
-const PIEDS_ASSIS = { d: [-0.1, 0.06, -0.2], g: [0.1, 0.06, -0.2] };
-const PIEDS_PROSTERNE = { d: [-0.09, 0.09, -0.27], g: [0.09, 0.09, -0.27] };
+// assis entre les deux prosternations et au tachahhoud (position « iftirâch ») : on est assis sur le pied gauche posé à plat
+// (le dessus du pied sur le sol, les orteils vers l'arrière), le pied droit dressé, les orteils au sol vers la qibla.
+// Les genoux restent au sol, devant le bassin ; les mains sont sur les cuisses, près des genoux.
+const GENOU_ASSIS = [0.1, -0.05, 1];
+const PIEDS_ASSIS = { d: [-0.1, 0.14, -0.11], g: [0.09, 0.075, -0.1] };
+const CHEVILLE_ASSIS = [0.5, 1.5];           // pied droit un peu étendu (dressé), pied gauche étendu à plat
+const MAINS_CUISSES = { ref: 'corps', d: [-0.11, 0.27, 0.12], g: [0.11, 0.27, 0.12] };
+const ASSIS = { piedsPlats: false, bassinY: 0.24, bassinZ: -0.06, busteX: 0.04, teteX: 0.16, robe: false, genou: GENOU_ASSIS, pieds: PIEDS_ASSIS, cheville: CHEVILLE_ASSIS, mains: MAINS_CUISSES };
+// transitions et prosternation : le bout des pieds au sol, les talons relevés
+const PIEDS_PROSTERNE = { d: [-0.09, 0.15, -0.15], g: [0.09, 0.15, -0.15] };
+const CHEVILLE_PROSTERNE = [0.35, 0.35];
 
 export const POSTURES = {
   // debout, les bras le long du corps, le regard vers l'endroit où ira le front
@@ -21,25 +30,22 @@ export const POSTURES = {
   mains: P({ mains: { ref: 'corps', d: [-0.035, 0.84, 0.19], g: [0.03, 0.82, 0.17] } }),
   // le roukoû‘ : le dos bien droit, les mains sur les genoux
   roukou: P({ bassinY: 0.6, bassinZ: -0.07, busteX: 1.42, teteX: -0.05, mains: { ref: 'corps', d: [-0.11, 0.33, 0.07], g: [0.11, 0.33, 0.07] },
-    pieds: { d: [-0.09, 0.033, 0.0], g: [0.09, 0.033, 0.0] } }),
+    pieds: { d: [-0.09, 0.06, 0.0], g: [0.09, 0.06, 0.0] } }),
   // les passages (pas des positions de la prière : juste pour bouger joliment)
   plie: P({ bassinY: 0.48, bassinZ: -0.06, busteX: 0.55, teteX: 0.1, robe: false, mains: { ref: 'corps', d: [-0.12, 0.36, 0.22], g: [0.12, 0.36, 0.22] } }),
-  genoux: P({ bassinY: 0.44, bassinZ: -0.02, busteX: 0.3, teteX: 0.15, robe: false, genou: AGENOU, pieds: PIEDS_PROSTERNE, mains: { ref: 'corps', d: [-0.12, 0.38, 0.22], g: [0.12, 0.38, 0.22] } }),
-  penche: P({ bassinY: 0.4, bassinZ: -0.05, busteX: 1.05, teteX: 0.25, robe: false, genou: AGENOU, pieds: PIEDS_PROSTERNE, mains: { ref: 'corps', d: [-0.17, 0.05, 0.42], g: [0.17, 0.05, 0.42] } }),
+  genoux: P({ bassinY: 0.44, bassinZ: -0.02, busteX: 0.3, teteX: 0.15, robe: false, genou: AGENOU, pieds: { d: [-0.09, 0.25, -0.12], g: [0.09, 0.25, -0.12] }, mains: { ref: 'corps', d: [-0.12, 0.38, 0.22], g: [0.12, 0.38, 0.22] } }),
+  penche: P({ piedsPlats: false, bassinY: 0.4, bassinZ: -0.05, busteX: 1.05, teteX: 0.25, robe: false, genou: AGENOU, pieds: PIEDS_PROSTERNE, cheville: CHEVILLE_PROSTERNE, mains: { ref: 'corps', d: [-0.17, 0.05, 0.42], g: [0.17, 0.05, 0.42] } }),
   // le soujoûd : le front et le nez, les deux mains, les deux genoux et le bout des pieds touchent le sol
-  soujoud: P({ bassinY: 0.43, bassinZ: -0.02, busteX: 1.92, teteX: 0.28, robe: false, genou: AGENOU, pieds: PIEDS_PROSTERNE,
-    mains: { ref: 'corps', d: [-0.16, 0.035, 0.5], g: [0.16, 0.035, 0.5] } }),
-  // assis entre les deux prosternations (et pour le tachahhoud) : assis sur les talons, les mains sur les cuisses
-  assis: P({ bassinY: 0.3, bassinZ: -0.06, busteX: 0.06, teteX: 0.18, robe: false, genou: AGENOU, pieds: PIEDS_ASSIS,
-    mains: { ref: 'corps', d: [-0.11, 0.3, 0.2], g: [0.11, 0.3, 0.2] } }),
-  // le tachahhoud : assis, la main droite un peu levée (l'index levé)
-  tachahhoud: P({ bassinY: 0.3, bassinZ: -0.06, busteX: 0.06, teteX: 0.2, robe: false, genou: AGENOU, pieds: PIEDS_ASSIS,
-    mains: { ref: 'corps', d: [-0.1, 0.36, 0.25], g: [0.11, 0.3, 0.2] } }),
+  // (les hanches plus hautes que la tête, le dos incliné ; le bout de la ceinture se replie pour ne pas dépasser)
+  soujoud: P({ piedsPlats: false, bassinY: 0.32, bassinZ: -0.05, busteX: 1.75, teteX: 0.28, robe: false, genou: [0.1, -1, 0.6], pieds: PIEDS_PROSTERNE, cheville: CHEVILLE_PROSTERNE,
+    mains: { ref: 'corps', d: [-0.16, 0.035, 0.52], g: [0.16, 0.035, 0.52] } }),
+  // assis entre les deux prosternations : assis sur le pied gauche, le pied droit dressé, les mains sur les cuisses
+  assis: P(ASSIS),
+  // le tachahhoud : la même assise ; la main gauche à plat sur la cuisse, la main droite sur la cuisse, poing fermé, l'index tendu vers la qibla
+  tachahhoud: P({ ...ASSIS, teteX: 0.18, index: true, indexX: -1.0 }),
   // le salut final : la tête tourne à droite, puis à gauche
-  salamDroite: P({ bassinY: 0.3, bassinZ: -0.06, busteX: 0.06, teteX: 0.05, teteY: -0.85, robe: false, genou: AGENOU, pieds: PIEDS_ASSIS,
-    mains: { ref: 'corps', d: [-0.11, 0.3, 0.2], g: [0.11, 0.3, 0.2] } }),
-  salamGauche: P({ bassinY: 0.3, bassinZ: -0.06, busteX: 0.06, teteX: 0.05, teteY: 0.85, robe: false, genou: AGENOU, pieds: PIEDS_ASSIS,
-    mains: { ref: 'corps', d: [-0.11, 0.3, 0.2], g: [0.11, 0.3, 0.2] } }),
+  salamDroite: P({ ...ASSIS, teteX: 0.05, teteY: -0.85 }),
+  salamGauche: P({ ...ASSIS, teteX: 0.05, teteY: 0.85 }),
   // se relever depuis le sol (pour la rak‘a suivante)
   releve: P({ bassinY: 0.5, bassinZ: 0.0, busteX: 0.6, teteX: 0.15, robe: false, mains: { ref: 'corps', d: [-0.12, 0.38, 0.24], g: [0.12, 0.38, 0.24] } })
 };
