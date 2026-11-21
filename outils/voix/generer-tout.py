@@ -26,7 +26,7 @@ num0=max([int(''.join(c for c in os.path.basename(f) if c.isdigit())) for f in g
 for i,k in enumerate(reste):lots.setdefault(num0+i//20,[]).append(k)
 for n in lots:os.makedirs(f'outils/voix/lots/lot{n}',exist_ok=True)
 jobs=[(n,k) for n,ks in lots.items() for k in ks]
-with ThreadPoolExecutor(4) as ex:res=dict(ex.map(gen,jobs))
+with ThreadPoolExecutor(5) as ex:res=dict(ex.map(gen,jobs))
 echecs=[k for k,v in res.items() if not v]
 for n,ks in lots.items():
     lot=[{'cle':k,'texte':src[k]['texte'],'texte_voix':src[k]['texte_pour_la_voix'],'fichier':res[k].split('lots/')[1],'a_tester':src[k].get('termes_a_tester','')} for k in ks if res[k]]

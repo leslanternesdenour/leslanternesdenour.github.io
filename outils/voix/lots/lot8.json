@@ -1,0 +1,142 @@
+[
+ {
+  "cle": "ablutions/s1",
+  "texte": "Dire Bismillâh. Avant de toucher l'eau, dis : « Bismillâh » (au nom d'Allah).",
+  "texte_voix": "Dire بِسْمِ اللَّهِ. Avant de toucher l'eau, dis : « بِسْمِ اللَّهِ » (au nom de اللَّه).",
+  "fichier": "lot8/ablutions-s1.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/mb13",
+  "texte": "Le soleil et la lune. Note 3 soirs de suite l'heure du coucher du soleil (l'heure du ftour) : elle change chaque jour ! Lis le verset sur le soleil et la lune.",
+  "texte_voix": "Le soleil et la lune. Note 3 soirs de suite l'heure du coucher du soleil (l'heure du ftour) : elle change chaque jour ! Lis le verset sur le soleil et la lune.",
+  "fichier": "lot8/calendrier-mb13.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/ms14",
+  "texte": "Ibrahim. Regarde l'épisode d'Ibrahim, puis joue à « recevoir des invités » : sers un verre d'eau à chaque personne de la famille.",
+  "texte_voix": "إِبْرَاهِيم. Regarde l'épisode de إِبْرَاهِيم, puis joue à « recevoir des invités » : sers un verre d'eau à chaque personne de la famille.",
+  "fichier": "lot8/calendrier-ms14.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/ms15",
+  "texte": "Dormir et se réveiller. Au coucher, dis avec un parent : « Bismika llâhoumma amoûtou wa ahyâ ».",
+  "texte_voix": "Dormir et se réveiller. Au coucher, dis avec un parent : « Bismika llâhoumma amoûtou wa ahyâ ».",
+  "fichier": "lot8/calendrier-ms15.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/mb15",
+  "texte": "Dormir et se réveiller. Apprends aussi l'invocation du réveil : « Al-hamdou lillâhi lladhî ahyânâ ba‘da mâ amâtanâ wa ilayhi n-nouchoûr ».",
+  "texte_voix": "Dormir et se réveiller. Apprends aussi l'invocation du réveil : « الْحَمْدُ لِلَّهِi lladhî ahyânâ ba‘da mâ amâtanâ wa ilayhi n-nouchoûr ».",
+  "fichier": "lot8/calendrier-mb15.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/ms16",
+  "texte": "Le sac du partage. Choisis un jouet ou un vêtement en bon état que tu n'utilises plus, pour le donner.",
+  "texte_voix": "Le sac du partage. Choisis un jouet ou un vêtement en bon état que tu n'utilises plus, pour le donner.",
+  "fichier": "lot8/calendrier-ms16.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/mb16",
+  "texte": "Le sac du partage. Trie ton placard avec un parent et prépare un sac pour une famille ou une association. Peux-tu donner aussi une chose que tu aimes encore ?",
+  "texte_voix": "Le sac du partage. Trie ton placard avec un parent et prépare un sac pour une famille ou une association. Peux-tu donner aussi une chose que tu aimes encore ?",
+  "fichier": "lot8/calendrier-mb16.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/mb18",
+  "texte": "Al-Ikhlâs. Mémorise les 4 versets de la sourate. Le Prophète (paix sur lui) a dit qu'elle équivaut à un tiers du Coran.",
+  "texte_voix": "Al-Ikhlâs. Mémorise les 4 versets de la sourate. Le Prophète (paix sur lui) a dit qu'elle équivaut à un tiers du الْقُرْآن.",
+  "fichier": "lot8/calendrier-mb18.mp3",
+  "a_tester": "Coran / Qur'an (mot français) ; sourate / Al-Fâtiha / Al-Ghâchiya"
+ },
+ {
+  "cle": "calendrier/ms19",
+  "texte": "Youssouf. Regarde l'épisode de Youssouf, puis jeu du pardon : chacun dit à l'autre « je te pardonne » avec un câlin.",
+  "texte_voix": "يُوسُف. Regarde l'épisode de يُوسُف, puis jeu du pardon : chacun dit à l'autre « je te pardonne » avec un câlin.",
+  "fichier": "lot8/calendrier-ms19.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/mb19",
+  "texte": "Youssouf. Retiens la phrase de Youssouf à ses frères : « Lâ tathrîba ‘alaykoumou l-yawm » (aucun reproche contre vous aujourd'hui). Raconte une fois où tu as pardonné.",
+  "texte_voix": "يُوسُف. Retiens la phrase de يُوسُف à ses frères : « Lâ tathrîba ‘alaykoumou l-yawm » (aucun reproche contre vous aujourd'hui). Raconte une fois où tu as pardonné.",
+  "fichier": "lot8/calendrier-mb19.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/ms20",
+  "texte": "La soirée sans écran. Une heure sans écran pour toute la famille, avec les devinettes des bonus.",
+  "texte_voix": "La soirée sans écran. Une heure sans écran pour toute la famille, avec les devinettes des bonus.",
+  "fichier": "lot8/calendrier-ms20.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/mb20",
+  "texte": "La soirée sans écran. Organise toi-même la soirée : choisis 2 jeux dans les bonus et anime-les pour la famille.",
+  "texte_voix": "La soirée sans écran. Organise toi-même la soirée : choisis 2 jeux dans les bonus et anime-les pour la famille.",
+  "fichier": "lot8/calendrier-mb20.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/ms21",
+  "texte": "Les dernières nuits. Répète avec un parent le début : « Allâhoumma innaka ‘afouwwoun ».",
+  "texte_voix": "Les dernières nuits. Répète avec un parent le début : « Allâhoumma innaka ‘afouwwoun ».",
+  "fichier": "lot8/calendrier-ms21.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/mb21",
+  "texte": "Les dernières nuits. Apprends l'invocation entière : « Allâhoumma innaka ‘afouwwoun touhibbou l-‘afwa fa‘fou ‘annî ». La Nuit du Destin est meilleure que mille mois.",
+  "texte_voix": "Les dernières nuits. Apprends l'invocation entière : « Allâhoumma innaka ‘afouwwoun touhibbou l-‘afwa fa‘fou ‘annî ». La Nuit du Destin est meilleure que mille mois.",
+  "fichier": "lot8/calendrier-mb21.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/ms22",
+  "texte": "Younous. Regarde l'épisode de Younous, puis jeu de la baleine : sous une couverture, dans le noir, dis doucement avec un parent « Lâ ilâha illâ anta ».",
+  "texte_voix": "يُونُس. Regarde l'épisode de يُونُس, puis jeu de la baleine : sous une couverture, dans le noir, dis doucement avec un parent « Lâ ilâha illâ anta ».",
+  "fichier": "lot8/calendrier-ms22.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/mb22",
+  "texte": "Younous. Apprends l'invocation entière : « Lâ ilâha illâ anta, soubhânaka, innî kountou mina dh-dhâlimîn ».",
+  "texte_voix": "يُونُس. Apprends l'invocation entière : « Lâ ilâha illâ anta, soubhânaka, innî kountou mina dh-dhâlimîn ».",
+  "fichier": "lot8/calendrier-mb22.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/ms23",
+  "texte": "Pour maman. Fais une surprise à maman : un dessin, un câlin et une petite aide (mettre la table, ranger tes chaussures).",
+  "texte_voix": "Pour maman. Fais une surprise à maman : un dessin, un câlin et une petite aide (mettre la table, ranger tes chaussures).",
+  "fichier": "lot8/calendrier-ms23.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/mb23",
+  "texte": "Pour maman. Apprends le hadith où le Prophète (paix sur lui) répond trois fois « ta mère », puis « ton père ». Fais 3 gestes pour maman aujourd'hui, et un pour papa.",
+  "texte_voix": "Pour maman. Apprends le hadith où le Prophète (paix sur lui) répond trois fois « ta mère », puis « ton père ». Fais 3 gestes pour maman aujourd'hui, et un pour papa.",
+  "fichier": "lot8/calendrier-mb23.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/ms24",
+  "texte": "La zakât al-fitr. Sois là quand un parent donne la zakât al-fitr : c'est pour que les familles pauvres fêtent l'Aïd elles aussi.",
+  "texte_voix": "La zakât al-fitr. Sois là quand un parent donne la zakât al-fitr : c'est pour que les familles pauvres fêtent l'Aïd elles aussi.",
+  "fichier": "lot8/calendrier-ms24.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/mb24",
+  "texte": "La zakât al-fitr. Elle est donnée pour chaque musulman de la famille, même les enfants, avant la prière de l'Aïd. Demande à tes parents comment la famille la donne.",
+  "texte_voix": "La zakât al-fitr. Elle est donnée pour chaque musulman de la famille, même les enfants, avant la prière de l'Aïd. Demande à tes parents comment la famille la donne.",
+  "fichier": "lot8/calendrier-mb24.mp3",
+  "a_tester": ""
+ }
+]

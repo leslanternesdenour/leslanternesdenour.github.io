@@ -1,0 +1,142 @@
+[
+ {
+  "cle": "calendrier/ms25",
+  "texte": "La nourriture. Au ftour, nomme 5 aliments sur la table et dis « Al-hamdou lillâh » pour chacun.",
+  "texte_voix": "La nourriture. Au ftour, nomme 5 aliments sur la table et dis « الْحَمْدُ لِلَّهِ » pour chacun.",
+  "fichier": "lot9/calendrier-ms25.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/mb25",
+  "texte": "La nourriture. Cherche d'où vient chaque aliment du repas (arbre, terre, animal, mer) et lis le verset : « Que l'homme regarde sa nourriture ».",
+  "texte_voix": "La nourriture. Cherche d'où vient chaque aliment du repas (arbre, terre, animal, mer) et lis le verset : « Que l'homme regarde sa nourriture ».",
+  "fichier": "lot9/calendrier-mb25.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/ms26",
+  "texte": "La carte de l'Aïd. Dessine une carte de l'Aïd pour un grand-parent, un voisin ou la maîtresse.",
+  "texte_voix": "La carte de l'Aïd. Dessine une carte de l'Aïd pour un grand-parent, un voisin ou la maîtresse.",
+  "fichier": "lot9/calendrier-ms26.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/mb26",
+  "texte": "La carte de l'Aïd. Écris un message de vœux dans la carte, avec « Taqabbala llâhou minnâ wa minkoum » (qu'Allah accepte de nous et de vous).",
+  "texte_voix": "La carte de l'Aïd. Écris un message de vœux dans la carte, avec « Taqabbala llâhou minnâ wa minkoum » (que اللَّه accepte de nous et de vous).",
+  "fichier": "lot9/calendrier-mb26.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/ms27",
+  "texte": "Le lien familial. Appelle un grand-parent, une tante ou un oncle, et dis-lui un mot appris dans le calendrier.",
+  "texte_voix": "Le lien familial. Appelle un grand-parent, une tante ou un oncle, et dis-lui un mot appris dans le calendrier.",
+  "fichier": "lot9/calendrier-ms27.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/mb27",
+  "texte": "Le lien familial. Dessine l'arbre de ta famille, puis appelle quelqu'un de la famille que tu n'as pas eu depuis longtemps.",
+  "texte_voix": "Le lien familial. Dessine l'arbre de ta famille, puis appelle quelqu'un de la famille que tu n'as pas eu depuis longtemps.",
+  "fichier": "lot9/calendrier-mb27.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/ms28",
+  "texte": "Le petit récital. Récite devant la famille ce que tu as appris (Bismillâh, début de la Fâtiha, Qoul houwa llâhou ahad). Applaudissements !",
+  "texte_voix": "Le petit récital. Récite devant la famille ce que tu as appris (بِسْمِ اللَّهِ, début de la Fâtiha, Qoul houwa llâhou ahad). Applaudissements !",
+  "fichier": "lot9/calendrier-ms28.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/mb28",
+  "texte": "Le petit récital. Récite Al-Fâtiha et Al-Ikhlâs devant la famille, puis enseigne un verset à un plus petit. « Le meilleur d'entre vous apprend le Coran et l'enseigne. »",
+  "texte_voix": "Le petit récital. Récite الْفَاتِحَة et Al-Ikhlâs devant la famille, puis enseigne un verset à un plus petit. « Le meilleur d'entre vous apprend le الْقُرْآن et l'enseigne. »",
+  "fichier": "lot9/calendrier-mb28.mp3",
+  "a_tester": "Coran / Qur'an (mot français) ; sourate / Al-Fâtiha / Al-Ghâchiya"
+ },
+ {
+  "cle": "calendrier/ms29",
+  "texte": "La veille de l'Aïd. À faire le soir où l'Aïd est annoncé. Prépare tes habits de l'Aïd et accroche la guirlande de lanternes du kit.",
+  "texte_voix": "La veille de l'Aïd. À faire le soir où l'Aïd est annoncé. Prépare tes habits de l'Aïd et accroche la guirlande de lanternes du kit.",
+  "fichier": "lot9/calendrier-ms29.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/mb29",
+  "texte": "La veille de l'Aïd. À faire le soir où l'Aïd est annoncé. Apprends le takbîr : « Allâhou akbar, Allâhou akbar, lâ ilâha illâ llâh, wa llâhou akbar, Allâhou akbar, wa lillâhi l-hamd ».",
+  "texte_voix": "La veille de l'Aïd. À faire le soir où l'Aïd est annoncé. Apprends le تَكْبِير : « اللَّهُ أَكْبَرُ, اللَّهُ أَكْبَرُ, lâ ilâha illâ llâh, wa llâhou akbar, اللَّهُ أَكْبَرُ, wa lillâhi l-hamd ».",
+  "fichier": "lot9/calendrier-mb29.mp3",
+  "a_tester": "takbîr / Allâhou akbar"
+ },
+ {
+  "cle": "calendrier/ms30",
+  "texte": "Le matin de l'Aïd. Mange quelques dattes (1, 3 ou 5) avant la prière, souhaite « Aïd moubârak » à toute la famille et reçois ton diplôme !",
+  "texte_voix": "Le matin de l'Aïd. Mange quelques dattes (1, 3 ou 5) avant la prière, souhaite « Aïd مُبَارَك » à toute la famille et reçois ton diplôme !",
+  "fichier": "lot9/calendrier-ms30.mp3",
+  "a_tester": "moubârak / Barak Allâhou fîk"
+ },
+ {
+  "cle": "calendrier/mb30",
+  "texte": "Le matin de l'Aïd. Le Prophète (paix sur lui) mangeait des dattes en nombre impair avant de sortir pour la prière de l'Aïd al-Fitr. Prends un chemin différent à l'aller et au retour.",
+  "texte_voix": "Le matin de l'Aïd. Le Prophète (paix sur lui) mangeait des dattes en nombre impair avant de sortir pour la prière de l'Aïd al-Fitr. Prends un chemin différent à l'aller et au retour.",
+  "fichier": "lot9/calendrier-mb30.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/msstar",
+  "texte": "undefined. undefined",
+  "texte_voix": "undefined. undefined",
+  "fichier": "lot9/calendrier-msstar.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/mbstar",
+  "texte": "undefined. undefined",
+  "texte_voix": "undefined. undefined",
+  "fichier": "lot9/calendrier-mbstar.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/cheer0",
+  "texte": "Bravo !",
+  "texte_voix": "Bravo !",
+  "fichier": "lot9/calendrier-cheer0.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/cheer1",
+  "texte": "Machâ'Allah !",
+  "texte_voix": "مَا شَاءَ اللَّهُ !",
+  "fichier": "lot9/calendrier-cheer1.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/cheer2",
+  "texte": "Ta lanterne brille !",
+  "texte_voix": "Ta lanterne brille !",
+  "fichier": "lot9/calendrier-cheer2.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/cheer3",
+  "texte": "Super, continue !",
+  "texte_voix": "Super, continue !",
+  "fichier": "lot9/calendrier-cheer3.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/cheer4",
+  "texte": "Bârak Allâhou fîk !",
+  "texte_voix": "بَارَكَ اللَّهُ فِيكَ !",
+  "fichier": "lot9/calendrier-cheer4.mp3",
+  "a_tester": "moubârak / Barak Allâhou fîk"
+ },
+ {
+  "cle": "calendrier/l10",
+  "texte": "Déjà 10 lanternes allumées ! Machâ'Allah !",
+  "texte_voix": "Déjà 10 lanternes allumées ! مَا شَاءَ اللَّهُ !",
+  "fichier": "lot9/calendrier-l10.mp3",
+  "a_tester": ""
+ }
+]

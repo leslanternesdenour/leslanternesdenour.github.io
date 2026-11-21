@@ -1,0 +1,142 @@
+[
+ {
+  "cle": "calendrier/qg6q",
+  "texte": "Dans quelle ville se trouve la Kaaba ?",
+  "texte_voix": "Dans quelle ville se trouve la الْكَعْبَة ?",
+  "fichier": "lot14/calendrier-qg6q.mp3",
+  "a_tester": "Kaaba"
+ },
+ {
+  "cle": "calendrier/qg6a",
+  "texte": "À La Mecque.",
+  "texte_voix": "À La Mecque.",
+  "fichier": "lot14/calendrier-qg6a.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/qg7q",
+  "texte": "Que dit-on au moment de rompre le jeûne ?",
+  "texte_voix": "Que dit-on au moment de rompre le jeûne ?",
+  "fichier": "lot14/calendrier-qg7q.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/qg7a",
+  "texte": "« Dhahaba dh-dhama'ou wa btallati l-‘ouroûq wa thabata l-ajrou in châ' Allâh. »",
+  "texte_voix": "« Dhahaba dh-dhama'ou wa btallati l-‘ouroûq wa thabata l-ajrou in châ' اللَّه. »",
+  "fichier": "lot14/calendrier-qg7a.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/qg8q",
+  "texte": "Quelqu'un éternue et dit « Al-hamdou lillâh ». Que lui dis-tu ?",
+  "texte_voix": "Quelqu'un éternue et dit « الْحَمْدُ لِلَّهِ ». Que lui dis-tu ?",
+  "fichier": "lot14/calendrier-qg8q.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/qg8a",
+  "texte": "Yarhamouka llâh. Et lui te répond : Yahdîkoumou llâhou wa youslihou bâlakoum.",
+  "texte_voix": "Yarhamouka llâh. Et lui te répond : Yahdîkoumou llâhou wa youslihou bâlakoum.",
+  "fichier": "lot14/calendrier-qg8a.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/qg9q",
+  "texte": "Quel prophète a parlé directement avec Allah ?",
+  "texte_voix": "Quel prophète a parlé directement avec اللَّه ?",
+  "fichier": "lot14/calendrier-qg9q.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/qg9a",
+  "texte": "Le prophète Moussa (paix sur lui).",
+  "texte_voix": "Le prophète مُوسَى (paix sur lui).",
+  "fichier": "lot14/calendrier-qg9a.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/w_fanous",
+  "texte": "la lanterne",
+  "texte_voix": "la lanterne",
+  "fichier": "lot14/calendrier-w_fanous.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/w_hilal",
+  "texte": "le croissant de lune",
+  "texte_voix": "le croissant de lune",
+  "fichier": "lot14/calendrier-w_hilal.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/w_masjid",
+  "texte": "la mosquée",
+  "texte_voix": "la mosquée",
+  "fichier": "lot14/calendrier-w_masjid.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/w_quran",
+  "texte": "le Coran",
+  "texte_voix": "le الْقُرْآن",
+  "fichier": "lot14/calendrier-w_quran.mp3",
+  "a_tester": "Coran / Qur'an (mot français)"
+ },
+ {
+  "cle": "calendrier/w_tamr",
+  "texte": "les dattes",
+  "texte_voix": "les dattes",
+  "fichier": "lot14/calendrier-w_tamr.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/w_sajjada",
+  "texte": "le tapis de prière",
+  "texte_voix": "le tapis de prière",
+  "fichier": "lot14/calendrier-w_sajjada.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/w_kaaba",
+  "texte": "la Kaaba",
+  "texte_voix": "la الْكَعْبَة",
+  "fichier": "lot14/calendrier-w_kaaba.mp3",
+  "a_tester": "Kaaba"
+ },
+ {
+  "cle": "calendrier/w_misbaha",
+  "texte": "le chapelet",
+  "texte_voix": "le chapelet",
+  "fichier": "lot14/calendrier-w_misbaha.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/inscription",
+  "texte": "Bienvenue ! Avant de commencer, présente-toi : ton prénom, ton âge, et si tu es un garçon ou une fille.",
+  "texte_voix": "Bienvenue ! Avant de commencer, présente-toi : ton prénom, ton âge, et si tu es un garçon ou une fille.",
+  "fichier": "lot14/calendrier-inscription.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/mem_s",
+  "texte": "Retourne les cartes et trouve les paires !",
+  "texte_voix": "Retourne les cartes et trouve les paires !",
+  "fichier": "lot14/calendrier-mem_s.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/mem_b",
+  "texte": "Trouve chaque image avec son mot en arabe !",
+  "texte_voix": "Trouve chaque image avec son mot en arabe !",
+  "fichier": "lot14/calendrier-mem_b.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/mem_win",
+  "texte": "Machâ'Allah ! Tu as trouvé toutes les paires !",
+  "texte_voix": "مَا شَاءَ اللَّهُ ! Tu as trouvé toutes les paires !",
+  "fichier": "lot14/calendrier-mem_win.mp3",
+  "a_tester": ""
+ }
+]

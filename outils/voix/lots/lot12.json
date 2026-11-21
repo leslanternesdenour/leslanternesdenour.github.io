@@ -1,0 +1,142 @@
+[
+ {
+  "cle": "calendrier/dg6q",
+  "texte": "Je suis la direction vers laquelle tous les musulmans se tournent pour prier. Qui suis-je ?",
+  "texte_voix": "Je suis la direction vers laquelle tous les musulmans se tournent pour prier. Qui suis-je ?",
+  "fichier": "lot12/calendrier-dg6q.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/dg6a",
+  "texte": "La qibla",
+  "texte_voix": "La الْقِبْلَة",
+  "fichier": "lot12/calendrier-dg6a.mp3",
+  "a_tester": "qibla"
+ },
+ {
+  "cle": "calendrier/dg7q",
+  "texte": "Je suis l'appel qui annonce l'heure de la prière. Qui suis-je ?",
+  "texte_voix": "Je suis l'appel qui annonce l'heure de la prière. Qui suis-je ?",
+  "fichier": "lot12/calendrier-dg7q.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/dg7a",
+  "texte": "L'adhân",
+  "texte_voix": "L'adhân",
+  "fichier": "lot12/calendrier-dg7a.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/dg8q",
+  "texte": "Avec moi, on lave les mains, la bouche, le visage, les bras, on passe les mains mouillées sur la tête, puis on lave les pieds, avant de prier. Qui suis-je ?",
+  "texte_voix": "Avec moi, on lave les mains, la bouche, le visage, les bras, on passe les mains mouillées sur la tête, puis on lave les pieds, avant de prier. Qui suis-je ?",
+  "fichier": "lot12/calendrier-dg8q.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/dg8a",
+  "texte": "Les ablutions",
+  "texte_voix": "Les ablutions",
+  "fichier": "lot12/calendrier-dg8a.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/dg9q",
+  "texte": "J'ai construit la Kaaba avec mon fils Ismaïl. Qui suis-je ?",
+  "texte_voix": "J'ai construit la الْكَعْبَة avec mon fils Ismaïl. Qui suis-je ?",
+  "fichier": "lot12/calendrier-dg9q.mp3",
+  "a_tester": "Kaaba"
+ },
+ {
+  "cle": "calendrier/dg9a",
+  "texte": "Le prophète Ibrahim",
+  "texte_voix": "Le prophète إِبْرَاهِيم",
+  "fichier": "lot12/calendrier-dg9a.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/qp0q",
+  "texte": "Qui nous a créés ?",
+  "texte_voix": "Qui nous a créés ?",
+  "fichier": "lot12/calendrier-qp0q.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/qp0a",
+  "texte": "Allah nous a créés, et Il a créé toutes les choses.",
+  "texte_voix": "اللَّه nous a créés, et Il a créé toutes les choses.",
+  "fichier": "lot12/calendrier-qp0a.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/qp1q",
+  "texte": "Qui est notre prophète ?",
+  "texte_voix": "Qui est notre prophète ?",
+  "fichier": "lot12/calendrier-qp1q.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/qp1a",
+  "texte": "Mouhammad (paix sur lui).",
+  "texte_voix": "مُحَمَّد (paix sur lui).",
+  "fichier": "lot12/calendrier-qp1a.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/qp2q",
+  "texte": "Quel est notre livre ?",
+  "texte_voix": "Quel est notre livre ?",
+  "fichier": "lot12/calendrier-qp2q.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/qp2a",
+  "texte": "Le Coran, la parole d'Allah.",
+  "texte_voix": "Le الْقُرْآن, la parole de اللَّه.",
+  "fichier": "lot12/calendrier-qp2a.mp3",
+  "a_tester": "Coran / Qur'an (mot français)"
+ },
+ {
+  "cle": "calendrier/qp3q",
+  "texte": "Que dit-on avant de manger ?",
+  "texte_voix": "Que dit-on avant de manger ?",
+  "fichier": "lot12/calendrier-qp3q.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/qp3a",
+  "texte": "Bismillâh.",
+  "texte_voix": "بِسْمِ اللَّهِ.",
+  "fichier": "lot12/calendrier-qp3a.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/qp4q",
+  "texte": "Avec quelle main mange-t-on ?",
+  "texte_voix": "Avec quelle main mange-t-on ?",
+  "fichier": "lot12/calendrier-qp4q.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/qp4a",
+  "texte": "Avec la main droite.",
+  "texte_voix": "Avec la main droite.",
+  "fichier": "lot12/calendrier-qp4a.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/qp5q",
+  "texte": "Que dit-on quand on éternue ?",
+  "texte_voix": "Que dit-on quand on éternue ?",
+  "fichier": "lot12/calendrier-qp5q.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/qp5a",
+  "texte": "Al-hamdou lillâh.",
+  "texte_voix": "الْحَمْدُ لِلَّهِ.",
+  "fichier": "lot12/calendrier-qp5a.mp3",
+  "a_tester": ""
+ }
+]

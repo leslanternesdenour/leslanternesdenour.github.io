@@ -30,3 +30,5 @@ Les clips validés peuvent être branchés (après accord). Les refusés sont à
 - **Lot 4 (20 phrases)** : 19/20 validées (dont priere/f_th, validée avec le texte « miséricorde d’اللَّه » : ne pas la régénérer) ; **non jugée : priere/e_jalsa** (à écouter).
 - Lots 5 à 7 générés (42 phrases), en attente d'écoute. 140 phrases restantes bloquées par la limite de crédits de la clé API (4 000), à relancer après levée de la limite.
 - Rien n'est branché dans les jeux : branchement uniquement après validation et accord du client.
+
+- **Génération complète (21/11/2026)** : les 237 phrases (68 jeux + 169 calendrier) sont générées avec la voix de la narratrice, en 15 lots, non branchées. Crédits ElevenLabs utilisés : environ 5 900 sur 126 441. Écoute en cours.

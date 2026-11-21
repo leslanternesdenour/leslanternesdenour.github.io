@@ -1,0 +1,142 @@
+[
+ {
+  "cle": "calendrier/l20",
+  "texte": "20 lanternes ! Plus que 10 !",
+  "texte_voix": "20 lanternes ! Plus que 10 !",
+  "fichier": "lot10/calendrier-l20.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/l29",
+  "texte": "Plus qu'une lanterne avant ton diplôme !",
+  "texte_voix": "Plus qu'une lanterne avant ton diplôme !",
+  "fichier": "lot10/calendrier-l29.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/fin",
+  "texte": "Félicitations ! Tu as allumé tes 30 lanternes pendant le Ramadan. Tu es une vraie lanterne de lumière !",
+  "texte_voix": "Félicitations ! Tu as allumé tes 30 lanternes pendant le رَمَضَان. Tu es une vraie lanterne de lumière !",
+  "fichier": "lot10/calendrier-fin.mp3",
+  "a_tester": "Ramadan"
+ },
+ {
+  "cle": "calendrier/debut",
+  "texte": "Ramadan moubârak ! Allume ta première lanterne ce soir.",
+  "texte_voix": "رَمَضَان مُبَارَك ! Allume ta première lanterne ce soir.",
+  "fichier": "lot10/calendrier-debut.mp3",
+  "a_tester": "Ramadan ; moubârak / Barak Allâhou fîk"
+ },
+ {
+  "cle": "calendrier/guide",
+  "texte": "Allume ta lanterne, c'est le calendrier du Ramadan des enfants de 3 à 10 ans : une petite mission chaque soir, pendant tout le mois béni.",
+  "texte_voix": "Allume ta lanterne, c'est le calendrier du رَمَضَان des enfants de 3 à 10 ans : une petite mission chaque soir, pendant tout le mois béni.",
+  "fichier": "lot10/calendrier-guide.mp3",
+  "a_tester": "Ramadan"
+ },
+ {
+  "cle": "calendrier/guide2",
+  "texte": "Comment ça marche : Présente-toi. Prénom, âge, garçon ou fille : les missions s'adaptent toutes seules (3-5 ans ou 6-10 ans). Chaque soir du Ramadan : touche la lanterne du jour et lis la mission avec tes parents. Mission réussie ? Appuie sur « J'ai réussi, j'allume ! » et regarde ta lanterne briller. Joue et regarde : devinettes, questions-réponses, memory et histoires des prophètes en vidéo. À la 30e lanterne : une grande fête et ton diplôme de lumière à imprimer !",
+  "texte_voix": "Comment ça marche : Présente-toi. Prénom, âge, garçon ou fille : les missions s'adaptent toutes seules (3-5 ans ou 6-10 ans). Chaque soir du رَمَضَان : touche la lanterne du jour et lis la mission avec tes parents. Mission réussie ? Appuie sur « J'ai réussi, j'allume ! » et regarde ta lanterne briller. Joue et regarde : devinettes, questions-réponses, memory et histoires des prophètes en vidéo. À la 30e lanterne : une grande fête et ton diplôme de lumière à imprimer !",
+  "fichier": "lot10/calendrier-guide2.mp3",
+  "a_tester": "Ramadan"
+ },
+ {
+  "cle": "calendrier/guide3",
+  "texte": "Pourquoi c'est bien : vivre le Ramadan à sa hauteur, les enfants n'ont pas besoin de jeûner pour participer, chaque bonne action compte. Prendre de bonnes habitudes : dire Bismillâh, sourire, aider, partager, pardonner. Apprendre l'islam avec des sources vérifiées (Coran et hadiths authentiques). Découvrir des mots en arabe avec leur traduction en français. Un moment en famille chaque soir, sans écran trop long et sans rien acheter. Être fier de soi en voyant ses lanternes s'allumer jour après jour.",
+  "texte_voix": "Pourquoi c'est bien : vivre le رَمَضَان à sa hauteur, les enfants n'ont pas besoin de jeûner pour participer, chaque bonne action compte. Prendre de bonnes habitudes : dire بِسْمِ اللَّهِ, sourire, aider, partager, pardonner. Apprendre l'islam avec des sources vérifiées (الْقُرْآن et hadiths authentiques). Découvrir des mots en arabe avec leur traduction en français. Un moment en famille chaque soir, sans écran trop long et sans rien acheter. Être fier de soi en voyant ses lanternes s'allumer jour après jour.",
+  "fichier": "lot10/calendrier-guide3.mp3",
+  "a_tester": "Coran / Qur'an (mot français) ; Ramadan"
+ },
+ {
+  "cle": "calendrier/guide4",
+  "texte": "Conseil aux parents : 10 minutes par soir suffisent. On encourage, on ne gronde pas : une mission oubliée se fait le lendemain. Les petits ne sont jamais obligés de jeûner.",
+  "texte_voix": "Conseil aux parents : 10 minutes par soir suffisent. On encourage, on ne gronde pas : une mission oubliée se fait le lendemain. Les petits ne sont jamais obligés de jeûner.",
+  "fichier": "lot10/calendrier-guide4.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/dp0q",
+  "texte": "Je brille dans le ciel la nuit. Quand on voit mon tout petit croissant, le Ramadan commence. Qui suis-je ?",
+  "texte_voix": "Je brille dans le ciel la nuit. Quand on voit mon tout petit croissant, le رَمَضَان commence. Qui suis-je ?",
+  "fichier": "lot10/calendrier-dp0q.mp3",
+  "a_tester": "Ramadan"
+ },
+ {
+  "cle": "calendrier/dp0a",
+  "texte": "Le croissant de lune",
+  "texte_voix": "Le croissant de lune",
+  "fichier": "lot10/calendrier-dp0a.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/dp1q",
+  "texte": "Je suis petite, marron et sucrée. On me mange pour rompre le jeûne. Qui suis-je ?",
+  "texte_voix": "Je suis petite, marron et sucrée. On me mange pour rompre le jeûne. Qui suis-je ?",
+  "fichier": "lot10/calendrier-dp1q.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/dp1a",
+  "texte": "La datte",
+  "texte_voix": "La datte",
+  "fichier": "lot10/calendrier-dp1a.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/dp2q",
+  "texte": "Je suis une petite phrase qu'on dit avant de manger. Qui suis-je ?",
+  "texte_voix": "Je suis une petite phrase qu'on dit avant de manger. Qui suis-je ?",
+  "fichier": "lot10/calendrier-dp2q.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/dp2a",
+  "texte": "Bismillâh",
+  "texte_voix": "بِسْمِ اللَّهِ",
+  "fichier": "lot10/calendrier-dp2a.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/dp3q",
+  "texte": "Je suis la maison où les musulmans prient ensemble. Qui suis-je ?",
+  "texte_voix": "Je suis la maison où les musulmans prient ensemble. Qui suis-je ?",
+  "fichier": "lot10/calendrier-dp3q.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/dp3a",
+  "texte": "La mosquée",
+  "texte_voix": "La mosquée",
+  "fichier": "lot10/calendrier-dp3a.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/dp4q",
+  "texte": "Je suis un très grand bateau. Le prophète Nouh m'a construit. Qui suis-je ?",
+  "texte_voix": "Je suis un très grand bateau. Le prophète نُوح m'a construit. Qui suis-je ?",
+  "fichier": "lot10/calendrier-dp4q.mp3",
+  "a_tester": "prophètes (Adam, Nouh, Younous…)"
+ },
+ {
+  "cle": "calendrier/dp4a",
+  "texte": "L'arche",
+  "texte_voix": "L'arche",
+  "fichier": "lot10/calendrier-dp4a.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/dp5q",
+  "texte": "Je suis un énorme poisson. Le prophète Younous est resté dans mon ventre. Qui suis-je ?",
+  "texte_voix": "Je suis un énorme poisson. Le prophète يُونُس est resté dans mon ventre. Qui suis-je ?",
+  "fichier": "lot10/calendrier-dp5q.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/dp5a",
+  "texte": "La baleine",
+  "texte_voix": "La baleine",
+  "fichier": "lot10/calendrier-dp5a.mp3",
+  "a_tester": ""
+ }
+]

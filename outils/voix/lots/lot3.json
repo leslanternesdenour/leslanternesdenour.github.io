@@ -42,13 +42,6 @@
   "a_tester": ""
  },
  {
-  "cle": "ablutions/s1",
-  "texte": "Dire Bismillâh. Avant de toucher l'eau, dis : « Bismillâh » (au nom d'Allah).",
-  "texte_voix": "Dire بِسْمِ اللَّهِ. Avant de toucher l'eau, dis : « بِسْمِ اللَّهِ » (au nom d'اللَّه).",
-  "fichier": "lot3/ablutions-s1.mp3",
-  "a_tester": ""
- },
- {
   "cle": "ablutions/s2",
   "texte": "Les mains. Lave tes deux mains jusqu'aux poignets. Frotte bien entre les doigts !",
   "texte_voix": "Les mains. Lave tes deux mains jusqu'aux poignets. Frotte bien entre les doigts !",

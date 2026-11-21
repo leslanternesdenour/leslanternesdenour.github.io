@@ -1,0 +1,142 @@
+[
+ {
+  "cle": "calendrier/qp6q",
+  "texte": "Quelqu'un te dit « As-salâmou ‘alaykoum ». Que réponds-tu ?",
+  "texte_voix": "Quelqu'un te dit « السَّلَامُ عَلَيْكُمْ ». Que réponds-tu ?",
+  "fichier": "lot13/calendrier-qp6q.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/qp6a",
+  "texte": "Wa ‘alaykoumou s-salâm.",
+  "texte_voix": "Wa ‘alaykoumou s-salâm.",
+  "fichier": "lot13/calendrier-qp6a.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/qp7q",
+  "texte": "Combien de prières fait-on chaque jour ?",
+  "texte_voix": "Combien de prières fait-on chaque jour ?",
+  "fichier": "lot13/calendrier-qp7q.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/qp7a",
+  "texte": "5 prières.",
+  "texte_voix": "5 prières.",
+  "fichier": "lot13/calendrier-qp7a.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/qp8q",
+  "texte": "Pendant le Ramadan, les grands jeûnent. Ça veut dire quoi ?",
+  "texte_voix": "Pendant le رَمَضَان, les grands jeûnent. Ça veut dire quoi ?",
+  "fichier": "lot13/calendrier-qp8q.mp3",
+  "a_tester": "Ramadan"
+ },
+ {
+  "cle": "calendrier/qp8a",
+  "texte": "Ils ne mangent pas et ne boivent pas, de l'aube jusqu'au coucher du soleil.",
+  "texte_voix": "Ils ne mangent pas et ne boivent pas, de l'aube jusqu'au coucher du soleil.",
+  "fichier": "lot13/calendrier-qp8a.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/qp9q",
+  "texte": "Quand on veut faire quelque chose demain, que dit-on ?",
+  "texte_voix": "Quand on veut faire quelque chose demain, que dit-on ?",
+  "fichier": "lot13/calendrier-qp9q.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/qp9a",
+  "texte": "In châ' Allâh.",
+  "texte_voix": "In châ' اللَّه.",
+  "fichier": "lot13/calendrier-qp9a.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/qg0q",
+  "texte": "Quels sont les 5 piliers de l'islam ?",
+  "texte_voix": "Quels sont les 5 piliers de l'islam ?",
+  "fichier": "lot13/calendrier-qg0q.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/qg0a",
+  "texte": "La chahâda, la prière, la zakât, le jeûne du Ramadan et le pèlerinage.",
+  "texte_voix": "La chahâda, la prière, la zakât, le jeûne du رَمَضَان et le pèlerinage.",
+  "fichier": "lot13/calendrier-qg0a.mp3",
+  "a_tester": "Ramadan"
+ },
+ {
+  "cle": "calendrier/qg1q",
+  "texte": "Comment s'appellent les 5 prières ?",
+  "texte_voix": "Comment s'appellent les 5 prières ?",
+  "fichier": "lot13/calendrier-qg1q.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/qg1a",
+  "texte": "Fajr, Dhohr, ‘Asr, Maghrib et ‘Ichâ'.",
+  "texte_voix": "Fajr, Dhohr, ‘Asr, Maghrib et ‘Ichâ'.",
+  "fichier": "lot13/calendrier-qg1a.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/qg2q",
+  "texte": "Combien de jours dure le Ramadan ?",
+  "texte_voix": "Combien de jours dure le رَمَضَان ?",
+  "fichier": "lot13/calendrier-qg2q.mp3",
+  "a_tester": "Ramadan"
+ },
+ {
+  "cle": "calendrier/qg2a",
+  "texte": "29 ou 30 jours. Le mois commence et finit quand on voit le croissant de lune.",
+  "texte_voix": "29 ou 30 jours. Le mois commence et finit quand on voit le croissant de lune.",
+  "fichier": "lot13/calendrier-qg2a.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/qg3q",
+  "texte": "Qui est le premier prophète ?",
+  "texte_voix": "Qui est le premier prophète ?",
+  "fichier": "lot13/calendrier-qg3q.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/qg3a",
+  "texte": "Adam (paix sur lui), le premier homme.",
+  "texte_voix": "آدَم (paix sur lui), le premier homme.",
+  "fichier": "lot13/calendrier-qg3a.mp3",
+  "a_tester": "prophètes (Adam, Nouh, Younous…)"
+ },
+ {
+  "cle": "calendrier/qg4q",
+  "texte": "Quel ange a apporté le Coran au Prophète (paix sur lui) ?",
+  "texte_voix": "Quel ange a apporté le الْقُرْآن au Prophète (paix sur lui) ?",
+  "fichier": "lot13/calendrier-qg4q.mp3",
+  "a_tester": "Coran / Qur'an (mot français)"
+ },
+ {
+  "cle": "calendrier/qg4a",
+  "texte": "L'ange Jibrîl.",
+  "texte_voix": "L'ange Jibrîl.",
+  "fichier": "lot13/calendrier-qg4a.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/qg5q",
+  "texte": "Combien y a-t-il de sourates dans le Coran ?",
+  "texte_voix": "Combien y a-t-il de sourates dans le الْقُرْآن ?",
+  "fichier": "lot13/calendrier-qg5q.mp3",
+  "a_tester": "Coran / Qur'an (mot français)"
+ },
+ {
+  "cle": "calendrier/qg5a",
+  "texte": "114 sourates.",
+  "texte_voix": "114 sourates.",
+  "fichier": "lot13/calendrier-qg5a.mp3",
+  "a_tester": ""
+ }
+]
