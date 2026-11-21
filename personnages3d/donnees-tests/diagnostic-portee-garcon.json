@@ -1,0 +1,439 @@
+{
+ "sequences": {
+  "intention": [
+   "coeur",
+   "assis"
+  ],
+  "bismillah": [
+   "pret",
+   "assis"
+  ],
+  "mains": [
+   "puiser",
+   "mainsFrotter",
+   "puiser",
+   "assis"
+  ],
+  "bouche": [
+   "puiserDroite",
+   "bouche",
+   "recracher",
+   "assis"
+  ],
+  "nez": [
+   "puiserDroite",
+   "nez",
+   "souffler",
+   "assis"
+  ],
+  "visage": [
+   "puiser",
+   "visageHaut",
+   "visageBas",
+   "assis"
+  ],
+  "brasDroit": [
+   "brasDroitPoignet",
+   "brasDroitCoude",
+   "brasDroitPoignet",
+   "assis"
+  ],
+  "brasGauche": [
+   "brasGauchePoignet",
+   "brasGaucheCoude",
+   "brasGauchePoignet",
+   "assis"
+  ],
+  "tete": [
+   "puiser",
+   "teteAvant",
+   "teteArriere",
+   "teteAvant",
+   "assis"
+  ],
+  "oreilles": [
+   "oreilles",
+   "assis"
+  ],
+  "piedDroit": [
+   "piedDroitPose",
+   "piedDroitFrotter",
+   "piedDroitCheville",
+   "piedDroitPose",
+   "assis"
+  ],
+  "piedGauche": [
+   "piedGauchePose",
+   "piedGaucheFrotter",
+   "piedGaucheCheville",
+   "piedGauchePose",
+   "assis"
+  ]
+ },
+ "diag": {
+  "assis": {
+   "ecart_mains_mm": [
+    0,
+    0
+   ],
+   "ecart_chevilles_mm": [
+    5,
+    5
+   ],
+   "point_le_plus_bas_mm": 20.6,
+   "valeurs_non_finies": 0,
+   "bassinY": 0.335,
+   "busteX": 0.12
+  },
+  "puiser": {
+   "ecart_mains_mm": [
+    0,
+    0
+   ],
+   "ecart_chevilles_mm": [
+    5,
+    5
+   ],
+   "point_le_plus_bas_mm": 20.6,
+   "valeurs_non_finies": 0,
+   "bassinY": 0.335,
+   "busteX": 0.42
+  },
+  "puiserDroite": {
+   "ecart_mains_mm": [
+    0,
+    0
+   ],
+   "ecart_chevilles_mm": [
+    5,
+    5
+   ],
+   "point_le_plus_bas_mm": 20.6,
+   "valeurs_non_finies": 0,
+   "bassinY": 0.335,
+   "busteX": 0.4
+  },
+  "mainsFrotter": {
+   "ecart_mains_mm": [
+    0,
+    0
+   ],
+   "ecart_chevilles_mm": [
+    5,
+    5
+   ],
+   "point_le_plus_bas_mm": 20.6,
+   "valeurs_non_finies": 0,
+   "bassinY": 0.335,
+   "busteX": 0.38
+  },
+  "bouche": {
+   "ecart_mains_mm": [
+    0,
+    0
+   ],
+   "ecart_chevilles_mm": [
+    5,
+    5
+   ],
+   "point_le_plus_bas_mm": 20.6,
+   "valeurs_non_finies": 0,
+   "bassinY": 0.335,
+   "busteX": 0.18
+  },
+  "recracher": {
+   "ecart_mains_mm": [
+    0,
+    0
+   ],
+   "ecart_chevilles_mm": [
+    5,
+    5
+   ],
+   "point_le_plus_bas_mm": 20.6,
+   "valeurs_non_finies": 0,
+   "bassinY": 0.335,
+   "busteX": 0.5
+  },
+  "nez": {
+   "ecart_mains_mm": [
+    0,
+    0
+   ],
+   "ecart_chevilles_mm": [
+    5,
+    5
+   ],
+   "point_le_plus_bas_mm": 20.6,
+   "valeurs_non_finies": 0,
+   "bassinY": 0.335,
+   "busteX": 0.16
+  },
+  "souffler": {
+   "ecart_mains_mm": [
+    0,
+    0
+   ],
+   "ecart_chevilles_mm": [
+    5,
+    5
+   ],
+   "point_le_plus_bas_mm": 20.6,
+   "valeurs_non_finies": 0,
+   "bassinY": 0.335,
+   "busteX": 0.45
+  },
+  "visageHaut": {
+   "ecart_mains_mm": [
+    0,
+    0
+   ],
+   "ecart_chevilles_mm": [
+    5,
+    5
+   ],
+   "point_le_plus_bas_mm": 20.6,
+   "valeurs_non_finies": 0,
+   "bassinY": 0.335,
+   "busteX": 0.2
+  },
+  "visageBas": {
+   "ecart_mains_mm": [
+    0,
+    0
+   ],
+   "ecart_chevilles_mm": [
+    5,
+    5
+   ],
+   "point_le_plus_bas_mm": 20.6,
+   "valeurs_non_finies": 0,
+   "bassinY": 0.335,
+   "busteX": 0.24
+  },
+  "brasDroitPoignet": {
+   "ecart_mains_mm": [
+    0,
+    0
+   ],
+   "ecart_chevilles_mm": [
+    5,
+    5
+   ],
+   "point_le_plus_bas_mm": 20.6,
+   "valeurs_non_finies": 0,
+   "bassinY": 0.335,
+   "busteX": 0.38
+  },
+  "brasDroitCoude": {
+   "ecart_mains_mm": [
+    0,
+    0
+   ],
+   "ecart_chevilles_mm": [
+    5,
+    5
+   ],
+   "point_le_plus_bas_mm": 20.6,
+   "valeurs_non_finies": 0,
+   "bassinY": 0.335,
+   "busteX": 0.38
+  },
+  "brasGauchePoignet": {
+   "ecart_mains_mm": [
+    0,
+    0
+   ],
+   "ecart_chevilles_mm": [
+    5,
+    5
+   ],
+   "point_le_plus_bas_mm": 20.6,
+   "valeurs_non_finies": 0,
+   "bassinY": 0.335,
+   "busteX": 0.38
+  },
+  "brasGaucheCoude": {
+   "ecart_mains_mm": [
+    0,
+    0
+   ],
+   "ecart_chevilles_mm": [
+    5,
+    5
+   ],
+   "point_le_plus_bas_mm": 20.6,
+   "valeurs_non_finies": 0,
+   "bassinY": 0.335,
+   "busteX": 0.38
+  },
+  "teteAvant": {
+   "ecart_mains_mm": [
+    0,
+    0
+   ],
+   "ecart_chevilles_mm": [
+    5,
+    5
+   ],
+   "point_le_plus_bas_mm": 20.6,
+   "valeurs_non_finies": 0,
+   "bassinY": 0.335,
+   "busteX": 0.1
+  },
+  "teteArriere": {
+   "ecart_mains_mm": [
+    0,
+    0
+   ],
+   "ecart_chevilles_mm": [
+    5,
+    5
+   ],
+   "point_le_plus_bas_mm": 20.6,
+   "valeurs_non_finies": 0,
+   "bassinY": 0.335,
+   "busteX": 0.1
+  },
+  "oreilles": {
+   "ecart_mains_mm": [
+    0,
+    0
+   ],
+   "ecart_chevilles_mm": [
+    5,
+    5
+   ],
+   "point_le_plus_bas_mm": 20.6,
+   "valeurs_non_finies": 0,
+   "bassinY": 0.335,
+   "busteX": 0.12
+  },
+  "piedDroitPose": {
+   "ecart_mains_mm": [
+    0,
+    0
+   ],
+   "ecart_chevilles_mm": [
+    5,
+    5
+   ],
+   "point_le_plus_bas_mm": 16.8,
+   "valeurs_non_finies": 0,
+   "bassinY": 0.335,
+   "busteX": 0.55
+  },
+  "piedDroitFrotter": {
+   "ecart_mains_mm": [
+    36.2,
+    52.1
+   ],
+   "ecart_chevilles_mm": [
+    5,
+    5
+   ],
+   "point_le_plus_bas_mm": 16.8,
+   "valeurs_non_finies": 0,
+   "bassinY": 0.335,
+   "busteX": 0.85
+  },
+  "piedDroitCheville": {
+   "ecart_mains_mm": [
+    0,
+    0
+   ],
+   "ecart_chevilles_mm": [
+    5,
+    5
+   ],
+   "point_le_plus_bas_mm": 16.8,
+   "valeurs_non_finies": 0,
+   "bassinY": 0.335,
+   "busteX": 0.85
+  },
+  "piedGauchePose": {
+   "ecart_mains_mm": [
+    0,
+    0
+   ],
+   "ecart_chevilles_mm": [
+    5,
+    5
+   ],
+   "point_le_plus_bas_mm": 16.2,
+   "valeurs_non_finies": 0,
+   "bassinY": 0.335,
+   "busteX": 0.55
+  },
+  "piedGaucheFrotter": {
+   "ecart_mains_mm": [
+    52.3,
+    36.5
+   ],
+   "ecart_chevilles_mm": [
+    5,
+    5
+   ],
+   "point_le_plus_bas_mm": 16.2,
+   "valeurs_non_finies": 0,
+   "bassinY": 0.335,
+   "busteX": 0.85
+  },
+  "piedGaucheCheville": {
+   "ecart_mains_mm": [
+    0,
+    0
+   ],
+   "ecart_chevilles_mm": [
+    5,
+    5
+   ],
+   "point_le_plus_bas_mm": 16.2,
+   "valeurs_non_finies": 0,
+   "bassinY": 0.335,
+   "busteX": 0.85
+  },
+  "debout": {
+   "ecart_mains_mm": [
+    163.3,
+    163.3
+   ],
+   "ecart_chevilles_mm": [
+    5,
+    5
+   ],
+   "point_le_plus_bas_mm": -7.4,
+   "valeurs_non_finies": 0,
+   "bassinY": 0.62,
+   "busteX": 0
+  },
+  "coeur": {
+   "ecart_mains_mm": [
+    0,
+    0
+   ],
+   "ecart_chevilles_mm": [
+    5,
+    5
+   ],
+   "point_le_plus_bas_mm": 20.6,
+   "valeurs_non_finies": 0,
+   "bassinY": 0.335,
+   "busteX": 0.06
+  },
+  "pret": {
+   "ecart_mains_mm": [
+    0,
+    0
+   ],
+   "ecart_chevilles_mm": [
+    5,
+    5
+   ],
+   "point_le_plus_bas_mm": 20.6,
+   "valeurs_non_finies": 0,
+   "bassinY": 0.335,
+   "busteX": 0.1
+  }
+ }
+}
