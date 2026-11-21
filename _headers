@@ -20,6 +20,8 @@
   Cache-Control: public, max-age=3600
 /*.svg
   Cache-Control: public, max-age=3600
+/*.glb
+  Cache-Control: public, max-age=3600
 
 # Le service worker du calendrier doit toujours être relu
 /calendrier/sw.js
