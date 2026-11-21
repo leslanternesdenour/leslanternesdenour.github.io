@@ -11,13 +11,17 @@ export async function verifier({ cle, projet, domaine, fetcher = fetch }) {
   const cfg = await appel('projects', null, 'GET');
   if (cfg.s !== 200) { v('Clé d\'API Web acceptée par Google', false, msg(cfg) || cfg.e || ('HTTP ' + cfg.s)); return out; }
   v('Clé d\'API Web acceptée par Google', true);
-  v('Projet attendu', cfg.j.projectId === projet, 'projet reçu : ' + cfg.j.projectId);
+  // Google renvoie ici le NUMÉRO du projet (ex. 447068927790) ; le nom du projet est vérifié plus bas dans le jeton (champ aud).
+  v('Projet reconnu', cfg.j.projectId === projet || /^\d+$/.test(String(cfg.j.projectId)), 'projet reçu : ' + cfg.j.projectId);
   const doms = cfg.j.authorizedDomains || []; v(`Domaine autorisé : ${domaine}`, doms.includes(domaine), 'domaines : ' + doms.join(', '));
   // règle de mot de passe (aucun compte créé)
   const faible = await appel('accounts:signUp', { email: `faible-${Date.now()}@exemple.invalid`, password: 'ab1', returnSecureToken: true });
   v('E-mail/mot de passe activé', faible.s === 400 && /WEAK_PASSWORD|PASSWORD_DOES_NOT_MEET|MISSING_PASSWORD/.test(msg(faible)) ? true : /OPERATION_NOT_ALLOWED/.test(msg(faible)) ? false : null, msg(faible));
-  v('Règle de mot de passe appliquée (8 caractères minimum)', /WEAK_PASSWORD|PASSWORD_DOES_NOT_MEET/.test(msg(faible)) ? true : faible.s === 200 ? false : null, msg(faible));
   if (faible.s === 200 && faible.j.idToken) await appel('accounts:delete', { idToken: faible.j.idToken });
+  // limite exacte : 7 caractères (majuscule, minuscule, chiffre, symbole) doivent être refusés, 8 acceptés. Sans règle, Firebase accepte dès 6.
+  const sept = await appel('accounts:signUp', { email: `sept-${Date.now()}@exemple.invalid`, password: 'Abcd1!x', returnSecureToken: true });
+  if (sept.s === 200 && sept.j.idToken) await appel('accounts:delete', { idToken: sept.j.idToken });
+  v('Règle de mot de passe : 7 caractères refusés (minimum 8)', /WEAK_PASSWORD|PASSWORD_DOES_NOT_MEET/.test(msg(sept)) ? true : sept.s === 200 ? false : null, sept.s === 200 ? 'un mot de passe de 7 caractères est accepté : régler la stratégie sur 8 (Authentication → Paramètres)' : msg(sept));
   // fournisseurs : Google doit être activé ; Apple désactivé
   for (const [fournisseur, attendu] of [['google.com', true], ['apple.com', false]]) {
     const r = await appel('accounts:createAuthUri', { providerId: fournisseur, continueUri: `https://${domaine}/compte/`, identifier: undefined });
