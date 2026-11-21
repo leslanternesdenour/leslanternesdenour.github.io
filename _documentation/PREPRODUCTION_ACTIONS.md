@@ -19,6 +19,9 @@ sans secrets l'API répond 503 « comptes-non-configurés » et le site gratuit 
    variables de build `NODE_VERSION=22`, `LDN_PREPROD=1`. Branches de prévisualisation : **Aucune**.
 4. Envoyez-moi l'adresse `https://….pages.dev` : je vérifie `/api/sante`, les en-têtes, la 404, et je lance les tests complets (Three.js réel).
 
+- **Test réel de bout en bout par e-mail (21/11/2026, site déployé, Firebase réel) : 23 vérifications sur 23.** Inscription, consentements parentaux (428 sans), session (cookie HttpOnly + SameSite + Secure), profil enfant (données minimales, surnom invalide refusé), limite du Gratuit, Premium et administration fermés, protection X-LDN, déconnexion, reconnexion, suppression RGPD, compte disparu. Compte de test supprimé. Relancer : `node outils/tests/parcours-reel.mjs https://lanternes-de-nour.pages.dev`.
+- **Pas encore testé en réel** : connexion Google (fenêtre Google, à faire avec un vrai compte), e-mail de vérification (boîte de réception), téléphone réel.
+
 ## B. Firebase — voir **GUIDE_FIREBASE.md** (pas à pas, une manipulation à la fois)
 **Connexion : e-mail/mot de passe ET Google dès le lancement (Apple reporté).** Prêt côté dépôt : bouton Google, reconfirmation par Google, annulation propre, CSP ciblée, tests (API, Chrome ordinateur + téléphone). Reste : activer Google dans la console (guide étape 2 et 3 bis) et un test avec un vrai compte.
 Prêt côté dépôt : règles « tout refusé » testées dans l'émulateur officiel ; API, droits, Premium et suppression RGPD rejoués sur le **vrai Firestore** (émulateur) ; compte Créateur en un clic ; parcours de compte complet prêt (`outils/tests/parcours-reel.mjs`, supprime toujours son compte de test) ; contrôle de configuration (`outils/admin/verifier-configuration.mjs <site>`) ; CSP compatible avec le SDK Firebase (mesuré : aucune violation).
