@@ -77,13 +77,6 @@
   "a_tester": ""
  },
  {
-  "cle": "calendrier/w_quran",
-  "texte": "le Coran",
-  "texte_voix": "le الْقُرْآن",
-  "fichier": "lot14/calendrier-w_quran.mp3",
-  "a_tester": "Coran / Qur'an (mot français)"
- },
- {
   "cle": "calendrier/w_tamr",
   "texte": "les dattes",
   "texte_voix": "les dattes",

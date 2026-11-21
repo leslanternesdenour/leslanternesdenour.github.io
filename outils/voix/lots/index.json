@@ -75,28 +75,28 @@
  },
  {
   "n": 11,
-  "nb": 20,
+  "nb": 19,
   "jeux": [
    "calendrier"
   ]
  },
  {
   "n": 12,
-  "nb": 20,
+  "nb": 19,
   "jeux": [
    "calendrier"
   ]
  },
  {
   "n": 13,
-  "nb": 20,
+  "nb": 18,
   "jeux": [
    "calendrier"
   ]
  },
  {
   "n": 14,
-  "nb": 20,
+  "nb": 19,
   "jeux": [
    "calendrier"
   ]
@@ -118,6 +118,13 @@
  {
   "n": 17,
   "nb": 2,
+  "jeux": [
+   "calendrier"
+  ]
+ },
+ {
+  "n": 18,
+  "nb": 5,
   "jeux": [
    "calendrier"
   ]

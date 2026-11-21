@@ -91,13 +91,6 @@
   "a_tester": ""
  },
  {
-  "cle": "calendrier/qp2a",
-  "texte": "Le Coran, la parole d'Allah.",
-  "texte_voix": "Le الْقُرْآن, la parole de اللَّه.",
-  "fichier": "lot12/calendrier-qp2a.mp3",
-  "a_tester": "Coran / Qur'an (mot français)"
- },
- {
   "cle": "calendrier/qp3q",
   "texte": "Que dit-on avant de manger ?",
   "texte_voix": "Que dit-on avant de manger ?",

@@ -28,7 +28,7 @@ const EXTRA = [
   [/takb[îi]r/gi, 'تَكْبِير'], [/Rouko[ûu][‘’']?/g, 'رُكُوع'], [/Soujo[ûu]d/g, 'سُجُود'], [/Joulo[ûu]s/g, 'جُلُوس'], [/Qiy[âa]m/g, 'قِيَام'],
   [/rak[‘’']at/g, 'رَكَعَات'], [/rak[‘’']a/g, 'رَكْعَة'], [/tachahhoud/gi, 'تَشَهُّد'], [/tasl[îi]m/gi, 'تَسْلِيم'], [/niyya/gi, 'نِيَّة'],
   [/Al-?F[âa]tiha/g, 'الْفَاتِحَة'], [/Al-?Gh[âa]chiya/g, 'الْغَاشِيَة'], [/\bKaaba\b/g, 'الْكَعْبَة'], [/\bqibla\b/gi, 'الْقِبْلَة'], [/\bRamadan\b/g, 'رَمَضَان'],
-  [/\bCoran\b/g, 'الْقُرْآن'], [/Boukh[âa]r[îi]/g, 'الْبُخَارِيّ'], [/Mouslim/g, 'مُسْلِم'], [/Ab[ûu]\s?D[âa]wou?d/g, 'أَبُو دَاوُد'], [/Tirmidh[îi]/g, 'التِّرْمِذِيّ'],
+  [/\bCoran\b/g, 'قُرْآن'], [/Boukh[âa]r[îi]/g, 'الْبُخَارِيّ'], [/Mouslim/g, 'مُسْلِم'], [/Ab[ûu]\s?D[âa]wou?d/g, 'أَبُو دَاوُد'], [/Tirmidh[îi]/g, 'التِّرْمِذِيّ'],
   [/Nas[âa][’']?[îi]/g, 'النَّسَائِيّ'], [/Ibn\s?M[âa]jah/g, 'ابْنُ مَاجَه'], [/wud[ûu]/gi, 'وُضُوء'], [/\bsunna\b/gi, 'سُنَّة'], [/moub[âa]rak/gi, 'مُبَارَك'], [/\bAdam\b/g, 'آدَم'], [/\bNouh\b/g, 'نُوح'],
 ];
 const { DH } = await import('../../priere/jeu3d/contenu.js');

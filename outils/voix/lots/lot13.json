@@ -112,25 +112,11 @@
   "a_tester": "prophètes (Adam, Nouh, Younous…)"
  },
  {
-  "cle": "calendrier/qg4q",
-  "texte": "Quel ange a apporté le Coran au Prophète (paix sur lui) ?",
-  "texte_voix": "Quel ange a apporté le الْقُرْآن au Prophète (paix sur lui) ?",
-  "fichier": "lot13/calendrier-qg4q.mp3",
-  "a_tester": "Coran / Qur'an (mot français)"
- },
- {
   "cle": "calendrier/qg4a",
   "texte": "L'ange Jibrîl.",
   "texte_voix": "L'ange Jibrîl.",
   "fichier": "lot13/calendrier-qg4a.mp3",
   "a_tester": ""
- },
- {
-  "cle": "calendrier/qg5q",
-  "texte": "Combien y a-t-il de sourates dans le Coran ?",
-  "texte_voix": "Combien y a-t-il de sourates dans le الْقُرْآن ?",
-  "fichier": "lot13/calendrier-qg5q.mp3",
-  "a_tester": "Coran / Qur'an (mot français)"
  },
  {
   "cle": "calendrier/qg5a",

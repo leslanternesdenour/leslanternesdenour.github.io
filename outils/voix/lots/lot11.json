@@ -7,13 +7,6 @@
   "a_tester": ""
  },
  {
-  "cle": "calendrier/dp6a",
-  "texte": "Le Coran",
-  "texte_voix": "Le الْقُرْآن",
-  "fichier": "lot11/calendrier-dp6a.mp3",
-  "a_tester": "Coran / Qur'an (mot français)"
- },
- {
   "cle": "calendrier/dp7q",
   "texte": "Je suis la grande fête à la fin du Ramadan. Qui suis-je ?",
   "texte_voix": "Je suis la grande fête à la fin du رَمَضَان. Qui suis-je ?",
