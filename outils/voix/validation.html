@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex"><title>Validation des voix · outil interne</title>
+<style>
+:root{color-scheme:dark}
+body{font:16px Nunito,system-ui,sans-serif;background:#191345;color:#f4efff;margin:0;padding:16px;max-width:900px;margin-inline:auto}
+h1{font-size:20px;margin:0 0 6px}.n{color:#c9bff0;font-size:14px}
+.bar{position:sticky;top:0;background:#191345;padding:8px 0;z-index:2;display:flex;flex-wrap:wrap;gap:8px;align-items:center;border-bottom:1px solid #3a2a7d}
+button,select{font:inherit;padding:8px 12px;border-radius:10px;border:1px solid #6a55c9;background:#2b1f69;color:#fff;cursor:pointer;min-height:44px}
+button.on{background:#e8b64c;color:#191345;border-color:#e8b64c}
+.row{border:1px solid #3a2a7d;border-radius:12px;padding:10px;margin:10px 0}
+.row.ok{border-color:#3fbf7f}.row.ko{border-color:#e5605a}.row.dt{border-color:#e8b64c}
+.k{font-weight:800}.t{margin:6px 0;line-height:1.4}.t.vide{color:#c9bff0;font-style:italic}
+.pr{background:#e8b64c;color:#191345;border-radius:6px;padding:1px 6px;font-size:12px;font-weight:800;margin-left:6px}
+.btns{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+input[type=text]{width:100%;box-sizing:border-box;padding:8px;border-radius:8px;border:1px solid #6a55c9;background:#120e33;color:#fff;font:inherit}
+</style></head><body>
+<h1>Validation des voix (Ablutions · Prière)</h1>
+<p class="n">Pour chaque phrase : écoute la <b>nouvelle voix</b> (ElevenLabs, un fichier par phrase), compare avec l'<b>ancienne</b>, puis valide. Rien n'est branché dans les jeux tant que tu n'as pas validé. Tes choix sont gardés sur cet appareil ; « Copier le résultat » me les envoie.</p>
+<div class="bar">
+ <select id="jeu"><option value="ablutions">Ablutions</option><option value="priere">Prière</option></select>
+ <select id="filtre"><option value="tout">Toutes</option><option value="prio">À écouter en priorité</option><option value="att">Pas encore jugées</option><option value="ko">Refusées / doutes</option></select>
+ <span id="cpt" class="n"></span><button id="copie">Copier le résultat</button><button id="stop">⏹ Stop</button>
+</div>
+<div id="liste"></div>
+<script>
+const PRIO={ablutions:['q2_bras'],priere:['g4ok','d_gh']};
+const A=new Audio();let tm=0;
+const stop=()=>{clearTimeout(tm);A.pause()};
+function jouer(src,d,f){stop();A.src=src;A.onloadedmetadata=()=>{A.currentTime=d||0;A.play();if(f)tm=setTimeout(()=>A.pause(),(f-(d||0))*1000+120)};A.load()}
+let ST={};try{ST=JSON.parse(localStorage.getItem('validation-voix')||'{}')}catch(e){}
+const sauve=()=>{try{localStorage.setItem('validation-voix',JSON.stringify(ST))}catch(e){}};
+let D=null;
+async function charger(){const [tx,...r]=await Promise.all([fetch('textes-ecoute.json').then(r=>r.json()),...['ablutions','priere'].flatMap(p=>[fetch('../../'+p+'/voix/voix-catalogue.json').then(r=>r.json()),fetch('../../'+p+'/voix/voix-ancienne.json').then(r=>r.json())])]);
+ D={ablutions:{tx:tx.ablutions,nv:r[0],an:r[1]},priere:{tx:tx.priere,nv:r[2],an:r[3]}};dessiner()}
+function dessiner(){const p=jeu.value,d=D[p],f=filtre.value,L=liste;L.innerHTML='';let n=0,ok=0,ko=0;
+ for(const k of Object.keys(d.nv)){const e=ST[p+'/'+k]||{};n++;if(e.v==='ok')ok++;if(e.v==='ko'||e.v==='dt')ko++;
+  const pr=PRIO[p].includes(k)||(p==='priere'&&k.startsWith('d_'));
+  if(f==='prio'&&!pr)continue;if(f==='att'&&e.v)continue;if(f==='ko'&&!(e.v==='ko'||e.v==='dt'))continue;
+  const nv=d.nv[k],an=d.an[k],txt=d.tx[k];
+  const row=document.createElement('div');row.className='row '+(e.v||'');
+  row.innerHTML=`<div><span class="k">${k}</span>${pr?'<span class="pr">à écouter en priorité</span>':''} <span class="n">${nv[3]||''}</span></div>
+  <div class="t ${txt?'':'vide'}">${txt?txt.replace(/</g,'&lt;'):'(texte construit par le jeu selon la situation : compare avec l\'ancienne voix)'}</div>
+  <div class="btns"><button data-a="nv">▶ Nouvelle voix</button><button data-a="an">▶ Ancienne voix</button></div>
+  <div class="btns"><button data-v="ok" class="${e.v==='ok'?'on':''}">✓ Je valide</button><button data-v="dt" class="${e.v==='dt'?'on':''}">? Doute</button><button data-v="ko" class="${e.v==='ko'?'on':''}">✗ Je refuse</button></div>
+  <input type="text" placeholder="Remarque (ex. mot mal prononcé, phrase coupée, mauvaise phrase…)" value="${(e.c||'').replace(/"/g,'&quot;')}">`;
+  row.querySelector('[data-a=nv]').onclick=()=>jouer(new URL(nv[0],location.href.replace(/outils\/voix\/.*/,p+'/voix/')).href,nv[1],nv[2]);
+  const ba=row.querySelector('[data-a=an]');if(an)ba.onclick=()=>jouer(new URL(an[0],location.href.replace(/outils\/voix\/.*/,p+'/voix/')).href,an[1],an[2]);else{ba.disabled=true;ba.textContent='— pas d\'ancienne'}
+  row.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{ST[p+'/'+k]={...ST[p+'/'+k],v:b.dataset.v};sauve();dessiner()});
+  row.querySelector('input').onchange=ev=>{ST[p+'/'+k]={...ST[p+'/'+k],c:ev.target.value};sauve()};
+  L.appendChild(row)}
+ cpt.textContent=`${ok} validées · ${ko} refusées/doutes · ${n-ok-ko} à juger (sur ${n})`}
+jeu.onchange=filtre.onchange=dessiner;document.getElementById('stop').onclick=stop;
+document.getElementById('copie').onclick=async()=>{const t=JSON.stringify(ST,null,1);try{await navigator.clipboard.writeText(t);copie.textContent='Copié ✓'}catch(e){prompt('Copie ce texte :',t)}setTimeout(()=>copie.textContent='Copier le résultat',2000)};
+charger();
+</script></body></html>
