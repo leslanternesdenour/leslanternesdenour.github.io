@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex"><title>Prononciation arabe · outil interne</title>
+<style>:root{color-scheme:dark}body{font:16px Nunito,system-ui,sans-serif;background:#191345;color:#f4efff;margin:0;padding:16px;max-width:800px;margin-inline:auto}
+h1{font-size:20px}.n{color:#c9bff0;font-size:14px}.t{border:1px solid #3a2a7d;border-radius:12px;padding:10px;margin:10px 0}
+.ar{font-size:30px;font-family:"Noto Naskh Arabic","Amiri",serif}.l{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:6px 0}
+button{font:inherit;padding:8px 12px;border-radius:10px;border:1px solid #6a55c9;background:#2b1f69;color:#fff;cursor:pointer;min-height:44px}
+button.on{background:#3fbf7f;color:#102;border-color:#3fbf7f}button.ko.on{background:#e5605a;border-color:#e5605a;color:#fff}
+.bar{position:sticky;top:0;background:#191345;padding:8px 0;border-bottom:1px solid #3a2a7d}</style></head><body>
+<h1>Prononciation des mots arabes (voix de la narratrice)</h1>
+<p class="n">Ces 14 termes sont envoyés à la voix <b>écrits en arabe</b> (avec les voyelles). Phrase lue : « On dit : [terme] ! ». Règle : la précision passe avant l'expressivité. Juge chaque terme : <b>✓ correct</b> ou <b>✗ incorrect</b> (franciser, avalé, lettre mal articulée…), et note ce qui ne va pas.</p>
+<div class="bar"><span id="cpt" class="n"></span> <button id="copie">Copier le résultat</button></div>
+<div id="liste"></div>
+<textarea id="texte" rows="8" style="display:none;width:100%;box-sizing:border-box;background:#120e33;color:#fff;border:1px solid #6a55c9;border-radius:8px;padding:8px;font:14px monospace" readonly></textarea>
+<script>
+const A=new Audio();let ST={};try{ST=JSON.parse(localStorage.getItem('prononciation-ar')||'{}')}catch(e){}
+const sauve=()=>{try{localStorage.setItem('prononciation-ar',JSON.stringify(ST))}catch(e){}};let T=[];
+function dessiner(){const L=document.getElementById('liste');L.innerHTML='';let ok=0,ko=0;
+ for(const t of T){const e=(ST[t.k]||{}),d=document.createElement('div');d.className='t';if(e.v==='ok')ok++;if(e.v==='ko')ko++;
+  d.innerHTML=`<div><span class="ar" lang="ar" dir="rtl">${t.ar}</span> &nbsp; <b>${t.tr}</b></div><div class="l"><button data-p>▶ Écouter</button><button data-r="ok" class="${e.v==='ok'?'on':''}">✓ correct</button><button data-r="ko" class="ko ${e.v==='ko'?'on':''}">✗ incorrect</button></div><input type="text" placeholder="Remarque (ex. le ع est avalé, Allah francisé…)" style="width:100%;box-sizing:border-box;padding:8px;border-radius:8px;border:1px solid #6a55c9;background:#120e33;color:#fff;font:inherit" value="${(e.c||'').replace(/"/g,'&quot;')}">`;
+  d.querySelector('[data-p]').onclick=()=>{A.src='prononciation-ar/'+t.k+'.mp3';A.play()};
+  d.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{ST[t.k]={...ST[t.k],v:b.dataset.r};sauve();dessiner()});
+  d.querySelector('input').onchange=ev=>{ST[t.k]={...ST[t.k],c:ev.target.value};sauve()};L.appendChild(d)}
+ document.getElementById('cpt').textContent=ok+' corrects · '+ko+' incorrects · '+(T.length-ok-ko)+' à juger'}
+document.getElementById('copie').onclick=async()=>{let s='RÉSULTAT PRONONCIATION ARABE (voix narratrice)\n';let ok=0;for(const t of T){const e=ST[t.k]||{};if(e.v==='ok')ok++;s+=t.tr+' : '+(e.v==='ok'?'CORRECT':e.v==='ko'?'INCORRECT':'non jugé')+(e.c?' — '+e.c:'')+'\n'}s=s.replace('\n','\n'+ok+'/'+T.length+' corrects\n');
+ const z=document.getElementById('texte');z.style.display='block';z.value=s;z.select();try{await navigator.clipboard.writeText(s);document.getElementById('copie').textContent='Copié ✓ — colle-le dans le chat'}catch(e){document.getElementById('copie').textContent='Sélectionné : copie-le à la main'}};
+fetch('prononciation-ar/termes.json').then(r=>r.json()).then(j=>{T=j;dessiner()});
+</script></body></html>
