@@ -13,6 +13,20 @@ const FORMULE_PRIX = { premium_mensuel: 'STRIPE_PRIX_PREMIUM_MENSUEL', premium_a
 const json = (data, statut = 200, entetes = {}) => new Response(JSON.stringify(data), { status: statut, headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', ...entetes } });
 const erreur = (statut, raison) => json({ erreur: raison }, statut);
 
+// ---------- en-têtes des fichiers Premium ----------
+// Jamais gardés en cache (navigateur, service worker, intermédiaires). Les pages HTML reçoivent la même politique de
+// sécurité que le site (les en-têtes de _headers ne s'appliquent pas aux réponses des Functions).
+export const CSP = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://i.ytimg.com https://yt3.googleusercontent.com; media-src 'self' data: blob: https://cdn.islamic.network; connect-src 'self' https://cdn.jsdelivr.net https://api.alquran.cloud https://cdn.islamic.network https://www.gstatic.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com; frame-src 'self' https://www.youtube-nocookie.com; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'";
+export const TYPES_PREMIUM = { html: 'text/html; charset=utf-8', js: 'text/javascript; charset=utf-8', mjs: 'text/javascript; charset=utf-8', css: 'text/css; charset=utf-8', json: 'application/json; charset=utf-8',
+  mp3: 'audio/mpeg', webp: 'image/webp', png: 'image/png', jpg: 'image/jpeg', svg: 'image/svg+xml', woff2: 'font/woff2', txt: 'text/plain; charset=utf-8' };
+function entetesPremium(fichier, type) {
+  const ext = (fichier.split('.').pop() || '').toLowerCase();
+  const h = { 'Content-Type': TYPES_PREMIUM[ext] || type || 'application/octet-stream', 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff',
+    'Referrer-Policy': 'strict-origin-when-cross-origin', 'X-Robots-Tag': 'noindex, nofollow' };
+  if (ext === 'html') Object.assign(h, { 'Content-Security-Policy': CSP, 'X-Frame-Options': 'SAMEORIGIN' });
+  return h;
+}
+
 // ---------- limitation simple du nombre de tentatives (par instance) ----------
 const compteurs = new Map();
 let sequence = 0;
@@ -30,6 +44,24 @@ async function corpsJson(req, max = 200000) {
 
 // ---------- droits ----------
 async function sourcesDe(base, uid) { const d = await base.lire('droits', uid); return d ? d.sources || {} : {}; }
+// « Voir comme » : le Créateur (et lui seul) peut demander à voir le site comme un visiteur ou un compte Gratuit / Premium / Famille,
+// pour vérifier les contenus comme un utilisateur final. Cookie ldn_vue (non sensible) ; ignoré pour tout autre compte.
+export const VUES = { visiteur: null, gratuit: 'gratuit', premium: 'premium', famille: 'famille' };
+const PROFILS_VUE = { gratuit: 1, premium: 1, famille: 5 };
+function vueDemandee(req, ctx, session) {
+  const v = lireCookie(req.headers.get('Cookie'), 'ldn_vue');
+  return v && v in VUES && session && estCreateur(session.uid, session.claims, ctx.env) ? v : null;
+}
+function droitsSimules(vue) {
+  if (vue === 'visiteur') return null;
+  return { statut: vue === 'gratuit' ? 'gratuit' : 'abonne', niveau: vue, profilsMax: PROFILS_VUE[vue], synchro: vue === 'famille', apercu: false, admin: false, payant: vue !== 'gratuit', offert: false, expire: null, vue };
+}
+// droits utilisés pour l'ACCÈS AUX CONTENUS (catalogue, fichiers Premium) : tient compte de la vue simulée du Créateur
+async function droitsContenus(ctx, session, req) {
+  const vue = vueDemandee(req, ctx, session);
+  if (vue) return { d: droitsSimules(vue), connecte: vue !== 'visiteur', vue };
+  return { d: await droitsDe(ctx, session), connecte: !!session, vue: null };
+}
 async function droitsDe(ctx, session) {
   if (!session) return null;
   return calculerDroits({ uid: session.uid, claims: session.claims, env: ctx.env, sources: await sourcesDe(ctx.base, session.uid), maintenant: ctx.maintenant });
@@ -115,31 +147,32 @@ export async function traiter(req, ctx) {
     if (chemin === '/api/moi' && m === 'GET') {
       if (!session) return json({ connecte: false, statut: 'visiteur' });
       const d = await droitsDe(ctx, session); const f = await ctx.base.lire('familles', session.uid);
-      return json({ connecte: true, uid: session.uid, email: session.email, emailVerifie: session.emailVerifie, ...d,
+      return json({ connecte: true, uid: session.uid, email: session.email, emailVerifie: session.emailVerifie, ...d, vue: vueDemandee(req, ctx, session),
         profilsMax: d.profilsMax === Infinity ? null : d.profilsMax, illimite: d.profilsMax === Infinity, profilActif: f && f.profilActif || null });
     }
 
     // ----- catalogue (pour l'affichage : chaque contenu avec « ouvert » ou non) -----
     if (chemin === '/api/catalogue' && m === 'GET') {
       const cat = catalogueEffectif((await ctx.base.lire('catalogue', 'etat')) || {});
-      const d = await droitsDe(ctx, session);
+      const { d, connecte, vue: simulee } = await droitsContenus(ctx, session, req);
       const vue = {};
-      for (const [g, items] of Object.entries(cat)) vue[g] = Object.fromEntries(Object.entries(items).map(([id, n]) => [id, { niveau: n, ouvert: peutAcceder(n, d) || (n === 'gratuit' && !!session) }]));
-      return json({ catalogue: vue, bandeau: ((await ctx.base.lire('catalogue', 'bandeau')) || {}).texte || null });
+      for (const [g, items] of Object.entries(cat)) vue[g] = Object.fromEntries(Object.entries(items).map(([id, n]) => [id, { niveau: n, publie: n !== 'apercu', ouvert: peutAcceder(n, d) || (n === 'gratuit' && connecte) }]));
+      return json({ catalogue: vue, vue: simulee, bandeau: ((await ctx.base.lire('catalogue', 'bandeau')) || {}).texte || null });
     }
 
     // ----- contenus Premium (stockage privé R2) -----
     if (chemin.startsWith('/api/premium/') && (m === 'GET' || m === 'HEAD')) {
-      const fichier = decodeURIComponent(chemin.slice('/api/premium/'.length));
+      let fichier; try { fichier = decodeURIComponent(url.pathname.slice('/api/premium/'.length)); } catch (e) { return erreur(400, 'chemin'); }
+      if (fichier.endsWith('/')) fichier += 'index.html';                          // une maison s'ouvre par son dossier
       const cat = catalogueEffectif((await ctx.base.lire('catalogue', 'etat')) || {});
       const niveau = niveauDuFichier(fichier, cat);
       if (!niveau) return erreur(400, 'chemin');
-      const d = await droitsDe(ctx, session);
-      const ok = peutAcceder(niveau, d) || (niveau === 'gratuit' && !!session);
-      if (!ok) return erreur(session ? 403 : 401, session ? 'premium-requis' : 'connexion-requise');
+      const { d, connecte } = await droitsContenus(ctx, session, req);
+      const ok = peutAcceder(niveau, d) || (niveau === 'gratuit' && connecte);
+      if (!ok) return erreur(connecte ? 403 : 401, connecte ? 'premium-requis' : 'connexion-requise');
       const obj = await ctx.stockage.get(fichier);
       if (!obj) return erreur(404, 'introuvable');
-      return new Response(m === 'HEAD' ? null : obj.body, { headers: { 'Content-Type': obj.type || 'application/octet-stream', 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff' } });
+      return new Response(m === 'HEAD' ? null : obj.body, { headers: entetesPremium(fichier, obj.type) });
     }
 
     // ===== tout ce qui suit exige d'être connecté =====
@@ -382,6 +415,12 @@ async function administration(req, ctx, session, chemin, url) {
     const b = await corpsJson(req, 2000), texte = b.texte ? String(b.texte).slice(0, 200) : null;
     await ctx.base.ecrire('catalogue', 'bandeau', { texte, majLe: ctx.maintenant }); await journal(ctx, 'bandeau', { texte });
     return json({ ok: true });
+  }
+  if (chemin === '/api/admin/premium' && m === 'GET') {                  // ce qui est réellement présent dans le stockage privé
+    if (!ctx.stockage.lister) return json({ disponible: false, fichiers: [] });
+    const cat = catalogueEffectif((await ctx.base.lire('catalogue', 'etat')) || {});
+    const fichiers = (await ctx.stockage.lister()).map(f => ({ ...f, niveau: niveauDuFichier(f.cle, cat) }));
+    return json({ disponible: true, fichiers });
   }
   if (chemin === '/api/admin/journal' && m === 'GET') {
     const pg = await ctx.base.lister('admin_logs', { limite: 50, apres });

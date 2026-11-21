@@ -13,12 +13,15 @@ import { verifierJeton } from '../../serveur/jeton.js';
 import { clientStripe } from '../../serveur/stripe.js';
 import { lireSession, lireCookie } from '../../serveur/session.js';
 
-const ICI = path.dirname(fileURLToPath(import.meta.url)), PREMIUM = path.join(ICI, 'premium-exemple');
+const ICI = path.dirname(fileURLToPath(import.meta.url));
+// R2 simulé : un dossier local. LDN_PREMIUM_DIR = le dossier des VRAIS contenus Premium (gardé hors du dépôt public) ;
+// sans lui, les fichiers d'exemple du dépôt.
 const PROJET = 'ldn-emulateur-local', UID_CREATEUR = 'uid-createur-local';
 const b64u = o => Buffer.from(JSON.stringify(o)).toString('base64url');
 const TYPES = { '.json': 'application/json', '.js': 'text/javascript; charset=utf-8', '.webp': 'image/webp', '.mp3': 'audio/mpeg', '.html': 'text/html; charset=utf-8' };
 
-export async function creerEmulateur({ mdpCreateur = process.env.LDN_EMUL_MDP_CREATEUR || crypto.randomBytes(9).toString('base64url') } = {}) {
+export async function creerEmulateur({ mdpCreateur = process.env.LDN_EMUL_MDP_CREATEUR || crypto.randomBytes(9).toString('base64url'), dossierPremium = process.env.LDN_PREMIUM_DIR || path.join(ICI, 'premium-exemple') } = {}) {
+  const PREMIUM = path.resolve(dossierPremium);
   const cles = await crypto.webcrypto.subtle.generateKey({ name: 'RSASSA-PKCS1-v1_5', modulusLength: 2048, publicExponent: new Uint8Array([1, 0, 1]), hash: 'SHA-256' }, false, ['sign', 'verify']);
   let decalage = 0; const maintenant = () => Date.now() + decalage;
   const env = { CREATOR_UID: UID_CREATEUR, SESSION_SECRET: crypto.randomBytes(32).toString('hex'), FIREBASE_PROJET: PROJET, ENVIRONNEMENT: 'emulateur-local',
@@ -51,7 +54,9 @@ export async function creerEmulateur({ mdpCreateur = process.env.LDN_EMUL_MDP_CR
   };
   const ctx = () => ({ env, base, maintenant: maintenant(),
     auth: { verifierIdToken: (t, m) => verifierJeton(t, { projet: PROJET, type: 'id', obtenirCle: async k => k === 'emul' ? cles.publicKey : null, maintenant: m }) },
-    stockage: { async get(cle) { const f = path.join(PREMIUM, cle); if (!f.startsWith(PREMIUM + path.sep) || !fs.existsSync(f) || !fs.statSync(f).isFile()) return null; return { body: fs.readFileSync(f), type: TYPES[path.extname(f)] }; } },
+    stockage: { type: 'r2-simule',
+      async get(cle) { const f = path.join(PREMIUM, cle); if (!f.startsWith(PREMIUM + path.sep) || !fs.existsSync(f) || !fs.statSync(f).isFile()) return null; return { body: fs.readFileSync(f), type: TYPES[path.extname(f)] }; },
+      async lister() { const out = []; const tour = d => { for (const e of fs.readdirSync(d, { withFileTypes: true })) { const f = path.join(d, e.name); if (e.isDirectory()) tour(f); else out.push({ cle: path.relative(PREMIUM, f).split(path.sep).join('/'), taille: fs.statSync(f).size }); } }; if (fs.existsSync(PREMIUM)) tour(PREMIUM); return out.sort((a, b) => a.cle.localeCompare(b.cle)); } },
     stripe: clientStripe(env, { fetcher: fauxStripe }) });
   async function envoyerWebhook(type, objet) {
     const corps = JSON.stringify({ id: 'evt_emul_' + (++n), livemode: false, type, data: { object: objet } }), t = Math.floor(maintenant() / 1000);
@@ -107,7 +112,7 @@ export async function creerEmulateur({ mdpCreateur = process.env.LDN_EMUL_MDP_CR
     return json({ erreur: 'inconnu' }, 404);
   }
   return {
-    env, base, comptes, mdpCreateur,
+    env, base, comptes, mdpCreateur, dossierPremium: PREMIUM,
     async traiter(req) {
       const chemin = new URL(req.url).pathname;
       if (chemin.startsWith('/api/_emulateur/')) return routeEmulateur(req, chemin.slice('/api/_emulateur/'.length));

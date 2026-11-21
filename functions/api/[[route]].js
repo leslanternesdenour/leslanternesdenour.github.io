@@ -7,6 +7,17 @@ import { verifierJeton, cleGoogle } from '../../serveur/jeton.js';
 import { clientStripe } from '../../serveur/stripe.js';
 
 let base = null;
+
+// Stockage privé des contenus Premium : R2 (lié sous le nom R2_PREMIUM ; non public : seules ces Functions y lisent,
+// après vérification des droits). Sans R2 lié, aucun contenu Premium n'est servi (404).
+export function stockagePremium(env) {
+  if (env.R2_PREMIUM) return {
+    type: 'r2',
+    async get(cle) { const o = await env.R2_PREMIUM.get(cle); return o && { body: o.body, type: o.httpMetadata && o.httpMetadata.contentType }; },
+    async lister() { const out = []; let curseur; do { const r = await env.R2_PREMIUM.list({ cursor: curseur, limit: 1000 }); for (const o of r.objects) out.push({ cle: o.key, taille: o.size, date: o.uploaded }); curseur = r.truncated ? r.cursor : null; } while (curseur); return out; }
+  };
+  return { type: 'aucun', async get() { return null; }, async lister() { return []; } };
+}
 export async function onRequest({ request, env }) {
   if (!env.SESSION_SECRET || !env.FIREBASE_PROJET || !env.FIREBASE_COMPTE_SERVICE)
     return new Response(JSON.stringify({ erreur: 'comptes-non-configures' }), { status: 503, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
@@ -14,7 +25,7 @@ export async function onRequest({ request, env }) {
   const ctx = {
     env, base,
     auth: { verifierIdToken: (jeton, maintenant) => verifierJeton(jeton, { projet: env.FIREBASE_PROJET, type: 'id', obtenirCle: cleGoogle, maintenant }) },
-    stockage: { async get(cle) { if (!env.R2_PREMIUM) return null; const o = await env.R2_PREMIUM.get(cle); return o && { body: o.body, type: o.httpMetadata && o.httpMetadata.contentType }; } },
+    stockage: stockagePremium(env),
     stripe: clientStripe(env)
   };
   return traiter(request, ctx);

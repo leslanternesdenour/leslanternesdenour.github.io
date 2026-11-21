@@ -1,14 +1,15 @@
 // Démarrage du Monde des Lanternes : écrans, réglages, sons, panneaux, jeux, liaison avec la scène 3D.
 import { sauvegarde } from './socle/sauvegarde.js?v=3';
-import { calculerRecompenses, lireLocal } from './socle/recompenses.js?v=1';
+import { calculerRecompenses, lireLocal } from './socle/recompenses.js?v=2';
 import { reveiller, reglerVolume, retirer } from './socle/audio.js?v=1';
 import { prechargerMusique, jouerMusique, arreterMusique, musiqueIndisponible } from './socle/musique.js?v=1';
 import { demarrerAmbiance, goutte, majAmbiance } from './socle/ambiance.js?v=2';
-import { chargerVoix, dire, arreterVoix } from './socle/voix.js?v=2';
+import { chargerVoix, dire, arreterVoix } from './socle/voix.js?v=3';
 // voix enregistrées du village (identifiants du catalogue des voix NOUR-VOIX-…)
 const VOIX_MAISON = { ablutions: 'VIL-003', priere: 'VIL-004', ramadan: 'VIL-005', sons: 'VIL-006', jardin: 'VIL-007', mots: 'VIL-008', cinq: 'VIL-009', etoiles: 'VIL-010', desert: 'VIL-011' };
 import { qualiteAuto, reglages, surveillerFluidite } from './socle/qualite.js?v=2';
 import { BATIMENTS } from './batiments.js?v=3';
+import { chargerMaisons, TEXTE_RESERVE } from './maisons-premium.js?v=1';
 import { mascotte } from './mascottes.js?v=1';
 
 const $ = id => document.getElementById(id);
@@ -58,7 +59,7 @@ function synchroRecompenses() {
   majCompteurs();
 }
 addEventListener('pageshow', synchroRecompenses);
-addEventListener('storage', e => { if (!e.key || /^(ablutions|priere|lanternes2|monde_voyage)$/.test(e.key)) synchroRecompenses(); });
+addEventListener('storage', e => { if (!e.key || /^(ablutions|priere|lanternes2|monde_voyage|maison_mots)$/.test(e.key)) synchroRecompenses(); });
 document.addEventListener('visibilitychange', () => { if (!document.hidden) synchroRecompenses(); });
 
 async function init() {
@@ -148,6 +149,8 @@ function ouvrirPanneau(b) {
   const ouvert = b.etat === 'ouvert';
   $('pan-entrer').classList.toggle('cache', !ouvert);
   $('pan-bientot').classList.toggle('cache', ouvert);
+  $('pan-bientot').lastElementChild.textContent = b.etat === 'reserve' ? TEXTE_RESERVE : 'Bientôt ! Cette maison se prépare.';
+  $('pan-entrer').lastElementChild.textContent = b.apercu ? 'Entrer (aperçu Créateur)' : 'Entrer';
   if (ouvert) $('pan-entrer').href = b.lien;
   $('panneau').classList.remove('cache');
   $('bulle').classList.add('cache');
@@ -175,7 +178,9 @@ $('pan-entrer').addEventListener('click', e => {
 });
 
 // ---------- jeux ouverts DANS le village : la page reste chargée, la musique continue ----------
-const CHEMINS_JEUX = BATIMENTS.filter(b => b.lien).map(b => new URL(b.lien, location.href).pathname);
+const cheminsJeux = () => BATIMENTS.filter(b => b.lien).map(b => new URL(b.lien, location.href).pathname);
+// maisons du stockage privé : leur état (ouverte, réservée, bientôt) vient du serveur, sans bloquer l'ouverture du village
+chargerMaisons(BATIMENTS).catch(() => null);
 let cadre = null;
 const mediasJeu = new Set();
 
@@ -201,7 +206,7 @@ function surChargementJeu() {
   let w, chemin;
   try { w = cadre.contentWindow; chemin = w.location.pathname; } catch (e) { return fermerJeu(); }
   // Le jeu renvoie vers l'accueil du site (bouton maison) : on revient au village
-  if (!CHEMINS_JEUX.some(c => chemin.startsWith(c))) return fermerJeu();
+  if (!cheminsJeux().some(c => chemin.startsWith(c))) return fermerJeu();
   brancherJeu(w);
 }
 

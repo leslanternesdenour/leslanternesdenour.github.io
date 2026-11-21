@@ -2,6 +2,10 @@
 // Une région s'ouvre quand on a découvert le lieu voisin ET réussi UNE activité au choix parmi plusieurs
 // (jamais une seule activité difficile obligatoire). Une région ouverte le reste pour toujours.
 import { LIEUX } from './terrain.js?v=3';
+import { MESSAGE_FERME } from './premium.js?v=1';
+
+// Zones Premium fermées (pas de droit, ou contenu non reçu du serveur) : on ne peut pas y entrer, comme devant un éboulis.
+const FERMABLES = ['camp', 'dunes', 'wadi', 'rochers'];
 
 export const REGIONS = {
   wadi: {
@@ -24,9 +28,10 @@ export const REGIONS = {
   }
 };
 
-export function creerRegions({ etat, AV, enregistrer, barrieres, ui }) {
+export function creerRegions({ etat, AV, enregistrer, barrieres, ui, acces = { zoneOuverte: () => true } }) {
   etat.regions = etat.regions || {};
-  const ouverte = id => !!etat.regions[id];
+  const premiumFerme = id => !acces.zoneOuverte(id);
+  const ouverte = id => !!etat.regions[id] && !premiumFerme(id);
   for (const id of Object.keys(REGIONS)) if (ouverte(id) && barrieres[id]) barrieres[id].ouvrir();
   const contexte = () => ({ AV, zones: etat.zones });
   function conditions(id) {
@@ -35,15 +40,17 @@ export function creerRegions({ etat, AV, enregistrer, barrieres, ui }) {
   }
   // explication courte, pour l'éboulis, la carte et le carnet
   function explication(id) {
+    if (premiumFerme(id)) return MESSAGE_FERME;
     const k = conditions(id), R = REGIONS[id];
     return `${R.nom} est encore fermé par un éboulis. Pour l'ouvrir : ${k.requis.ok ? '✓ ' : ''}${k.requis.txt}, puis au choix : ${k.auChoix.map(a => (a.ok ? '✓ ' : '') + a.txt).join(' ; ou ')}.`;
   }
   return {
     ouverte, conditions, explication,
-    fermees: () => Object.keys(REGIONS).filter(id => !ouverte(id)).map(id => ({ id, x: LIEUX[id].x, z: LIEUX[id].z, r: LIEUX[id].r + 4 })),
+    premiumFerme,
+    fermees: () => [...new Set([...Object.keys(REGIONS).filter(id => !ouverte(id)), ...FERMABLES.filter(premiumFerme)])].map(id => ({ id, x: LIEUX[id].x, z: LIEUX[id].z, r: LIEUX[id].r + 4 })),
     verifier() {
       for (const id of Object.keys(REGIONS)) {
-        if (ouverte(id)) continue;
+        if (ouverte(id) || premiumFerme(id)) continue;
         const k = conditions(id);
         if (k.requis.ok && k.auChoix.some(a => a.ok)) {
           etat.regions[id] = Date.now(); enregistrer();

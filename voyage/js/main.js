@@ -9,13 +9,14 @@ import { Controles, ACTIONS, nomTouche } from './controles.js?v=3';
 import { creerOiseaux } from './oiseaux.js?v=3';
 import { creerFaucon } from './faucon.js?v=3';
 import * as S from './sons.js?v=3';
-import { chargerVoixVoyage, direTextes, direIds, direMotArabe, arreterVoixVoyage } from './voix.js?v=3';
-import { ZONES, POINTS, BIENTOT } from './contenu.js?v=3';
+import { chargerVoixVoyage, direTextes, direIds, direMotArabe, arreterVoixVoyage, ajouterPhrases } from './voix.js?v=4';
+import { chargerPremium, MESSAGE_FERME } from './premium.js?v=1';
+import { ZONES, POINTS, BIENTOT, DESCRIPTIONS_LIEUX } from './contenu.js?v=4';
 import { sauvegarde } from '../../monde/socle/sauvegarde.js?v=3';
 import { qualiteAuto, surveillerFluidite } from '../../monde/socle/qualite.js?v=2';
 import { textureSol, normalesEau, textureNuage } from './textures.js?v=3';
 import { creerEffets } from './effets.js?v=3';
-import { creerAventure, MISSIONS } from './aventure.js?v=3';
+import { creerAventure, MISSIONS } from './aventure.js?v=4';
 import { FICHES } from './animaux.js?v=3';
 import { creerMarche, MARCHANDS, ARTICLES, article } from './marche.js?v=3';
 import { RARETES, articlesDuJour, modeleObjet } from './catalogue.js?v=3';
@@ -24,11 +25,11 @@ import { creerCour } from './cour.js?v=3';
 import { MONTURES, monture, creerMonture, creerEcurie, FICHES_ESPECES } from './montures.js?v=3';
 import { COLLECTIONS, BADGES, progressionCollection } from './succes.js?v=3';
 import { creerGuide } from './guide.js?v=3';
-import { creerQuetes, QUETES, CATEGORIES_QUETES } from './quetes.js?v=3';
-import { creerRegions, REGIONS } from './regions.js?v=3';
+import { creerQuetes, QUETES, CATEGORIES_QUETES, SPOTS } from './quetes.js?v=4';
+import { creerRegions, REGIONS } from './regions.js?v=4';
 import { illustration, ICONE_MOTS, ICONE_SON } from './illustrations.js?v=3';
 import { creerEffetDecouverte } from './decouverte.js?v=3';
-import { MOTS } from './quetes.js?v=3';
+import { MOTS } from './quetes.js?v=4';
 import { creerCarte, CATEGORIES } from './carte.js?v=3';
 import { creerBourse } from './economie.js?v=3';
 import { creerQuotidien } from './quotidien.js?v=3';
@@ -65,6 +66,9 @@ async function demarrer() {
   const TX = { sol: Q.detail ? textureSol(Q.detail) : null, eau: normalesEau(Q.detail >= 512 ? 256 : 128) };
   Q.texNuage = i => textureNuage(i + 1);
 
+  // Zones Premium : le serveur dit ce qui est ouvert et envoie leur contenu. En cas d'échec, seules les zones gratuites s'ouvrent.
+  const accesPromis = chargerPremium({ POINTS, DESCRIPTIONS_LIEUX, SPOTS, ajouterPhrases })
+    .catch(() => ({ zoneOuverte: id => !['camp', 'dunes', 'col', 'montagnes', 'wadi', 'rochers'].includes(id), missionOuverte: id => !['lanternes', 'tresor', 'voyageur', 'animaux'].includes(id) }));
   $('chargement-detail').textContent = 'On dessine le désert et les montagnes';
   await attendre();
   const terrain = new Terrain(Q.terrain, TX.sol);
@@ -73,10 +77,11 @@ async function demarrer() {
 
   $('chargement-detail').textContent = 'On construit le village';
   await attendre();
+  const acces = await accesPromis;
   const decor = creerDecor(scene, terrain, Q, TX);
   decor.construireZone('village');   // avant l'aventure : les objets cachés évitent les maisons
   const effets = creerEffets(scene, terrain, Q);
-  const aventure = creerAventure({ scene, terrain, colliders: decor.colliders, etat, enregistrer, sons: S, ombres: !!Q.ombres,
+  const aventure = creerAventure({ scene, terrain, colliders: decor.colliders, etat, enregistrer, sons: S, ombres: !!Q.ombres, acces,
     donner: (id, n, raison) => bourse.recompense(id, n, raison, ouDonner()), evenement: (t, i) => quotidien && quotidien.evenement(t, i),
     ui: { dialogue: (p) => dialogue(p), decouverte: d => decouvrir(d), bandeau: (a, b) => bandeau(a, b), indice: (h, ms) => montrerIndice(h, ms), pieces: (t, n, r) => afficherGain(t, n, r), majSuivi: () => majSuivi() } });
   const AV = aventure.A;
@@ -117,7 +122,7 @@ async function demarrer() {
     donner: (id, n, raison) => bourse.recompense(id, n, raison, ouDonner()),
     ui: { dialogue: p => dialogue(p), decouverte: d => decouvrir(d), bandeau: (a, b) => { bandeau(a, b); S.sonDecouverte(); }, evenement: t => quotidien.evenement(t) } });
   // les régions à débloquer (le wadi, les rochers gravés)
-  const regions = creerRegions({ etat, AV, enregistrer, barrieres: decor.barrieres,
+  const regions = creerRegions({ etat, AV, enregistrer, barrieres: decor.barrieres, acces,
     ui: { debloquee: (id, R) => { setTimeout(() => { bandeau('Nouvelle région débloquée !', `${R.icone} ${R.nom}`); S.sonPorte(); montrerIndice(`🗺️ ${R.nom} est ouvert : regarde ta carte !`, 4000); }, 600); } } });
   // Hakim, l'ancien du village (personnage imaginaire) : il pose des questions chaque jour
   const hakim = new Enfant(!!Q.ombres, { tunique: '#efe6d2', pantalon: '#cfc2a8', cheche: '#ffffff', peau: '#c08a62', sac: false, barbe: '#f4f1ea' });
@@ -197,7 +202,7 @@ async function demarrer() {
   function avertirRegion(id) { const t = performance.now(); if (t - dernierRegion > 8000) { dernierRegion = t; montrerIndice('🔒 ' + regions.explication(id), 6500); } }
   function avertirCol() {
     const t = performance.now();
-    if (t - dernierAvertissement > 6000) { dernierAvertissement = t; montrerIndice('🔒 Ce chemin est encore fermé : découvre l\'oasis et le camp des caravanes.', 4000); }
+    if (t - dernierAvertissement > 6000) { dernierAvertissement = t; const ouvert = acces.zoneOuverte('col'); montrerIndice('🔒 ' + (ouvert ? 'Ce chemin est encore fermé : découvre l\'oasis et le camp des caravanes.' : MESSAGE_FERME), ouvert ? 4000 : 6500); }
   }
   const angleVers = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 
@@ -414,7 +419,7 @@ async function demarrer() {
     }
   }
   function verifierCol(annoncer) {
-    const ok = etat.colOuvert || (etat.zones.includes('oasis') && etat.zones.includes('camp')) || (sauvegarde.get().etoiles || 0) >= 12;
+    const ok = acces.zoneOuverte('col') && (etat.colOuvert || (etat.zones.includes('oasis') && etat.zones.includes('camp')) || (sauvegarde.get().etoiles || 0) >= 12);
     if (ok && !decor.col.ouvert) {
       decor.col.ouvert = true;
       if (!etat.colOuvert) {
@@ -930,15 +935,6 @@ async function demarrer() {
   const effetDecouverte = creerEffetDecouverte(scene, H);
   let focus = null;                            // la caméra se tourne doucement vers ce qu'on découvre
   const fileDecouvertes = [];
-  const DESCRIPTIONS_LIEUX = {
-    marche: 'Le souk, où les marchands vendent des tissus, des poteries et des parures pour les montures.',
-    oasis: 'Une oasis : de l\'eau, de l\'ombre et des palmiers, au milieu du désert.',
-    camp: 'Le camp où les caravanes se reposent le soir, près du feu, sous les tentes.',
-    dunes: 'Le grand désert de sable, où le vent dessine des dunes et des vagues.',
-    montagnes: 'Les montagnes de pierre, au nord du pays. Il y fait plus frais.',
-    wadi: 'Le lit d\'une rivière souvent à sec, qui se couvre de fleurs après la pluie.',
-    rochers: 'De gros rochers rouges, couverts de gravures très anciennes.'
-  };
   const TYPES = { mot: [ICONE_MOTS, 'Nouveau mot arabe !', 'Mot arabe'], plante: ['🌿', 'Nouvelle plante observée !', 'Plante'], animal: ['🔍', 'Nouvel animal observé !', 'Animal'],
     gravure: ['🪨', 'Gravure découverte !', 'Gravure'], nature: ['✨', 'Nouvelle découverte !', 'Découverte'], lieu: ['🗺️', 'Nouveau lieu découvert !', 'Lieu'] };
   // une image d'un modèle du jeu (pour les animaux)
@@ -1050,12 +1046,13 @@ async function demarrer() {
     zone('village', 0, 0, 'village', 0, { rayon: 20 });
     zone('marche', marche.centre.x, marche.centre.z, 'marche', 0, { rayon: 10 });
     zone('oasis', LIEUX.oasis.x - LIEUX.oasis.lac - 6, LIEUX.oasis.z, 'oasis', 55, { rayon: 12 });
-    zone('camp', LIEUX.camp.x, LIEUX.camp.z, 'camp', 45, { rayon: 14 });
-    zone('dunes', LIEUX.dunes.x, LIEUX.dunes.z, 'desert', 110, { rayon: 30 });
-    zone('montagnes', 0, -258, 'montagne', 75, { rayon: 18, verrou: decor.col.ouvert ? null : 'Le passage vers les montagnes est encore fermé. Découvre d\'abord l\'oasis et le camp des caravanes.' });
+    const fermePremium = id => acces.zoneOuverte(id) ? null : MESSAGE_FERME;
+    zone('camp', LIEUX.camp.x, LIEUX.camp.z, 'camp', 45, { rayon: 14, verrou: fermePremium('camp') });
+    zone('dunes', LIEUX.dunes.x, LIEUX.dunes.z, 'desert', 110, { rayon: 30, verrou: fermePremium('dunes') });
+    zone('montagnes', 0, -258, 'montagne', 75, { rayon: 18, verrou: fermePremium('montagnes') || decor.col.ouvert ? fermePremium('montagnes') : 'Le passage vers les montagnes est encore fermé. Découvre d\'abord l\'oasis et le camp des caravanes.' });
     zone('wadi', LIEUX.wadi.x, LIEUX.wadi.z, 'desert', 50, { rayon: 14, icone: '🌼', verrou: regions.ouverte('wadi') ? null : regions.explication('wadi') });
     zone('rochers', LIEUX.rochers.x, LIEUX.rochers.z, 'decouverte', 44, { rayon: 12, icone: '🪨', verrou: regions.ouverte('rochers') ? null : regions.explication('rochers') });
-    L.push({ id: 'col', nom: 'Le col', cat: 'passage', x: 0, z: -150, connu: true, rayon: 8, verrou: decor.col.ouvert ? null : 'Ce passage s\'ouvrira quand tu auras découvert l\'oasis et le camp des caravanes.', texte: 'Le passage entre le village et les montagnes.' });
+    L.push({ id: 'col', nom: 'Le col', cat: 'passage', x: 0, z: -150, connu: true, rayon: 8, verrou: fermePremium('col') || decor.col.ouvert ? fermePremium('col') : 'Ce passage s\'ouvrira quand tu auras découvert l\'oasis et le camp des caravanes.', texte: 'Le passage entre le village et les montagnes.' });
     L.push({ id: 'puits', nom: 'Le puits du village', cat: 'eau', x: 0, z: 3.4, connu: true, rayon: 4 });
     L.push({ id: 'abreuvoir', nom: 'L\'abreuvoir de l\'enclos', cat: 'eau', x: 36.5, z: -12.5, connu: true, rayon: 4 });
     L.push({ id: 'ecurie', nom: 'L\'écurie de Nabil', cat: 'ecurie', x: ecurie.point.x, z: ecurie.point.z, connu: true, rayon: 4, texte: 'Pour choisir ou adopter une monture.' });

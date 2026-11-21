@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="fr" data-univers="histoires">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Aperçu Créateur · Les Lanternes de Nour</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../univers/univers.css?v=1">
+<style>
+*{box-sizing:border-box}html,body{margin:0}
+body{min-height:100vh;color:#f4efff;font-family:Nunito,system-ui,sans-serif;padding:24px 16px 40px}
+main{max-width:520px;margin:0 auto;display:grid;gap:18px;position:relative;z-index:1}
+h1{font:800 clamp(24px,6vw,32px) Poppins,system-ui;margin:0;color:#f5b942;text-align:center}
+p{margin:0;color:#c9bfe8;line-height:1.5}
+.carte{background:#2a2166;border-radius:24px;padding:20px;display:grid;gap:12px;box-shadow:0 8px 0 #120d33}
+.carte h2{margin:0;font:800 20px Poppins,system-ui;color:#fff}
+.onglets{display:flex;gap:6px;background:#191345;border-radius:999px;padding:5px}
+.onglets button{flex:1;background:none;box-shadow:none;color:#c9bfe8;font:800 15px Nunito,system-ui;padding:10px 6px;border-radius:999px}
+.onglets button[aria-selected=true]{background:#f5b942;color:#2a1d00}
+label{display:grid;gap:6px;font-weight:800;color:#fff}
+input[type=email],input[type=password]{width:100%;border-radius:14px;border:2px solid #3a2a7d;background:#191345;color:#fff;font:700 17px Nunito,system-ui;padding:12px 14px}
+input:focus{outline:none;border-color:#f5b942}
+.case{display:flex;gap:10px;align-items:flex-start;font-weight:600;color:#e9e2ff;font-size:15px}
+.case input{width:22px;height:22px;flex:none;margin-top:2px;accent-color:#f5b942}
+button{border:0;border-radius:18px;padding:14px 16px;font:900 18px Nunito,system-ui;cursor:pointer;background:#f5b942;color:#2a1d00;box-shadow:0 5px 0 #d9952a}
+button:active{transform:translateY(3px);box-shadow:0 2px 0 #d9952a}
+button:disabled{opacity:.6;cursor:wait}
+button.doux{background:#3a2a7d;color:#fff;box-shadow:0 5px 0 #191345}
+button.danger{background:none;box-shadow:none;color:#ff9fb2;font-size:15px;padding:6px;text-decoration:underline}
+.lien{background:none;box-shadow:none;color:#ffe3a3;font:700 15px Nunito,system-ui;padding:4px;text-decoration:underline;justify-self:start}
+.etat{font-weight:800;color:#8fdcc1;min-height:1.4em}
+.etat.ko{color:#ff9fb2}
+.cache{display:none!important}
+a{color:#ffe3a3}
+.petit{font-size:14px}
+.choix{display:grid;gap:10px}
+input[type=text],select{width:100%;border-radius:14px;border:2px solid #3a2a7d;background:#191345;color:#fff;font:700 17px Nunito,system-ui;padding:12px 14px}
+.badge{display:inline-block;border-radius:999px;padding:3px 10px;font:800 13px Nunito,system-ui;background:#f5b942;color:#2a1d00;vertical-align:middle}
+.badge.froid{background:#9fd8ff;color:#06263d}.badge.sim{background:#ff9fb2;color:#3d0613}
+.enfant{display:flex;align-items:center;gap:10px;background:#191345;border-radius:16px;padding:10px 12px}
+.enfant.actif{outline:3px solid #f5b942}.enfant .nom{flex:1;font-weight:900;color:#fff}.enfant .nom small{display:block;font-weight:600;color:#c9bfe8}
+.enfant button{font-size:15px;padding:8px 12px;box-shadow:0 3px 0 #d9952a}.enfant button.doux{box-shadow:0 3px 0 #120d33}
+.rangee{display:flex;gap:8px;flex-wrap:wrap}.rangee>*{flex:1}
+.bandeau-sim{background:#ff9fb2;color:#3d0613;font-weight:900;text-align:center;border-radius:14px;padding:8px}
+main{max-width:760px}
+.onglets{overflow-x:auto;flex-wrap:nowrap}.onglets button{flex:none;font-size:14px;padding:9px 12px}
+table{width:100%;border-collapse:collapse;font-size:14px}td,th{padding:7px 6px;border-bottom:1px solid #3a2a7d;text-align:left;vertical-align:top}th{color:#f5b942}
+td button{font-size:13px;padding:6px 9px;box-shadow:none;margin:2px}
+.chiffres{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}.chiffres div{background:#191345;border-radius:14px;padding:12px;text-align:center}.chiffres b{display:block;font:900 26px Poppins,system-ui;color:#f5b942}
+.lien-code{word-break:break-all;background:#191345;border-radius:12px;padding:10px;font:700 14px monospace;color:#ffe3a3}
+.tableau{overflow-x:auto}
+.modes{display:flex;gap:8px;flex-wrap:wrap}.modes button{flex:1;min-width:110px;font-size:15px;padding:10px}
+.modes button[aria-pressed=true]{outline:4px solid #fff;background:#8fdcc1;color:#06261a;box-shadow:0 5px 0 #4c9c80}
+.vue-actuelle{background:#8fdcc1;color:#06261a;font-weight:900;border-radius:14px;padding:8px 12px;text-align:center}
+.etat-pub{font-weight:900;border-radius:999px;padding:2px 9px;font-size:12px;white-space:nowrap;display:inline-block}
+.etat-pub.oui{background:#8fdcc1;color:#06261a}.etat-pub.non{background:#ff9fb2;color:#3d0613}.etat-pub.libre{background:#3a2a7d;color:#e9e2ff}
+.ouvert-oui{color:#8fdcc1;font-weight:900}.ouvert-non{color:#ff9fb2;font-weight:900}
+.telephone{width:min(390px,100%);height:760px;border:10px solid #120d33;border-radius:34px;background:#fff;display:block;margin:0 auto}
+.contenu-pack{background:#191345;border-radius:14px;padding:12px;display:grid;gap:8px}.contenu-pack .ar{font:700 22px Amiri,serif;direction:rtl;text-align:right;color:#ffe3a3}
+td select{font-size:13px;padding:6px;border-radius:10px}
+</style>
+</head>
+<body>
+<div id="deco" aria-hidden="true"></div>
+<main>
+  <h1>👁️ Aperçu Créateur</h1>
+  <p class="bandeau-sim cache" id="bandeau-sim">SIMULATION LOCALE — faux comptes, stockage privé simulé (aucun service réel)</p>
+  <section class="carte cache" id="v-refus"><h2>Réservé au compte Créateur</h2><p>Connectez-vous avec le compte Créateur depuis l'<a href="../compte/">Espace famille</a>.</p></section>
+
+  <form class="carte cache" id="v-reauth" novalidate>
+    <h2>Confirmez votre identité</h2>
+    <p>Publier ou retirer un contenu demande une connexion de moins de 15 minutes.</p>
+    <label>Mot de passe<input type="password" id="r-mdp" autocomplete="current-password"></label>
+    <button type="submit">Confirmer</button>
+  </form>
+
+  <div id="v-apercu" class="cache" style="display:grid;gap:18px">
+    <section class="carte">
+      <h2>Voir le site comme…</h2>
+      <p class="petit">Simulation <b>pour votre session seulement</b> : aucun vrai compte n'est modifié, aucun paiement, aucune invitation. Le serveur applique les droits du mode choisi aux contenus (village, Grand Voyage, maisons, fichiers Premium).</p>
+      <div class="modes" id="modes">
+        <button data-vue="" aria-pressed="false">👑 Créateur</button>
+        <button data-vue="visiteur" aria-pressed="false">🚶 Visiteur</button>
+        <button data-vue="gratuit" aria-pressed="false">🌱 Gratuit</button>
+        <button data-vue="premium" aria-pressed="false">⭐ Premium</button>
+        <button data-vue="famille" aria-pressed="false">👨‍👩‍👧 Famille</button>
+      </div>
+      <p class="vue-actuelle" id="vue-actuelle"></p>
+      <div class="rangee"><a class="lien" href="../monde/">🏘️ Ouvrir le village</a><a class="lien" href="../voyage/">🐪 Ouvrir le Grand Voyage</a></div>
+    </section>
+
+    <section class="carte">
+      <h2>Contenus</h2>
+      <p class="petit">« Publié » : visible selon son niveau. « Non publié » : vous seul (aperçu). La colonne « Ouvert » montre ce que voit le mode choisi ci-dessus.</p>
+      <div class="tableau"><table><thead><tr><th>Contenu</th><th>État</th><th>Ouvert</th><th>Stockage privé</th><th></th></tr></thead><tbody id="t-contenus"></tbody></table></div>
+    </section>
+
+    <section class="carte cache" id="v-essai">
+      <h2 id="essai-titre"></h2>
+      <p class="petit" id="essai-note"></p>
+      <div id="essai-corps"></div>
+    </section>
+  </div>
+  <p class="etat" id="etat" role="status" aria-live="polite"></p>
+  <p style="text-align:center"><a href="../admin/">Administration</a> · <a href="../compte/">Espace famille</a> · <a href="../">Retour au site</a></p>
+</main>
+<script type="module">
+import * as C from '../compte/client.js?v=1';
+import { BATIMENTS } from '../monde/batiments.js?v=3';
+import { ZONES } from '../voyage/js/contenu.js?v=4';
+const $ = id => document.getElementById(id);
+const etat = (t, ko) => { $('etat').textContent = t || ''; $('etat').className = 'etat' + (ko ? ' ko' : ''); };
+const el = (tag, txt, attrs = {}) => { const e = document.createElement(tag); if (txt != null) e.textContent = txt; Object.assign(e, attrs); return e; };
+const NOMS_MISSIONS = { objets: 'Les objets perdus de Nour', lanternes: 'Les lanternes cachées', tresor: 'Le trésor de l\'oasis', voyageur: 'Aider le voyageur', animaux: 'Les animaux du désert' };
+const nom = (g, id) => g === 'maisons' ? ((BATIMENTS.find(b => b.id === id) || {}).nom || id) : g === 'voyage' ? (id === 'col' ? 'Le col (passage)' : (ZONES.find(z => z.id === id) || {}).nom || id) : NOMS_MISSIONS[id] || id;
+const GROUPES = { maisons: '🏠 Maisons du village', voyage: '🐪 Zones du Grand Voyage', missions: '🎯 Missions du Grand Voyage' };
+const NIV = { libre: 'Libre (sans compte)', gratuit: 'Gratuit (avec compte)', premium: 'Premium', famille: 'Famille', apercu: 'Non publié (aperçu)' };
+const VUES = { '': 'Créateur (tout est ouvert)', visiteur: 'Visiteur sans compte', gratuit: 'compte Gratuit', premium: 'compte Premium', famille: 'compte Famille' };
+let enAttente = null;
+async function occupe(btn, f) {
+  if (btn) btn.disabled = true;
+  try { await f(); }
+  catch (e) { if (e.raison === 'reconnexion-requise') { enAttente = f; $('v-reauth').classList.remove('cache'); $('r-mdp').focus(); etat(C.messageErreur(e)); } else etat(C.messageErreur(e), true); }
+  finally { if (btn) btn.disabled = false; }
+}
+$('v-reauth').onsubmit = e => { e.preventDefault(); occupe(e.submitter, async () => {
+  await C.ouvrirSession(await C.auth.reauthentifier($('r-mdp').value)); $('r-mdp').value = ''; $('v-reauth').classList.add('cache'); etat('Identité confirmée.');
+  const f = enAttente; enAttente = null; if (f) await f();
+}); };
+
+// ---------- mode de vue (cookie lu par le serveur uniquement pour le compte Créateur) ----------
+const vueCourante = () => (document.cookie.match(/(?:^|; )ldn_vue=([a-z]+)/) || [])[1] || '';
+function choisirVue(v) {
+  const sec = location.protocol === 'https:' ? '; Secure' : '';
+  document.cookie = v ? `ldn_vue=${v}; Path=/; Max-Age=7200; SameSite=Strict${sec}` : `ldn_vue=; Path=/; Max-Age=0; SameSite=Strict${sec}`;
+  C.purgerCaches();
+}
+for (const b of document.querySelectorAll('#modes button')) b.onclick = () => occupe(b, async () => { choisirVue(b.dataset.vue); await afficher(); etat('Vue : ' + VUES[b.dataset.vue]); });
+
+async function afficher() {
+  const v = vueCourante();
+  document.querySelectorAll('#modes button').forEach(b => b.setAttribute('aria-pressed', b.dataset.vue === v));
+  $('vue-actuelle').textContent = 'Vous voyez le site comme : ' + VUES[v];
+  const [cat, inv, reel] = await Promise.all([C.api('/api/catalogue'), C.api('/api/admin/premium'), C.api('/api/admin/catalogue')]);
+  const fichiers = inv.fichiers || [];
+  const lignes = [];
+  for (const [g, items] of Object.entries(reel.catalogue)) {
+    lignes.push(el('tr', null)); lignes[lignes.length - 1].appendChild(el('td', GROUPES[g], { colSpan: 5, style: 'font-weight:900;color:#f5b942;padding-top:14px' }));
+    for (const [id, niveau] of Object.entries(items)) {
+      const vu = cat.catalogue[g][id], prefixe = g + '/' + id + '/', presents = fichiers.filter(f => f.cle.startsWith(prefixe));
+      const tr = el('tr'); tr.dataset.contenu = g + '/' + id;
+      const pub = el('span', niveau === 'apercu' ? 'Non publié' : niveau === 'libre' ? 'Publié · libre' : 'Publié · ' + NIV[niveau], { className: 'etat-pub ' + (niveau === 'apercu' ? 'non' : niveau === 'libre' ? 'libre' : 'oui') });
+      const sel = el('select'); sel.setAttribute('aria-label', 'Niveau de ' + nom(g, id));
+      for (const [k, t] of Object.entries(NIV)) sel.appendChild(el('option', t, { value: k, selected: k === niveau }));
+      sel.onchange = () => occupe(sel, async () => { await C.api('/api/admin/catalogue', { methode: 'POST', corps: { groupe: g, id, niveau: sel.value } }); await afficher(); etat(nom(g, id) + ' : ' + NIV[sel.value]); });
+      const etatCell = el('td'); etatCell.append(pub, el('br'), sel);
+      const actions = el('td');
+      if (g === 'maisons' && presents.length) { const b = el('button', 'Essayer', { className: 'doux' }); b.onclick = () => essayerMaison(id); actions.appendChild(b); }
+      if (g === 'voyage' && presents.some(f => f.cle === prefixe + 'contenu.json')) { const b = el('button', 'Lire le contenu', { className: 'doux' }); b.onclick = () => occupe(b, () => lireZone(id)); actions.appendChild(b); }
+      tr.append(el('td', nom(g, id)), etatCell, el('td', vu.ouvert ? '✓ ouvert' : '✗ fermé', { className: vu.ouvert ? 'ouvert-oui' : 'ouvert-non' }),
+        el('td', presents.length ? presents.length + ' fichier' + (presents.length > 1 ? 's' : '') : (g === 'missions' || id === 'col' || ['libre', 'gratuit'].includes(niveau) && g !== 'maisons' ? '— (dans le jeu)' : 'absent')), actions);
+      lignes.push(tr);
+    }
+  }
+  $('t-contenus').replaceChildren(...lignes);
+}
+// essayer une maison comme sur un téléphone, avec les droits du mode choisi
+function essayerMaison(id) {
+  $('v-essai').classList.remove('cache'); $('essai-titre').textContent = '📱 ' + nom('maisons', id);
+  $('essai-note').textContent = 'Affichage comme sur un téléphone, avec les droits de : ' + VUES[vueCourante()] + '. Si le mode n\'y a pas droit, la maison refuse de s\'ouvrir (comme pour une vraie famille).';
+  const f = el('iframe', null, { className: 'telephone', src: `/api/premium/maisons/${id}/`, title: nom('maisons', id) });
+  const ouvrir = el('a', 'Ouvrir en plein écran', { className: 'lien', href: `/api/premium/maisons/${id}/`, target: '_blank' });
+  $('essai-corps').replaceChildren(f, ouvrir); $('v-essai').scrollIntoView({ behavior: 'smooth' });
+}
+// relire le contenu d'une zone du Grand Voyage avant de la publier
+async function lireZone(id) {
+  const r = await fetch(`/api/premium/voyage/${id}/contenu.json`, { credentials: 'same-origin', cache: 'no-store' });
+  $('v-essai').classList.remove('cache'); $('essai-titre').textContent = '📜 ' + nom('voyage', id);
+  if (!r.ok) { $('essai-note').textContent = `Refusé par le serveur (${r.status}) pour : ${VUES[vueCourante()]}.`; $('essai-corps').replaceChildren(); return; }
+  const p = await r.json(); $('essai-note').textContent = 'Textes servis par le serveur depuis le stockage privé (ce que reçoit le jeu).';
+  const blocs = [];
+  if (p.lieu) blocs.push(el('p', '🗺️ ' + p.lieu));
+  for (const [k, t] of Object.entries(p.points || {})) { const d = el('div', null, { className: 'contenu-pack' }); d.append(el('b', k)); if (t.texte) d.append(el('p', t.texte)); if (t.arabe) d.append(el('p', t.arabe, { className: 'ar', lang: 'ar' })); if (t.sens) d.append(el('p', t.sens)); if (t.source) d.append(el('p', t.source, { className: 'petit' })); blocs.push(d); }
+  for (const [k, s] of Object.entries(p.spots || {})) blocs.push(el('p', '🔍 ' + k + ' : ' + s.texte));
+  blocs.push(el('p', `🔊 ${Object.keys(p.voix || {}).length} voix enregistrée(s)`, { className: 'petit' }));
+  $('essai-corps').replaceChildren(...blocs); $('v-essai').scrollIntoView({ behavior: 'smooth' });
+}
+
+if (C.simulation()) $('bandeau-sim').classList.remove('cache');
+const D = C.comptesActifs() ? await C.moi() : {};
+if (!D.admin) $('v-refus').classList.remove('cache');
+else { $('v-apercu').classList.remove('cache'); occupe(null, afficher); }
+</script>
+<script src="../univers/univers.js?v=1" defer></script>
+</body>
+</html>

@@ -22,6 +22,8 @@ export const BIENTOT = [
   { icone: '⛰️', nom: 'Le mont Thawr' }
 ];
 
+// Les lieux des zones Premium (camp, grand désert, montagnes, wadi, rochers gravés) n'ont ici que leur titre :
+// leurs textes, versets et voix sont servis par le serveur, après vérification des droits (voir premium.js).
 export const POINTS = {
   nour: {
     titre: 'Nour te souhaite la bienvenue',
@@ -47,42 +49,27 @@ export const POINTS = {
   },
   wadi: {
     titre: 'Le wadi',
-    texte: "Un wadi, c'est le lit d'une rivière qui reste sec presque toute l'année. Quand il pleut enfin, l'eau y coule d'un seul coup ! Ensuite, de petites mares restent un moment, et l'herbe et les fleurs poussent très vite.",
-    decouverte: 'Le wadi, une rivière souvent à sec'
+    premium: 'wadi', texte: '', decouverte: null   // texte, verset et voix : contenu Premium (stockage privé)
   },
   rochers: {
     titre: 'Les rochers gravés',
-    texte: "Il y a très, très longtemps, bien avant l'époque de Nour, des gens ont gravé des animaux sur les rochers d'Arabie : des chameaux, des bouquetins, des autruches… Ces gravures existent vraiment. Ici, ce sont des reconstitutions du jeu.",
-    decouverte: 'Les gravures sur les rochers'
+    premium: 'rochers', texte: '', decouverte: null   // texte, verset et voix : contenu Premium (stockage privé)
   },
   camp: {
     titre: 'Le camp des caravanes',
-    texte: "Autrefois, pour traverser le désert, on voyageait en caravane : une longue file de chameaux qui portaient l'eau, la nourriture et les marchandises. Le soir, on montait les tentes et on se reposait près du feu.",
-    decouverte: 'Les caravanes du désert'
+    premium: 'camp', texte: '', decouverte: null   // texte, verset et voix : contenu Premium (stockage privé)
   },
   dunes: {
     titre: 'Le grand désert',
-    texte: "Les dunes sont des collines de sable. Le vent les pousse et les dessine, petit à petit. Regarde comme la terre est grande et belle !",
-    arabe: 'وَإِلَى الْأَرْضِ كَيْفَ سُطِحَتْ',
-    sens: 'Sens du verset : « Et la terre, comment elle a été étendue ? »',
-    source: 'Coran, sourate Al-Ghâchiya (88), verset 20',
-    decouverte: 'La terre (sourate 88, verset 20)'
+    premium: 'dunes', texte: '', decouverte: null   // texte, verset et voix : contenu Premium (stockage privé)
   },
   etoiles: {
     titre: 'Le rocher des étoiles',
-    texte: "Tu as trouvé un endroit secret ! La nuit, dans le désert, on voit des milliers d'étoiles. Autrefois, les voyageurs les regardaient pour retrouver leur chemin.",
-    arabe: 'وَإِلَى السَّمَاءِ كَيْفَ رُفِعَتْ',
-    sens: 'Sens du verset : « Et le ciel, comment il a été élevé ? »',
-    source: 'Coran, sourate Al-Ghâchiya (88), verset 18',
-    decouverte: 'Le ciel (sourate 88, verset 18)'
+    premium: 'dunes', texte: '', decouverte: null   // texte, verset et voix : contenu Premium (stockage privé)
   },
   montagnes: {
     titre: 'Le belvédère des montagnes',
-    texte: "Bravo, tu es arrivé tout en haut ! D'ici, on voit tout le pays de Nour : le village, l'oasis et le désert. Les montagnes sont immenses et solides.",
-    arabe: 'وَإِلَى الْجِبَالِ كَيْفَ نُصِبَتْ',
-    sens: 'Sens du verset : « Et les montagnes, comment elles ont été dressées ? »',
-    source: 'Coran, sourate Al-Ghâchiya (88), verset 19',
-    decouverte: 'Les montagnes (sourate 88, verset 19)'
+    premium: 'montagnes', texte: '', decouverte: null   // texte, verset et voix : contenu Premium (stockage privé)
   },
   soins: {
     titre: 'Prendre soin de Sablo',
@@ -106,4 +93,11 @@ export const POINTS = {
     texte: "Tu as découvert l'oasis et le camp des caravanes. Le chemin des montagnes est ouvert : monte jusqu'au belvédère !",
     decouverte: null
   }
+};
+
+// Les descriptions courtes des lieux (carnet, découverte d'un lieu). Celles des zones Premium arrivent avec leur contenu.
+export const DESCRIPTIONS_LIEUX = {
+  marche: 'Le souk, où les marchands vendent des tissus, des poteries et des parures pour les montures.',
+  oasis: 'Une oasis : de l\'eau, de l\'ombre et des palmiers, au milieu du désert.',
+  camp: '', dunes: '', montagnes: '', wadi: '', rochers: ''
 };

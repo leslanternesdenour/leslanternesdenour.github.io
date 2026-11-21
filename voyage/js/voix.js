@@ -4,8 +4,8 @@
 // Les fichiers sont listés dans /audio/voix.json : { "NOUR-VOIX-DEC-001": ["fr/decouvertes/nour-voix-dec-001.mp3", 0, 9.4] }.
 // S'il n'y a pas de fichier, on répond « non » et le jeu garde la voix du téléphone, comme avant.
 // La lecture passe par le lecteur commun du village : une seule voix à la fois, la musique s'efface pendant qu'elle parle.
-import { chargerVoix, dire, existe, arreterVoix } from '../../monde/socle/voix.js?v=2';
-import { PHRASES, SUITE, NOMBRES, LANTERNE } from './voix-textes.js?v=3';
+import { chargerVoix, dire, existe, arreterVoix, ajouterVoix } from '../../monde/socle/voix.js?v=3';
+import { PHRASES, SUITE, NOMBRES, LANTERNE } from './voix-textes.js?v=4';
 
 // même façon d'écrire pour le texte du jeu et celui du catalogue
 export function normaliser(t) {
@@ -15,9 +15,17 @@ export function normaliser(t) {
 }
 
 const exacts = new Map(), debuts = [], contient = [];
-for (const [id, texte, mode] of PHRASES) {
-  const n = normaliser(texte);
-  if (mode === 'debut') debuts.push([n, id]); else if (mode === 'contient') contient.push([n, id]); else if (!exacts.has(n)) exacts.set(n, id);
+function indexer(liste) {
+  for (const [id, texte, mode] of liste) {
+    const n = normaliser(texte);
+    if (mode === 'debut') debuts.push([n, id]); else if (mode === 'contient') contient.push([n, id]); else if (!exacts.has(n)) exacts.set(n, id);
+  }
+}
+indexer(PHRASES);
+// Phrases et voix d'une zone Premium, reçues du serveur après vérification des droits (voir premium.js)
+export function ajouterPhrases(liste, voix) {
+  if (Array.isArray(liste)) indexer(liste.filter(x => Array.isArray(x) && typeof x[0] === 'string' && typeof x[1] === 'string'));
+  if (voix) ajouterVoix(voix);
 }
 // les phrases à trou : un clip fixe + un clip de nombre
 const MOTIFS = [

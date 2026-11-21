@@ -52,9 +52,9 @@ a{color:#ffe3a3}
 <script>
 (function () {
   // Les clés de progression du site (rien d'autre n'est lu ni écrit)
-  const MOTIFS = /^(monde|priere|ablutions|lanternes)/;
+  const MOTIFS = /^(monde|priere|ablutions|lanternes|maison_mots$)/;
   const NOMS = { monde: 'Le Monde des Lanternes (étoiles, réglages)', priere: 'J\'apprends ma prière', ablutions: 'Les ablutions',
-    ablutions_son: 'Réglage du son', monde_voyage: 'Le Grand Voyage (lieux découverts)', lanternes2: 'Calendrier du Ramadan (profils des enfants)' };
+    ablutions_son: 'Réglage du son', monde_voyage: 'Le Grand Voyage (lieux découverts)', lanternes2: 'Calendrier du Ramadan (profils des enfants)', maison_mots: 'La Chasse aux mots' };
   const $ = id => document.getElementById(id);
   const etat = (t, ko) => { $('etat').textContent = t; $('etat').className = 'etat' + (ko ? ' ko' : ''); };
   const vers64 = s => btoa(String.fromCharCode(...new TextEncoder().encode(s))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');

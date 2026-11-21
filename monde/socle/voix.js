@@ -9,6 +9,7 @@
 import { contexte, sortie, retirer } from './audio.js?v=1';
 
 let table = null, base = 'voix/';
+const enAttente = {};   // voix ajoutées avant le chargement de la table (contenus Premium)
 const tampons = new Map(); // fichier -> Promise<AudioBuffer>
 let enCours = null;
 
@@ -17,15 +18,25 @@ export async function chargerVoix(dossier = 'voix/') {
   try {
     const r = await fetch(base + 'voix.json', { cache: 'no-cache' });
     if (!r.ok) return false;
-    table = await r.json();
+    table = Object.assign(await r.json(), enAttente);
     return true;
   } catch (e) { table = null; return false; }
+}
+
+// Ajoute des voix (identifiant → [fichier, début, fin]). Un fichier qui commence par « / » est une adresse du site :
+// c'est le cas des voix Premium, servies par /api/premium/ (jamais gardées en cache).
+export function ajouterVoix(entrees) {
+  for (const [id, v] of Object.entries(entrees || {})) {
+    if (!Array.isArray(v) || typeof v[0] !== 'string' || !(v[2] > v[1])) continue;
+    const e = [v[0], v[1], v[2]];
+    enAttente[id] = e; if (table) table[id] = e;
+  }
 }
 
 function tampon(fichier) {
   if (!tampons.has(fichier)) {
     const ctx = contexte();
-    tampons.set(fichier, fetch(base + fichier).then(r => r.arrayBuffer())
+    tampons.set(fichier, fetch(fichier.startsWith('/') ? fichier : base + fichier).then(r => r.arrayBuffer())
       .then(ab => new Promise((ok, ko) => { const p = ctx.decodeAudioData(ab, ok, ko); if (p && p.then) p.then(ok, ko); })));
   }
   return tampons.get(fichier);

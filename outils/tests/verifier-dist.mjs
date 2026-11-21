@@ -7,7 +7,7 @@ const tous = d => fs.readdirSync(d, { withFileTypes: true }).flatMap(e => e.isDi
 const fichiers = tous(DIST).map(f => path.relative(DIST, f).split(path.sep).join('/'));
 const INTERDITS = [
   [/^functions\//, 'code serveur'], [/^outils\/(tests|restauration|admin)\//, 'outillage interne'], [/^_documentation\//, 'documentation interne'],
-  [/^premium\//, 'contenu Premium (doit être servi depuis R2 privé par le Worker)'], [/\.md$/, 'document de travail'],
+  [/^premium\//, 'contenu Premium (doit être servi depuis R2 privé par le Worker)'], [/^voyage\/[a-z]+\/(contenu|zone)\.json$/, 'pack Premium du Grand Voyage'], [/^maisons\//, 'maison Premium (servie par /api/premium)'], [/^voyage\/[a-z]+\/voix\//, 'voix Premium'], [/\.md$/, 'document de travail'],
   [/(^|\/)(wrangler\.toml|firestore\.rules|\.dev\.vars|\.env.*|package(-lock)?\.json)$/, 'configuration'],
   [/service-account|credentials|\.pem$|\.key$|\.bundle$/i, 'fichier sensible']
 ];

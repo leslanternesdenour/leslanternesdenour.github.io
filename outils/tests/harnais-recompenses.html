@@ -3,7 +3,7 @@
 <script type="module">
 // Même chemin de code que monde/village.js : calculerRecompenses(lireLocal) → sauvegarde.appliquerRecompenses → compteurs
 import { sauvegarde } from '../../monde/socle/sauvegarde.js?v=3';
-import { calculerRecompenses, lireLocal } from '../../monde/socle/recompenses.js?v=1';
+import { calculerRecompenses, lireLocal } from '../../monde/socle/recompenses.js?v=2';
 const maj = () => { const s = sauvegarde.get(); document.getElementById('nb-etoiles').textContent = s.etoiles; document.getElementById('nb-lanternes').textContent = s.lanternes; };
 sauvegarde.appliquerRecompenses(calculerRecompenses(lireLocal)); maj();
 window.__pret = true;

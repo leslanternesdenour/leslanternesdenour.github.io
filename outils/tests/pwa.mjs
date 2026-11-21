@@ -10,10 +10,11 @@ await page.goto(BASE + '/calendrier/'); await page.waitForFunction(() => navigat
 await page.reload(); await page.waitForFunction(() => !!navigator.serviceWorker.controller, null, { timeout: 15000 });
 t('le service worker contrôle la page du calendrier', true);
 const contenu = () => page.evaluate(async () => { const r = {}; for (const n of await caches.keys()) r[n] = (await (await caches.open(n)).keys()).map(q => new URL(q.url).pathname + new URL(q.url).search); return r; });
-await page.evaluate(async () => { for (const u of ['/api/sante', '/api/test-prive', '/compte/', '/monde/monde.css?v=5', '/calendrier/style.css?v=5']) await fetch(u); });
+await page.evaluate(async () => { for (const u of ['/api/sante', '/api/test-prive', '/api/premium/voyage/camp/contenu.json', '/api/premium/maisons/mots/', '/apercu/', '/compte/', '/monde/monde.css?v=5', '/calendrier/style.css?v=5']) await fetch(u); });
 await page.waitForTimeout(500);
 let c = await contenu(); const tout = Object.values(c).flat();
 t('aucune réponse /api/ en cache', !tout.some(u => u.startsWith('/api/')), tout.filter(u => u.startsWith('/api/')).join(','));
+t('aucun contenu Premium ni page Aperçu Créateur en cache', !tout.some(u => /^\/(apercu|premium|api\/premium)/.test(u)), tout.filter(u => /premium|apercu/.test(u)).join(','));
 t('/compte/ jamais en cache', !tout.some(u => u.startsWith('/compte/')));
 t('un fichier public gratuit est gardé (hors-ligne)', tout.includes('/monde/monde.css?v=5'));
 t('la coquille du calendrier est en cache', (c['lanternes-v6'] || []).length >= 8, (c['lanternes-v6'] || []).length + ' fichiers');

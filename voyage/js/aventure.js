@@ -38,7 +38,7 @@ const COFFRE = { x: 224, z: -14 };
 const VOYAGEUR = { x: -163, z: 50 };
 const GROTTE = { x: -13, z: -258 };
 
-export function creerAventure({ scene, terrain, colliders, etat, enregistrer, ui, sons, ombres, donner, evenement = () => {} }) {
+export function creerAventure({ scene, terrain, colliders, etat, enregistrer, ui, sons, ombres, donner, evenement = () => {}, acces = { missionOuverte: () => true } }) {
   const H = (x, z) => terrain.hauteur(x, z);
   const A = etat.aventure = Object.assign({ pieces: 0, missions: {}, ramasses: [], sac: [], capacite: 3, animaux: [], indices: 0, livres: 0, achats: [], equipement: {} }, etat.aventure || {});
   const libre = (x, z, r = 0.6) => { // sort un objet d'un obstacle s'il tombe dedans
@@ -48,6 +48,7 @@ export function creerAventure({ scene, terrain, colliders, etat, enregistrer, ui
   const mission = id => A.missions[id];
   function commencer(id, silencieux) {
     if (A.missions[id]) return;
+    if (!acces.missionOuverte(id)) return;              // mission Premium : jamais commencée sans droit (décidé par le serveur)
     A.missions[id] = { etat: 'en_cours', n: 0, debut: Date.now() };
     enregistrer(); ui.majSuivi();
     if (!silencieux) { ui.bandeau('Nouvelle mission', MISSIONS[id].titre); sons.sonDecouverte(); }

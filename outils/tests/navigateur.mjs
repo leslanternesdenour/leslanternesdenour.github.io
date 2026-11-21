@@ -16,7 +16,8 @@ for (const [nomE, e] of Object.entries(ECRANS)) {
     const page = await ctx.newPage(); const errs = [], manquants = [], csp = [];
     page.on('pageerror', x => errs.push(x.message));
     page.on('console', m => { if (/Content Security Policy|Refused to/i.test(m.text())) csp.push(m.text().slice(0, 160)); });
-    page.on('response', r => { if (r.status() >= 400 && !EXTERNE.test(r.url())) manquants.push(r.status() + ' ' + r.url().replace(BASE, '')); });
+    page.on('response', r => { if (r.status() >= 400 && !EXTERNE.test(r.url()) && !/\/api\//.test(r.url()))   // /api/ : routes du serveur, absentes du serveur de test statique (le village et le voyage s'en passent)
+       manquants.push(r.status() + ' ' + r.url().replace(BASE, '')); });
     try { await page.goto(BASE + p, { waitUntil: 'load', timeout: 20000 }); await page.waitForTimeout(3000); } catch (x) { errs.push('chargement: ' + x.message); }
     const largeur = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth).catch(() => 0);
     const visibles = await page.evaluate(() => [...document.querySelectorAll('.ecran:not(.cache) .titre-ecran')].map(x => x.textContent.trim()).join(' | ')).catch(() => '');

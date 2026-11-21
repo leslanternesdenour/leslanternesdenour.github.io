@@ -53,23 +53,23 @@ export const TRAVERSEE = [
   { nom: 'Les grandes dunes', icone: '🏜️', x: 28, z: 200 }, { nom: 'Le col', icone: '🚪', x: 0, z: -150 }, { nom: 'Les montagnes', icone: '⛰️', x: 0, z: -255 }
 ];
 
-// les découvertes des régions à débloquer
+// les découvertes des régions à débloquer (régions Premium : leurs textes arrivent avec le contenu de la zone, voir premium.js)
 const RW = { x: -245, z: 175 }, RR = { x: 150, z: -95 };
 export const SPOTS = [
   { id: 'ghadir', quete: 'wadi', titre: 'La mare du wadi', icone: '💧', x: -244, z: 180, arabe: 'غَدِير',
-    texte: 'Après la pluie, l\'eau reste quelques jours dans les creux du wadi : c\'est un ghadir, une petite mare. Les animaux et les oiseaux viennent y boire.' },
+    texte: '' },
   { id: 'traces', quete: 'wadi', titre: 'Des traces dans le sable', icone: '🐾', x: -228, z: 190,
-    texte: 'Regarde ces petites traces dans le sable humide : un lièvre est passé par ici ! Les traces racontent qui vit dans le désert, même quand on ne voit personne.' },
+    texte: '' },
   { id: 'galets', quete: 'wadi', titre: 'Les galets tout ronds', icone: '🪨', x: -266, z: 162,
-    texte: 'Ces cailloux sont tout ronds parce que l\'eau les a roulés pendant très longtemps. C\'est la preuve que de l\'eau coule ici, de temps en temps !' },
+    texte: '' },
   { id: 'g-chameau', quete: 'gravures', titre: 'La gravure du chameau', icone: '🐪', bloc: [RR.x + 6, RR.z - 6, 3.4], dessin: 'chameau',
-    texte: 'Un chameau gravé dans la pierre. Il y a très longtemps, les gens dessinaient déjà les animaux qui comptaient pour eux.' },
+    texte: '' },
   { id: 'g-bouquetin', quete: 'gravures', titre: 'La gravure du bouquetin', icone: '🐐', bloc: [RR.x - 12, RR.z - 10, 2.8], dessin: 'bouquetin',
-    texte: 'Un bouquetin, avec ses grandes cornes recourbées. Il vit dans les montagnes rocheuses et grimpe partout sans tomber.' },
+    texte: '' },
   { id: 'g-autruche', quete: 'gravures', titre: 'La gravure de l\'autruche', icone: '🪶', bloc: [RR.x + 16, RR.z + 8, 3.0], dessin: 'autruche',
-    texte: 'Une autruche ! Autrefois, des autruches vivaient en Arabie. Elles y ont disparu au siècle dernier.' },
+    texte: '' },
   { id: 'g-chiens', quete: 'gravures', titre: 'La gravure des chiens', icone: '🐕', bloc: [RR.x - 4, RR.z + 16, 2.6], dessin: 'chiens',
-    texte: 'Des chiens à la queue enroulée, gravés il y a très longtemps. Ils accompagnaient les chasseurs.' }
+    texte: '' }
 ];
 
 export const QUETES = {
