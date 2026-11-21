@@ -6,4 +6,5 @@ LDN_EMULATEUR=1 LDN_EMUL_MDP_CREATEUR=createur-local-123 node outils/serveur-pre
 trap 'kill $PID 2>/dev/null' EXIT; sleep 1.5
 PLAYWRIGHT=${PLAYWRIGHT:-$(node -e "try{console.log(require.resolve(\"playwright\").replace(/\\/index\\.js$/,\"\"))}catch(e){console.log(\"/opt/npm-tools/node_modules/playwright\")}")} node outils/tests/parcours.mjs http://localhost:$PORT; R1=$?
 PLAYWRIGHT=${PLAYWRIGHT:-$(node -e "try{console.log(require.resolve(\"playwright\").replace(/\\/index\\.js$/,\"\"))}catch(e){console.log(\"/opt/npm-tools/node_modules/playwright\")}")} node outils/tests/parcours-google.mjs http://localhost:$PORT; R2=$?
-[ $R1 -eq 0 ] && [ $R2 -eq 0 ]
+PLAYWRIGHT=${PLAYWRIGHT:-$(node -e "try{console.log(require.resolve(\"playwright\").replace(/\\/index\\.js$/,\"\"))}catch(e){console.log(\"/opt/npm-tools/node_modules/playwright\")}")} node outils/tests/parcours-calendrier.mjs http://localhost:$PORT; R3=$?
+[ $R1 -eq 0 ] && [ $R2 -eq 0 ] && [ $R3 -eq 0 ]
