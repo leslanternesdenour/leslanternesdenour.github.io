@@ -61,7 +61,7 @@
  },
  {
   "n": 9,
-  "nb": 20,
+  "nb": 18,
   "jeux": [
    "calendrier"
   ]
@@ -113,6 +113,13 @@
   "nb": 3,
   "jeux": [
    "ablutions"
+  ]
+ },
+ {
+  "n": 17,
+  "nb": 2,
+  "jeux": [
+   "calendrier"
   ]
  }
 ]

@@ -84,20 +84,6 @@
   "a_tester": ""
  },
  {
-  "cle": "calendrier/msstar",
-  "texte": "undefined. undefined",
-  "texte_voix": "undefined. undefined",
-  "fichier": "lot9/calendrier-msstar.mp3",
-  "a_tester": ""
- },
- {
-  "cle": "calendrier/mbstar",
-  "texte": "undefined. undefined",
-  "texte_voix": "undefined. undefined",
-  "fichier": "lot9/calendrier-mbstar.mp3",
-  "a_tester": ""
- },
- {
   "cle": "calendrier/cheer0",
   "texte": "Bravo !",
   "texte_voix": "Bravo !",

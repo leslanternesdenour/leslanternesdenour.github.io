@@ -54,7 +54,7 @@ const variable={ablutions:['g1ok'],priere:['g1ok','g4ok','g4ko']};
 globalThis.window={};await import('../../calendrier/data.js');
 const D=window.D, c={}, incertain=[];
 for(const m of D.M){c['ms'+m[0]]=m[2]+'. '+m[3];c['mb'+m[0]]=m[2]+'. '+m[4];}
-const S=D.S[0];c.msstar=S[2]+'. '+S[3];c.mbstar=S[2]+'. '+S[4];
+const S=D.S;c.msstar=S[2]+'. '+S[3];c.mbstar=S[2]+'. '+S[4];
 ['Bravo !',"Machâ'Allah !",'Ta lanterne brille !','Super, continue !','Bârak Allâhou fîk !'].forEach((t,i)=>c['cheer'+i]=t);
 Object.assign(c,{
  l10:"Déjà 10 lanternes allumées, … ! Machâ'Allah !",l20:'20 lanternes ! Plus que 10, tu es presque arrivé(e) !',l29:"Plus qu'une lanterne avant ton diplôme !",

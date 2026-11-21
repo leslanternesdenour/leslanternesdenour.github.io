@@ -1,0 +1,16 @@
+[
+ {
+  "cle": "calendrier/msstar",
+  "texte": "L'étoile surprise. Seulement si le Ramadan dure 30 jours : le 29e soir, choisis un bonus avec un parent et colorie l'étoile de ton passeport.",
+  "texte_voix": "L'étoile surprise. Seulement si le رَمَضَان dure 30 jours : le 29e soir, choisis un bonus avec un parent et colorie l'étoile de ton passeport.",
+  "fichier": "lot17/calendrier-msstar.mp3",
+  "a_tester": "Ramadan"
+ },
+ {
+  "cle": "calendrier/mbstar",
+  "texte": "L'étoile surprise. Seulement si le Ramadan dure 30 jours : le 29e soir, choisis et anime un bonus pour toute la famille, puis colorie l'étoile.",
+  "texte_voix": "L'étoile surprise. Seulement si le رَمَضَان dure 30 jours : le 29e soir, choisis et anime un bonus pour toute la famille, puis colorie l'étoile.",
+  "fichier": "lot17/calendrier-mbstar.mp3",
+  "a_tester": "Ramadan"
+ }
+]
