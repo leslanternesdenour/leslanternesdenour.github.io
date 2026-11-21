@@ -43,7 +43,8 @@ function render(){const g=$('grid');g.innerHTML='';
  $('star').classList.toggle('lit',!!k.lit['★']);
  const n=M.filter(m=>k.lit[m[0]]).length;$('bar').style.width=(n/30*100)+'%';$('count').textContent=`${n} / 30 lanternes allumées`;
  const tb=$('tonight');if(t){const m=M[t-1];tb.hidden=false;tb.innerHTML=`<b>${t}</b><div><span>Ta mission de ce soir</span><strong>${m[2]}</strong></div>`;tb.onclick=()=>card(m)}else tb.hidden=true}
-function card(m){const k=K(),c=C[m[1]],on=!!k.lit[m[0]];
+function card(m){if(!K()){form(false);return}   /* pas encore de profil : on propose d'abord de le créer (au lieu de planter) */
+ const k=K(),c=C[m[1]],on=!!k.lit[m[0]];
  const vids=(MV[m[0]]||[]).map(v=>`<a class="vb" href="#video/${v}">▶ Regarder : ${V[v].t}</a>`).join('');
  $('ov').innerHTML=`<div class="card"><div class="ch"><div class="med">${m[0]}</div><span class="tag" style="background:${c[1]}"><svg viewBox="0 0 24 24" fill="none" stroke="#191345" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${c[2]}</svg>${c[0]}</span><h2>${m[2]}</h2></div>
  <div class="cb"><h3>${k.lv==='s'?'Petite lanterne · 3-5 ans':'Grande lanterne · 6-10 ans'}</h3><p>${k.lv==='s'?m[3]:m[4]}</p>${vids}${m[5]?`<div class="src">Source : ${m[5]}</div>`:''}
@@ -152,7 +153,8 @@ function guide(first){
  $('ov').classList.add('on');$('ov').scrollTop=0;$('gsay').onclick=()=>say(['guide','guide2','guide3','guide4']);$('gok').onclick=()=>{close();if(first&&!st.kids.length)form(false)}}
 
 /* ---------- profils ---------- */
-function form(edit){const k=edit?K():{name:'',age:'',g:''};
+function form(edit){if(edit&&!K())edit=false;   /* « Modifier » sans profil = créer le premier */
+ const k=edit?K():{name:'',age:'',g:''};
  $('ov').innerHTML=`<div class="form"><h2>${edit?'Modifier':'Bienvenue !'}</h2><p>${edit?'':'Avant de commencer, présente-toi :'}</p>
  <label>Ton prénom<input id="fn" maxlength="20" value="${esc(k.name)}" placeholder="Prénom"></label>
  <label>Ton âge<select id="fa"><option value="">Choisis</option>${[3,4,5,6,7,8,9,10].map(a=>`<option ${+k.age===a?'selected':''}>${a}</option>`).join('')}</select></label>
@@ -168,7 +170,7 @@ function form(edit){const k=edit?K():{name:'',age:'',g:''};
  if(edit){$('del').onclick=()=>{if(confirm('Supprimer '+k.name+' ?')){st.kids.splice(st.cur,1);st.cur=0;save();close();st.kids.length?render():form()}};
   $('rz').onclick=()=>{if(confirm('Éteindre toutes les lanternes de '+k.name+' ?')){k.lit={};save();close();render()}}}
  if($('cl3'))$('cl3').onclick=close}
-const setLv=l=>{K().lv=l;save();render();if(!$('v-jeux').hidden){shown=false;jeux()}};
+const setLv=l=>{if(!K()){form(false);return}K().lv=l;save();render();if(!$('v-jeux').hidden){shown=false;jeux()}};
 $('lv1').onclick=()=>setLv('s');$('lv2').onclick=()=>setLv('b');
 $('star').onclick=()=>card(S);$('add').onclick=()=>form(false);$('set').onclick=()=>form(true);
 $('ov').onclick=e=>{if(e.target.id==='ov')close()};
