@@ -178,3 +178,6 @@
   .haut-scene .marque-entete img { width: 58vw; }
   .accueil-haut .hero-body { margin-top: -30px; }
 }
+
+/* Zones tactiles confortables (≥ 40 px) sur écran tactile */
+@media (pointer: coarse) { .reglage-intro { min-height: 40px; } }

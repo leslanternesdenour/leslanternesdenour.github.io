@@ -7,7 +7,13 @@
     if (i === -1 || i >= FILE.length - 1) return secours(img);
     img.src = 'https://i.ytimg.com/vi/' + m[1] + '/' + FILE[i + 1] + '.jpg';
   }
-  function secours(img) { var v = img.closest('.vignette'); if (v) v.classList.add('sans-image'); img.removeAttribute('alt'); img.setAttribute('aria-hidden', 'true'); }
+  function secours(img) {
+    var v = img.closest('.vignette'); if (v) v.classList.add('sans-image');
+    // l'image disparaît : le lien garde un nom lisible par un lecteur d'écran (le texte alternatif de la miniature)
+    var alt = (img.getAttribute('alt') || '').replace(/^Miniature\s*:\s*/i, 'Vidéo : ');
+    if (v && alt && !v.getAttribute('aria-label')) v.setAttribute('aria-label', alt);
+    img.removeAttribute('alt'); img.setAttribute('aria-hidden', 'true');
+  }
   function verifier(img) {
     // une image YouTube absente renvoie parfois un petit gabarit gris (120 px) au lieu d'une erreur
     if (img.complete && (img.naturalWidth === 0 || img.naturalWidth <= 120)) suite(img);

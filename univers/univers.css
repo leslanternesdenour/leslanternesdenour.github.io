@@ -112,3 +112,11 @@ html[data-univers="jeux"] .compteur{background:rgba(217,122,55,.88)}
 html[data-univers="jeux"] .interrupteur{box-shadow:0 4px 0 var(--u-primaire2)}
 html[data-univers="jeux"] .piste-corps label b{color:var(--u-primaire2)}
 html[data-univers="jeux"] #jeu iframe{animation:u-entree .38s ease both}
+
+/* Zones tactiles confortables (≥ 40 px) pour les liens et petits boutons isolés sur écran tactile (rangées de pied de page, liens-boutons).
+   Les liens placés dans une phrase ne sont pas concernés. */
+@media (pointer: coarse) {
+  footer a, nav a, p[style*="text-align:center"] > a, button.lien, a.lien, .liens a, .pied a { display: inline-flex; align-items: center; min-height: 40px; padding-block: 8px; }
+  .reglage-intro, .lvl button, button.say, .onglets button, a.marque, .parc a, article.carte > a { min-height: 40px; }
+  a.marque, .parc a, article.carte > a { display: inline-flex; align-items: center; justify-content: center; }
+}
