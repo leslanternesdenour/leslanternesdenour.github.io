@@ -5,7 +5,8 @@ import * as THREE from 'three';
 import { Voyageur } from '../../voyage/js/voyageur.js?v=4';
 import { mascotte } from '../../monde/mascottes.js?v=1';
 import { creerLieu, STATIONS } from './lieu.js?v=2';
-import { Gestes, SEQUENCES } from './gestes.js?v=2';
+import { Gestes, SEQUENCES, POSTURES } from './gestes.js?v=2';
+import { creerPersonnage as creerNouveau } from '../../personnages3d/fabrique.js?v=1';
 import { ST, HINT } from './etapes.js?v=1';
 
 const $ = id => document.getElementById(id);
@@ -105,16 +106,26 @@ const lieu = creerLieu(scene, { ombres: Q.ombres });
 // le personnage
 let perso = null, gestes = null, persoInfo = persoChoisi();
 const J = { x: 0, z: -3.2, a: 0, vit: 0, cible: null, station: null, assis: false, transition: 0 };
-function creerPerso() {
-  const ancien = perso;
-  perso = new Voyageur(!!Q.ombres, persoInfo, {});
-  if (ancien) { scene.remove(ancien.racine); ancien.racine.traverse(o => { if (o.geometry) o.geometry.dispose(); }); }
+// Personnage : le nouveau modèle N1 (personnages3d/) ou, en secours automatique, l'ancien Voyageur.
+// PAR_DEFAUT = 'ancien' : les formes de tissu pour l'assise sur tabouret et le pied levé n'existent pas encore (voir docs/personnages-3d/ABLUTIONS-ADAPTATIONS-NECESSAIRES.md).
+// L'adresse ?perso=nouveau permet de voir et d'essayer les nouveaux modèles dès maintenant.
+const PAR_DEFAUT = 'ancien';
+const PERSO = (() => { const p = new URLSearchParams(location.search).get('perso'); return p === 'nouveau' || p === 'ancien' ? p : PAR_DEFAUT; })();
+let numeroCreation = 0, typePerso = null;
+function retirerPerso(p) { scene.remove(p.racine); if (p.liberer) p.liberer(); else p.racine.traverse(o => { if (o.geometry) o.geometry.dispose(); }); }
+async function creerPerso() {
+  const mien = ++numeroCreation;
+  const r = await creerNouveau({ genre: persoInfo.genre, peau: persoInfo.peau, ombres: !!Q.ombres, parametre: PERSO, creerAncien: () => new Voyageur(!!Q.ombres, persoInfo, {}) });
+  if (mien !== numeroCreation) { if (r.personnage.liberer) r.personnage.liberer(); return; }     // un changement de genre plus récent a pris le relais
+  const ancien = perso; perso = r.personnage; typePerso = r.type;                                  // l'échange se fait quand le nouveau est prêt : jamais de personnage nul dans la boucle
+  if (ancien) retirerPerso(ancien);
   scene.add(perso.racine);
   gestes = new Gestes(perso);
   gestes.surImage = surImage;
+  if (perso.lier) perso.lier(gestes, POSTURES, { sansTissu: true });      // clignement des yeux ; pas de formes de tissu de la Prière
   if (J.assis) { gestes.activer(true); gestes.etat = gestes.copie(gestes.cible); }
 }
-creerPerso();
+await creerPerso();
 // une ombre douce sous le personnage
 const ombreDouce = (() => { const c = document.createElement('canvas'); c.width = c.height = 64; const x = c.getContext('2d'), g = x.createRadialGradient(32, 32, 2, 32, 32, 31); g.addColorStop(0, 'rgba(0,0,0,1)'); g.addColorStop(1, 'rgba(0,0,0,0)'); x.fillStyle = g; x.fillRect(0, 0, 64, 64); return new THREE.CanvasTexture(c); })();
 const blob = new THREE.Mesh(new THREE.PlaneGeometry(0.7, 0.7).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: '#3a2a18', alphaMap: ombreDouce, transparent: true, opacity: Q.ombres ? 0.22 : 0.38, depthWrite: false }));
@@ -477,6 +488,7 @@ function image() {
   requestAnimationFrame(image);
   const dt = Math.min(0.05, horloge.getDelta()); tTotal += dt;
   if (J.assis) gestes.maj(dt, tTotal); else marcher(dt);
+  if (perso.suivre) perso.suivre(dt);
   blob.position.set(perso.racine.position.x, 0.012, perso.racine.position.z + (J.assis ? 0.08 : 0));
   const coule = J.assis && gestes.enCours() && !!gestes.opt.eau;
   lieu.maj(dt, tTotal, { station: J.station, coule, mains: gestes.mainsMonde, pieds: gestes.piedsMonde });
@@ -496,7 +508,7 @@ image();
 
 // pour les tests
 window.__abl = {
-  gestes: () => gestes, perso: () => perso, J, cam, E, ETAPES, SEQUENCES, lieu, renderer,
+  gestes: () => gestes, perso: () => perso, type: () => typePerso, J, cam, E, ETAPES, SEQUENCES, lieu, renderer,
   asseoir(i = 1) { s_asseoir(STATIONS[i]); },
   vue, lancer, mode: () => mode, etape: i => etapeApprendre(i), allerA: i => allerA(STATIONS[i])
 };

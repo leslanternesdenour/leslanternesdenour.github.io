@@ -10,7 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Nunito:wght@600;800;900&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="jeu3d.css?v=1">
 <script type="importmap">
-{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js" } }
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/" } }
 </script>
 <script src="../../monde/socle/mesure.js?v=1"></script>
 </head>
@@ -67,7 +67,7 @@
 </div></div>
 
 <script type="module">/* Si la bibliothèque 3D ne se charge pas (pas de connexion, CDN indisponible) : écran de secours au lieu d'un chargement sans fin */import('three').catch(()=>{const c=document.getElementById('chargement'),e=document.getElementById('erreur');if(c)c.classList.add('cache');if(e)e.classList.remove('cache')});</script>
-<script type="module" src="jeu.js?v=2"></script>
+<script type="module" src="jeu.js?v=3"></script>
 <noscript><p style="padding:2em">Active JavaScript pour jouer. <a href="../">Retour aux ablutions</a></p></noscript>
 </body>
 </html>

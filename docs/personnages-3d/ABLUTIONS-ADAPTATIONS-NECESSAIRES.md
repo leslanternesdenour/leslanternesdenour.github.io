@@ -1,3 +1,9 @@
+## État au 21/11/2026 (session autonome) : intégration technique faite, modèle à finir
+**Fait et testé** : le cycle de marche et les petits gestes de `Voyageur.animer` sont portés dans l'adaptateur (`personnages3d/personnage-glb.js`) : mêmes mouvements que l'ancien personnage à moins de 2 mm (fille et garçon, 4 vitesses, gestes `prendre`, `caresser`, `salut`, `joie`) ; le jeu `ablutions/jeu3d` crée son personnage par la fabrique (secours automatique), `?perso=nouveau` active le nouveau modèle ; les 12 séquences du jeu sont jouées sur ordinateur et mobile sans valeur aberrante. **Par défaut l'ancien personnage reste actif** (`PAR_DEFAUT = 'ancien'` dans `ablutions/jeu3d/jeu.js`).
+**Défauts visibles restants (captures dans `captures/`)** : assise sur le tabouret : la robe s'écrase et l'ourlet orange traverse le tabouret ; pied levé : le tissu traverse la jambe et le tabouret ; la marche est correcte. Les formes de tissu de la Prière ne sont volontairement pas appliquées (`lier(…, { sansTissu: true })`).
+**Ce qui reste, et qui exige Blender + l'espace de travail 3D du client** : formes correctives `tabouret` (assise), `pied levé droit/gauche` (et éventuellement `tabouret_penche`), correction des fesses enfoncées d'environ 5 cm, régénération N1, nouveaux GLB à déposer dans `personnages3d/modeles/`. Ensuite seulement : brancher ces formes dans `suivre()` pour les Ablutions et passer `PAR_DEFAUT` à `'nouveau'`.
+
+---
 # Jeu des Ablutions : adaptations nécessaires (préparation uniquement, 20/11/2026)
 
 **Aucune intégration n'est commencée pour les Ablutions** (consigne du client : après validation de la Prière). Ceci est le diagnostic des adaptations à prévoir, fait hors site, en lecture seule sur le moteur de gestes.

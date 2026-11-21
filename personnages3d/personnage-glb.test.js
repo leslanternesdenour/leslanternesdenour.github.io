@@ -107,3 +107,26 @@ test("liberer() : matériaux et textures d'os du personnage libérés, géométr
   for (const m of p.maillages) { if (m.skeleton) { const d = m.skeleton.dispose.bind(m.skeleton); m.skeleton.dispose = () => { sq++; d(); }; } const dm = m.material.dispose.bind(m.material); m.material.dispose = () => { mat++; dm(); }; m.geometry.addEventListener('dispose', () => geo++); }
   p.liberer(); assert.equal(sq, p.maillages.filter(m => m.isSkinnedMesh).length, 'un squelette libéré par maillage à squelette'); assert.equal(mat, p.maillages.length); assert.equal(geo, 0, 'la géométrie partagée n\'est pas libérée');
 });
+
+test("14. marche, repos et petits gestes : mêmes mouvements que l'ancien personnage (Ablutions)", async () => {
+  const E = await env(); const THREE = E.THREE; const aleatoire = Math.random; let graine = 7; Math.random = () => (graine = (graine * 16807) % 2147483647) / 2147483647;
+  try {
+    for (const genre of ['fille', 'garcon']) for (const vitesse of [0, 1.4, 3.2, 6.5]) {
+      graine = 7; const n = new E.PersonnageGLB(E.gltf[genre], { genre }); graine = 7; const a = new E.Voyageur(false, { genre, tenue: 'ecru', peau: 1 }, {}); let ecart = 0, t = 0;
+      for (let i = 0; i < 300; i++) { t += 1 / 60; n.racine.rotation.y = a.racine.rotation.y = Math.sin(t) * 0.5; n.animer(1 / 60, vitesse, t); a.animer(1 / 60, vitesse, t);
+        if (i % 20 === 0) { n.racine.updateMatrixWorld(true); a.racine.updateMatrixWorld(true);
+          for (const [x, y] of [[n.bras[0].bas, a.bras[0].bas], [n.bras[1].bas, a.bras[1].bas], [n.jambes[0].bas, a.jambes[0].bas], [n.jambes[1].cheville, a.jambes[1].cheville], [n.tete, a.tete], [n.bassin, a.bassin], [n.buste, a.buste]]) ecart = Math.max(ecart, new THREE.Vector3().setFromMatrixPosition(x.matrixWorld).distanceTo(new THREE.Vector3().setFromMatrixPosition(y.matrixWorld))); } }
+      assert.ok(ecart < 0.002, `${genre} vitesse ${vitesse} : écart ${(ecart * 1000).toFixed(2)} mm avec l'ancien personnage`);
+    }
+    for (const geste of ['prendre', 'caresser', 'salut', 'joie']) { graine = 7; const n = new E.PersonnageGLB(E.gltf.fille, { genre: 'fille' }); graine = 7; const a = new E.Voyageur(false, { genre: 'fille', tenue: 'ecru', peau: 1 }, {}); n.faire(geste); a.faire(geste); let ecart = 0, t = 0;
+      for (let i = 0; i < 100; i++) { t += 1 / 60; n.animer(1 / 60, 0, t); a.animer(1 / 60, 0, t); n.racine.updateMatrixWorld(true); a.racine.updateMatrixWorld(true); ecart = Math.max(ecart, new THREE.Vector3().setFromMatrixPosition(n.bras[0].bas.matrixWorld).distanceTo(new THREE.Vector3().setFromMatrixPosition(a.bras[0].bas.matrixWorld)), Math.abs(n.corps.position.y - a.corps.position.y)); }
+      assert.ok(ecart < 0.002, `geste ${geste} : écart ${(ecart * 1000).toFixed(2)} mm`); assert.equal(n.geste, a.geste === null ? null : n.geste, 'le geste se termine en même temps'); }
+  } finally { Math.random = aleatoire; }
+});
+
+test("15. Ablutions : lier(…, { sansTissu: true }) n'applique aucune forme de tissu de la Prière, les yeux clignent toujours", async () => {
+  const E = await env(); const { POSTURES } = await import('../ablutions/jeu3d/gestes.js'); const p = new E.PersonnageGLB(E.gltf.fille, { genre: 'fille' });
+  const g = new E.Gestes(p); p.lier(g, POSTURES, { sansTissu: true }); g.activer(true); g.poser('assis'); for (let i = 0; i < 120; i++) { g.maj(1 / 60, i / 60); p.suivre(1 / 60); }
+  assert.deepEqual(p.influence, { assis: 0, penche: 0, prosterne: 0 }); for (const m of p.maillages) if (m.morphTargetDictionary && m.morphTargetDictionary.assis !== undefined) assert.equal(m.morphTargetInfluences[m.morphTargetDictionary.assis], 0);
+  p.yeux.scale.y = 0.15; p.suivre(1 / 60); const y = p.maillages.find(m => m.name === 'yeux'); assert.equal(y.morphTargetInfluences[y.morphTargetDictionary.clignement], 1);
+});
