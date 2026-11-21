@@ -38,7 +38,7 @@ Rien de tout cela n'est payant.
 1. Build → **Firestore Database** → Créer une base de données.
 2. Édition **Standard**, emplacement **`eur3` (Europe)** : définitif, choisissez bien (données d'enfants : on reste en Europe).
 3. Mode **Production** (pas « test »).
-4. Onglet **Règles** → remplacez tout le contenu par ceci, puis **Publier** :
+4. Onglet **Règles** : en mode Production, Firebase active déjà des règles « tout refusé » (vérifié sur la vraie base le 21/11/2026 : 20 vérifications sur 20). Aucun bouton « Publier » n'apparaît tant que le texte n'est pas modifié : **il n'y a rien à publier**. Le texte attendu est :
 ```
 rules_version = '2';
 service cloud.firestore {
