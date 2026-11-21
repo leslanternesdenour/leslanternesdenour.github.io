@@ -12,6 +12,7 @@ export function analyser(s, { firebaseDansLeSite = null } = {}) {
   const c = s && s.configuration, lignes = [], manque = [];
   if (!c) return { lignes: ['Ce site ne publie pas son état de configuration (production, ou site injoignable).'], manque: ['état inconnu'], pret: false };
   for (const [k, [nom, ou]] of Object.entries(A_FAIRE)) { const oui = c[k] === true; lignes.push((oui ? '✓ ' : '✗ ') + nom); if (!oui) manque.push(nom + ' — ' + ou); }
+  if (c.cleRevoquee) { lignes.push('✗ La clé du serveur collée dans Cloudflare est une clé RÉVOQUÉE (exposée) : le site la refuse'); manque.push('Nouvelle clé de compte de service (la précédente a été exposée et révoquée) — Firebase → Comptes de service → Générer une nouvelle clé privée'); }
   lignes.push(c.stripe === 'test' ? '✓ Stripe en mode test' : c.stripe === 'cle-invalide' ? '✗ STRIPE_CLE_SECRETE n\'est PAS une clé de test (sk_test_…) : refusée par le site' : '• Stripe : pas encore configuré (prévu après Firebase)');
   lignes.push(c.stockagePremium === 'lie' ? '• Stockage Premium (R2) : lié' : '• Stockage Premium (R2) : non lié (volontaire : en attente de votre décision)');
   if (firebaseDansLeSite !== null) { lignes.push((firebaseDansLeSite ? '✓ ' : '✗ ') + 'Configuration publique Firebase dans compte/config.js'); if (!firebaseDansLeSite) manque.push('Configuration web Firebase (firebaseConfig) dans compte/config.js — à me communiquer'); }

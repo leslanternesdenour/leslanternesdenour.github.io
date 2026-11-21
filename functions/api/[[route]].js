@@ -5,8 +5,9 @@ import { traiter } from '../../serveur/api.js';
 import { baseFirestore } from '../../serveur/base-firestore.js';
 import { verifierJeton, cleGoogle } from '../../serveur/jeton.js';
 import { clientStripe } from '../../serveur/stripe.js';
+import { estRevoquee } from '../../serveur/cles-revoquees.js';
 
-let base = null;
+let base = null, empreinteBase = null;
 
 // Stockage privé des contenus Premium : R2 (lié sous le nom R2_PREMIUM ; non public : seules ces Functions y lisent,
 // après vérification des droits). Sans R2 lié, aucun contenu Premium n'est servi (404).
@@ -24,7 +25,9 @@ export async function onRequest({ request, env }) {
   // Configuration invalide (JSON du compte de service mal collé, clé Stripe réelle refusée…) : réponse neutre, jamais de détail ni d'extrait du secret dans la réponse ou les journaux.
   let ctx;
   try {
-    if (!base) base = baseFirestore({ projet: env.FIREBASE_PROJET, compte: JSON.parse(env.FIREBASE_COMPTE_SERVICE) });
+    // La connexion à la base est gardée en mémoire, mais seulement tant que le secret et le projet sont les mêmes : un secret changé ou une clé révoquée sont toujours revérifiés.
+    const empreinte = env.FIREBASE_PROJET + '|' + env.FIREBASE_COMPTE_SERVICE;
+    if (!base || empreinteBase !== empreinte) { base = null; const compte = JSON.parse(env.FIREBASE_COMPTE_SERVICE); if (estRevoquee(compte)) throw new Error('clé révoquée'); base = baseFirestore({ projet: env.FIREBASE_PROJET, compte }); empreinteBase = empreinte; }
     ctx = {
       env, base,
       auth: { verifierIdToken: (jeton, maintenant) => verifierJeton(jeton, { projet: env.FIREBASE_PROJET, type: 'id', obtenirCle: cleGoogle, maintenant }) },

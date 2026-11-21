@@ -25,9 +25,9 @@ test('/api/sante : état OUI/NON en préproduction, jamais une valeur ; rien en 
   const plein = { ENVIRONNEMENT: 'preproduction', SESSION_SECRET: 'S'.repeat(40) + 'SECRETXYZ', FIREBASE_PROJET: 'ldn', CREATOR_UID: 'UIDXYZ-123', STRIPE_CLE_SECRETE: 'sk_test_SECRETXYZ', STRIPE_SECRET_WEBHOOK: 'whsec_SECRETXYZ',
     FIREBASE_COMPTE_SERVICE: JSON.stringify({ type: 'service_account', project_id: 'ldn', client_email: 'a@b.iam', private_key: 'SECRETXYZ' }) };
   const j = await lire(plein); const brut = JSON.stringify(j);
-  assert.deepEqual(j.configuration, { sessions: true, sessionsEtat: 'ok', firebaseProjet: true, firebaseCompteDeService: true, createurDesigne: true, stripe: 'test', stripeWebhook: true, stockagePremium: 'non' });
+  assert.deepEqual(j.configuration, { sessions: true, sessionsEtat: 'ok', firebaseProjet: true, firebaseCompteDeService: true, cleRevoquee: false, createurDesigne: true, stripe: 'test', stripeWebhook: true, stockagePremium: 'non' });
   assert.ok(!brut.includes('SECRETXYZ') && !brut.includes('UIDXYZ') && !brut.includes('sk_test'), 'aucune valeur dans la réponse');
-  assert.deepEqual((await lire({ ENVIRONNEMENT: 'preproduction' })).configuration, { sessions: false, sessionsEtat: 'absent', firebaseProjet: false, firebaseCompteDeService: false, createurDesigne: false, stripe: 'non', stripeWebhook: false, stockagePremium: 'non' });
+  assert.deepEqual((await lire({ ENVIRONNEMENT: 'preproduction' })).configuration, { sessions: false, sessionsEtat: 'absent', firebaseProjet: false, firebaseCompteDeService: false, cleRevoquee: false, createurDesigne: false, stripe: 'non', stripeWebhook: false, stockagePremium: 'non' });
   assert.equal(etatConfiguration({ STRIPE_CLE_SECRETE: 'sk_live_x', SESSION_SECRET: 'court' }).stripe, 'cle-invalide');
   assert.equal(etatConfiguration({ FIREBASE_COMPTE_SERVICE: '{"private_key":"x' }).firebaseCompteDeService, false);
   assert.equal((await lire({ ENVIRONNEMENT: 'production', ...plein, ENVIRONNEMENT: 'production' })).configuration, undefined, 'rien en production');
@@ -38,4 +38,13 @@ test('/api/sante : distingue secret absent, trop court, valide — sans révéle
     const j = await lire({ ENVIRONNEMENT: 'preproduction', SESSION_SECRET: v }); assert.equal(j.configuration.sessionsEtat, attendu, String(v && v.length)); assert.equal(j.configuration.sessions, attendu === 'ok');
     assert.ok(!JSON.stringify(j).includes('xxxxxxxx'), 'aucune valeur');
   }
+});
+
+test('clé de compte de service RÉVOQUÉE : refusée par le site (503 neutre) et signalée, même si le JSON est valide', async () => {
+  const revoquee = JSON.stringify({ type: 'service_account', project_id: 'p', client_email: 'a@b', private_key: 'k', private_key_id: 'bfff0d72daaf01ff0000000000000000000000' });
+  const r = await appeler({ SESSION_SECRET: 'x'.repeat(40), FIREBASE_PROJET: 'p', FIREBASE_COMPTE_SERVICE: revoquee });
+  assert.equal(r.statut, 503); assert.match(r.corps, /configuration-invalide/); assert.ok(!(r.corps + r.journal).includes('bfff0d72'));
+  const j = await lire({ ENVIRONNEMENT: 'preproduction', FIREBASE_COMPTE_SERVICE: revoquee }); assert.equal(j.configuration.firebaseCompteDeService, false); assert.equal(j.configuration.cleRevoquee, true);
+  const autre = JSON.stringify({ type: 'service_account', project_id: 'p', client_email: 'a@b', private_key: 'k', private_key_id: '1234abcd5678' });
+  assert.equal((await lire({ ENVIRONNEMENT: 'preproduction', FIREBASE_COMPTE_SERVICE: autre })).configuration.firebaseCompteDeService, true, 'une autre clé reste acceptée');
 });
