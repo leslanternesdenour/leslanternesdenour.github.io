@@ -2,35 +2,35 @@
  {
   "cle": "calendrier/dp6a",
   "texte": "Le Coran",
-  "texte_voix": "Le قُرْآن",
+  "texte_voix": "الْقُرْآن",
   "fichier": "lot18/calendrier-dp6a.mp3",
   "a_tester": ""
  },
  {
   "cle": "calendrier/qp2a",
   "texte": "Le Coran, la parole d'Allah.",
-  "texte_voix": "Le قُرْآن, la parole de اللَّه.",
+  "texte_voix": "الْقُرْآن, la parole de اللَّه.",
   "fichier": "lot18/calendrier-qp2a.mp3",
   "a_tester": ""
  },
  {
   "cle": "calendrier/qg4q",
   "texte": "Quel ange a apporté le Coran au Prophète (paix sur lui) ?",
-  "texte_voix": "Quel ange a apporté le قُرْآن au Prophète (paix sur lui) ?",
+  "texte_voix": "Quel ange a apporté الْقُرْآن au Prophète (paix sur lui) ?",
   "fichier": "lot18/calendrier-qg4q.mp3",
   "a_tester": ""
  },
  {
   "cle": "calendrier/qg5q",
   "texte": "Combien y a-t-il de sourates dans le Coran ?",
-  "texte_voix": "Combien y a-t-il de sourates dans le قُرْآن ?",
+  "texte_voix": "Combien y a-t-il de sourates dans الْقُرْآن ?",
   "fichier": "lot18/calendrier-qg5q.mp3",
   "a_tester": ""
  },
  {
   "cle": "calendrier/w_quran",
   "texte": "le Coran",
-  "texte_voix": "le قُرْآن",
+  "texte_voix": "الْقُرْآن",
   "fichier": "lot18/calendrier-w_quran.mp3",
   "a_tester": ""
  }

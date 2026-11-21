@@ -42,3 +42,4 @@ Les clips validés peuvent être branchés (après accord). Les refusés sont à
 - **Lot 17 (2 phrases)** : 2/2 validées — calendrier/msstar, mbstar. Cumul validé : 133 phrases.
 - **Lot 10 (20 phrases)** : 20/20 validées — calendrier l20, l29, fin, debut, guide à guide4, dp0q à dp5a. Cumul validé : 153 phrases.
 - **Lot 11 (20 phrases)** : 19/20 validées ; **calendrier/dp6a refusée** (« Al Coran » : l'article arabe « الْ » avait été écrit ; règle corrigée : « Coran » = قُرْآن, sans article). dg1a validée (texte « Le sahour » encore en transcription, non écrit en arabe). dp6a, qp2a, qg4q, qg5q, w_quran régénérées dans le lot 18. Cumul validé : 172 phrases.
+- **Correction « Coran » (décision du client)** : on garde le « Al » arabe (الْقُرْآن) et on retire l'article français devant (« le Coran » → « الْقُرْآن »), pour ne pas entendre « le Al Coran ». Lot 18 régénéré avec cette règle.
