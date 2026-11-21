@@ -5,6 +5,8 @@ compatibility_date = "2026-11-01"
 
 [vars]
 ENVIRONNEMENT = "preproduction"
+# Identifiant PUBLIC du projet Firebase (pas un secret).
+FIREBASE_PROJET = "lanternes-de-nour"
 
 # --- Raccordements (rien n'est activé ici ; voir _documentation/PREPRODUCTION_ACTIONS.md) ---
 # Avec ce fichier, Cloudflare le traite comme référence : les variables NON secrètes (identifiants publics) se déclarent ICI
