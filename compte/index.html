@@ -85,18 +85,17 @@ input[type=text],select{width:100%;border-radius:14px;border:2px solid #3a2a7d;b
       <button type="button" class="lien" id="vers-oubli">Mot de passe oublié ?</button>
     </form>
     <form id="f-inscription" class="choix cache" novalidate>
-      <button type="button" class="btn-google" id="g-insc"><svg viewBox="0 0 48 48" width="20" height="20" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg><span>Créer mon compte avec Google</span></button>
-      <p class="petit" style="margin:0;text-align:center">Avec Google, cochez d'abord les trois cases en bas de la page.</p>
-      <p class="ou">ou avec une adresse e-mail et un mot de passe</p>
-      <p class="petit">Le compte est créé par un parent. Les enfants n'ont rien à saisir.</p>
-      <label>Adresse e-mail du parent<input type="email" id="i-email" autocomplete="email" required></label>
-      <label>Mot de passe (8 caractères minimum)<input type="password" id="i-mdp" autocomplete="new-password" minlength="8" required></label>
-      <label>Confirmer le mot de passe<input type="password" id="i-mdp2" autocomplete="new-password" minlength="8" required></label>
+      <p class="petit" style="margin:0">Le compte est créé par un parent. Les enfants n'ont rien à saisir. <b>Pour commencer, cochez les trois cases :</b></p>
       <div id="consentements" class="choix">
         <label class="case"><input type="checkbox" id="i-parent"> <span>Je suis le parent ou le responsable légal des enfants qui joueront.</span></label>
         <label class="case"><input type="checkbox" id="i-cgu"> <span>J'accepte les <a href="../conditions/" target="_blank">conditions d'utilisation</a>.</span></label>
         <label class="case"><input type="checkbox" id="i-conf"> <span>J'ai lu <a href="../decouvrir/#confidentialite" target="_blank">ce que le site garde et pourquoi</a>.</span></label>
       </div>
+      <button type="button" class="btn-google" id="g-insc"><svg viewBox="0 0 48 48" width="20" height="20" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg><span>Créer mon compte avec Google</span></button>
+      <p class="ou">ou avec une adresse e-mail et un mot de passe</p>
+      <label>Adresse e-mail du parent<input type="email" id="i-email" autocomplete="email" required></label>
+      <label>Mot de passe (8 caractères minimum)<input type="password" id="i-mdp" autocomplete="new-password" minlength="8" required></label>
+      <label>Confirmer le mot de passe<input type="password" id="i-mdp2" autocomplete="new-password" minlength="8" required></label>
       <button type="submit">Créer mon compte famille</button>
     </form>
     <form id="f-consent" class="choix cache" novalidate>
@@ -246,7 +245,7 @@ if (/FBAN|FBAV|FB_IAB|Instagram|TikTok|musical_ly|BytedanceWebview|Snapchat|Line
 // Création : les trois consentements parentaux sont cochés AVANT d'ouvrir Google (aucun compte n'est créé sans eux).
 // Connexion : un compte Google nouveau passe par l'écran des consentements, avec « Annuler » qui supprime le compte tout juste créé.
 $('g-conn').onclick = e => occupe(e.currentTarget, async () => { await ouvrir(await C.auth.google()); });
-$('g-insc').onclick = e => { if (!tousCoches()) return etat('Cochez d\'abord les trois cases (parent, conditions, confidentialité), puis touchez « Créer mon compte avec Google ».', true);
+$('g-insc').onclick = e => { if (!tousCoches()) return etat('Cochez d\'abord les trois cases ci-dessus (parent, conditions, confidentialité), puis touchez « Créer mon compte avec Google ».', true);
   occupe(e.currentTarget, async () => { await ouvrir(await C.auth.google(), consentements()); }); };
 $('consent-annuler').onclick = e => occupe(e.target, async () => { await C.auth.annulerCreation(); jetonEnAttente = null; onglet('connexion'); etat('Inscription annulée : aucun compte n\'a été créé.'); });
 
