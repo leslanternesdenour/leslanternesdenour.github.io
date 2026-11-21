@@ -1,0 +1,16 @@
+[
+ {
+  "cle": "calendrier/w_kaaba-variante-A",
+  "texte": "la Kaaba (jeu de mémoire)",
+  "texte_voix": "الْكَعْبَة",
+  "fichier": "lot20/calendrier-w_kaaba-A.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/w_kaaba-variante-B",
+  "texte": "la Kaaba (jeu de mémoire)",
+  "texte_voix": "Kaaba",
+  "fichier": "lot20/calendrier-w_kaaba-B.mp3",
+  "a_tester": ""
+ }
+]
