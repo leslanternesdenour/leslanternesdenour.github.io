@@ -92,3 +92,5 @@ Console Google Cloud (lien « Gérer… » depuis Firebase) → API et services 
 - **Navigateurs intégrés aux applications** (Instagram, Facebook, TikTok…) : Google refuse d'y ouvrir sa fenêtre. Le site l'explique et propose Safari/Chrome ou l'e-mail.
 - **Fenêtres pop-up bloquées** : message clair, avec la marche à suivre.
 - Si le vrai nom de domaine est utilisé plus tard : l'ajouter aux domaines autorisés de Firebase et ajuster la CSP (`apis.google.com`, cadre `…firebaseapp.com`) dans `_headers` ; la restriction de la clé d'API (étape 10) aussi.
+
+> Contrôle du secret de session : `/api/sante` (préproduction) affiche `sessionsEtat` = `absent`, `trop-court` (moins de 32 caractères) ou `ok`. Les secrets ne sont pris en compte qu'après un nouveau déploiement.
