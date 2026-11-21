@@ -337,15 +337,16 @@ function g3(){const W=['mains','bouche','nez','visage','bras','tete','pieds'];
  ask()}
 
 /* JEU 4 : les erreurs à éviter */
-function g4(){const full=['mains','bouche','nez','visage','bras','tete','pieds'];
+function g4(){const debut=['intention','bismillah'];   /* des ablutions justes commencent TOUJOURS par l'intention, puis Bismillâh */
+ const full=[...debut,'mains','bouche','nez','visage','bras','tete','pieds'];
  const S=shuffle([
   {id:'nez',seq:full.filter(x=>x!=='nez'),a:"Il a oublié le nez",o:["Il a oublié les pieds","Tout est juste"]},
-  {id:'bras',seq:['mains','bouche','nez','visage',['bras','G'],['bras','D'],'tete','pieds'],a:"Il a commencé par le bras gauche",o:["Il a oublié la bouche","Tout est juste"]},
+  {id:'bras',seq:[...debut,'mains','bouche','nez','visage',['bras','G'],['bras','D'],'tete','pieds'],a:"Il a commencé par le bras gauche",o:["Il a oublié la bouche","Tout est juste"]},
   {id:'pieds',seq:full.filter(x=>x!=='pieds'),a:"Il a oublié les pieds",o:["Il a oublié le visage","Tout est juste"]},
-  {id:'ordre',seq:['mains','bouche','nez','visage','bras','pieds','tete'],a:"Il a lavé les pieds avant la tête",o:["Il a oublié les mains","Tout est juste"]},
-  {id:'oreilles',seq:['mains','bouche','nez','visage','bras',['tete','sans oreilles'],'pieds'],a:"Il a oublié les oreilles",o:["Il a oublié le nez","Tout est juste"]},
+  {id:'ordre',seq:[...debut,'mains','bouche','nez','visage','bras','pieds','tete'],a:"Il a lavé les pieds avant la tête",o:["Il a oublié les mains","Tout est juste"]},
+  {id:'oreilles',seq:[...debut,'mains','bouche','nez','visage','bras',['tete','sans oreilles'],'pieds'],a:"Il a oublié les oreilles",o:["Il a oublié le nez","Tout est juste"]},
   {id:'juste',seq:full,a:"Tout est juste !",o:["Il a oublié le nez","Il a commencé par les pieds"]},
-  {id:'visage',seq:['visage','mains','bouche','nez','bras','tete','pieds'],a:"Il a lavé le visage avant les mains",o:["Il a oublié la tête","Tout est juste"]}]);let i=0,ok=0;
+  {id:'visage',seq:[...debut,'visage','mains','bouche','nez','bras','tete','pieds'],a:"Il a lavé le visage avant les mains",o:["Il a oublié la tête","Tout est juste"]}]);let i=0,ok=0;
  const ask=()=>{const s=S[i],opts=shuffle([s.a,...s.o]);
   A.innerHTML=topbar('Les erreurs à éviter')+`<div class="gh"><span class="badge">Mission ${i+1} / ${S.length}</span></div>${bubble("Regarde bien les ablutions de ce petit. Qu'est-ce qui ne va pas ?")}
   <div class="seq">${s.seq.map(x=>{const[k,t]=Array.isArray(x)?x:[x,''];return `<div class="sq">${svg(k)}${LBL[k]}${t?`<b>${t}</b>`:''}</div>`}).join('')}</div>
