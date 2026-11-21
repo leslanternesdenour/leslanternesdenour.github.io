@@ -16,12 +16,13 @@ button.on{background:#e8b64c;color:#191345;border-color:#e8b64c}
 input[type=text]{width:100%;box-sizing:border-box;padding:8px;border-radius:8px;border:1px solid #6a55c9;background:#120e33;color:#fff;font:inherit}
 </style></head><body>
 <h1>Validation des voix (Ablutions · Prière · Calendrier)</h1>
-<p class="n">Pour chaque phrase : écoute la <b>nouvelle voix</b> (ElevenLabs, un fichier par phrase), compare avec l'<b>ancienne</b>, puis valide. Rien n'est branché dans les jeux tant que tu n'as pas validé. Calendrier : il n'y a pas encore de nouvelle voix, tu écoutes la voix actuelle et tu indiques ce qui est à refaire. Tes choix sont gardés sur cet appareil ; « Copier le résultat » me les envoie.</p>
+<p class="n">Pour chaque phrase : écoute la <b>nouvelle voix</b> (ElevenLabs, un fichier par phrase), compare avec l'<b>ancienne</b>, puis valide. Rien n'est branché dans les jeux tant que tu n'as pas validé. Calendrier : il n'y a pas encore de nouvelle voix, tu écoutes la voix actuelle et tu indiques ce qui est à refaire. Tes choix sont gardés sur cet appareil ; « Copier le résultat » (tous les jeux d'un coup), puis colle-le dans le chat.</p>
 <div class="bar">
  <select id="jeu"><option value="ablutions">Ablutions</option><option value="priere">Prière</option><option value="calendrier">Calendrier Ramadan</option></select>
  <select id="filtre"><option value="tout">Toutes</option><option value="prio">À écouter en priorité</option><option value="att">Pas encore jugées</option><option value="ko">Refusées / doutes</option></select>
  <span id="cpt" class="n"></span><button id="copie">Copier le résultat</button><button id="stop">⏹ Stop</button>
 </div>
+<div id="zone" hidden><p class="n">Voici ton résultat (tous les jeux). Copie ce texte et colle-le dans le chat :</p><textarea id="texte" rows="8" style="width:100%;box-sizing:border-box;background:#120e33;color:#fff;border:1px solid #6a55c9;border-radius:8px;padding:8px;font:14px monospace" readonly></textarea></div>
 <div id="liste"></div>
 <script>
 const PRIO={ablutions:['q2_bras'],priere:['g4ok','d_gh'],calendrier:[]};
@@ -51,6 +52,9 @@ function dessiner(){const p=jeu.value,d=D[p],f=filtre.value,L=liste;L.innerHTML=
   L.appendChild(row)}
  cpt.textContent=`${ok} validées · ${ko} refusées/doutes · ${n-ok-ko} à juger (sur ${n})`}
 jeu.onchange=filtre.onchange=dessiner;document.getElementById('stop').onclick=stop;
-document.getElementById('copie').onclick=async()=>{const t=JSON.stringify(ST,null,1);try{await navigator.clipboard.writeText(t);copie.textContent='Copié ✓'}catch(e){prompt('Copie ce texte :',t)}setTimeout(()=>copie.textContent='Copier le résultat',2000)};
+function resume(){const nom={ok:'GARDE/VALIDE',dt:'DOUTE',ko:'REFUSE/A REFAIRE'};const L=[];for(const [k,e] of Object.entries(ST)){if(!e.v&&!e.c)continue;L.push(k+' : '+(nom[e.v]||'(remarque seule)')+(e.c?' — '+e.c:''))}
+ const c={ok:0,dt:0,ko:0};Object.values(ST).forEach(e=>{if(e.v)c[e.v]++});return 'RÉSULTAT VALIDATION VOIX : '+c.ok+' validées, '+c.dt+' doutes, '+c.ko+' refusées\n'+L.sort().join('\n')}
+document.getElementById('copie').onclick=async()=>{const t=resume();document.getElementById('zone').hidden=false;const z=document.getElementById('texte');z.value=t;z.focus();z.select();
+ try{await navigator.clipboard.writeText(t);copie.textContent='Copié ✓ — colle-le dans le chat'}catch(e){copie.textContent='Sélectionné : copie-le à la main'}setTimeout(()=>copie.textContent='Copier le résultat',4000)};
 charger();
 </script></body></html>
