@@ -1,0 +1,23 @@
+[
+ {
+  "cle": "ablutions/s1-variante-A",
+  "texte": "Dire Bismillâh. Avant de toucher l'eau, dis : « Bismillâh » (au nom d'Allah).",
+  "texte_voix": "Dire بِسْمِ اللَّهِ. Avant de toucher l'eau, dis : « بِسْمِ اللَّهِ » (au nom de اللَّهِ).",
+  "fichier": "lot16/ablutions-s1-A.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "ablutions/s1-variante-B",
+  "texte": "Dire Bismillâh. Avant de toucher l'eau, dis : « Bismillâh » (au nom d'Allah).",
+  "texte_voix": "Dire بِسْمِ اللَّهِ. Avant de toucher l'eau, dis : « بِسْمِ اللَّهِ », ce qui veut dire : au nom de اللَّهِ.",
+  "fichier": "lot16/ablutions-s1-B.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "ablutions/s1-variante-C",
+  "texte": "Dire Bismillâh. Avant de toucher l'eau, dis : « Bismillâh » (au nom d'Allah).",
+  "texte_voix": "Dire بِسْمِ اللَّهِ. Avant de toucher l'eau, dis : « بِسْمِ اللَّهِ » (au nom de ٱللَّٰهِ).",
+  "fichier": "lot16/ablutions-s1-C.mp3",
+  "a_tester": ""
+ }
+]
