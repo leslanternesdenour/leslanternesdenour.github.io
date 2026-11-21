@@ -27,5 +27,6 @@ Les clips validés peuvent être branchés (après accord). Les refusés sont à
 - **Lot 1 (5 phrases)** : 5/5 validées — ablutions/home, ablutions/g1i, ablutions/q2_bras, ablutions/r3, priere/learn_ok.
 - **Lot 2 (15 phrases)** : 15/15 validées — ablutions/done, g2koe, g2kot, g2oke, g2okt, games, h8, q2_mains, q2_bouche, q2_nez, q2_visage, q2_tete, q2_oreilles, q2_pieds, q3_start.
 - **Lot 3 (20 phrases)** : 19/20 validées ; **refusée : ablutions/s1** (« au nom d'Allah » dit « illeh » : cause = apostrophe collée au mot arabe « d'اللَّه » ; règle corrigée en « de اللَّه », à régénérer).
-- Lots 4 à 7 générés (62 phrases), en attente d'écoute. 140 phrases restantes bloquées par la limite de crédits de la clé API (4 000), à relancer après levée de la limite.
+- **Lot 4 (20 phrases)** : 19/20 validées (dont priere/f_th, validée avec le texte « miséricorde d’اللَّه » : ne pas la régénérer) ; **non jugée : priere/e_jalsa** (à écouter).
+- Lots 5 à 7 générés (42 phrases), en attente d'écoute. 140 phrases restantes bloquées par la limite de crédits de la clé API (4 000), à relancer après levée de la limite.
 - Rien n'est branché dans les jeux : branchement uniquement après validation et accord du client.
