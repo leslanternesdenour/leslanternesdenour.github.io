@@ -37,3 +37,4 @@ Les clips validés peuvent être branchés (après accord). Les refusés sont à
 - **Lot 6 (14 phrases)** : 13/14 validées ; **non jugée : calendrier/ms10**. Cumul validé : 91 phrases.
 - **Lot 7 (3 phrases)** : 3/3 validées — calendrier/ms17, mb17, ms18. Cumul validé : 94 phrases.
 - **Lot 8 (19 phrases)** : 18/19 validées (calendrier mb13, ms14 à ms16, mb15, mb16, mb18, ms19 à ms24, mb19 à mb24) ; **ablutions/s1 refusée de nouveau** (« alleh » au lieu d'« Allah » avec « (au nom de اللَّه) »). 3 variantes de s1 générées dans le lot 16. Cumul validé : 112 phrases.
+- **Lot 16 (variantes de ablutions/s1)** : variantes A et C validées, B refusée. **Retenue : A** (« …(au nom de اللَّهِ). »). Cumul validé : 113 phrases.
