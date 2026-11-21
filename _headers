@@ -19,5 +19,8 @@
 /compte/*
   X-Robots-Tag: noindex, nofollow
   Cache-Control: no-store
+/apercu/*
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store
 /tarifs/*
   X-Robots-Tag: noindex
