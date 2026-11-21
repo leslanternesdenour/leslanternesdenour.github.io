@@ -96,3 +96,5 @@ Console Google Cloud (lien « Gérer… » depuis Firebase) → API et services 
 > Contrôle du secret de session : `/api/sante` (préproduction) affiche `sessionsEtat` = `absent`, `trop-court` (moins de 32 caractères) ou `ok`. Les secrets ne sont pris en compte qu'après un nouveau déploiement.
 
 > Clé du serveur : coller le contenu COMPLET du fichier JSON, de la première accolade `{` à la dernière `}`. Sans les accolades, le site répond `configuration-invalide`. Ne jamais coller la clé dans une conversation, un e-mail ou une note ordinaire ; si cela arrive, supprimer la clé dans Google Cloud (compte de service → Clés) et en générer une nouvelle.
+
+> Clé du serveur remplacée (nouvelle clé) ; l'ancienne, exposée, est refusée par le site (`serveur/cles-revoquees.js`) et doit être supprimée dans Google Cloud (compte de service → Clés).
