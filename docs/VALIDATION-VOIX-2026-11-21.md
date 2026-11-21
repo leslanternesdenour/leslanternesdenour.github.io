@@ -40,3 +40,4 @@ Les clips validés peuvent être branchés (après accord). Les refusés sont à
 - **Lot 16 (variantes de ablutions/s1)** : variantes A et C validées, B refusée. **Retenue : A** (« …(au nom de اللَّهِ). »). Cumul validé : 113 phrases.
 - **Lot 9 (20 phrases)** : 18/20 validées (calendrier ms25 à ms30, mb25 à mb30, cheer0 à cheer4, l10) ; **msstar et mbstar refusées : le texte envoyé commençait par « undefined » (bug du script, corrigé)**. Régénérées dans le lot 17. Cumul validé : 131 phrases.
 - **Lot 17 (2 phrases)** : 2/2 validées — calendrier/msstar, mbstar. Cumul validé : 133 phrases.
+- **Lot 10 (20 phrases)** : 20/20 validées — calendrier l20, l29, fin, debut, guide à guide4, dp0q à dp5a. Cumul validé : 153 phrases.
