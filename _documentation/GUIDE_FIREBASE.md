@@ -50,6 +50,7 @@ service cloud.firestore {
 }
 ```
 (Ce sont exactement les règles du fichier `firestore.rules`, testées dans l'émulateur officiel : tout est refusé à tout navigateur, seul le serveur écrit.)
+**Vérification réelle** : `node outils/admin/verifier-firestore.mjs` teste la base déployée avec un visiteur anonyme puis un parent connecté (liste, lecture, requête, création, modification, suppression) : tout doit être refusé (403). Il crée un compte de test toujours supprimé et ne crée aucune collection. Résultat du 21/11/2026 : 20 vérifications sur 20 conformes (base `(default)`, `eur3`, mode production).
 
 ## Étape 5 — Application web (clé publique)
 Paramètres du projet (roue dentée) → Général → « Vos applications » → **Web (`</>`)** → surnom `lanternes-de-nour-web` → **sans** Firebase Hosting → Enregistrer.
