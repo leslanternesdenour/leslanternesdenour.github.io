@@ -2,6 +2,17 @@
 
 **À lire en premier par toute session Claude qui reprend ce travail.** Dernière mise à jour : 20/11/2026. Ce document est autonome : il n'y a pas besoin de la conversation d'origine.
 
+## 0. AVANCEMENT AU 21/11/2026 (session autonome, branche `personnages-3d-n1`, tirée de `preproduction`)
+**Étape 2 (jeu de la Prière) : faite et testée.** Le garde TDD n'existe pas dans cet environnement cloud : les tests ont été écrits avant le code, un par un, et les trois mutations de contrôle (tissu, teint, culling) sont détectées.
+- `personnages3d/logique.js` (+ test) : forme de tissu, clignement, lissage, secours, décision, teint.
+- `personnages3d/personnage-glb.js` (+ test, vrai GLB + vrai moteur de gestes dans Node) : interface identique à `Voyageur` ; **13 postures × fille/garçon : aucun sommet sous le sol, articulations identiques à l'ancien personnage à moins de 0,01 mm** ; formes de tissu qui suivent la posture ; clignement ; clones indépendants (matériaux, squelette, teint) ; `liberer()` (fuite de textures d'os corrigée : 71 → 23 stables).
+- `personnages3d/fabrique.js` (+ test) : un chargement par genre, secours automatique vers l'ancien (échec, délai 8 s, fichier corrompu, WebGL, interrupteur, `?perso=ancien`). L'adaptateur est importé dynamiquement : une panne du CDN ne peut jamais casser le jeu.
+- `priere/jeu3d/index.html` (`three/addons/` dans l'importmap) et `jeu.js` : création asynchrone, échange seulement quand le nouveau est prêt, `suivre(dt)` dans la boucle, `window.__pri.perso()`. **Par défaut c'est encore l'ancien personnage** (`PAR_DEFAUT = 'ancien'` dans `jeu.js`) ; `?perso=nouveau` active les nouveaux modèles.
+- `tests/versions.test.js` : corrigé (il échouait avant tout travail à cause d'un fichier absent) et module `fabrique.js` inscrit.
+- `outils/construire.mjs` : `docs/`, `personnages3d/donnees-tests` et `personnages3d/essais` ne sont pas publiés.
+- Contrôle navigateur (Chrome, rendu logiciel, Three.js servi localement) : `personnages3d/essais/navigateur-priere.cjs` : ordinateur 1100 px et mobile 390 px, 13 postures, 12 changements de genre sans fuite, secours avec modèle bloqué, défaut = ancien, 0 erreur JS.
+**Limites connues / à décider :** (1) **test de performance sur téléphone réel jamais fait** : indispensable avant de passer `PAR_DEFAUT` à `'nouveau'` ; (2) les tenues du joueur ne sont pas recolorées (tenue crème d'origine, décision du dossier) : l'ami ne diffère que par le teint ; (3) **étape 3 et 4 (Ablutions) non faites : elles exigent Blender et l'espace de travail 3D du client** (formes de tissu `tabouret`, pied levé, cycle de marche).
+
 ## 1. Mission et règles absolues
 Intégrer les personnages **fille et garçon N1** (modèles glTF/GLB, `personnages3d/modeles/`) dans **le Jeu de la Prière** (d'abord) puis **le Jeu des Ablutions** (ensuite, après adaptation de ses postures), en gardant le moteur de gestes et les animations existants.
 - **Ne jamais modifier le Grand Voyage, la classe `Voyageur` (`voyage/js/voyageur.js`), ses personnages, ses animations, ses fichiers.** Les deux jeux importent `Voyageur` (secours) : on l'importe, on ne le modifie pas.

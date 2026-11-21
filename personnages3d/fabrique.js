@@ -1,7 +1,6 @@
 // Fabrique de personnages : renvoie le nouveau personnage N1 ou, au moindre problème, l'ancien (secours automatique).
 // Secours si : chargement impossible (réseau, 404), délai dépassé (8 s), WebGL absent, interrupteur coupé, ou ?perso=ancien dans l'adresse.
 import { urlModele, decisionSecours, creerAvecSecours } from './logique.js';
-import { PersonnageGLB } from './personnage-glb.js';
 
 // INTERRUPTEUR GÉNÉRAL : mettre false remet partout l'ancien personnage (arrêt d'urgence). Défaut : true.
 export const INTERRUPTEUR = true;
@@ -29,6 +28,7 @@ export const viderCache = () => cache.clear();
 export async function creerPersonnage({ genre, peau = 1, ombres = false, creerAncien, parametre, webgl = true, interrupteur = INTERRUPTEUR, delaiMs = DELAI_MS, options } = {}) {
   const decision = decisionSecours({ parametre, interrupteur, webgl });
   return creerAvecSecours({
-    charger: async () => new PersonnageGLB(await chargerModele(genre, options), { genre, peau, ombres }),
+    // import dynamique : si three/addons (CDN) est indisponible, l'échec est attrapé ici et le secours prend le relais (un import statique casserait tout le jeu)
+    charger: async () => { const { PersonnageGLB } = await import('./personnage-glb.js'); return new PersonnageGLB(await chargerModele(genre, options), { genre, peau, ombres }); },
     creerAncien, delaiMs, forcer: decision === 'ancien' ? 'ancien' : undefined });
 }

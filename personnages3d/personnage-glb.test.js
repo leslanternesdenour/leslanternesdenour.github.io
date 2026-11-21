@@ -101,3 +101,9 @@ test("les deux modèles gardent leur poids : triangles et os annoncés dans le r
   for (const genre of ['fille', 'garcon']) { let tri = 0, os = 0; E.gltf[genre].scene.traverse(o => { if (o.isBone) os++; if (o.isMesh) tri += (o.geometry.index ? o.geometry.index.count : o.geometry.attributes.position.count) / 3; });
     assert.equal(os, attendu[genre][1], genre + ' os'); assert.ok(Math.abs(tri - attendu[genre][0]) <= 5, `${genre} : ${tri} triangles`); }
 });
+
+test("liberer() : matériaux et textures d'os du personnage libérés, géométries partagées conservées", async () => {
+  const E = await env(); const p = new E.PersonnageGLB(E.gltf.fille, { genre: 'fille' }); let sq = 0, mat = 0, geo = 0;
+  for (const m of p.maillages) { if (m.skeleton) { const d = m.skeleton.dispose.bind(m.skeleton); m.skeleton.dispose = () => { sq++; d(); }; } const dm = m.material.dispose.bind(m.material); m.material.dispose = () => { mat++; dm(); }; m.geometry.addEventListener('dispose', () => geo++); }
+  p.liberer(); assert.equal(sq, p.maillages.filter(m => m.isSkinnedMesh).length, 'un squelette libéré par maillage à squelette'); assert.equal(mat, p.maillages.length); assert.equal(geo, 0, 'la géométrie partagée n\'est pas libérée');
+});

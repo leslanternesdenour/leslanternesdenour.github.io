@@ -57,6 +57,7 @@ export class PersonnageGLB {
       if (d.clignement_mi !== undefined) inf[d.clignement_mi] = cl.clignement_mi;
     }
   }
-  // Libère ce qui appartient à ce personnage (matériaux). Les géométries sont partagées avec les autres personnages du même genre : on n'y touche pas.
-  liberer() { for (const m of this.maillages) m.material.dispose(); }
+  // Libère ce qui appartient à ce personnage : matériaux et textures d'os de CHAQUE squelette cloné (sans cela, chaque changement de genre laisserait des textures sur la carte graphique).
+  // Les géométries sont partagées avec les autres personnages du même genre : on n'y touche pas.
+  liberer() { for (const m of this.maillages) { if (m.skeleton) m.skeleton.dispose(); m.material.dispose(); } }
 }

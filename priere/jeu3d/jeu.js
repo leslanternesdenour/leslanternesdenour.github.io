@@ -3,6 +3,7 @@
 // Les textes, les paroles, les sources et les voix sont ceux de la leçon /priere/ (rien n'est inventé ici).
 import * as THREE from 'three';
 import { Voyageur } from '../../voyage/js/voyageur.js?v=4';
+import { creerPersonnage as creerNouveau } from '../../personnages3d/fabrique.js?v=1';
 import { mascotte } from '../../monde/mascottes.js?v=1';
 import { Gestes } from '../../ablutions/jeu3d/gestes.js?v=2';
 import { creerSalle } from './salle.js?v=1';
@@ -103,18 +104,29 @@ const salle = creerSalle(scene, { ombres: Q.ombres });
 const AMI_Z = 1.25;
 let info = persoChoisi(), enfant = null, ami = null;
 function variante(p) { return p === 'mains' && mainsVariante === 'cotes' ? 'debout' : p; }
-function creerPersonnage(perso, x, z) {
-  const v = new Voyageur(!!Q.ombres, perso, {}); v.racine.position.set(x, 0, z); scene.add(v.racine);
+// Personnages : les nouveaux modèles N1 (personnages3d/) ou, en secours automatique, l'ancien Voyageur.
+// PAR_DEFAUT = 'ancien' tant que le test sur téléphone n'est pas validé ; l'adresse ?perso=nouveau (ou ?perso=ancien) force l'un ou l'autre.
+const PAR_DEFAUT = 'ancien';
+const PERSO = (() => { const p = new URLSearchParams(location.search).get('perso'); return p === 'nouveau' || p === 'ancien' ? p : PAR_DEFAUT; })();
+async function creerPersonnage(perso, x, z) {
+  const r = await creerNouveau({ genre: perso.genre, peau: perso.peau, ombres: !!Q.ombres, parametre: PERSO, creerAncien: () => new Voyageur(!!Q.ombres, perso, {}) });
+  const v = r.personnage; v.racine.position.set(x, 0, z); scene.add(v.racine);
   const g = new Gestes(v, { postures: POSTURES, sequences: {}, depart: 'debout', repos: 'debout' }); g.activer(true);
-  return { v, g, pos: 'debout' };
+  if (v.lier) v.lier(g, POSTURES);   // le nouveau personnage suit la posture du moteur (formes du tissu)
+  return { v, g, pos: 'debout', type: r.type, raison: r.raison };
 }
-function creerPersonnages() {
-  for (const p of [enfant, ami]) if (p) { scene.remove(p.v.racine); p.v.racine.traverse(o => { if (o.geometry) o.geometry.dispose(); }); }
-  enfant = creerPersonnage(info, 0, 0);
+function retirer(p) { scene.remove(p.v.racine); if (p.v.liberer) p.v.liberer(); else p.v.racine.traverse(o => { if (o.geometry) o.geometry.dispose(); }); }
+let numeroCreation = 0;
+async function creerPersonnages() {
+  const mien = ++numeroCreation;
   // l'ami : même genre, une autre tenue et une autre couleur de peau (personnage imaginaire)
-  ami = creerPersonnage({ genre: info.genre, tenue: info.tenue === 'bleu' ? 'vert' : 'bleu', peau: (info.peau + 2) % 4 }, 0, AMI_Z);
+  const [e, a] = await Promise.all([creerPersonnage(info, 0, 0), creerPersonnage({ genre: info.genre, tenue: info.tenue === 'bleu' ? 'vert' : 'bleu', peau: (info.peau + 2) % 4 }, 0, AMI_Z)]);
+  if (mien !== numeroCreation) { retirer(e); retirer(a); return; }      // un changement de genre plus récent a pris le relais
+  if (ami) a.v.racine.visible = ami.v.racine.visible;
+  const anciens = [enfant, ami]; enfant = e; ami = a;                   // l'échange se fait seulement quand les nouveaux sont prêts : jamais d'enfant nul dans la boucle
+  for (const p of anciens) if (p) retirer(p);
 }
-creerPersonnages();
+await creerPersonnages();
 // le tapis de l'ami
 { const m = new THREE.Mesh(new THREE.BoxGeometry(0.72, 0.012, 1.32), new THREE.MeshStandardMaterial({ color: '#f5b942', roughness: 0.9 })); m.position.set(0, 0.006, AMI_Z + 0.18); scene.add(m);
   const m2 = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.014, 1.2), new THREE.MeshStandardMaterial({ color: '#7d2f3a', roughness: 0.9 })); m2.position.set(0, 0.008, AMI_Z + 0.18); scene.add(m2); }
@@ -335,7 +347,8 @@ const horloge = new THREE.Clock(); let tTotal = 0;
 function image() {
   requestAnimationFrame(image);
   const dt = Math.min(0.05, horloge.getDelta()); tTotal += dt;
-  enfant.g.maj(dt, tTotal); if (ami.v.racine.visible) ami.g.maj(dt, tTotal);
+  enfant.g.maj(dt, tTotal); if (enfant.v.suivre) enfant.v.suivre(dt);
+  if (ami.v.racine.visible) { ami.g.maj(dt, tTotal); if (ami.v.suivre) ami.v.suivre(dt); }
   salle.maj(dt, tTotal);
   majCamera(dt, tTotal);
   renderer.render(scene, camera);
@@ -346,5 +359,5 @@ accueil();
 image();
 
 // pour les tests
-window.__pri = { enfant: () => enfant, ami: () => ami, bouger, E, cam, vue, lancer, mode: () => mode, renderer, etape: i => etapeGuide(i),
+window.__pri = { enfant: () => enfant, ami: () => ami, perso: () => ({ enfant: enfant.type, ami: ami.type }), bouger, E, cam, vue, lancer, mode: () => mode, renderer, etape: i => etapeGuide(i),
   poser(nom) { for (const p of [enfant, ami]) { p.g.poser(nom); p.pos = nom; } } };
