@@ -8,6 +8,8 @@ export function etatConfiguration(env) {
   const cleStripe = typeof env.STRIPE_CLE_SECRETE === 'string' ? env.STRIPE_CLE_SECRETE : '';
   return {
     sessions: typeof env.SESSION_SECRET === 'string' && env.SESSION_SECRET.length >= 32,
+    // Détail sans jamais révéler la valeur ni sa longueur exacte : absent | trop-court (moins de 32 caractères) | ok
+    sessionsEtat: typeof env.SESSION_SECRET !== 'string' || env.SESSION_SECRET.length === 0 ? 'absent' : env.SESSION_SECRET.length < 32 ? 'trop-court' : 'ok',
     firebaseProjet: !!env.FIREBASE_PROJET,
     firebaseCompteDeService: compte,
     createurDesigne: typeof env.CREATOR_UID === 'string' && env.CREATOR_UID.trim().length > 0,
