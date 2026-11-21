@@ -44,7 +44,7 @@ for (const f of fichiers.filter(f => f.endsWith('.js'))) {
   }
 }
 // 3. catalogues de voix
-for (const j of ['audio/voix.json', 'monde/voix/voix.json', 'ablutions/voix/voix.json', 'priere/voix/voix.json', 'calendrier/voix/voix.json']) {
+for (const j of ['audio/voix.json', 'monde/voix/voix.json', 'ablutions/voix/voix.json', 'priere/voix/voix.json', 'calendrier/voix/voix.json', 'ablutions/voix/voix-catalogue.json', 'priere/voix/voix-catalogue.json']) {
   const p = path.join(RACINE, j); if (!fs.existsSync(p)) { test('catalogue ' + j, false, 'absent'); continue; }
   let d; try { d = JSON.parse(fs.readFileSync(p, 'utf8')); } catch (e) { test('JSON ' + j, false, e.message); continue; }
   for (const [k, v] of Object.entries(d)) {
