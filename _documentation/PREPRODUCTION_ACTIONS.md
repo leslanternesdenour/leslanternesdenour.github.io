@@ -43,7 +43,7 @@ Ancien détail (conservé pour référence) :
 Les identifiants publics (`FIREBASE_PROJET`, plus tard les `price_…` Stripe) : donnez-les-moi, je les mets dans `wrangler.toml` (Cloudflare verrouille dans le tableau de bord ce qui est déclaré dans ce fichier).
 Si le tableau de bord refuse d'ajouter un secret à cause de `wrangler.toml`, dites-le-moi : alternative `wrangler pages secret put`.
 
-## D. Votre compte Créateur (en un clic, sans script)
+## D. Votre compte Créateur (en un clic, sans script) — secret CREATOR_UID enregistré le 21/11/2026
 1. Sur `https://lanternes-de-nour.pages.dev/compte/` : créez votre compte (e-mail dédié, mot de passe unique long), cliquez le lien de vérification reçu par e-mail.
 2. Console Firebase → Authentication → Utilisateurs : copiez l'**UID** de votre compte et enregistrez-le dans le secret Cloudflare `CREATOR_UID` (puis un nouveau déploiement : Deployments → Retry, ou un push).
 3. Reconnectez-vous sur `/compte/` : un encadré « Ce compte est désigné comme Créateur » apparaît. Touchez **Activer l'espace Créateur** une seule fois.
