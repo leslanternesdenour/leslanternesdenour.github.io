@@ -1,0 +1,16 @@
+[
+ {
+  "cle": "calendrier/qg1a-variante-A",
+  "texte": "Fajr, Dhohr, ‘Asr, Maghrib et ‘Ichâ'.",
+  "texte_voix": "Fajr, Dhohr, ‘Asr, Maghrib et الْعِشَاء.",
+  "fichier": "lot19/calendrier-qg1a-A.mp3",
+  "a_tester": "‘Ichâ (et noms des prières en B)"
+ },
+ {
+  "cle": "calendrier/qg1a-variante-B",
+  "texte": "Fajr, Dhohr, ‘Asr, Maghrib et ‘Ichâ'.",
+  "texte_voix": "الْفَجْر، الظُّهْر، الْعَصْر، الْمَغْرِب et الْعِشَاء.",
+  "fichier": "lot19/calendrier-qg1a-B.mp3",
+  "a_tester": "‘Ichâ (et noms des prières en B)"
+ }
+]
