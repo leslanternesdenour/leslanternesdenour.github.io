@@ -8,7 +8,7 @@ const SORTIE = path.join(RACINE, 'dist');
 if (process.env.CF_PAGES_BRANCH && process.env.CF_PAGES_BRANCH !== 'preproduction') { console.error(`Build refusé : la branche « ${process.env.CF_PAGES_BRANCH} » ne peut pas être publiée (seule « preproduction » l'est).`); process.exit(1); }
 const PREPROD = process.env.LDN_PREPROD === '1' || (process.env.CF_PAGES_BRANCH && process.env.CF_PAGES_BRANCH !== 'main');
 // jamais publiés : outillage, fonctions serveur (Cloudflare les prend à part), configuration, documents de travail
-const EXCLUS = new Set(['.git', '.github', 'dist', 'node_modules', 'functions', 'serveur', 'outils', 'wrangler.toml', 'package.json', 'package-lock.json',
+const EXCLUS = new Set(['.git', '.github', 'dist', 'node_modules', 'functions', 'serveur', 'outils', '.node-version', 'wrangler.toml', 'package.json', 'package-lock.json',
   '_documentation', 'premium', 'tests', 'compte/comptes.js', 'firestore.rules', 'firestore.indexes.json', 'firebase.json', '.gitignore', '.dev.vars', 'CNAME']);
 const exclu = rel => EXCLUS.has(rel.split('/')[0]) || EXCLUS.has(rel) || /\.(md|patch|mjs)$/.test(rel) || /\.test\.js$/.test(rel) || /(^|\/)\.env/.test(rel);
 fs.rmSync(SORTIE, { recursive: true, force: true }); fs.mkdirSync(SORTIE);
