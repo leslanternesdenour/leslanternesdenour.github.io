@@ -17,6 +17,7 @@ etape "Configuration : outil de contrôle" bash -c 'set -o pipefail; node --test
 etape "Vérificateur de la configuration Firebase (fausse API)" bash -c 'set -o pipefail; node --test outils/tests/verifier-firebase.test.mjs 2>&1 | grep -E "^# (pass|fail)" | tr "\n" " "; echo; node --test outils/tests/verifier-firebase.test.mjs >/dev/null 2>&1'
 etape "Vérificateur des règles Firestore (fausse API)" bash -c 'set -o pipefail; node --test outils/tests/verifier-firestore.test.mjs 2>&1 | grep -E "^# (pass|fail)" | tr "\n" " "; echo; node --test outils/tests/verifier-firestore.test.mjs >/dev/null 2>&1'
 etape "Page Tarifs : promesses = catalogue" bash -c 'set -o pipefail; node --test outils/tests/tarifs.test.mjs 2>&1 | grep -E "^# (pass|fail)" | tr "\n" " "; echo; node --test outils/tests/tarifs.test.mjs >/dev/null 2>&1'
+etape "Voix Ablutions et Prière : nouvelles voix seulement" bash -c 'set -o pipefail; node --test outils/tests/voix.test.mjs 2>&1 | grep -E "^# (pass|fail)" | tr "\n" " "; echo; node --test outils/tests/voix.test.mjs >/dev/null 2>&1'
 etape "Parcours de compte complet (serveur local, simulation)" bash -c 'set -o pipefail; S=$(bash outils/tests/parcours-reel.sh); echo "$S" | tail -1; echo "$S" | grep -q " 0 échoués"'
 etape "Dossier publié (aucune fuite)" bash -c 'set -o pipefail; node outils/construire.mjs >/dev/null && node outils/tests/verifier-dist.mjs | tail -1'
 etape "Aucune fuite Premium (dépôt public + dist)" bash -c 'set -o pipefail; node outils/tests/fuite-premium.mjs | tail -1; node outils/tests/fuite-premium.mjs >/dev/null'

@@ -6,17 +6,15 @@
 <h1>Écoute comparée : voix actuelles ↔ voix du catalogue (NOUR-VOIX-ABL / PRI)</h1>
 <p class="n">Outil interne (non lié au site). Pour chaque extrait, écoutez la voix actuelle de la page puis la nouvelle voix du catalogue. Les deux doivent dire la même phrase. La correspondance a été déduite de l'ordre des fichiers (corrélation des durées 0,97) : elle doit être validée à l'oreille avant tout branchement.</p>
 <p><select id="page"><option value="ablutions">Ablutions</option><option value="priere">Prière</option></select></p>
-<table><thead><tr><th>Extrait</th><th>Actuelle</th><th>Catalogue</th><th>Fichier catalogue</th></tr></thead><tbody id="t"></tbody></table>
+<table><thead><tr><th>Extrait</th><th></th><th>Voix actuelle (ElevenLabs)</th><th>Fichier</th></tr></thead><tbody id="t"></tbody></table>
 <script>
 const A=new Audio();let stop=0;
 function jouer(src,d,f){clearTimeout(stop);A.src=src;A.currentTime=0;A.onloadedmetadata=()=>{A.currentTime=d;A.play();stop=setTimeout(()=>A.pause(),(f-d)*1000+100)};A.load()}
-async function charger(p){const [a,c]=await Promise.all([fetch('../'+p+'/voix/voix.json').then(r=>r.json()),fetch('../'+p+'/voix/voix-catalogue.json').then(r=>r.json())]);
+async function charger(p){const c=await fetch('../'+p+'/voix/voix.json').then(r=>r.json());
  const t=document.getElementById('t');t.innerHTML='';
- for(const k of Object.keys(c)){const x=a[k],y=c[k];const tr=document.createElement('tr');
-  tr.innerHTML=`<td>${k}</td><td>${x?'<button>▶ actuelle</button>':'—'}</td><td><button>▶ catalogue</button></td><td class="n">${y[3]||y[0]}</td>`;
-  const b=tr.querySelectorAll('button');
-  if(x)b[0].onclick=()=>jouer('../'+p+'/voix/'+x[0],x[1],x[2]);
-  b[b.length-1].onclick=()=>jouer('../'+p+'/voix/'+y[0],y[1],y[2]);
+ for(const k of Object.keys(c)){const y=c[k];const tr=document.createElement('tr');
+  tr.innerHTML=`<td>${k}</td><td>—</td><td><button>▶ écouter</button></td><td class="n">${y[3]||y[0]}</td>`;
+  tr.querySelector('button').onclick=()=>jouer('../'+p+'/voix/'+y[0],y[1],y[2]);
   t.appendChild(tr)}}
 document.getElementById('page').onchange=e=>charger(e.target.value);charger('ablutions');
 </script></body></html>
