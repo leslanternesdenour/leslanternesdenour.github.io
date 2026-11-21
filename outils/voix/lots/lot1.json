@@ -1,0 +1,32 @@
+[
+ {
+  "cle": "ablutions/home",
+  "texte": "Assalâmou ‘alaykoum ! Je suis Nour. Tu viens avec moi apprendre les ablutions ?",
+  "texte_voix": "السَّلَامُ عَلَيْكُمْ ! Je suis Nour. Tu viens avec moi apprendre les ablutions ?",
+  "fichier": "lot1/ablutions-home.mp3"
+ },
+ {
+  "cle": "ablutions/g1i",
+  "texte": "Touche les cartes dans le bon ordre, de la première à la neuvième étape !",
+  "texte_voix": "Touche les cartes dans le bon ordre, de la première à la neuvième étape !",
+  "fichier": "lot1/ablutions-g1i.mp3"
+ },
+ {
+  "cle": "ablutions/q2_bras",
+  "texte": "Combien de fois on lave les bras ? Un, deux, ou trois ?",
+  "texte_voix": "Combien de fois on lave les bras ? Un, deux, ou trois ?",
+  "fichier": "lot1/ablutions-q2_bras.mp3"
+ },
+ {
+  "cle": "ablutions/r3",
+  "texte": "Parfait ! Tu as toutes les étoiles !",
+  "texte_voix": "Parfait ! Tu as toutes les étoiles !",
+  "fichier": "lot1/ablutions-r3.mp3"
+ },
+ {
+  "cle": "priere/learn_ok",
+  "texte": "Bravo ! Tu peux réécouter autant de fois que tu veux.",
+  "texte_voix": "Bravo ! Tu peux réécouter autant de fois que tu veux.",
+  "fichier": "lot1/priere-learn_ok.mp3"
+ }
+]
