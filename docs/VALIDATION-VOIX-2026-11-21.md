@@ -32,3 +32,5 @@ Les clips validés peuvent être branchés (après accord). Les refusés sont à
 - Rien n'est branché dans les jeux : branchement uniquement après validation et accord du client.
 
 - **Génération complète (21/11/2026)** : les 237 phrases (68 jeux + 169 calendrier) sont générées avec la voix de la narratrice, en 15 lots, non branchées. Crédits ElevenLabs utilisés : environ 5 900 sur 126 441. Écoute en cours.
+- **Lot 5 (20 phrases)** : 20/20 validées — priere/h1_5, h1_6, home, sens, d_rb, d_sj, d_th, e_taslim ; calendrier/ms1 à ms6 et mb1 à mb6.
+- **Cumul validé : 78 phrases** (lots 1 à 5, hors ablutions/s1 à réécouter dans le lot 8 et priere/e_jalsa non jugée). Restent à écouter : lots 6 à 15.
