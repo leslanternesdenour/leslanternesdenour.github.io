@@ -26,13 +26,21 @@
   Cache-Control: no-cache
 
 # Espaces privés : jamais indexés, jamais gardés en cache (navigateur ni intermédiaires)
+# Pages où l'on se connecte (Google s'ouvre dans une fenêtre) : CSP élargie de DEUX sources seulement — le script de connexion Google (apis.google.com) et la page de connexion du projet Firebase (cadre).
+# Le reste du site garde la CSP stricte. « ! » retire la CSP héritée de /* : sans cela deux CSP s'appliqueraient ensemble et la plus stricte l'emporterait.
 /admin/*
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://i.ytimg.com https://yt3.googleusercontent.com; media-src 'self' data: blob: https://cdn.islamic.network; connect-src 'self' https://cdn.jsdelivr.net https://api.alquran.cloud https://cdn.islamic.network https://www.gstatic.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com; frame-src 'self' https://www.youtube-nocookie.com https://lanternes-de-nour.firebaseapp.com; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'
   X-Robots-Tag: noindex, nofollow
   Cache-Control: no-store
 /compte/*
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://i.ytimg.com https://yt3.googleusercontent.com; media-src 'self' data: blob: https://cdn.islamic.network; connect-src 'self' https://cdn.jsdelivr.net https://api.alquran.cloud https://cdn.islamic.network https://www.gstatic.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com; frame-src 'self' https://www.youtube-nocookie.com https://lanternes-de-nour.firebaseapp.com; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'
   X-Robots-Tag: noindex, nofollow
   Cache-Control: no-store
 /apercu/*
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://i.ytimg.com https://yt3.googleusercontent.com; media-src 'self' data: blob: https://cdn.islamic.network; connect-src 'self' https://cdn.jsdelivr.net https://api.alquran.cloud https://cdn.islamic.network https://www.gstatic.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com; frame-src 'self' https://www.youtube-nocookie.com https://lanternes-de-nour.firebaseapp.com; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'
   X-Robots-Tag: noindex, nofollow
   Cache-Control: no-store
 /tarifs/*

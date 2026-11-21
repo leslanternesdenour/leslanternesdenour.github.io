@@ -31,11 +31,11 @@ export async function creerEmulateur({ mdpCreateur = process.env.LDN_EMUL_MDP_CR
   // ----- comptes (imitation de Firebase Authentication) -----
   const comptes = new Map();   // email → { uid, sel, empreinte, verifie, role }
   const hacher = (mdp, sel) => crypto.scryptSync(String(mdp), sel, 32).toString('hex');
-  const ajouter = (email, mdp, { uid, verifie = false, role } = {}) => { const sel = crypto.randomBytes(16).toString('hex'); const c = { uid: uid || 'u' + crypto.randomBytes(10).toString('hex'), sel, empreinte: hacher(mdp, sel), verifie, role }; comptes.set(email, c); return c; };
+  const ajouter = (email, mdp, { uid, verifie = false, role } = {}) => { const sel = crypto.randomBytes(16).toString('hex'); const c = { uid: uid || 'u' + crypto.randomBytes(10).toString('hex'), sel, empreinte: mdp == null ? null : hacher(mdp, sel), verifie, role }; comptes.set(email, c); return c; };
   ajouter('createur@local.test', mdpCreateur, { uid: UID_CREATEUR, verifie: true, role: 'creator' });
   const parUid = uid => [...comptes.entries()].find(([, c]) => c.uid === uid);
-  async function jeton(email, c, { authAgo = 0 } = {}) {
-    const s = Math.floor(maintenant() / 1000), tete = b64u({ alg: 'RS256', kid: 'emul' }) + '.' + b64u({ iss: 'https://securetoken.google.com/' + PROJET, aud: PROJET, firebase: { sign_in_provider: 'password' }, sub: c.uid, iat: s, exp: s + 3600, auth_time: s - authAgo, email, email_verified: c.verifie, ...(c.role ? { role: c.role } : {}) });
+  async function jeton(email, c, { authAgo = 0, fournisseur = 'password' } = {}) {
+    const s = Math.floor(maintenant() / 1000), tete = b64u({ alg: 'RS256', kid: 'emul' }) + '.' + b64u({ iss: 'https://securetoken.google.com/' + PROJET, aud: PROJET, firebase: { sign_in_provider: fournisseur }, sub: c.uid, iat: s, exp: s + 3600, auth_time: s - authAgo, email, email_verified: c.verifie, ...(c.role ? { role: c.role } : {}) });
     return tete + '.' + Buffer.from(await crypto.webcrypto.subtle.sign('RSASSA-PKCS1-v1_5', cles.privateKey, new TextEncoder().encode(tete))).toString('base64url');
   }
   base.supprimerUtilisateur = async uid => { const e = parUid(uid); if (e) comptes.delete(e[0]); };
@@ -78,10 +78,21 @@ export async function creerEmulateur({ mdpCreateur = process.env.LDN_EMUL_MDP_CR
         if (comptes.has(email)) return json({ erreur: 'auth/email-already-in-use' }, 409);
         return json({ idToken: await jeton(email, ajouter(email, b.mdp)) });
       }
+      case 'google': {                                     // SIMULATION de « Continuer avec Google » : compte Google fictif, adresse toujours vérifiée
+        if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return json({ erreur: 'auth/invalid-email' }, 400);
+        let c = comptes.get(email); if (!c) c = ajouter(email, null, { verifie: true }); c.verifie = true;   // compte existant : lié (même UID)
+        return json({ idToken: await jeton(email, c, { fournisseur: 'google.com' }) });
+      }
+      case 'annuler': {                                    // supprime un compte Google tout juste créé dont le parent n'a pas accepté les consentements
+        const c = comptes.get(email);
+        if (c && c.empreinte === null && !(await base.lire('familles', c.uid))) comptes.delete(email);
+        return json({ ok: true });
+      }
       case 'connexion': case 'reconnexion': {
         const e = chemin === 'connexion' ? email : session && parUid(session.uid)?.[0];
         const c = e && comptes.get(e);
-        if (!c || hacher(b.mdp, c.sel) !== c.empreinte) return json({ erreur: 'auth/invalid-credential' }, 401);
+        if (chemin === 'reconnexion' && c && session.fournisseur === 'google.com' && b.google === true) return email === e ? json({ idToken: await jeton(e, c, { fournisseur: 'google.com' }) }) : json({ erreur: 'auth/user-mismatch' }, 401);   // « Confirmer avec Google »
+        if (!c || c.empreinte === null || hacher(b.mdp, c.sel) !== c.empreinte) return json({ erreur: 'auth/invalid-credential' }, 401);
         return json({ idToken: await jeton(e, c) });
       }
       case 'verifier': {                                   // simule le clic sur le lien reçu par e-mail
@@ -90,7 +101,7 @@ export async function creerEmulateur({ mdpCreateur = process.env.LDN_EMUL_MDP_CR
       }
       case 'jeton': {                                      // équivalent de getIdToken(true)
         const e = session && parUid(session.uid)?.[0]; if (!e) return json({ erreur: 'connexion-requise' }, 401);
-        return json({ idToken: await jeton(e, comptes.get(e), { authAgo: Math.floor(maintenant() / 1000) - session.authTime }) });
+        return json({ idToken: await jeton(e, comptes.get(e), { authAgo: Math.floor(maintenant() / 1000) - session.authTime, fournisseur: session.fournisseur }) });
       }
       case 'horloge': decalage += Number(b.jours || 0) * 86400000; return json({ maintenant: maintenant() });
       case 'paiement': {                                   // la page de paiement factice : « payer » ou « annuler »

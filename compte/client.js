@@ -19,13 +19,20 @@ const MESSAGES = {
   'auth/invalid-credential': 'Adresse ou mot de passe incorrect.', 'auth/wrong-password': 'Adresse ou mot de passe incorrect.', 'auth/user-not-found': 'Adresse ou mot de passe incorrect.',
   'auth/email-already-in-use': 'Un compte existe déjà avec cette adresse. Connectez-vous.', 'auth/weak-password': 'Mot de passe trop court (8 caractères minimum).',
   'auth/invalid-email': 'Adresse e-mail invalide.', 'auth/too-many-requests': 'Trop d\'essais. Réessayez dans quelques minutes.', 'auth/network-request-failed': 'Pas de connexion internet.',
-  'trop-de-tentatives': 'Trop d\'essais. Réessayez plus tard.', 'consentement-requis': 'Merci de cocher les cases demandées.', 'reconnexion-requise': 'Pour votre sécurité, retapez votre mot de passe.',
+  'trop-de-tentatives': 'Trop d\'essais. Réessayez plus tard.', 'consentement-requis': 'Merci de cocher les cases demandées.', 'reconnexion-requise': 'Pour votre sécurité, confirmez à nouveau votre identité.',
   'email-non-verifie': 'Validez d\'abord votre adresse e-mail (lien reçu par e-mail).', 'expiree': 'Cette invitation a expiré. Demandez-en une nouvelle.', 'deja-utilisee': 'Cette invitation a déjà été utilisée.',
   'annulee': 'Cette invitation a été annulée.', 'inconnue': 'Invitation inconnue. Vérifiez le lien.', 'compte-createur': 'Le compte Créateur a déjà tous les accès.', 'autre-adresse': 'Cette invitation est prévue pour une autre adresse e-mail.',
   'abonnement-actif': 'Un abonnement payant est déjà actif sur ce compte : rien à faire de plus.', 'deja-premium': 'Votre compte a déjà cet accès.', 'deja-abonne': 'Un abonnement est déjà actif.',
   'acces-offert-actif': 'Votre compte a déjà un accès offert : inutile de payer.', 'limite-profils': 'Nombre maximum de profils atteint pour votre formule.', 'surnom-invalide': 'Prénom ou surnom : des lettres seulement, 20 au maximum.',
   'profil-gele': 'Ce profil est en pause avec la formule actuelle.', 'paiement-non-configure': 'Le paiement n\'est pas encore ouvert.', 'comptes-non-configures': 'Les comptes ne sont pas encore ouverts.',
-  'reseau': 'Pas de connexion internet.', 'reserve-createur': 'Réservé au compte Créateur.', 'fournisseur-non-autorise': 'Seule la connexion par adresse e-mail et mot de passe est possible.', 'adresse-non-verifiee': 'Validez d\'abord votre adresse e-mail (lien reçu par e-mail).', 'non-disponible': 'Fonction indisponible pour le moment.'
+  'reseau': 'Pas de connexion internet.', 'reserve-createur': 'Réservé au compte Créateur.', 'fournisseur-non-autorise': 'Cette méthode de connexion n\'est pas prise en charge : utilisez Google ou votre adresse e-mail et mot de passe.',
+  'email-google-non-verifie': 'Votre compte Google n\'a pas d\'adresse e-mail vérifiée : impossible de l\'utiliser ici.',
+  'auth/popup-closed-by-user': 'La fenêtre Google a été fermée avant la fin de la connexion.', 'auth/cancelled-popup-request': 'La fenêtre Google a été fermée avant la fin de la connexion.',
+  'auth/popup-blocked': 'Votre navigateur a bloqué la fenêtre Google. Autorisez les fenêtres pop-up pour ce site puis réessayez, ou utilisez votre adresse e-mail et mot de passe.',
+  'auth/unauthorized-domain': 'Ce site n\'est pas encore autorisé pour la connexion Google.', 'auth/operation-not-allowed': 'La connexion Google n\'est pas encore activée.',
+  'auth/account-exists-with-different-credential': 'Un compte existe déjà avec cette adresse : connectez-vous avec votre mot de passe.',
+  'auth/user-mismatch': 'Ce n\'est pas le compte Google de cette session : choisissez le même compte.',
+  'auth/user-disabled': 'Ce compte est désactivé.', 'adresse-non-verifiee': 'Validez d\'abord votre adresse e-mail (lien reçu par e-mail).', 'non-disponible': 'Fonction indisponible pour le moment.'
 };
 export const messageErreur = e => MESSAGES[(e && (e.raison || e.code)) || ''] || MESSAGES[String(e && e.message || '').replace(/^Firebase: .*\((.*)\)\.?$/, '$1')] || 'Une erreur est survenue. Réessayez.';
 export const NOMS_STATUT = { creator: 'Créateur', invite: 'Accès offert', abonne: 'Abonné', gratuit: 'Gratuit', visiteur: 'Visiteur' };
@@ -49,7 +56,7 @@ export async function purgerCaches() {
 }
 
 // ---------- authentification (Firebase en production ; émulateur LOCAL clairement identifié en préproduction locale) ----------
-let fb = null;
+let fb = null, dernierGoogle = null;
 async function firebase() {
   if (fb) return fb;
   const V = 'https://www.gstatic.com/firebasejs/10.12.2/';
@@ -75,6 +82,24 @@ export const auth = {
     const { a, m } = await firebase(); await a.authStateReady(); const u = a.currentUser; if (!u) throw new ErreurApi(401, 'reconnexion-requise');
     await m.reauthenticateWithCredential(u, m.EmailAuthProvider.credential(u.email, mdp)); return u.getIdToken(true);
   },
+  // « Continuer avec Google » : fenêtre officielle de Google (jamais de mot de passe Google sur ce site). Renvoie le jeton d'identification.
+  async google() {
+    if (EMULATEUR) { const email = prompt('SIMULATION Google : adresse du compte Google fictif', 'parent.google@local.test'); if (!email) throw new ErreurApi(0, 'auth/popup-closed-by-user'); dernierGoogle = email; return (await emul('google', { email })).idToken; }
+    const { a, m } = await firebase(); const p = new m.GoogleAuthProvider(); p.setCustomParameters({ prompt: 'select_account' });
+    const c = await m.signInWithPopup(a, p); return c.user.getIdToken(true);
+  },
+  async reauthentifierGoogle() {                   // « Confirmer avec Google » pour les actions sensibles (comptes Google, sans mot de passe)
+    if (EMULATEUR) { const email = prompt('SIMULATION Google : choisissez le compte Google pour confirmer', dernierGoogle || ''); if (!email) throw new ErreurApi(0, 'auth/popup-closed-by-user'); return (await emul('reconnexion', { google: true, email })).idToken; }
+    const { a, m } = await firebase(); await a.authStateReady(); const u = a.currentUser; if (!u) throw new ErreurApi(401, 'reconnexion-requise');
+    const p = new m.GoogleAuthProvider(); p.setCustomParameters({ prompt: 'select_account' });
+    await m.reauthenticateWithPopup(u, p); return u.getIdToken(true);
+  },
+  // Le parent a quitté l'écran des consentements : le compte Firebase tout juste créé (sans famille) est supprimé, il ne reste rien.
+  async annulerCreation() {
+    if (EMULATEUR) { await emul('annuler', { email: dernierGoogle }); return; }
+    const { a, m } = await firebase(); await a.authStateReady(); const u = a.currentUser;
+    if (u) { try { await m.deleteUser(u); } catch (e) { await m.signOut(a); } }
+  },
   async rafraichir() {                             // nouveau jeton (après validation de l'adresse e-mail)
     if (EMULATEUR) return (await emul('jeton', {})).idToken;
     const { a } = await firebase(); await a.authStateReady(); const u = a.currentUser; if (!u) throw new ErreurApi(401, 'reconnexion-requise');
@@ -86,6 +111,7 @@ export const auth = {
   async quitter() { if (EMULATEUR) return; try { const { a, m } = await firebase(); await m.signOut(a); } catch (e) {} }
 };
 
+export const prechargerAuth = () => { if (!EMULATEUR && FIREBASE) firebase().catch(() => {}); };
 export async function ouvrirSession(idToken, consentements) { return api('/api/session', { methode: 'POST', corps: { idToken, consentements } }); }
 export async function moi() { try { return await api('/api/moi'); } catch (e) { return { connecte: false, statut: 'visiteur' }; } }
 

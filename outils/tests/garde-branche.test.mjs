@@ -11,3 +11,20 @@ test('dist/_headers : un seul bloc par chemin, et les en-têtes de sécurité + 
   const bloc = t.split(/^\/\*[ \t]*$/m)[1].split(/^\//m)[0];
   for (const h of ['X-Robots-Tag', 'Content-Security-Policy', 'X-Frame-Options', 'Permissions-Policy', 'Cross-Origin-Opener-Policy', 'Referrer-Policy', 'X-Content-Type-Options']) assert.ok(bloc.includes(h + ':'), h);
 });
+
+// CSP : la version élargie (connexion Google) est limitée aux pages de connexion, et ne diffère de la CSP stricte que de deux sources.
+test('CSP : /compte/, /admin/, /apercu/ élargies de apis.google.com + cadre firebaseapp seulement ; le reste du site strict', () => {
+  const t = fs.readFileSync('_headers', 'utf8'); const blocs = {}; let cur = null;
+  for (const l of t.split('\n')) { if (/^\//.test(l)) { cur = l.trim(); blocs[cur] = blocs[cur] || []; } else if (cur && /^\s+\S/.test(l)) blocs[cur].push(l.trim()); }
+  const csp = b => (blocs[b].find(x => /^Content-Security-Policy:/.test(x)) || '').replace(/^Content-Security-Policy:\s*/, '');
+  const dirs = c => Object.fromEntries(c.split(';').map(x => x.trim()).filter(Boolean).map(x => { const [k, ...v] = x.split(/\s+/); return [k, v]; }));
+  const base = dirs(csp('/*'));
+  for (const b of ['/compte/*', '/admin/*', '/apercu/*']) {
+    assert.ok(blocs[b].includes('! Content-Security-Policy'), b + ' : la CSP stricte héritée doit être retirée'); assert.equal(blocs[b].filter(x => /^Content-Security-Policy:/.test(x)).length, 1, b);
+    const e = dirs(csp(b));
+    assert.deepEqual(Object.keys(e).sort(), Object.keys(base).sort(), b + ' : mêmes directives');
+    for (const k of Object.keys(base)) { const ajouts = e[k].filter(x => !base[k].includes(x)); const attendus = k === 'script-src' ? ['https://apis.google.com'] : k === 'frame-src' ? ['https://lanternes-de-nour.firebaseapp.com'] : []; assert.deepEqual(ajouts, attendus, b + ' ' + k); assert.deepEqual(base[k].filter(x => !e[k].includes(x)), [], b + ' ' + k + ' : rien de retiré'); }
+  }
+  for (const b of Object.keys(blocs)) if (!['/compte/*', '/admin/*', '/apercu/*', '/*'].includes(b)) assert.ok(!blocs[b].some(x => /^Content-Security-Policy:/.test(x)), b + ' : pas de CSP propre');
+  assert.ok(!/unsafe-eval/.test(csp('/compte/*')), 'pas de unsafe-eval');
+});

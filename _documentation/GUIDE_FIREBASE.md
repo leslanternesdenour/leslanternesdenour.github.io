@@ -11,18 +11,28 @@ Les libellés de la console Google peuvent légèrement changer ; si un écran d
 3. **Google Analytics : désactivé** (on ne collecte rien sur les enfants). Créer.
 4. Ne cliquez jamais sur « Passer au forfait Blaze » / « Upgrade ». Le forfait doit rester **Spark**.
 
-## Étape 2 — Activer E-mail / mot de passe
-Build → **Authentication** → Commencer → onglet « Méthode de connexion » → **E-mail/Mot de passe** → Activer (le lien par e-mail « sans mot de passe » reste **désactivé**) → Enregistrer.
-N'activez aucun autre fournisseur : ni **Google**, ni **Apple**, ni téléphone/SMS (le SMS est payant), ni « Anonyme ».
-Le site ne propose que e-mail + mot de passe, et **le serveur refuse tout jeton venant d'un autre fournisseur** (code `fournisseur-non-autorise`, testé) : même un fournisseur activé par erreur ne donnerait aucun accès. Un jour, si une connexion Google est souhaitée, ce sera un développement à part (bouton, CSP, politique de confidentialité), décidé ensemble.
-Si Google ou Apple apparaît déjà « Activé » dans la liste, **désactivez-le** (ouvrez la ligne, interrupteur sur désactivé, Enregistrer).
+## Étape 2 — Deux méthodes de connexion : e-mail/mot de passe et Google
+Build → **Authentication** → Commencer → onglet « Méthode de connexion » :
+1. **E-mail/Mot de passe** → Activer (le lien par e-mail « sans mot de passe » reste **désactivé**) → Enregistrer.
+2. **Google** → Activer. « Nom public du projet » : `Les Lanternes de Nour`. « E-mail d'assistance du projet » : `leslanternesdenour@gmail.com` → Enregistrer.
+3. **Apple, Anonyme, Téléphone/SMS (payant), GitHub, Facebook… : tous désactivés** (Apple est reporté).
+Le serveur n'accepte que ces deux méthodes (`fournisseur-non-autorise` pour tout le reste, testé) : même un fournisseur activé par erreur ne donnerait aucun accès.
 
 ## Étape 3 — Réglages de sécurité de l'authentification
 Authentication → **Paramètres** :
 - **Domaines autorisés** : ajoutez `lanternes-de-nour.pages.dev` (plus tard, le vrai domaine, seulement quand vous déciderez de la mise en production).
+- **Liaison des comptes** (« Account linking » / « Un compte par adresse e-mail ») : laisser **« Associer les comptes qui utilisent la même adresse e-mail »**. Ainsi un parent inscrit avec un mot de passe qui revient avec Google (même adresse) retrouve **la même famille** et ses profils. Ne choisissez jamais « Créer plusieurs comptes pour chaque fournisseur ».
 - **Protection contre l'énumération d'adresses e-mail** : activée.
 - **Stratégie de mot de passe** : longueur minimale **8**, application « Enforce ».
 - Authentication → **Modèles** (Templates) : pour « Validation de l'adresse e-mail » et « Réinitialisation du mot de passe », ouvrez le crayon → **Langue : français**. Ne modifiez pas le lien d'action.
+
+## Étape 3 bis — Écran de consentement Google (une fois)
+Firebase crée seul le « client OAuth » de Google, avec la bonne adresse de retour (`https://lanternes-de-nour.firebaseapp.com/__/auth/handler`) : **rien à ajouter** tant que le site utilise l'adresse `…firebaseapp.com` par défaut.
+Console Google Cloud (Firebase → roue dentée → « Utilisateurs et autorisations » → lien vers Google Cloud, ou https://console.cloud.google.com avec le projet `lanternes-de-nour`) → **Google Auth Platform** (ou « API et services → Écran de consentement OAuth ») :
+- Type d'utilisateurs : **Externe**. Nom de l'application : `Les Lanternes de Nour`. E-mail d'assistance et de contact : `leslanternesdenour@gmail.com`. **Aucun logo** (le logo déclenche une validation de marque).
+- Portées : seulement les portées de base **e-mail, profil, openid** (elles n'exigent aucune validation Google). N'en ajoutez aucune autre.
+- État de publication : **« En production »** (si l'application reste en « Test », seuls les comptes de test pourraient se connecter).
+Rien de tout cela n'est payant.
 
 ## Étape 4 — Créer la base Firestore (Europe, mode production)
 1. Build → **Firestore Database** → Créer une base de données.
@@ -58,8 +68,9 @@ Même écran, type **Secret** :
 Je m'occupe de la variable publique `FIREBASE_PROJET` (dans `wrangler.toml`) dès que vous m'avez donné l'identifiant (étape 1).
 Puis Deployments → **Retry deployment** (ou je pousse un changement) pour que les secrets soient pris en compte.
 
-## Étape 8 — Je teste tout (aucune action de votre part)
-Je lance `node outils/tests/parcours-reel.mjs https://lanternes-de-nour.pages.dev` : inscription, session, profil enfant, limites du Gratuit, contenu Premium fermé, administration fermée, suppression du compte. Le compte de test est **toujours** supprimé à la fin.
+## Étape 8 — Tests réels
+**Par moi (aucune action de votre part)** : `node outils/tests/parcours-reel.mjs https://lanternes-de-nour.pages.dev` : inscription par e-mail, session, profil enfant, limites du Gratuit, Premium et administration fermés, suppression du compte. Le compte de test est **toujours** supprimé à la fin.
+**Par vous (la fenêtre Google ne peut pas être automatisée)** : sur `https://lanternes-de-nour.pages.dev/compte/`, onglet « Créer un compte » → cochez les trois cases → **Créer mon compte avec Google** → choisissez votre compte → vous arrivez dans l'espace. Puis « Se déconnecter » → « Continuer avec Google » (retour direct). Puis, tout en bas, « Supprimer mon compte » → Google demande de confirmer → le compte disparaît. Dites-moi ce que vous voyez à chaque étape.
 
 ## Étape 9 — Votre compte Créateur
 Voir `PREPRODUCTION_ACTIONS.md` § D (création du compte, UID, un clic sur « Activer l'espace Créateur »).
@@ -68,8 +79,14 @@ Voir `PREPRODUCTION_ACTIONS.md` § D (création du compte, UID, un clic sur « A
 Console Google Cloud (lien « Gérer… » depuis Firebase) → API et services → Identifiants → la « Browser key » créée par Firebase → **Restrictions d'application : sites web** → `https://lanternes-de-nour.pages.dev/*` ; **Restrictions d'API** : Identity Toolkit API et Token Service API. À mettre à jour quand le vrai domaine sera utilisé.
 
 ## Protection des données des enfants (ce que le système garantit)
-- Aucune donnée d'enfant dans Firebase Authentication : seuls l'e-mail et le mot de passe du **parent** y sont.
+- Aucune donnée d'enfant dans Firebase Authentication : seuls l'e-mail et le mot de passe du **parent** y sont. Avec Google, Firebase garde aussi le nom et la photo de profil Google du parent (le site ne les utilise ni ne les enregistre : seule l'adresse e-mail est conservée dans notre base) ; la suppression du compte efface tout, y compris côté Firebase.
+- Un compte Google nouveau n'est jamais créé sans les trois consentements parentaux (cochés avant d'ouvrir Google) ; si le parent abandonne à l'écran des consentements, le compte est supprimé.
 - Profil enfant = surnom (lettres seulement), tranche d'âge, personnage, progression de jeu. Ni nom de famille, ni date de naissance, ni photo.
 - Tout est contrôlé côté serveur (droits, limites, propriété des profils) ; le navigateur n'est jamais cru sur parole.
 - Suppression du compte = effacement en cascade (profils, droits, accès offerts, abonnement, lien Stripe, compte Firebase), rejouable en cas de panne ; la preuve d'achat est conservée mais détachée du compte (obligation légale).
 - Région Firestore : Europe (`eur3`).
+
+## Limites connues de la connexion Google (à connaître, pas des défauts du site)
+- **Navigateurs intégrés aux applications** (Instagram, Facebook, TikTok…) : Google refuse d'y ouvrir sa fenêtre. Le site l'explique et propose Safari/Chrome ou l'e-mail.
+- **Fenêtres pop-up bloquées** : message clair, avec la marche à suivre.
+- Si le vrai nom de domaine est utilisé plus tard : l'ajouter aux domaines autorisés de Firebase et ajuster la CSP (`apis.google.com`, cadre `…firebaseapp.com`) dans `_headers` ; la restriction de la clé d'API (étape 10) aussi.

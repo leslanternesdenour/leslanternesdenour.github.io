@@ -310,16 +310,49 @@ test('Suppression RGPD et Stripe : aucun lien client conservé, preuve d\'achat 
   assert.equal(JSON.stringify(Object.values(d)).includes('abo4@exemple.fr'), false);
 });
 
-test('Fournisseurs d\'identité : seule la connexion e-mail + mot de passe ouvre une session (Google, Apple, anonyme, sans fournisseur refusés)', async () => {
-  for (const f of ['google.com', 'apple.com', 'anonymous', 'phone', 'custom', 'github.com']) {
+test('Fournisseurs d\'identité : seuls e-mail + mot de passe et Google ouvrent une session (Apple, anonyme, téléphone, sans fournisseur… refusés)', async () => {
+  for (const f of ['apple.com', 'anonymous', 'phone', 'custom', 'github.com', 'facebook.com', 'microsoft.com', 'twitter.com']) {
     const r = await appel('POST', '/api/session', { corps: { idToken: await jeton('uid-idp-' + f, { fournisseur: f }), consentements: CONSENT } });
     assert.equal(r.s, 403, f); assert.equal(r.j.erreur, 'fournisseur-non-autorise'); assert.equal(r.h.get('Set-Cookie'), null, 'aucune session');
   }
-  assert.equal(await base.lire('familles', 'uid-idp-google.com'), null, 'aucun compte famille créé');
+  assert.equal(await base.lire('familles', 'uid-idp-apple.com'), null, 'aucun compte famille créé');
   // jeton sans aucune information de fournisseur
   const s = Math.floor(maintenant / 1000), tete = b64u({ alg: 'RS256', kid: 'k1' }) + '.' + b64u({ iss: 'https://securetoken.google.com/' + PROJET, aud: PROJET, sub: 'uid-sans-fournisseur', iat: s - 10, exp: s + 3000, auth_time: s - 60, email: 'x@exemple.fr', email_verified: true });
   const sans = tete + '.' + Buffer.from(await crypto.subtle.sign('RSASSA-PKCS1-v1_5', cles.privateKey, new TextEncoder().encode(tete))).toString('base64url');
   assert.equal((await appel('POST', '/api/session', { corps: { idToken: sans, consentements: CONSENT } })).s, 403);
   // le parcours normal reste intact
   assert.equal((await appel('POST', '/api/session', { corps: { idToken: await jeton('uid-idp-ok'), consentements: CONSENT } })).s, 200);
+});
+
+test('Connexion Google : acceptée avec adresse vérifiée ; refusée sans adresse vérifiée ; consentements parentaux toujours exigés', async () => {
+  const sans = await appel('POST', '/api/session', { corps: { idToken: await jeton('uid-g1', { fournisseur: 'google.com' }) } });
+  assert.equal(sans.s, 428, 'nouveau compte Google : consentements parentaux obligatoires'); assert.equal(sans.h.get('Set-Cookie'), null);
+  assert.equal(await base.lire('familles', 'uid-g1'), null, 'rien n\'est créé sans consentement');
+  const nv = await appel('POST', '/api/session', { corps: { idToken: await jeton('uid-g2', { fournisseur: 'google.com', verifie: false }), consentements: CONSENT } });
+  assert.equal(nv.s, 403); assert.equal(nv.j.erreur, 'email-google-non-verifie'); assert.equal(await base.lire('familles', 'uid-g2'), null);
+  const r = await appel('POST', '/api/session', { corps: { idToken: await jeton('uid-g1', { fournisseur: 'google.com', email: 'parent.g@exemple.fr' }), consentements: CONSENT } });
+  assert.equal(r.s, 200); const c = r.h.get('Set-Cookie').split(';')[0];
+  const moi = (await appel('GET', '/api/moi', { cookie: c })).j; assert.equal(moi.connecte, true); assert.equal(moi.fournisseur, 'google.com'); assert.equal(moi.statut, 'gratuit'); assert.equal(moi.email, 'parent.g@exemple.fr');
+  // ne conserve que l'adresse : ni nom ni photo de profil Google
+  assert.deepEqual(Object.keys(await base.lire('familles', 'uid-g1')).sort(), ['consentements', 'creeLe', 'email', 'profilActif']);
+  // profils enfants et droits : identiques aux comptes e-mail
+  assert.equal((await appel('POST', '/api/enfants', { cookie: c, corps: { surnom: 'Inaya', tranche: '3-5', avatar: 'fille' } })).s, 201);
+  assert.equal((await appel('GET', '/api/admin/resume', { cookie: c })).s, 403);
+  assert.equal((await appel('POST', '/api/createur/activer', { cookie: c })).s, 403);
+});
+test('Même parent, deux méthodes : e-mail + mot de passe puis Google (comptes liés par Firebase = même UID) retrouvent la même famille', async () => {
+  const mdp = await connecter('uid-lie', { email: 'lie@exemple.fr' });
+  await appel('POST', '/api/enfants', { cookie: mdp, corps: { surnom: 'Rayan', tranche: '6-10', avatar: 'garcon' } });
+  const g = await appel('POST', '/api/session', { corps: { idToken: await jeton('uid-lie', { email: 'lie@exemple.fr', fournisseur: 'google.com' }) } });
+  assert.equal(g.s, 200, 'famille existante : pas de nouveau consentement demandé'); const cg = g.h.get('Set-Cookie').split(';')[0];
+  assert.match(JSON.stringify((await appel('GET', '/api/enfants', { cookie: cg })).j), /Rayan/);
+  assert.equal((await appel('GET', '/api/moi', { cookie: cg })).j.fournisseur, 'google.com'); assert.equal((await appel('GET', '/api/moi', { cookie: mdp })).j.fournisseur, 'password');
+});
+test('Connexion Google : suppression RGPD complète comme pour un compte e-mail (reconnexion récente exigée)', async () => {
+  const c = await connecter('uid-g3', { email: 'g3@exemple.fr', fournisseur: 'google.com' });
+  await appel('POST', '/api/enfants', { cookie: c, corps: { surnom: 'Maryam', tranche: '3-5', avatar: 'fille' } });
+  const vieux = (await appel('POST', '/api/session', { corps: { idToken: await jeton('uid-g3', { email: 'g3@exemple.fr', fournisseur: 'google.com', authAgo: 3600 }) } })).h.get('Set-Cookie').split(';')[0];
+  assert.equal((await appel('DELETE', '/api/compte', { cookie: vieux })).j.erreur, 'reconnexion-requise');
+  assert.equal((await appel('DELETE', '/api/compte', { cookie: c })).s, 200);
+  const d = await instantane(base); assert.deepEqual(Object.keys(d).filter(k => k.includes('uid-g3')), []); assert.equal(JSON.stringify(Object.values(d)).includes('g3@exemple.fr'), false);
 });

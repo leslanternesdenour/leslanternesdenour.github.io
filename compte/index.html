@@ -27,6 +27,8 @@ input:focus{outline:none;border-color:#f5b942}
 button{border:0;border-radius:18px;padding:14px 16px;font:900 18px Nunito,system-ui;cursor:pointer;background:#f5b942;color:#2a1d00;box-shadow:0 5px 0 #d9952a}
 button:active{transform:translateY(3px);box-shadow:0 2px 0 #d9952a}
 button:disabled{opacity:.6;cursor:wait}
+button.btn-google{display:flex;align-items:center;justify-content:center;gap:12px;background:#fff;color:#1f1f1f;border:1px solid #747775;box-shadow:0 3px 0 #b9b4cf;font:700 17px Roboto,Nunito,system-ui}
+.ou{text-align:center;color:#c9bfe8;font-weight:700;font-size:14px;margin:0}
 button.doux{background:#3a2a7d;color:#fff;box-shadow:0 5px 0 #191345}
 button.danger{background:none;box-shadow:none;color:#ff9fb2;font-size:15px;padding:6px;text-decoration:underline}
 .lien{background:none;box-shadow:none;color:#ffe3a3;font:700 15px Nunito,system-ui;padding:4px;text-decoration:underline;justify-self:start}
@@ -73,13 +75,19 @@ input[type=text],select{width:100%;border-radius:14px;border:2px solid #3a2a7d;b
       <button role="tab" id="o-connexion" aria-selected="true">Se connecter</button>
       <button role="tab" id="o-inscription" aria-selected="false">Créer un compte</button>
     </div>
+    <p class="petit cache" id="g-webview" role="note">Vous êtes dans le navigateur intégré d'une application (Instagram, Facebook, TikTok…) : Google n'y autorise pas la connexion. Ouvrez ce site dans Safari ou Chrome pour utiliser Google, ou connectez-vous avec votre adresse e-mail et votre mot de passe.</p>
     <form id="f-connexion" class="choix" novalidate>
+      <button type="button" class="btn-google" id="g-conn"><svg viewBox="0 0 48 48" width="20" height="20" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg><span>Continuer avec Google</span></button>
+      <p class="ou">ou avec votre adresse e-mail</p>
       <label>Adresse e-mail du parent<input type="email" id="c-email" autocomplete="email" required></label>
       <label>Mot de passe<input type="password" id="c-mdp" autocomplete="current-password" required></label>
       <button type="submit">Se connecter</button>
       <button type="button" class="lien" id="vers-oubli">Mot de passe oublié ?</button>
     </form>
     <form id="f-inscription" class="choix cache" novalidate>
+      <button type="button" class="btn-google" id="g-insc"><svg viewBox="0 0 48 48" width="20" height="20" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg><span>Créer mon compte avec Google</span></button>
+      <p class="petit" style="margin:0;text-align:center">Avec Google, cochez d'abord les trois cases en bas de la page.</p>
+      <p class="ou">ou avec une adresse e-mail et un mot de passe</p>
       <p class="petit">Le compte est créé par un parent. Les enfants n'ont rien à saisir.</p>
       <label>Adresse e-mail du parent<input type="email" id="i-email" autocomplete="email" required></label>
       <label>Mot de passe (8 caractères minimum)<input type="password" id="i-mdp" autocomplete="new-password" minlength="8" required></label>
@@ -95,6 +103,7 @@ input[type=text],select{width:100%;border-radius:14px;border:2px solid #3a2a7d;b
       <p>Avant d'ouvrir votre espace, merci de confirmer :</p>
       <div id="consentements-place"></div>
       <button type="submit">Continuer</button>
+      <button type="button" class="lien" id="consent-annuler">Annuler : ne pas créer de compte</button>
     </form>
     <form id="f-oubli" class="choix cache" novalidate>
       <p>Indiquez l'adresse du compte : vous recevrez un lien pour choisir un nouveau mot de passe.</p>
@@ -156,7 +165,8 @@ input[type=text],select{width:100%;border-radius:14px;border:2px solid #3a2a7d;b
     <button class="danger" id="supprimer">Supprimer mon compte et toutes ses données</button>
     <form id="f-supprimer" class="choix cache" novalidate>
       <p><b>Tout sera effacé</b> : le compte, les profils des enfants et leurs progrès enregistrés, les accès offerts. C'est définitif.</p>
-      <label>Mot de passe (pour confirmer que c'est bien vous)<input type="password" id="s-mdp" autocomplete="current-password"></label>
+      <label id="s-mdp-label">Mot de passe (pour confirmer que c'est bien vous)<input type="password" id="s-mdp" autocomplete="current-password"></label>
+      <p class="petit cache" id="s-google-info">Compte Google : une fenêtre Google s'ouvrira pour confirmer que c'est bien vous. Autorisez les fenêtres pop-up si votre navigateur les bloque.</p>
       <label>Écrivez SUPPRIMER<input type="text" id="s-mot" autocomplete="off"></label>
       <div class="rangee"><button class="danger" type="submit">Supprimer définitivement</button><button class="doux" type="button" id="s-annuler">Annuler</button></div>
     </form>
@@ -185,10 +195,12 @@ let D = null, enfants = [], suite = null, total = 0, jetonEnAttente = null;
 async function demarrer() {
   etat('Chargement…');
   D = await C.moi(); etat('');
+  if (!D.connecte || D.fournisseur === 'google.com') C.prechargerAuth();   // fenêtre Google ouverte immédiatement au clic (Safari / iPhone)
   $('v-invitation').classList.toggle('cache', !invitation());
   if (!D.connecte) { voir('v-acces'); if (location.hash === '#inscription' || invitation()) onglet('inscription'); return; }
   if (params.get('paiement') === 'ok') etat('Merci ! Le paiement (mode test) est confirmé. La formule s\'affiche dès que la banque l\'a validé.');
-  $('e-email').textContent = D.email; $('e-statut').textContent = C.NOMS_STATUT[D.statut] + (D.niveau !== 'gratuit' && D.statut !== 'creator' ? ' · ' + C.NOMS_NIVEAU[D.niveau] : '');
+  $('e-email').textContent = D.email + (D.fournisseur === 'google.com' ? ' (compte Google)' : '');
+  const google = D.fournisseur === 'google.com'; $('s-mdp-label').classList.toggle('cache', google); $('s-google-info').classList.toggle('cache', !google); $('e-statut').textContent = C.NOMS_STATUT[D.statut] + (D.niveau !== 'gratuit' && D.statut !== 'creator' ? ' · ' + C.NOMS_NIVEAU[D.niveau] : '');
   $('e-verif').classList.toggle('cache', !!D.emailVerifie);
   $('e-createur').classList.toggle('cache', !D.activationCreateur);
   $('e-offre').textContent = D.statut === 'creator' ? 'Toutes les fonctions, profils illimités, aperçu des contenus en préparation.'
@@ -227,6 +239,16 @@ $('f-inscription').onsubmit = e => { e.preventDefault(); occupe(e.submitter, asy
 }); };
 $('f-consent').onsubmit = e => { e.preventDefault(); occupe(e.submitter, async () => { if (!tousCoches()) return etat('Merci de cocher les trois cases.', true); await ouvrir(jetonEnAttente, consentements()); }); };
 $('f-oubli').onsubmit = e => { e.preventDefault(); occupe(e.submitter, async () => { await C.auth.motDePasseOublie($('o-email').value.trim()); etat('Si un compte existe avec cette adresse, un lien vient d\'être envoyé.'); }); };
+
+// ---------- Google ----------
+// Navigateurs intégrés aux applications (Instagram, Facebook, TikTok…) : Google refuse d'y ouvrir sa fenêtre. On l'explique au lieu de laisser échouer.
+if (/FBAN|FBAV|FB_IAB|Instagram|TikTok|musical_ly|BytedanceWebview|Snapchat|Line\/|MicroMessenger|; wv\)/i.test(navigator.userAgent)) $('g-webview').classList.remove('cache');
+// Création : les trois consentements parentaux sont cochés AVANT d'ouvrir Google (aucun compte n'est créé sans eux).
+// Connexion : un compte Google nouveau passe par l'écran des consentements, avec « Annuler » qui supprime le compte tout juste créé.
+$('g-conn').onclick = e => occupe(e.currentTarget, async () => { await ouvrir(await C.auth.google()); });
+$('g-insc').onclick = e => { if (!tousCoches()) return etat('Cochez d\'abord les trois cases (parent, conditions, confidentialité), puis touchez « Créer mon compte avec Google ».', true);
+  occupe(e.currentTarget, async () => { await ouvrir(await C.auth.google(), consentements()); }); };
+$('consent-annuler').onclick = e => occupe(e.target, async () => { await C.auth.annulerCreation(); jetonEnAttente = null; onglet('connexion'); etat('Inscription annulée : aucun compte n\'a été créé.'); });
 
 // ---------- adresse e-mail ----------
 $('verif-fait').onclick = e => occupe(e.target, async () => { await ouvrir(await C.auth.rafraichir()); if (!D.emailVerifie) etat('L\'adresse n\'est pas encore validée. Ouvrez le lien reçu par e-mail.', true); });
@@ -302,7 +324,7 @@ $('supprimer').onclick = () => { $('f-supprimer').classList.remove('cache'); $('
 $('s-annuler').onclick = () => { $('f-supprimer').classList.add('cache'); $('supprimer').classList.remove('cache'); };
 $('f-supprimer').onsubmit = e => { e.preventDefault(); occupe(e.submitter, async () => {
   if ($('s-mot').value.trim().toUpperCase() !== 'SUPPRIMER') return etat('Écrivez SUPPRIMER pour confirmer.', true);
-  await C.ouvrirSession(await C.auth.reauthentifier($('s-mdp').value));   // connexion récente exigée par le serveur
+  await C.ouvrirSession(D.fournisseur === 'google.com' ? await C.auth.reauthentifierGoogle() : await C.auth.reauthentifier($('s-mdp').value));   // connexion récente exigée par le serveur
   await C.api('/api/compte', { methode: 'DELETE' });
   for (const k of [...C.CLES_JEU, 'ldn_profil_actif', 'ldn_synchro_empreinte']) localStorage.removeItem(k);
   await C.purgerCaches(); await C.auth.quitter();

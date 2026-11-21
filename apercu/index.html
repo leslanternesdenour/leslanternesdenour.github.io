@@ -72,7 +72,8 @@ td select{font-size:13px;padding:6px;border-radius:10px}
   <form class="carte cache" id="v-reauth" novalidate>
     <h2>Confirmez votre identité</h2>
     <p>Publier ou retirer un contenu demande une connexion de moins de 15 minutes.</p>
-    <label>Mot de passe<input type="password" id="r-mdp" autocomplete="current-password"></label>
+    <label id="r-mdp-label">Mot de passe<input type="password" id="r-mdp" autocomplete="current-password"></label>
+    <p class="petit" id="r-google-info" hidden>Compte Google : une fenêtre Google s'ouvrira pour confirmer votre identité (autorisez les fenêtres pop-up).</p>
     <button type="submit">Confirmer</button>
   </form>
 
@@ -119,14 +120,16 @@ const GROUPES = { maisons: '🏠 Maisons du village', voyage: '🐪 Zones du Gra
 const NIV = { libre: 'Libre (sans compte)', gratuit: 'Gratuit (avec compte)', premium: 'Premium', famille: 'Famille', apercu: 'Non publié (aperçu)' };
 const VUES = { '': 'Créateur (tout est ouvert)', visiteur: 'Visiteur sans compte', gratuit: 'compte Gratuit', premium: 'compte Premium', famille: 'compte Famille' };
 let enAttente = null;
+const reauthGoogle = () => !!D && D.fournisseur === 'google.com';
+function reauthUI() { $('r-mdp-label').classList.toggle('cache', reauthGoogle()); $('r-google-info').hidden = !reauthGoogle(); if (!reauthGoogle()) $('r-mdp').focus(); }
 async function occupe(btn, f) {
   if (btn) btn.disabled = true;
   try { await f(); }
-  catch (e) { if (e.raison === 'reconnexion-requise') { enAttente = f; $('v-reauth').classList.remove('cache'); $('r-mdp').focus(); etat(C.messageErreur(e)); } else etat(C.messageErreur(e), true); }
+  catch (e) { if (e.raison === 'reconnexion-requise') { enAttente = f; $('v-reauth').classList.remove('cache'); reauthUI(); etat(C.messageErreur(e)); } else etat(C.messageErreur(e), true); }
   finally { if (btn) btn.disabled = false; }
 }
 $('v-reauth').onsubmit = e => { e.preventDefault(); occupe(e.submitter, async () => {
-  await C.ouvrirSession(await C.auth.reauthentifier($('r-mdp').value)); $('r-mdp').value = ''; $('v-reauth').classList.add('cache'); etat('Identité confirmée.');
+  await C.ouvrirSession(reauthGoogle() ? await C.auth.reauthentifierGoogle() : await C.auth.reauthentifier($('r-mdp').value)); $('r-mdp').value = ''; $('v-reauth').classList.add('cache'); etat('Identité confirmée.');
   const f = enAttente; enAttente = null; if (f) await f();
 }); };
 
@@ -190,6 +193,7 @@ async function lireZone(id) {
 
 if (C.simulation()) $('bandeau-sim').classList.remove('cache');
 const D = C.comptesActifs() ? await C.moi() : {};
+if (D.fournisseur === 'google.com') C.prechargerAuth();
 if (!D.admin) $('v-refus').classList.remove('cache');
 else { $('v-apercu').classList.remove('cache'); occupe(null, afficher); }
 </script>

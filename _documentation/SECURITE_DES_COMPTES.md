@@ -35,3 +35,10 @@ avant toute décision. Rien n'est activé.
 - **Suppression de compte** : rejouable (un compte Firebase déjà supprimé n'est plus une erreur) ; efface aussi le lien client Stripe ; la preuve de consentement d'achat est conservée mais détachée du compte (`uid: anonymise`). Un événement Stripe tardif pour un compte supprimé est ignoré (rien n'est recréé).
 - **Rôle Créateur** : activation en un clic réservée au compte désigné par `CREATOR_UID`, adresse vérifiée, connexion récente ; journalisée ; double verrou conservé (UID Cloudflare + rôle Firebase).
 - **Vérifié contre le vrai Firestore (émulateur officiel)** : règles, API, droits, Premium, restauration. **Non vérifié tant que Firebase n'est pas branché** : connexion avec le vrai fournisseur d'identité, envoi des e-mails de vérification, quotas réels.
+
+## Connexion Google (21/11/2026)
+- Méthodes acceptées : e-mail + mot de passe, et Google. Toute autre (Apple, anonyme, téléphone…) est refusée par le serveur.
+- Google : adresse e-mail présente **et vérifiée** exigée ; le fournisseur est mémorisé dans le cookie de session signé ; actions sensibles (suppression, administration) reconfirmées par Google (compte différent refusé).
+- Comptes liés par Firebase (même adresse) = même famille. Aucun compte créé sans les consentements parentaux.
+- CSP élargie de deux sources seulement (`apis.google.com`, cadre `lanternes-de-nour.firebaseapp.com`) et seulement sur `/compte/`, `/admin/`, `/apercu/` ; le reste du site garde la CSP stricte (testé : `garde-branche.test.mjs`, analyseur Cloudflare).
+- **Vérifié ici** : serveur, droits, suppression, interface (Chrome, ordinateur et téléphone, compte Google simulé), CSP. **Pas vérifiable ici** : la vraie fenêtre Google et le vrai envoi d'e-mails (à valider avec un vrai compte, voir guide § 8).

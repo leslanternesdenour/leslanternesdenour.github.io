@@ -9,10 +9,13 @@ const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; ch
 const regles = []; let cour = null;
 for (const l of fs.readFileSync(path.join(DIST, '_headers'), 'utf8').split('\n')) {
   if (!l.trim() || l.trim().startsWith('#')) continue;
-  if (!/^\s/.test(l)) { cour = { motif: new RegExp('^' + l.trim().replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$'), h: {} }; regles.push(cour); }
-  else { const i = l.indexOf(':'); cour.h[l.slice(0, i).trim()] = l.slice(i + 1).trim(); }
+  if (!/^\s/.test(l)) { cour = { motif: new RegExp('^' + l.trim().replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$'), h: [], retirer: [] }; regles.push(cour); }
+  else if (l.trim().startsWith('! ')) cour.retirer.push(l.trim().slice(2).trim().toLowerCase());          // « ! En-tête » : retire l'en-tête posé par une règle précédente (comme Cloudflare)
+  else { const i = l.indexOf(':'); cour.h.push([l.slice(0, i).trim(), l.slice(i + 1).trim()]); }
 }
-const entetes = p => Object.assign({}, ...regles.filter(r => r.motif.test(p)).map(r => r.h));
+// Même logique que Cloudflare Pages : règles appliquées dans l'ordre ; pour chacune, retrait des en-têtes détachés puis ajout (valeurs jointes par « , »).
+const entetes = p => { const h = {}; for (const r of regles.filter(r => r.motif.test(p))) { for (const n of r.retirer) for (const k of Object.keys(h)) if (k.toLowerCase() === n) delete h[k];
+  for (const [k, v] of r.h) { const ex = Object.keys(h).find(x => x.toLowerCase() === k.toLowerCase()); if (ex) h[ex] += ', ' + v; else h[k] = v; } } return h; };
 const EMUL = process.env.LDN_EMULATEUR === '1' ? await (await import('./emulateur/emulateur.mjs')).creerEmulateur() : null;
 if (EMUL) console.log('⚠️  SIMULATION LOCALE active — compte Créateur : createur@local.test / ' + EMUL.mdpCreateur);
 const lireCorps = req => new Promise(ok => { const t = []; req.on('data', c => t.push(c)); req.on('end', () => ok(Buffer.concat(t))); });

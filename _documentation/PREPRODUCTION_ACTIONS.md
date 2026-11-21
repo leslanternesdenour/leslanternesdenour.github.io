@@ -20,6 +20,7 @@ sans secrets l'API répond 503 « comptes-non-configurés » et le site gratuit 
 4. Envoyez-moi l'adresse `https://….pages.dev` : je vérifie `/api/sante`, les en-têtes, la 404, et je lance les tests complets (Three.js réel).
 
 ## B. Firebase — voir **GUIDE_FIREBASE.md** (pas à pas, une manipulation à la fois)
+**Connexion : e-mail/mot de passe ET Google dès le lancement (Apple reporté).** Prêt côté dépôt : bouton Google, reconfirmation par Google, annulation propre, CSP ciblée, tests (API, Chrome ordinateur + téléphone). Reste : activer Google dans la console (guide étape 2 et 3 bis) et un test avec un vrai compte.
 Prêt côté dépôt : règles « tout refusé » testées dans l'émulateur officiel ; API, droits, Premium et suppression RGPD rejoués sur le **vrai Firestore** (émulateur) ; compte Créateur en un clic ; parcours de compte complet prêt (`outils/tests/parcours-reel.mjs`, supprime toujours son compte de test) ; contrôle de configuration (`outils/admin/verifier-configuration.mjs <site>`) ; CSP compatible avec le SDK Firebase (mesuré : aucune violation).
 **À faire par vous :** étapes 1 à 7 du guide. **Je fais :** tout le reste (valeurs publiques, tests réels, vérifications).
 Ancien détail (conservé pour référence) :

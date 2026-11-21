@@ -92,6 +92,7 @@ async function journal(ctx, action, details) {
 }
 
 // ---------- contrôles d'accès ----------
+const FOURNISSEURS = ['password', 'google.com'];
 function memeOrigine(req) {
   if (req.headers.get('X-LDN') !== '1') return false;                 // en-tête personnalisé : impossible depuis un autre site sans autorisation
   const o = req.headers.get('Origin'); if (!o) return true;
@@ -130,8 +131,10 @@ export async function traiter(req, ctx) {
       if (tropDeTentatives('session:' + ip, 30, 10 * 60000, ctx.maintenant)) return erreur(429, 'trop-de-tentatives');
       const b = await corpsJson(req, 10000);
       let v; try { v = await ctx.auth.verifierIdToken(b.idToken, ctx.maintenant); } catch (e) { return erreur(401, 'jeton-invalide'); }
-      // Seule la connexion e-mail + mot de passe est prise en charge. Un jeton Google, Apple, anonyme… est refusé, même si ce fournisseur était activé par erreur dans la console Firebase.
-      if (v.fournisseur !== 'password') return erreur(403, 'fournisseur-non-autorise');
+      // Deux méthodes de connexion seulement : e-mail + mot de passe, et Google. Tout autre jeton (Apple, anonyme, téléphone…) est refusé, même si ce fournisseur était activé par erreur dans la console Firebase.
+      if (!FOURNISSEURS.includes(v.fournisseur)) return erreur(403, 'fournisseur-non-autorise');
+      // Google : l'adresse doit exister et être vérifiée par Google (sinon elle ne prouve rien : invitations et paiements s'appuient sur elle).
+      if (v.fournisseur === 'google.com' && (!v.email || !v.emailVerifie)) return erreur(403, 'email-google-non-verifie');
       let famille = await ctx.base.lire('familles', v.uid);
       if (!famille) {
         const c = b.consentements || {};
@@ -140,7 +143,7 @@ export async function traiter(req, ctx) {
         await ctx.base.ecrire('familles', v.uid, famille);
         await majDroits(ctx, v.uid, { claims: v.claims });
       } else if (normaliserEmail(v.email) !== famille.email) await ctx.base.maj('familles', v.uid, { email: normaliserEmail(v.email) });
-      const valeur = await creerSession({ uid: v.uid, email: v.email, emailVerifie: v.emailVerifie, role: v.claims.role, authTime: v.authTime }, ctx.env.SESSION_SECRET, ctx.maintenant);
+      const valeur = await creerSession({ uid: v.uid, email: v.email, emailVerifie: v.emailVerifie, role: v.claims.role, authTime: v.authTime, fournisseur: v.fournisseur }, ctx.env.SESSION_SECRET, ctx.maintenant);
       return json({ ok: true }, 200, { 'Set-Cookie': enteteCookie(valeur, { secure }) });
     }
     if (chemin === '/api/session/fin' && m === 'POST') return json({ ok: true }, 200, { 'Set-Cookie': enteteCookie('', { secure, effacer: true }) });
@@ -166,7 +169,7 @@ export async function traiter(req, ctx) {
     if (chemin === '/api/moi' && m === 'GET') {
       if (!session) return json({ connecte: false, statut: 'visiteur' });
       const d = await droitsDe(ctx, session); const f = await ctx.base.lire('familles', session.uid);
-      return json({ connecte: true, uid: session.uid, email: session.email, emailVerifie: session.emailVerifie, ...d, vue: vueDemandee(req, ctx, session),
+      return json({ connecte: true, uid: session.uid, email: session.email, emailVerifie: session.emailVerifie, fournisseur: session.fournisseur, ...d, vue: vueDemandee(req, ctx, session),
         profilsMax: d.profilsMax === Infinity ? null : d.profilsMax, illimite: d.profilsMax === Infinity, profilActif: f && f.profilActif || null,
         activationCreateur: d.statut !== 'creator' && session.emailVerifie && !!String(ctx.env.CREATOR_UID || '').trim() && session.uid === String(ctx.env.CREATOR_UID).trim() });
     }

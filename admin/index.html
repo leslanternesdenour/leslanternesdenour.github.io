@@ -63,7 +63,8 @@ td button{font-size:13px;padding:6px 9px;box-shadow:none;margin:2px}
   <form class="carte cache" id="v-reauth" novalidate>
     <h2>Confirmez votre identité</h2>
     <p>Les modifications demandent une connexion de moins de 15 minutes.</p>
-    <label>Mot de passe<input type="password" id="r-mdp" autocomplete="current-password"></label>
+    <label id="r-mdp-label">Mot de passe<input type="password" id="r-mdp" autocomplete="current-password"></label>
+    <p class="petit" id="r-google-info" hidden>Compte Google : une fenêtre Google s'ouvrira pour confirmer votre identité (autorisez les fenêtres pop-up).</p>
     <button type="submit">Confirmer</button>
   </form>
 
@@ -144,15 +145,17 @@ const ligne = (...cells) => { const tr = el('tr'); for (const c of cells) { cons
 const bouton = (txt, f, cls = 'doux') => { const b = el('button', txt, { className: cls }); b.onclick = () => occupe(b, f); return b; };
 const DUREE = v => v === '' ? null : Number(v);
 let enAttente = null;
+const reauthGoogle = () => !!D && D.fournisseur === 'google.com';
+function reauthUI() { $('r-mdp-label').classList.toggle('cache', reauthGoogle()); $('r-google-info').hidden = !reauthGoogle(); if (!reauthGoogle()) $('r-mdp').focus(); }
 // écriture : si le serveur demande une connexion récente, on redemande le mot de passe puis on rejoue l'action
 async function occupe(btn, f) {
   if (btn) btn.disabled = true;
   try { await f(); }
-  catch (e) { if (e.raison === 'reconnexion-requise') { enAttente = f; $('v-reauth').classList.remove('cache'); $('r-mdp').focus(); etat(C.messageErreur(e)); } else etat(C.messageErreur(e), true); }
+  catch (e) { if (e.raison === 'reconnexion-requise') { enAttente = f; $('v-reauth').classList.remove('cache'); reauthUI(); etat(C.messageErreur(e)); } else etat(C.messageErreur(e), true); }
   finally { if (btn) btn.disabled = false; }
 }
 $('v-reauth').onsubmit = e => { e.preventDefault(); occupe(e.submitter, async () => {
-  await C.ouvrirSession(await C.auth.reauthentifier($('r-mdp').value)); $('r-mdp').value = ''; $('v-reauth').classList.add('cache'); etat('Identité confirmée.');
+  await C.ouvrirSession(reauthGoogle() ? await C.auth.reauthentifierGoogle() : await C.auth.reauthentifier($('r-mdp').value)); $('r-mdp').value = ''; $('v-reauth').classList.add('cache'); etat('Identité confirmée.');
   const f = enAttente; enAttente = null; if (f) await f();
 }); };
 
@@ -226,6 +229,7 @@ $('f-bandeau').onsubmit = e => { e.preventDefault(); occupe(e.submitter, async (
 // ---------- démarrage ----------
 if (C.simulation()) $('bandeau-sim').classList.remove('cache');
 const D = C.comptesActifs() ? await C.moi() : {};
+if (D.fournisseur === 'google.com') C.prechargerAuth();
 if (!D.admin) $('v-refus').classList.remove('cache');
 else { $('v-admin').classList.remove('cache'); ouvrirOnglet('resume'); }
 </script>
