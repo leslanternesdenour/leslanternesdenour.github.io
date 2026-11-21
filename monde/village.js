@@ -247,6 +247,7 @@ function fermerJeu(rendreLeVillage = true) {
   setTimeout(() => { try { ancien.remove(); } catch (e) {} if (!cadre) $('jeu').classList.add('cache'); $('jeu').classList.remove('sortie'); }, 280);
   $('hud').classList.remove('cache');
   $('bulle').classList.remove('cache');
+  try { dispatchEvent(new Event('ldn:fin-activite')); } catch (e) {}   // retour au village : l'Espace famille enregistre (si synchronisation)
   choisi = null;
   village.deselectionner();
   village.pause(false);

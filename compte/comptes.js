@@ -1,3 +1,5 @@
+// OBSOLÈTE (bloc 2) : ancien client qui écrivait directement dans Firestore. Remplacé par client.js (tout passe par le serveur).
+// Plus importé nulle part et exclu du site publié ; conservé en attendant ta validation pour le supprimer.
 // Comptes familiaux : connexion Firebase et synchronisation de la progression.
 // La progression des jeux reste dans le navigateur (localStorage), exactement comme avant :
 // ce module en garde une copie dans le compte du parent et la redonne sur un autre appareil.

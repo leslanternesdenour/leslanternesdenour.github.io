@@ -36,12 +36,21 @@ button.danger{background:none;box-shadow:none;color:#ff9fb2;font-size:15px;paddi
 a{color:#ffe3a3}
 .petit{font-size:14px}
 .choix{display:grid;gap:10px}
+input[type=text],select{width:100%;border-radius:14px;border:2px solid #3a2a7d;background:#191345;color:#fff;font:700 17px Nunito,system-ui;padding:12px 14px}
+.badge{display:inline-block;border-radius:999px;padding:3px 10px;font:800 13px Nunito,system-ui;background:#f5b942;color:#2a1d00;vertical-align:middle}
+.badge.froid{background:#9fd8ff;color:#06263d}.badge.sim{background:#ff9fb2;color:#3d0613}
+.enfant{display:flex;align-items:center;gap:10px;background:#191345;border-radius:16px;padding:10px 12px}
+.enfant.actif{outline:3px solid #f5b942}.enfant .nom{flex:1;font-weight:900;color:#fff}.enfant .nom small{display:block;font-weight:600;color:#c9bfe8}
+.enfant button{font-size:15px;padding:8px 12px;box-shadow:0 3px 0 #d9952a}.enfant button.doux{box-shadow:0 3px 0 #120d33}
+.rangee{display:flex;gap:8px;flex-wrap:wrap}.rangee>*{flex:1}
+.bandeau-sim{background:#ff9fb2;color:#3d0613;font-weight:900;text-align:center;border-radius:14px;padding:8px}
 </style>
 </head>
 <body>
 <div id="deco" aria-hidden="true"></div>
 <main>
   <h1>🏮 Espace famille</h1>
+  <p class="bandeau-sim cache" id="bandeau-sim">SIMULATION LOCALE — faux comptes, faux paiements (aucun service réel)</p>
 
   <!-- Comptes pas encore activés : on le dit clairement, sans faux formulaire -->
   <section class="carte cache" id="v-inactif">
@@ -51,30 +60,42 @@ a{color:#ffe3a3}
     <button onclick="location.href='../monde/'">✨ Entrer dans le monde</button>
   </section>
 
+  <!-- Invitation reçue (lien ?invite=) -->
+  <section class="carte cache" id="v-invitation">
+    <h2>🎁 Un accès vous est offert</h2>
+    <p id="inv-texte">Connectez-vous (ou créez votre compte) avec l'adresse e-mail qui a reçu l'invitation, puis activez-la.</p>
+    <button id="inv-activer" class="cache">Activer mon accès offert</button>
+  </section>
+
   <!-- Connexion / inscription / mot de passe oublié -->
   <section class="carte cache" id="v-acces">
     <div class="onglets" role="tablist">
       <button role="tab" id="o-connexion" aria-selected="true">Se connecter</button>
       <button role="tab" id="o-inscription" aria-selected="false">Créer un compte</button>
     </div>
-
     <form id="f-connexion" class="choix" novalidate>
       <label>Adresse e-mail du parent<input type="email" id="c-email" autocomplete="email" required></label>
       <label>Mot de passe<input type="password" id="c-mdp" autocomplete="current-password" required></label>
       <button type="submit">Se connecter</button>
       <button type="button" class="lien" id="vers-oubli">Mot de passe oublié ?</button>
     </form>
-
     <form id="f-inscription" class="choix cache" novalidate>
       <p class="petit">Le compte est créé par un parent. Les enfants n'ont rien à saisir.</p>
       <label>Adresse e-mail du parent<input type="email" id="i-email" autocomplete="email" required></label>
       <label>Mot de passe (8 caractères minimum)<input type="password" id="i-mdp" autocomplete="new-password" minlength="8" required></label>
       <label>Confirmer le mot de passe<input type="password" id="i-mdp2" autocomplete="new-password" minlength="8" required></label>
-      <label class="case"><input type="checkbox" id="i-parent" required> <span>Je suis le parent ou le responsable légal des enfants qui joueront.</span></label>
-      <label class="case"><input type="checkbox" id="i-conf" required> <span>J'ai lu <a href="../decouvrir/#confidentialite" target="_blank">ce que le site garde et pourquoi</a>.</span></label>
+      <div id="consentements" class="choix">
+        <label class="case"><input type="checkbox" id="i-parent"> <span>Je suis le parent ou le responsable légal des enfants qui joueront.</span></label>
+        <label class="case"><input type="checkbox" id="i-cgu"> <span>J'accepte les <a href="../conditions/" target="_blank">conditions d'utilisation</a>.</span></label>
+        <label class="case"><input type="checkbox" id="i-conf"> <span>J'ai lu <a href="../decouvrir/#confidentialite" target="_blank">ce que le site garde et pourquoi</a>.</span></label>
+      </div>
       <button type="submit">Créer mon compte famille</button>
     </form>
-
+    <form id="f-consent" class="choix cache" novalidate>
+      <p>Avant d'ouvrir votre espace, merci de confirmer :</p>
+      <div id="consentements-place"></div>
+      <button type="submit">Continuer</button>
+    </form>
     <form id="f-oubli" class="choix cache" novalidate>
       <p>Indiquez l'adresse du compte : vous recevrez un lien pour choisir un nouveau mot de passe.</p>
       <label>Adresse e-mail du parent<input type="email" id="o-email" autocomplete="email" required></label>
@@ -85,18 +106,56 @@ a{color:#ffe3a3}
 
   <!-- Connecté -->
   <section class="carte cache" id="v-espace">
-    <h2>Bonjour !</h2>
-    <p>Connecté avec <b id="e-email"></b>. La progression de cet appareil est gardée dans votre compte et vous la retrouvez sur vos autres appareils.</p>
-    <p class="petit" id="e-verif"></p>
-    <div id="e-conflit" class="choix cache">
-      <p><b>Cet appareil et votre compte n'ont pas la même progression.</b> Laquelle garder ?</p>
-      <button class="doux" id="garder-compte">☁️ Celle du compte</button>
-      <button class="doux" id="garder-appareil">📱 Celle de cet appareil</button>
+    <h2>Bonjour ! <span class="badge" id="e-statut"></span></h2>
+    <p>Connecté avec <b id="e-email"></b>.</p>
+    <p class="petit" id="e-offre"></p>
+    <div id="e-verif" class="choix cache">
+      <p><b>Adresse e-mail à valider.</b> Ouvrez le lien reçu par e-mail, puis touchez « C'est fait ».</p>
+      <div class="rangee"><button class="doux" id="verif-fait">C'est fait</button><button class="doux" id="verif-renvoyer">Renvoyer le lien</button></div>
+      <button class="doux cache" id="verif-simuler">SIMULATION : cliquer sur le lien reçu</button>
     </div>
+  </section>
+
+  <section class="carte cache" id="v-enfants">
+    <h2>Qui joue ?</h2>
+    <p class="petit" id="enf-info"></p>
+    <div id="enf-liste" class="choix"></div>
+    <button class="lien cache" id="enf-plus">Afficher les profils suivants</button>
+    <form id="f-enfant" class="choix cache" novalidate>
+      <label>Prénom ou surnom<input type="text" id="enf-surnom" maxlength="20" autocomplete="off"></label>
+      <div class="rangee">
+        <label>Âge<select id="enf-tranche"><option value="3-5">3 à 5 ans</option><option value="6-10">6 à 10 ans</option></select></label>
+        <label>Personnage<select id="enf-avatar"><option value="fille">👧 Fille</option><option value="garcon">👦 Garçon</option></select></label>
+      </div>
+      <p class="petit">Nous ne demandons ni nom de famille, ni date de naissance, ni photo.</p>
+      <button type="submit">Ajouter ce profil</button>
+    </form>
+    <button class="doux" id="enf-ajouter">➕ Ajouter un enfant</button>
     <button id="entrer">✨ Entrer dans le monde</button>
-    <button class="doux" id="synchro">🔄 Synchroniser maintenant</button>
+  </section>
+
+  <section class="carte cache" id="v-offre">
+    <h2>Ma formule</h2>
+    <p id="off-texte"></p>
+    <a class="lien" id="off-tarifs" href="../tarifs/">Voir les formules</a>
+    <button class="doux cache" id="off-portail">Moyen de paiement et factures</button>
+    <button class="doux cache" id="off-resilier">Résilier l'abonnement</button>
+    <div id="off-confirmer" class="choix cache">
+      <p><b>Résilier ?</b> Vous gardez l'accès jusqu'à la fin de la période déjà payée, puis le compte repasse en Gratuit. Les progrès sont conservés.</p>
+      <div class="rangee"><button class="danger" id="off-oui">Oui, résilier</button><button class="doux" id="off-non">Garder</button></div>
+    </div>
+    <a class="lien cache" id="off-admin" href="../admin/">🛠️ Administration (Créateur)</a>
+  </section>
+
+  <section class="carte cache" id="v-securite">
     <button class="doux" id="deconnexion">Se déconnecter</button>
-    <button class="danger" id="supprimer">Supprimer mon compte et ses données</button>
+    <button class="danger" id="supprimer">Supprimer mon compte et toutes ses données</button>
+    <form id="f-supprimer" class="choix cache" novalidate>
+      <p><b>Tout sera effacé</b> : le compte, les profils des enfants et leurs progrès enregistrés, les accès offerts. C'est définitif.</p>
+      <label>Mot de passe (pour confirmer que c'est bien vous)<input type="password" id="s-mdp" autocomplete="current-password"></label>
+      <label>Écrivez SUPPRIMER<input type="text" id="s-mot" autocomplete="off"></label>
+      <div class="rangee"><button class="danger" type="submit">Supprimer définitivement</button><button class="doux" type="button" id="s-annuler">Annuler</button></div>
+    </form>
   </section>
 
   <p class="etat" id="etat" role="status" aria-live="polite"></p>
@@ -104,89 +163,145 @@ a{color:#ffe3a3}
 </main>
 
 <script type="module">
-import { actif, charger, synchroniser, supprimerDonnees, messageErreur } from './comptes.js?v=1';
+import * as C from './client.js?v=1';
 const $ = id => document.getElementById(id);
-const voir = id => ['v-inactif', 'v-acces', 'v-espace'].forEach(v => $(v).classList.toggle('cache', v !== id));
+const VUES = ['v-inactif', 'v-acces', 'v-espace', 'v-enfants', 'v-offre', 'v-securite'];
+const voir = (...ids) => VUES.forEach(v => $(v).classList.toggle('cache', !ids.includes(v)));
 const etat = (t, ko) => { $('etat').textContent = t || ''; $('etat').className = 'etat' + (ko ? ' ko' : ''); };
-const formulaire = f => ['f-connexion', 'f-inscription', 'f-oubli'].forEach(x => $(x).classList.toggle('cache', x !== f));
-const occupe = async (btn, f) => { btn.disabled = true; try { await f(); } finally { btn.disabled = false; } };
-const ENTREE = '../monde/?ouverture=1';
+const formulaire = f => ['f-connexion', 'f-inscription', 'f-consent', 'f-oubli'].forEach(x => $(x).classList.toggle('cache', x !== f));
+const occupe = async (btn, f) => { if (btn) btn.disabled = true; try { await f(); } catch (e) { etat(C.messageErreur(e), true); } finally { if (btn) btn.disabled = false; } };
+const date = t => new Date(t).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+const params = new URLSearchParams(location.search);
+// le code d'invitation ne reste pas dans l'adresse (ni dans l'historique) : il est gardé le temps de la session
+if (params.get('invite')) { sessionStorage.setItem('ldn_invite', params.get('invite')); params.delete('invite'); history.replaceState(null, '', location.pathname + (params.toString() ? '?' + params : '')); }
+const invitation = () => sessionStorage.getItem('ldn_invite');
+let D = null, enfants = [], suite = null, total = 0, jetonEnAttente = null;
 
-if (!actif) { voir('v-inactif'); }
-else {
+
+async function demarrer() {
   etat('Chargement…');
-  const c = await charger().catch(() => null);
-  if (!c) { etat("Le service de comptes ne répond pas. Vérifiez votre connexion internet.", true); voir('v-inactif'); }
-  else {
-    etat('');
-    const { au, auth } = c;
+  D = await C.moi(); etat('');
+  $('v-invitation').classList.toggle('cache', !invitation());
+  if (!D.connecte) { voir('v-acces'); if (location.hash === '#inscription' || invitation()) onglet('inscription'); return; }
+  if (params.get('paiement') === 'ok') etat('Merci ! Le paiement (mode test) est confirmé. La formule s\'affiche dès que la banque l\'a validé.');
+  $('e-email').textContent = D.email; $('e-statut').textContent = C.NOMS_STATUT[D.statut] + (D.niveau !== 'gratuit' && D.statut !== 'creator' ? ' · ' + C.NOMS_NIVEAU[D.niveau] : '');
+  $('e-verif').classList.toggle('cache', !!D.emailVerifie);
+  $('e-offre').textContent = D.statut === 'creator' ? 'Toutes les fonctions, profils illimités, aperçu des contenus en préparation.'
+    : D.synchro ? 'La progression de chaque enfant est enregistrée dans le compte et se retrouve sur vos autres appareils.'
+    : 'La progression reste gardée sur cet appareil (la synchronisation entre appareils fait partie de la formule Famille).';
+  $('inv-activer').classList.toggle('cache', !invitation());
+  $('inv-texte').textContent = 'Activez l\'accès offert sur ce compte (' + D.email + '). Il doit avoir reçu l\'invitation.';
+  voir('v-espace', 'v-enfants', 'v-offre', 'v-securite');
+  afficherOffre();
+  await chargerEnfants(true);
+}
 
-    function onglet(n) {
-      $('o-connexion').setAttribute('aria-selected', n === 'connexion');
-      $('o-inscription').setAttribute('aria-selected', n === 'inscription');
-      formulaire('f-' + n); etat('');
-    }
-    $('o-connexion').onclick = () => onglet('connexion');
-    $('o-inscription').onclick = () => onglet('inscription');
-    $('vers-oubli').onclick = () => { formulaire('f-oubli'); $('o-email').value = $('c-email').value; etat(''); };
-    $('retour-connexion').onclick = () => onglet('connexion');
+// ---------- connexion / inscription ----------
+function onglet(n) { $('o-connexion').setAttribute('aria-selected', n === 'connexion'); $('o-inscription').setAttribute('aria-selected', n === 'inscription'); formulaire('f-' + n); etat(''); }
+$('o-connexion').onclick = () => onglet('connexion');
+$('o-inscription').onclick = () => onglet('inscription');
+$('vers-oubli').onclick = () => { formulaire('f-oubli'); $('o-email').value = $('c-email').value; etat(''); };
+$('retour-connexion').onclick = () => onglet('connexion');
+const consentements = () => ({ parent: $('i-parent').checked, cgu: $('i-cgu').checked, confidentialite: $('i-conf').checked });
+const tousCoches = () => Object.values(consentements()).every(Boolean);
 
-    async function apresAcces(u, premiere) {
-      const r = await synchroniser(c, u.uid);
-      if (r.conflits.length) { montrerEspace(u); montrerConflit(); return; }
-      location.href = ENTREE; // ouverture magique après l'inscription ou la connexion
-    }
-
-    $('f-connexion').onsubmit = e => { e.preventDefault(); occupe(e.submitter, async () => {
-      try { const r = await au.signInWithEmailAndPassword(auth, $('c-email').value.trim(), $('c-mdp').value); await apresAcces(r.user, false); }
-      catch (err) { etat(messageErreur(err), true); }
-    }); };
-
-    $('f-inscription').onsubmit = e => { e.preventDefault(); occupe(e.submitter, async () => {
-      if ($('i-mdp').value.length < 8) return etat('Le mot de passe doit contenir au moins 8 caractères.', true);
-      if ($('i-mdp').value !== $('i-mdp2').value) return etat('Les deux mots de passe ne sont pas identiques.', true);
-      if (!$('i-parent').checked || !$('i-conf').checked) return etat('Merci de cocher les deux cases.', true);
-      try {
-        const r = await au.createUserWithEmailAndPassword(auth, $('i-email').value.trim(), $('i-mdp').value);
-        au.sendEmailVerification(r.user).catch(() => {});
-        await apresAcces(r.user, true);
-      } catch (err) { etat(messageErreur(err), true); }
-    }); };
-
-    $('f-oubli').onsubmit = e => { e.preventDefault(); occupe(e.submitter, async () => {
-      try { await au.sendPasswordResetEmail(auth, $('o-email').value.trim()); etat('Si un compte existe avec cette adresse, un e-mail vient d\'être envoyé. Pensez à regarder dans les indésirables.'); }
-      catch (err) { etat(messageErreur(err), true); }
-    }); };
-
-    function montrerEspace(u) {
-      voir('v-espace');
-      $('e-email').textContent = u.email;
-      $('e-verif').textContent = u.emailVerified ? '' : "Pensez à confirmer votre adresse grâce à l'e-mail reçu.";
-    }
-    function montrerConflit() { $('e-conflit').classList.remove('cache'); etat(''); }
-    async function resoudre(choix) {
-      const r = await synchroniser(c, auth.currentUser.uid, { choix });
-      $('e-conflit').classList.add('cache');
-      etat(r.change ? 'Progression mise à jour sur cet appareil.' : 'Progression enregistrée dans votre compte.');
-    }
-    $('garder-compte').onclick = e => occupe(e.target, () => resoudre('compte').catch(err => etat(messageErreur(err), true)));
-    $('garder-appareil').onclick = e => occupe(e.target, () => resoudre('appareil').catch(err => etat(messageErreur(err), true)));
-    $('entrer').onclick = () => location.href = '../monde/';
-    $('synchro').onclick = e => occupe(e.target, async () => {
-      try { const r = await synchroniser(c, auth.currentUser.uid); r.conflits.length ? montrerConflit() : etat('Tout est à jour ✔'); }
-      catch (err) { etat(messageErreur(err), true); }
-    });
-    $('deconnexion').onclick = async () => { await au.signOut(auth); localStorage.removeItem('ldn_sync'); etat('Vous êtes déconnecté. La progression reste sur cet appareil.'); voir('v-acces'); onglet('connexion'); };
-    $('supprimer').onclick = e => occupe(e.target, async () => {
-      if (!confirm('Supprimer définitivement le compte et la copie de la progression gardée en ligne ? La progression déjà présente sur cet appareil n\'est pas effacée.')) return;
-      try { const u = auth.currentUser; await supprimerDonnees(c, u.uid); await au.deleteUser(u); etat('Compte supprimé.'); voir('v-acces'); onglet('connexion'); }
-      catch (err) { etat(messageErreur(err), true); }
-    });
-
-    const u = auth.currentUser || await new Promise(ok => { const s = au.onAuthStateChanged(auth, x => { s(); ok(x); }); });
-    if (u) { montrerEspace(u); synchroniser(c, u.uid).then(r => r.conflits.length && montrerConflit()).catch(() => {}); }
-    else { voir('v-acces'); onglet(location.hash === '#inscription' ? 'inscription' : 'connexion'); }
+async function ouvrir(idToken, consent) {
+  try { await C.ouvrirSession(idToken, consent); }
+  catch (e) {
+    if (e.raison === 'consentement-requis') { jetonEnAttente = idToken; $('consentements-place').appendChild($('consentements')); formulaire('f-consent'); etat('Une dernière étape.'); return false; }
+    throw e;
   }
+  await demarrer(); return true;
+}
+$('f-connexion').onsubmit = e => { e.preventDefault(); occupe(e.submitter, async () => ouvrir(await C.auth.connecter($('c-email').value.trim(), $('c-mdp').value))); };
+$('f-inscription').onsubmit = e => { e.preventDefault(); occupe(e.submitter, async () => {
+  if ($('i-mdp').value.length < 8) return etat('Le mot de passe doit contenir au moins 8 caractères.', true);
+  if ($('i-mdp').value !== $('i-mdp2').value) return etat('Les deux mots de passe ne sont pas identiques.', true);
+  if (!tousCoches()) return etat('Merci de cocher les trois cases.', true);
+  await ouvrir(await C.auth.inscrire($('i-email').value.trim(), $('i-mdp').value), consentements());
+}); };
+$('f-consent').onsubmit = e => { e.preventDefault(); occupe(e.submitter, async () => { if (!tousCoches()) return etat('Merci de cocher les trois cases.', true); await ouvrir(jetonEnAttente, consentements()); }); };
+$('f-oubli').onsubmit = e => { e.preventDefault(); occupe(e.submitter, async () => { await C.auth.motDePasseOublie($('o-email').value.trim()); etat('Si un compte existe avec cette adresse, un lien vient d\'être envoyé.'); }); };
+
+// ---------- adresse e-mail ----------
+$('verif-fait').onclick = e => occupe(e.target, async () => { await ouvrir(await C.auth.rafraichir()); if (!D.emailVerifie) etat('L\'adresse n\'est pas encore validée. Ouvrez le lien reçu par e-mail.', true); });
+$('verif-renvoyer').onclick = e => occupe(e.target, async () => { await C.auth.renvoyerVerification(); etat('Un nouveau lien vient d\'être envoyé.'); });
+$('verif-simuler').onclick = e => occupe(e.target, async () => { await C.auth.simulerClicVerification(); etat('SIMULATION : lien « cliqué ». Touchez « C\'est fait ».'); });
+
+// ---------- invitation ----------
+$('inv-activer').onclick = e => occupe(e.target, async () => {
+  const r = await C.api('/api/invitations/activer', { methode: 'POST', corps: { code: invitation() } });
+  sessionStorage.removeItem('ldn_invite'); await demarrer();
+  etat('🎁 Accès ' + C.NOMS_NIVEAU[r.niveau] + ' activé. Merci et bon voyage !');
+});
+
+// ---------- profils enfants (affichage par pages de 20 ; aucune limite pour le Créateur) ----------
+async function chargerEnfants(depuisDebut) {
+  const r = await C.api('/api/enfants' + (!depuisDebut && suite ? '?apres=' + encodeURIComponent(suite) : ''));
+  enfants = depuisDebut ? r.enfants : enfants.concat(r.enfants); suite = r.suite; total = r.total;
+  const actif = (C.profilActif() || {}).id || D.profilActif;
+  $('enf-liste').replaceChildren(...enfants.map(x => {
+    const d = document.createElement('div'); d.className = 'enfant' + (x.id === actif ? ' actif' : ''); d.dataset.id = x.id;
+    d.innerHTML = '<span style="font-size:28px">' + (x.avatar === 'fille' ? '👧' : '👦') + '</span><span class="nom"></span>';
+    d.querySelector('.nom').textContent = x.surnom;
+    const s = document.createElement('small'); s.textContent = (x.tranche === '3-5' ? '3 à 5 ans' : '6 à 10 ans'); d.querySelector('.nom').appendChild(s);
+    if (x.gele) { const b = document.createElement('span'); b.className = 'badge froid'; b.textContent = '❄️ en pause'; b.title = 'Profil en trop pour la formule actuelle : il est gardé, rien n\'est effacé.'; d.appendChild(b); }
+    const jouer = document.createElement('button'); jouer.textContent = x.id === actif ? 'Joue ici' : 'Choisir'; jouer.className = x.id === actif ? 'doux' : '';
+    jouer.onclick = () => occupe(jouer, async () => { await C.choisirEnfant(x.id, D); D.profilActif = x.id; await chargerEnfants(true); etat(x.surnom + ' joue sur cet appareil.'); });
+    const suppr = document.createElement('button'); suppr.className = 'danger'; suppr.textContent = '✕'; suppr.title = 'Supprimer ce profil'; suppr.setAttribute('aria-label', 'Supprimer le profil ' + x.surnom);
+    suppr.onclick = () => occupe(suppr, async () => { if (!confirm('Supprimer le profil « ' + x.surnom + ' » et ses progrès enregistrés ?')) return;
+      await C.api('/api/enfants/' + x.id, { methode: 'DELETE' }); if ((C.profilActif() || {}).id === x.id) localStorage.removeItem('ldn_profil_actif'); await chargerEnfants(true); });
+    d.append(jouer, suppr); return d;
+  }));
+  $('enf-plus').classList.toggle('cache', !suite);
+  const max = D.illimite ? null : D.profilsMax;
+  $('enf-info').textContent = total + ' profil' + (total > 1 ? 's' : '') + (max ? ' sur ' + max + ' possible' + (max > 1 ? 's' : '') : ' · illimité') + (enfants.length < total ? ' · ' + enfants.length + ' affichés' : '');
+  $('enf-ajouter').classList.toggle('cache', !!max && total >= max);
+  if (!total) { $('f-enfant').classList.remove('cache'); $('enf-ajouter').classList.add('cache'); }
+}
+$('enf-plus').onclick = e => occupe(e.target, () => chargerEnfants(false));
+$('enf-ajouter').onclick = () => { $('f-enfant').classList.remove('cache'); $('enf-ajouter').classList.add('cache'); $('enf-surnom').focus(); };
+$('f-enfant').onsubmit = e => { e.preventDefault(); occupe(e.submitter, async () => {
+  const r = await C.api('/api/enfants', { methode: 'POST', corps: { surnom: $('enf-surnom').value.trim(), tranche: $('enf-tranche').value, avatar: $('enf-avatar').value } });
+  if (!C.profilActif()) await C.choisirEnfant(r.id, D);
+  $('enf-surnom').value = ''; $('f-enfant').classList.add('cache'); await chargerEnfants(true); etat('Profil ajouté.');
+}); };
+$('entrer').onclick = () => { if (!C.profilActif() && total) return etat('Choisissez d\'abord qui joue.', true); location.href = '../monde/?ouverture=1'; };
+
+// ---------- formule ----------
+function afficherOffre() {
+  const t = { creator: 'Compte Créateur : tout est ouvert.', invite: 'Accès ' + C.NOMS_NIVEAU[D.niveau] + ' offert' + (D.expire ? ' jusqu\'au ' + date(D.expire) : ', sans date de fin') + '.',
+    abonne: 'Abonnement ' + C.NOMS_NIVEAU[D.niveau] + (D.expire ? ', période en cours jusqu\'au ' + date(D.expire) : '') + '.', gratuit: 'Formule Gratuite : ablutions, prière, calendrier du Ramadan, et le début du Grand Voyage.' };
+  $('off-texte').textContent = t[D.statut] || '';
+  $('off-tarifs').classList.toggle('cache', D.statut === 'creator' || D.payant);
+  $('off-portail').classList.toggle('cache', !D.payant); $('off-resilier').classList.toggle('cache', !D.payant);
+  $('off-admin').classList.toggle('cache', !D.admin);
+}
+// résiliation en 3 gestes : bouton → confirmation → oui (la loi impose une résiliation simple)
+$('off-resilier').onclick = () => { $('off-confirmer').classList.remove('cache'); $('off-resilier').classList.add('cache'); };
+$('off-non').onclick = () => { $('off-confirmer').classList.add('cache'); $('off-resilier').classList.remove('cache'); };
+$('off-oui').onclick = e => occupe(e.target, async () => { const r = await C.api('/api/abonnement/resilier', { methode: 'POST' }); $('off-confirmer').classList.add('cache');
+  etat('Résiliation enregistrée. Accès conservé jusqu\'au ' + date(r.finAcces) + '.'); });
+$('off-portail').onclick = e => occupe(e.target, async () => { location.href = (await C.api('/api/abonnement/portail', { methode: 'POST' })).url; });
+
+// ---------- déconnexion et suppression ----------
+$('deconnexion').onclick = e => occupe(e.target, async () => { await C.deconnexion(); location.replace(location.pathname); });
+$('supprimer').onclick = () => { $('f-supprimer').classList.remove('cache'); $('supprimer').classList.add('cache'); };
+$('s-annuler').onclick = () => { $('f-supprimer').classList.add('cache'); $('supprimer').classList.remove('cache'); };
+$('f-supprimer').onsubmit = e => { e.preventDefault(); occupe(e.submitter, async () => {
+  if ($('s-mot').value.trim().toUpperCase() !== 'SUPPRIMER') return etat('Écrivez SUPPRIMER pour confirmer.', true);
+  await C.ouvrirSession(await C.auth.reauthentifier($('s-mdp').value));   // connexion récente exigée par le serveur
+  await C.api('/api/compte', { methode: 'DELETE' });
+  for (const k of [...C.CLES_JEU, 'ldn_profil_actif', 'ldn_synchro_empreinte']) localStorage.removeItem(k);
+  await C.purgerCaches(); await C.auth.quitter();
+  voir(); etat('Votre compte et toutes ses données ont été supprimés.');
+}); };
+
+// ---------- démarrage (après la pose de tous les gestionnaires) ----------
+if (!C.comptesActifs()) voir('v-inactif');
+else {
+  if (C.simulation()) { $('bandeau-sim').classList.remove('cache'); $('verif-simuler').classList.remove('cache'); }
+  demarrer().catch(e => etat(C.messageErreur(e), true));
 }
 </script>
 <script src="../univers/univers.js?v=1" defer></script>

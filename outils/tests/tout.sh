@@ -7,6 +7,8 @@ etape "Droits (Créateur, invités, abonnés, gratuit)" bash -c 'node --test out
 etape "Jetons Firebase (vérification serveur)" bash -c 'node --test outils/tests/jeton.test.mjs 2>&1 | grep -E "^# (pass|fail)" | tr "\n" " "; echo; node --test outils/tests/jeton.test.mjs >/dev/null 2>&1'
 etape "API (comptes, droits, invitations, admin, Stripe test, Premium, RGPD)" bash -c 'node --test --test-concurrency=1 outils/tests/api.test.mjs 2>&1 | grep -E "^# (pass|fail)" | tr "\n" " "; echo; node --test --test-concurrency=1 outils/tests/api.test.mjs >/dev/null 2>&1'
 etape "Firestore REST (requêtes, conversions, compte de service)" bash -c 'node --test outils/tests/firestore.test.mjs 2>&1 | grep -E "^# (pass|fail)" | tr "\n" " "; echo; node --test outils/tests/firestore.test.mjs >/dev/null 2>&1'
+etape "Restauration de la base des comptes (export → age → import → API)" bash -c 'node --test outils/tests/restauration.test.mjs 2>&1 | grep -E "^# (pass|fail)" | tr "\n" " "; echo; node --test outils/tests/restauration.test.mjs >/dev/null 2>&1'
 etape "Dossier publié (aucune fuite)" bash -c 'node outils/construire.mjs >/dev/null && node outils/tests/verifier-dist.mjs | tail -1'
 etape "Exercice de restauration chiffrée" bash -c 'bash outils/sauvegarde/exercice-restauration.sh | tail -1'
+if [ "${NAVIGATEUR:-0}" = 1 ]; then etape "Parcours complets dans Chrome (émulateur local)" bash -c 'bash outils/tests/parcours.sh | tail -1'; fi
 [ $echec -eq 0 ] && echo "TOUT EST VERT" || echo "AU MOINS UNE VÉRIFICATION A ÉCHOUÉ"; exit $echec

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr" data-univers="histoires">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Conditions · Les Lanternes de Nour</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../univers/univers.css?v=1">
+<style>
+*{box-sizing:border-box}html,body{margin:0}
+body{min-height:100vh;color:#f4efff;font-family:Nunito,system-ui,sans-serif;padding:24px 16px 40px}
+main{max-width:520px;margin:0 auto;display:grid;gap:18px;position:relative;z-index:1}
+h1{font:800 clamp(24px,6vw,32px) Poppins,system-ui;margin:0;color:#f5b942;text-align:center}
+p{margin:0;color:#c9bfe8;line-height:1.5}
+.carte{background:#2a2166;border-radius:24px;padding:20px;display:grid;gap:12px;box-shadow:0 8px 0 #120d33}
+.carte h2{margin:0;font:800 20px Poppins,system-ui;color:#fff}
+.onglets{display:flex;gap:6px;background:#191345;border-radius:999px;padding:5px}
+.onglets button{flex:1;background:none;box-shadow:none;color:#c9bfe8;font:800 15px Nunito,system-ui;padding:10px 6px;border-radius:999px}
+.onglets button[aria-selected=true]{background:#f5b942;color:#2a1d00}
+label{display:grid;gap:6px;font-weight:800;color:#fff}
+input[type=email],input[type=password]{width:100%;border-radius:14px;border:2px solid #3a2a7d;background:#191345;color:#fff;font:700 17px Nunito,system-ui;padding:12px 14px}
+input:focus{outline:none;border-color:#f5b942}
+.case{display:flex;gap:10px;align-items:flex-start;font-weight:600;color:#e9e2ff;font-size:15px}
+.case input{width:22px;height:22px;flex:none;margin-top:2px;accent-color:#f5b942}
+button{border:0;border-radius:18px;padding:14px 16px;font:900 18px Nunito,system-ui;cursor:pointer;background:#f5b942;color:#2a1d00;box-shadow:0 5px 0 #d9952a}
+button:active{transform:translateY(3px);box-shadow:0 2px 0 #d9952a}
+button:disabled{opacity:.6;cursor:wait}
+button.doux{background:#3a2a7d;color:#fff;box-shadow:0 5px 0 #191345}
+button.danger{background:none;box-shadow:none;color:#ff9fb2;font-size:15px;padding:6px;text-decoration:underline}
+.lien{background:none;box-shadow:none;color:#ffe3a3;font:700 15px Nunito,system-ui;padding:4px;text-decoration:underline;justify-self:start}
+.etat{font-weight:800;color:#8fdcc1;min-height:1.4em}
+.etat.ko{color:#ff9fb2}
+.cache{display:none!important}
+a{color:#ffe3a3}
+.petit{font-size:14px}
+.choix{display:grid;gap:10px}
+input[type=text],select{width:100%;border-radius:14px;border:2px solid #3a2a7d;background:#191345;color:#fff;font:700 17px Nunito,system-ui;padding:12px 14px}
+.badge{display:inline-block;border-radius:999px;padding:3px 10px;font:800 13px Nunito,system-ui;background:#f5b942;color:#2a1d00;vertical-align:middle}
+.badge.froid{background:#9fd8ff;color:#06263d}.badge.sim{background:#ff9fb2;color:#3d0613}
+.enfant{display:flex;align-items:center;gap:10px;background:#191345;border-radius:16px;padding:10px 12px}
+.enfant.actif{outline:3px solid #f5b942}.enfant .nom{flex:1;font-weight:900;color:#fff}.enfant .nom small{display:block;font-weight:600;color:#c9bfe8}
+.enfant button{font-size:15px;padding:8px 12px;box-shadow:0 3px 0 #d9952a}.enfant button.doux{box-shadow:0 3px 0 #120d33}
+.rangee{display:flex;gap:8px;flex-wrap:wrap}.rangee>*{flex:1}
+.bandeau-sim{background:#ff9fb2;color:#3d0613;font-weight:900;text-align:center;border-radius:14px;padding:8px}
+h3{color:#fff;margin:8px 0 0}li,p{color:#e9e2ff}
+</style>
+</head>
+<body>
+<div id="deco" aria-hidden="true"></div>
+<main>
+  <h1>📜 Conditions</h1>
+  <p class="bandeau-sim">BROUILLON EN PRÉPRODUCTION — texte à faire relire et compléter avant toute ouverture des paiements réels. Les mentions [À COMPLÉTER] sont volontairement vides.</p>
+  <section class="carte" id="utilisation">
+    <h2>Conditions d'utilisation</h2>
+    <h3>Éditeur</h3><p>[À COMPLÉTER : nom ou raison sociale, statut, adresse, numéro SIREN le cas échéant, adresse de contact.] Hébergement : Cloudflare, Inc. ; comptes : Google Firebase (région Europe).</p>
+    <h3>Le service</h3><p>Les Lanternes de Nour est un site éducatif pour les enfants de 3 à 10 ans, utilisé sous la responsabilité d'un parent. Une partie est accessible sans compte. Le compte famille est créé et géré par un parent ; les enfants n'ont qu'un prénom ou surnom, une tranche d'âge et un personnage.</p>
+    <h3>Compte</h3><p>Le parent garde son mot de passe secret. Il peut supprimer à tout moment son compte et toutes les données associées depuis l'Espace famille ; la suppression est définitive.</p>
+    <h3>Contenus</h3><p>Les contenus restent la propriété de l'éditeur. Ils sont mis à disposition pour un usage familial et privé.</p>
+  </section>
+  <section class="carte" id="vente">
+    <h2>Conditions de vente</h2>
+    <h3>Formules et prix</h3><p>Premium : 4,99 € par mois ou 39,99 € par an. Famille : 59,99 € par an. Prix toutes taxes comprises, provisoires tant que le site est en préproduction [À CONFIRMER].</p>
+    <h3>Paiement et renouvellement</h3><p>Le paiement est traité par Stripe. L'abonnement se renouvelle automatiquement à la fin de chaque période, sauf résiliation.</p>
+    <h3>Résiliation</h3><p>Depuis l'Espace famille, en trois gestes. L'accès reste ouvert jusqu'à la fin de la période déjà payée, puis le compte repasse en Gratuit ; les progrès sont conservés.</p>
+    <h3>Droit de rétractation</h3><p>Le droit de rétractation de 14 jours ne s'applique pas lorsque le parent demande l'accès immédiat aux contenus numériques et renonce expressément à ce droit au moment de l'achat (article L221-28 13° du Code de la consommation). [À FAIRE RELIRE.]</p>
+    <h3>Accès offerts</h3><p>Un accès offert par invitation ne donne lieu à aucun paiement. S'il prend fin, le compte repasse en Gratuit sans perte des progrès.</p>
+    <h3>Médiation</h3><p>[À COMPLÉTER : médiateur de la consommation choisi par l'éditeur.]</p>
+  </section>
+  <p style="text-align:center"><a href="../decouvrir/#confidentialite">Confidentialité</a> · <a href="../compte/">Espace famille</a> · <a href="../">Retour au site</a></p>
+</main>
+<script src="../univers/univers.js?v=1" defer></script>
+</body>
+</html>

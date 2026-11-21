@@ -1,0 +1,2 @@
+SIMULATION LOCALE. Ces fichiers imitent le stockage privé R2 pour tester le contrôle d'accès.
+Ils ne sont ni publiés ni déployés. Le vrai contenu Premium sera envoyé dans R2 (bloc 3).

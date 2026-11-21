@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr" data-univers="histoires">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Formules · Les Lanternes de Nour</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../univers/univers.css?v=1">
+<style>
+*{box-sizing:border-box}html,body{margin:0}
+body{min-height:100vh;color:#f4efff;font-family:Nunito,system-ui,sans-serif;padding:24px 16px 40px}
+main{max-width:520px;margin:0 auto;display:grid;gap:18px;position:relative;z-index:1}
+h1{font:800 clamp(24px,6vw,32px) Poppins,system-ui;margin:0;color:#f5b942;text-align:center}
+p{margin:0;color:#c9bfe8;line-height:1.5}
+.carte{background:#2a2166;border-radius:24px;padding:20px;display:grid;gap:12px;box-shadow:0 8px 0 #120d33}
+.carte h2{margin:0;font:800 20px Poppins,system-ui;color:#fff}
+.onglets{display:flex;gap:6px;background:#191345;border-radius:999px;padding:5px}
+.onglets button{flex:1;background:none;box-shadow:none;color:#c9bfe8;font:800 15px Nunito,system-ui;padding:10px 6px;border-radius:999px}
+.onglets button[aria-selected=true]{background:#f5b942;color:#2a1d00}
+label{display:grid;gap:6px;font-weight:800;color:#fff}
+input[type=email],input[type=password]{width:100%;border-radius:14px;border:2px solid #3a2a7d;background:#191345;color:#fff;font:700 17px Nunito,system-ui;padding:12px 14px}
+input:focus{outline:none;border-color:#f5b942}
+.case{display:flex;gap:10px;align-items:flex-start;font-weight:600;color:#e9e2ff;font-size:15px}
+.case input{width:22px;height:22px;flex:none;margin-top:2px;accent-color:#f5b942}
+button{border:0;border-radius:18px;padding:14px 16px;font:900 18px Nunito,system-ui;cursor:pointer;background:#f5b942;color:#2a1d00;box-shadow:0 5px 0 #d9952a}
+button:active{transform:translateY(3px);box-shadow:0 2px 0 #d9952a}
+button:disabled{opacity:.6;cursor:wait}
+button.doux{background:#3a2a7d;color:#fff;box-shadow:0 5px 0 #191345}
+button.danger{background:none;box-shadow:none;color:#ff9fb2;font-size:15px;padding:6px;text-decoration:underline}
+.lien{background:none;box-shadow:none;color:#ffe3a3;font:700 15px Nunito,system-ui;padding:4px;text-decoration:underline;justify-self:start}
+.etat{font-weight:800;color:#8fdcc1;min-height:1.4em}
+.etat.ko{color:#ff9fb2}
+.cache{display:none!important}
+a{color:#ffe3a3}
+.petit{font-size:14px}
+.choix{display:grid;gap:10px}
+input[type=text],select{width:100%;border-radius:14px;border:2px solid #3a2a7d;background:#191345;color:#fff;font:700 17px Nunito,system-ui;padding:12px 14px}
+.badge{display:inline-block;border-radius:999px;padding:3px 10px;font:800 13px Nunito,system-ui;background:#f5b942;color:#2a1d00;vertical-align:middle}
+.badge.froid{background:#9fd8ff;color:#06263d}.badge.sim{background:#ff9fb2;color:#3d0613}
+.enfant{display:flex;align-items:center;gap:10px;background:#191345;border-radius:16px;padding:10px 12px}
+.enfant.actif{outline:3px solid #f5b942}.enfant .nom{flex:1;font-weight:900;color:#fff}.enfant .nom small{display:block;font-weight:600;color:#c9bfe8}
+.enfant button{font-size:15px;padding:8px 12px;box-shadow:0 3px 0 #d9952a}.enfant button.doux{box-shadow:0 3px 0 #120d33}
+.rangee{display:flex;gap:8px;flex-wrap:wrap}.rangee>*{flex:1}
+.bandeau-sim{background:#ff9fb2;color:#3d0613;font-weight:900;text-align:center;border-radius:14px;padding:8px}
+.formule{border:3px solid transparent}.formule.choisie{border-color:#f5b942}.prix{font:900 26px Poppins,system-ui;color:#f5b942}
+ul{margin:0;padding-left:20px;color:#e9e2ff;line-height:1.6}
+</style>
+</head>
+<body>
+<div id="deco" aria-hidden="true"></div>
+<main>
+  <h1>🏮 Les formules</h1>
+  <p class="bandeau-sim cache" id="bandeau-sim">SIMULATION LOCALE — faux paiements (aucun service réel)</p>
+  <p class="bandeau-sim" id="bandeau-test">MODE TEST — aucun paiement réel n'est possible. Prix provisoires.</p>
+  <p style="text-align:center">Cette page est pour les parents.</p>
+
+  <section class="carte">
+    <h2>Gratuit</h2><p class="prix">0 €</p>
+    <ul><li>Les ablutions et la prière, avec leurs diplômes à imprimer</li><li>Le calendrier du Ramadan 2027</li><li>Le village, le souk, l'oasis et la mission « Les objets perdus de Nour »</li><li>1 profil enfant, progression sur l'appareil</li></ul>
+  </section>
+  <section class="carte formule" data-formule="premium_annuel">
+    <h2>Premium</h2><p class="prix">39,99 € / an <span class="petit">ou 4,99 € / mois</span></p>
+    <ul><li>Tout le Gratuit</li><li>Tout le Grand Voyage : les zones avancées et leurs missions</li><li>Les nouvelles maisons, au fur et à mesure de leur sortie</li><li>1 profil enfant</li></ul>
+    <div class="rangee"><button class="doux choisir" data-formule="premium_annuel">Choisir l'année</button><button class="doux choisir" data-formule="premium_mensuel">Choisir le mois</button></div>
+  </section>
+  <section class="carte formule" data-formule="famille_annuel">
+    <h2>Famille</h2><p class="prix">59,99 € / an</p>
+    <ul><li>Tout le Premium</li><li>Jusqu'à 5 profils enfants</li><li>La progression de chaque enfant retrouvée sur tous vos appareils</li></ul>
+    <button class="doux choisir" data-formule="famille_annuel">Choisir Famille</button>
+  </section>
+
+  <section class="carte cache" id="v-payer">
+    <h2 id="p-titre"></h2>
+    <div id="p-connexion" class="choix cache"><p>Pour s'abonner, il faut d'abord un compte famille.</p><button onclick="location.href='../compte/#inscription'">Créer mon compte ou me connecter</button></div>
+    <p id="p-bloque" class="cache"></p>
+    <!-- porte parentale : rien d'achetable n'est montré à un enfant -->
+    <form id="p-porte" class="choix cache" novalidate>
+      <label><span>Question pour les parents : combien font <b id="p-q"></b> ?</span><input type="text" inputmode="numeric" id="p-r" autocomplete="off"></label>
+      <button type="submit">Continuer</button>
+    </form>
+    <form id="p-form" class="choix cache" novalidate>
+      <label class="case"><input type="checkbox" id="p-cgv"> <span>J'accepte les <a href="../conditions/#vente" target="_blank">conditions de vente</a>. L'abonnement se renouvelle automatiquement et se résilie en 3 gestes depuis l'Espace famille.</span></label>
+      <label class="case"><input type="checkbox" id="p-exec"> <span>Je demande l'accès immédiat aux contenus et je reconnais perdre mon droit de rétractation de 14 jours dès que l'accès commence.</span></label>
+      <button type="submit">Aller au paiement sécurisé</button>
+    </form>
+  </section>
+
+  <p class="etat" id="etat" role="status" aria-live="polite"></p>
+  <p style="text-align:center"><a href="../compte/">Espace famille</a> · <a href="../">Retour au site</a></p>
+</main>
+<script type="module">
+import * as C from '../compte/client.js?v=1';
+const $ = id => document.getElementById(id);
+const etat = (t, ko) => { $('etat').textContent = t || ''; $('etat').className = 'etat' + (ko ? ' ko' : ''); };
+const NOMS = { premium_mensuel: 'Premium au mois', premium_annuel: 'Premium à l\'année', famille_annuel: 'Famille à l\'année' };
+let formule = null, D = null, reponse = 0;
+if (C.simulation()) $('bandeau-sim').classList.remove('cache');
+if (new URLSearchParams(location.search).get('paiement') === 'annule') etat('Paiement annulé : rien n\'a été prélevé.');
+for (const b of document.querySelectorAll('.choisir')) b.onclick = async () => {
+  formule = b.dataset.formule; document.querySelectorAll('.formule').forEach(f => f.classList.toggle('choisie', f.contains(b)));
+  $('p-titre').textContent = NOMS[formule]; $('v-payer').classList.remove('cache');
+  ['p-connexion', 'p-bloque', 'p-porte', 'p-form'].forEach(x => $(x).classList.add('cache'));
+  D = C.comptesActifs() ? await C.moi() : { connecte: false };
+  if (!C.comptesActifs()) { $('p-bloque').textContent = 'Les abonnements ne sont pas encore ouverts.'; $('p-bloque').classList.remove('cache'); }
+  else if (!D.connecte) $('p-connexion').classList.remove('cache');
+  else if (D.statut === 'creator') { $('p-bloque').textContent = 'Le compte Créateur a déjà tout.'; $('p-bloque').classList.remove('cache'); }
+  else if (D.offert && (D.niveau === 'famille' || formule !== 'famille_annuel')) { $('p-bloque').textContent = 'Votre compte a déjà un accès offert à ce niveau : inutile de payer.'; $('p-bloque').classList.remove('cache'); }
+  else if (D.payant) { $('p-bloque').textContent = 'Un abonnement est déjà actif. Pour changer de formule, passez par « Moyen de paiement et factures » dans l\'Espace famille.'; $('p-bloque').classList.remove('cache'); }
+  else { const a = 6 + Math.floor(Math.random() * 4), c = 6 + Math.floor(Math.random() * 4); reponse = a * c; $('p-q').textContent = a + ' × ' + c; $('p-r').value = ''; $('p-porte').classList.remove('cache'); }
+  $('v-payer').scrollIntoView({ behavior: 'smooth' });
+};
+$('p-porte').onsubmit = e => { e.preventDefault(); if (Number($('p-r').value) !== reponse) return etat('Ce n\'est pas la bonne réponse.', true); etat(''); $('p-porte').classList.add('cache'); $('p-form').classList.remove('cache'); };
+$('p-form').onsubmit = async e => { e.preventDefault();
+  if (!$('p-cgv').checked || !$('p-exec').checked) return etat('Merci de cocher les deux cases.', true);
+  e.submitter.disabled = true;
+  try { const r = await C.api('/api/paiement/session', { methode: 'POST', corps: { formule, consentements: { cgv: true, executionImmediate: true } } }); location.href = r.url; }
+  catch (err) { etat(C.messageErreur(err), true); e.submitter.disabled = false; }
+};
+</script>
+<script src="../univers/univers.js?v=1" defer></script>
+</body>
+</html>

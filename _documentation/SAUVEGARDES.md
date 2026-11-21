@@ -54,7 +54,7 @@ Les tests ont lieu sur un **projet Firebase de test séparé** (gratuit) et un e
 1. Récupérer le fichier de sauvegarde voulu dans R2.
 2. Le déchiffrer avec la clé privée (`age -d`).
 3. **Code** : `git clone sauvegarde.bundle` → vérifier les branches → lancer `node outils/tests/verifier.mjs`.
-4. **Firestore** : script `outils/restauration/importer-firestore.mjs` (à écrire à l'étape Firebase) → réécrit chaque document → comparaison automatique du nombre de documents et de leur contenu avec la sauvegarde.
+4. **Firestore** : script `outils/sauvegarde/restauration.mjs` (écrit et testé le 21/11/2026) : `importer` réécrit chaque document (sous-collections des enfants comprises) dans une base **vide** (refus sinon), puis compare document par document avec la sauvegarde.
 5. **Comptes** : `firebase auth:import` avec les paramètres d'empreinte du projet → test de connexion avec un compte de test.
 6. **Droits** : vérifier qu'un compte Créateur, un invité, un abonné de test et un gratuit retrouvent exactement leurs accès.
 7. Compte rendu daté (durée de restauration, écarts constatés).
@@ -72,3 +72,27 @@ Calendrier des tests : une fois avant le lancement, **avant toute migration**, p
   dont refus d'une mauvaise clé et détection d'un fichier altéré (`outils/sauvegarde/exercice-restauration.sh`).
 - Sauvegarde complète du dépôt public (19 branches, tout l'historique, 45 Mo) en un fichier unique.
 - **Restauration testée** : `main` restaurée est identique à l'original ; `preproduction` restaurée passe toutes les vérifications automatiques.
+
+### Réalisé le 21/11/2026 (bloc 2)
+- Script `outils/sauvegarde/restauration.mjs` : `exporter`, `importer` et `comparer`, utilisables sur la vraie base Firestore ou en mémoire.
+- **Exercice complet automatisé** (`outils/tests/restauration.test.mjs`). Les données sont créées par le vrai code :
+  le Créateur avec 7 profils, une famille abonnée (paiement test simulé) avec 3 profils et une progression, un proche invité,
+  des invitations, le catalogue et le bandeau.
+  - Le parcours : export, gzip, chiffrement age avec la clé publique, déchiffrement avec la clé privée, import dans une base vide.
+  - Le contrôle : la base restaurée est **identique document par document**, et l'API y relit les mêmes droits, les mêmes profils et la même progression pour chaque compte.
+  - La comparaison détecte un document modifié ou manquant. 3 erreurs volontaires dans le script ont toutes été repérées.
+
+### Test réel préparé : ce que vous aurez à faire (0 €, deux projets Firebase Spark de test)
+1. Créer deux projets Firebase de test, par exemple `ldn-source-test` et `ldn-restauration-test`, puis une clé de compte de service pour chacun.
+   Gardez ces clés sur votre ordinateur : ne les envoyez jamais, ni à moi ni dans le dépôt.
+2. Sur `ldn-source-test`, créer quelques comptes de test depuis la préproduction : un Créateur, un invité, un abonné en mode test et un compte gratuit.
+3. Exporter la base :
+   `FIREBASE_PROJET=ldn-source-test FIREBASE_COMPTE_SERVICE_FICHIER=~/cles/source.json node outils/sauvegarde/restauration.mjs exporter > export.json`
+4. Chiffrer avec age, puis déchiffrer : voir CLE_DE_SAUVEGARDE.md.
+5. Importer dans la base vide :
+   `FIREBASE_PROJET=ldn-restauration-test FIREBASE_COMPTE_SERVICE_FICHIER=~/cles/cible.json node outils/sauvegarde/restauration.mjs importer export.json`
+   Le script compare tout seul et affiche « ✓ base identique à l'export ».
+6. Restaurer les comptes de connexion. Firebase Authentication ne fait pas partie de Firestore :
+   `firebase auth:export comptes.json --project ldn-source-test`, puis `firebase auth:import comptes.json --project ldn-restauration-test`
+   avec les paramètres d'empreinte affichés dans la console (Authentication → Utilisateurs → ⋮ → Paramètres de hachage).
+7. Se connecter avec chaque compte de test et vérifier ses droits.

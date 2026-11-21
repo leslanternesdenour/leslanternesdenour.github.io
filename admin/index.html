@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="fr" data-univers="histoires">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Administration · Les Lanternes de Nour</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../univers/univers.css?v=1">
+<style>
+*{box-sizing:border-box}html,body{margin:0}
+body{min-height:100vh;color:#f4efff;font-family:Nunito,system-ui,sans-serif;padding:24px 16px 40px}
+main{max-width:520px;margin:0 auto;display:grid;gap:18px;position:relative;z-index:1}
+h1{font:800 clamp(24px,6vw,32px) Poppins,system-ui;margin:0;color:#f5b942;text-align:center}
+p{margin:0;color:#c9bfe8;line-height:1.5}
+.carte{background:#2a2166;border-radius:24px;padding:20px;display:grid;gap:12px;box-shadow:0 8px 0 #120d33}
+.carte h2{margin:0;font:800 20px Poppins,system-ui;color:#fff}
+.onglets{display:flex;gap:6px;background:#191345;border-radius:999px;padding:5px}
+.onglets button{flex:1;background:none;box-shadow:none;color:#c9bfe8;font:800 15px Nunito,system-ui;padding:10px 6px;border-radius:999px}
+.onglets button[aria-selected=true]{background:#f5b942;color:#2a1d00}
+label{display:grid;gap:6px;font-weight:800;color:#fff}
+input[type=email],input[type=password]{width:100%;border-radius:14px;border:2px solid #3a2a7d;background:#191345;color:#fff;font:700 17px Nunito,system-ui;padding:12px 14px}
+input:focus{outline:none;border-color:#f5b942}
+.case{display:flex;gap:10px;align-items:flex-start;font-weight:600;color:#e9e2ff;font-size:15px}
+.case input{width:22px;height:22px;flex:none;margin-top:2px;accent-color:#f5b942}
+button{border:0;border-radius:18px;padding:14px 16px;font:900 18px Nunito,system-ui;cursor:pointer;background:#f5b942;color:#2a1d00;box-shadow:0 5px 0 #d9952a}
+button:active{transform:translateY(3px);box-shadow:0 2px 0 #d9952a}
+button:disabled{opacity:.6;cursor:wait}
+button.doux{background:#3a2a7d;color:#fff;box-shadow:0 5px 0 #191345}
+button.danger{background:none;box-shadow:none;color:#ff9fb2;font-size:15px;padding:6px;text-decoration:underline}
+.lien{background:none;box-shadow:none;color:#ffe3a3;font:700 15px Nunito,system-ui;padding:4px;text-decoration:underline;justify-self:start}
+.etat{font-weight:800;color:#8fdcc1;min-height:1.4em}
+.etat.ko{color:#ff9fb2}
+.cache{display:none!important}
+a{color:#ffe3a3}
+.petit{font-size:14px}
+.choix{display:grid;gap:10px}
+input[type=text],select{width:100%;border-radius:14px;border:2px solid #3a2a7d;background:#191345;color:#fff;font:700 17px Nunito,system-ui;padding:12px 14px}
+.badge{display:inline-block;border-radius:999px;padding:3px 10px;font:800 13px Nunito,system-ui;background:#f5b942;color:#2a1d00;vertical-align:middle}
+.badge.froid{background:#9fd8ff;color:#06263d}.badge.sim{background:#ff9fb2;color:#3d0613}
+.enfant{display:flex;align-items:center;gap:10px;background:#191345;border-radius:16px;padding:10px 12px}
+.enfant.actif{outline:3px solid #f5b942}.enfant .nom{flex:1;font-weight:900;color:#fff}.enfant .nom small{display:block;font-weight:600;color:#c9bfe8}
+.enfant button{font-size:15px;padding:8px 12px;box-shadow:0 3px 0 #d9952a}.enfant button.doux{box-shadow:0 3px 0 #120d33}
+.rangee{display:flex;gap:8px;flex-wrap:wrap}.rangee>*{flex:1}
+.bandeau-sim{background:#ff9fb2;color:#3d0613;font-weight:900;text-align:center;border-radius:14px;padding:8px}
+main{max-width:760px}
+.onglets{overflow-x:auto;flex-wrap:nowrap}.onglets button{flex:none;font-size:14px;padding:9px 12px}
+table{width:100%;border-collapse:collapse;font-size:14px}td,th{padding:7px 6px;border-bottom:1px solid #3a2a7d;text-align:left;vertical-align:top}th{color:#f5b942}
+td button{font-size:13px;padding:6px 9px;box-shadow:none;margin:2px}
+.chiffres{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}.chiffres div{background:#191345;border-radius:14px;padding:12px;text-align:center}.chiffres b{display:block;font:900 26px Poppins,system-ui;color:#f5b942}
+.lien-code{word-break:break-all;background:#191345;border-radius:12px;padding:10px;font:700 14px monospace;color:#ffe3a3}
+.tableau{overflow-x:auto}
+</style>
+</head>
+<body>
+<div id="deco" aria-hidden="true"></div>
+<main>
+  <h1>🛠️ Administration</h1>
+  <p class="bandeau-sim cache" id="bandeau-sim">SIMULATION LOCALE — faux comptes, faux paiements (aucun service réel)</p>
+  <section class="carte cache" id="v-refus"><h2>Réservé au compte Créateur</h2><p>Connectez-vous avec le compte Créateur depuis l'<a href="../compte/">Espace famille</a>.</p></section>
+
+  <form class="carte cache" id="v-reauth" novalidate>
+    <h2>Confirmez votre identité</h2>
+    <p>Les modifications demandent une connexion de moins de 15 minutes.</p>
+    <label>Mot de passe<input type="password" id="r-mdp" autocomplete="current-password"></label>
+    <button type="submit">Confirmer</button>
+  </form>
+
+  <div id="v-admin" class="cache" style="display:grid;gap:18px">
+    <div class="onglets" role="tablist" id="onglets">
+      <button role="tab" data-o="resume" aria-selected="true">Vue d'ensemble</button>
+      <button role="tab" data-o="comptes">Comptes</button>
+      <button role="tab" data-o="invitations">Invitations</button>
+      <button role="tab" data-o="acces">Accès offerts</button>
+      <button role="tab" data-o="contenus">Contenus</button>
+      <button role="tab" data-o="journal">Journal</button>
+    </div>
+
+    <section class="carte" data-p="resume"><h2>Vue d'ensemble</h2><div class="chiffres" id="chiffres"></div></section>
+
+    <section class="carte cache" data-p="comptes"><h2>Comptes</h2>
+      <div class="tableau"><table><thead><tr><th>E-mail</th><th>Statut</th><th>Enfants</th><th>Créé</th></tr></thead><tbody id="t-comptes"></tbody></table></div>
+      <button class="lien cache" id="plus-comptes">Comptes suivants</button>
+      <div id="detail" class="choix cache"></div>
+    </section>
+
+    <section class="carte cache" data-p="invitations"><h2>Inviter un proche</h2>
+      <form id="f-inv" class="choix" novalidate>
+        <label>E-mail du proche<input type="email" id="inv-email" autocomplete="off"></label>
+        <div class="rangee">
+          <label>Niveau<select id="inv-niveau"><option value="premium">Premium</option><option value="famille">Famille</option></select></label>
+          <label>Durée<select id="inv-duree"><option value="30">1 mois</option><option value="90">3 mois</option><option value="365">1 an</option><option value="">Sans fin</option></select></label>
+        </div>
+        <label>Note (pour vous)<input type="text" id="inv-libelle" maxlength="60" autocomplete="off"></label>
+        <button type="submit">Créer l'invitation</button>
+      </form>
+      <div id="inv-resultat" class="choix cache">
+        <p><b>Lien à usage unique, valable 14 jours, pour cette adresse seulement.</b> Il ne sera plus affiché ensuite.</p>
+        <div class="lien-code" id="inv-lien"></div>
+        <div class="rangee"><button class="doux" id="inv-copier">Copier</button><a class="lien" id="inv-whatsapp" target="_blank" rel="noopener">Envoyer par WhatsApp</a></div>
+      </div>
+      <h2>Invitations envoyées</h2>
+      <div class="tableau"><table><thead><tr><th>E-mail</th><th>Niveau</th><th>État</th><th></th></tr></thead><tbody id="t-inv"></tbody></table></div>
+      <button class="lien cache" id="plus-inv">Suivantes</button>
+    </section>
+
+    <section class="carte cache" data-p="acces"><h2>Accès offerts</h2>
+      <form id="f-direct" class="choix" novalidate>
+        <p class="petit">Offrir directement à un compte qui existe déjà :</p>
+        <label>E-mail du compte<input type="email" id="d-email" autocomplete="off"></label>
+        <div class="rangee">
+          <label>Niveau<select id="d-niveau"><option value="premium">Premium</option><option value="famille">Famille</option></select></label>
+          <label>Durée<select id="d-duree"><option value="30">1 mois</option><option value="90">3 mois</option><option value="365">1 an</option><option value="">Sans fin</option></select></label>
+        </div>
+        <button type="submit" class="doux">Offrir l'accès</button>
+      </form>
+      <div class="tableau"><table><thead><tr><th>E-mail</th><th>Niveau</th><th>Fin</th><th></th></tr></thead><tbody id="t-acces"></tbody></table></div>
+      <button class="lien cache" id="plus-acces">Suivants</button>
+    </section>
+
+    <section class="carte cache" data-p="contenus"><h2>Contenus</h2>
+      <p class="petit">« Aperçu » = visible par vous seul. Le changement s'applique tout de suite, sans redéploiement.</p>
+      <div class="tableau"><table><tbody id="t-contenus"></tbody></table></div>
+      <h2>Bandeau d'annonce</h2>
+      <form id="f-bandeau" class="choix" novalidate><label>Texte (vide pour retirer)<input type="text" id="bandeau" maxlength="200"></label><button class="doux" type="submit">Enregistrer</button></form>
+    </section>
+
+    <section class="carte cache" data-p="journal"><h2>Journal</h2>
+      <div class="tableau"><table><thead><tr><th>Quand</th><th>Action</th><th>Détails</th></tr></thead><tbody id="t-journal"></tbody></table></div>
+      <button class="lien cache" id="plus-journal">Plus ancien</button>
+    </section>
+  </div>
+  <p class="etat" id="etat" role="status" aria-live="polite"></p>
+  <p style="text-align:center"><a href="../compte/">Espace famille</a> · <a href="../">Retour au site</a></p>
+</main>
+<script type="module">
+import * as C from '../compte/client.js?v=1';
+const $ = id => document.getElementById(id);
+const etat = (t, ko) => { $('etat').textContent = t || ''; $('etat').className = 'etat' + (ko ? ' ko' : ''); };
+const date = t => t ? new Date(t).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
+const el = (tag, txt, attrs = {}) => { const e = document.createElement(tag); if (txt != null) e.textContent = txt; Object.assign(e, attrs); return e; };
+const ligne = (...cells) => { const tr = el('tr'); for (const c of cells) { const td = el('td'); c instanceof Node ? td.appendChild(c) : td.textContent = c ?? ''; tr.appendChild(td); } return tr; };
+const bouton = (txt, f, cls = 'doux') => { const b = el('button', txt, { className: cls }); b.onclick = () => occupe(b, f); return b; };
+const DUREE = v => v === '' ? null : Number(v);
+let enAttente = null;
+// écriture : si le serveur demande une connexion récente, on redemande le mot de passe puis on rejoue l'action
+async function occupe(btn, f) {
+  if (btn) btn.disabled = true;
+  try { await f(); }
+  catch (e) { if (e.raison === 'reconnexion-requise') { enAttente = f; $('v-reauth').classList.remove('cache'); $('r-mdp').focus(); etat(C.messageErreur(e)); } else etat(C.messageErreur(e), true); }
+  finally { if (btn) btn.disabled = false; }
+}
+$('v-reauth').onsubmit = e => { e.preventDefault(); occupe(e.submitter, async () => {
+  await C.ouvrirSession(await C.auth.reauthentifier($('r-mdp').value)); $('r-mdp').value = ''; $('v-reauth').classList.add('cache'); etat('Identité confirmée.');
+  const f = enAttente; enAttente = null; if (f) await f();
+}); };
+
+// ---------- onglets ----------
+const charges = {};
+for (const b of document.querySelectorAll('#onglets button')) b.onclick = () => ouvrirOnglet(b.dataset.o);
+function ouvrirOnglet(o) {
+  document.querySelectorAll('#onglets button').forEach(b => b.setAttribute('aria-selected', b.dataset.o === o));
+  document.querySelectorAll('[data-p]').forEach(p => p.classList.toggle('cache', p.dataset.p !== o));
+  if (!charges[o]) { charges[o] = true; occupe(null, CHARGER[o]); }
+}
+// ---------- pagination commune ----------
+function paginer(chemin, cle, corps, plus, rendu) {
+  let suite = null;
+  const charger = async (debut) => { const r = await C.api(chemin + (!debut && suite ? '?apres=' + encodeURIComponent(suite) : ''));
+    if (debut) corps.replaceChildren(); for (const x of r[cle]) corps.appendChild(rendu(x)); suite = r.suite; plus.classList.toggle('cache', !suite); };
+  plus.onclick = () => occupe(plus, () => charger(false));
+  return () => charger(true);
+}
+const CHARGER = {
+  async resume() { const r = await C.api('/api/admin/resume');
+    $('chiffres').replaceChildren(...[['Familles', r.familles], ['Payants', r.payants], ['Accès offerts actifs', r.accesOffertsActifs], ['Gratuits', r.gratuits],
+      ...Object.entries(r.parFormule).map(([f, n]) => [f.replace('_', ' '), n])].map(([t, n]) => { const d = el('div'); d.append(el('b', String(n)), el('span', t)); return d; })); },
+  comptes: paginer('/api/admin/comptes', 'comptes', $('t-comptes'), $('plus-comptes'), c => {
+    const a = el('button', c.email, { className: 'lien' }); a.onclick = () => occupe(a, () => detail(c.uid));
+    return ligne(a, C.NOMS_STATUT[c.statut] + (c.niveau && c.statut !== 'creator' && c.niveau !== 'gratuit' ? ' · ' + C.NOMS_NIVEAU[c.niveau] : '') + (c.expire ? ' (→ ' + date(c.expire) + ')' : ''), String(c.enfants), date(c.creeLe)); }),
+  invitations: paginer('/api/admin/invitations', 'invitations', $('t-inv'), $('plus-inv'), i => ligne(i.email || '(effacée)', C.NOMS_NIVEAU[i.niveau] + (i.dureeJours ? ' · ' + i.dureeJours + ' j' : ' · sans fin'),
+    { 'en-attente': 'En attente (→ ' + date(i.expireLe) + ')', utilisee: 'Utilisée le ' + date(i.utiliseeLe), expiree: 'Expirée', annulee: 'Annulée' }[i.etat],
+    i.etat === 'en-attente' ? bouton('Annuler', async () => { await C.api('/api/admin/invitations/' + i.id, { methode: 'DELETE' }); await CHARGER.invitations(); }) : '')),
+  acces: paginer('/api/admin/acces', 'acces', $('t-acces'), $('plus-acces'), a => {
+    const actions = el('span');
+    if (a.actif) actions.append(bouton('+1 mois', () => prolonger(a, 30)), bouton('+1 an', () => prolonger(a, 365)), bouton('Sans fin', () => prolonger(a, null)), bouton('Révoquer', async () => {
+      if (!confirm('Révoquer l\'accès de ' + a.email + ' ? Le compte repasse en Gratuit, ses progrès sont gardés.')) return;
+      await C.api('/api/admin/acces/' + a.id + '/revoquer', { methode: 'POST' }); await CHARGER.acces(); etat('Accès révoqué.'); }, 'danger'));
+    else actions.append(bouton('Réactiver 1 mois', () => prolonger(a, 30)));
+    return ligne(a.email || '(effacé)', C.NOMS_NIVEAU[a.niveau], a.revoqueLe ? 'Révoqué' : a.fin ? date(a.fin) : 'Sans fin', actions); }),
+  async contenus() { const r = await C.api('/api/admin/catalogue'); $('bandeau').value = r.bandeau || '';
+    const NIV = { libre: 'Libre (sans compte)', gratuit: 'Gratuit (avec compte)', premium: 'Premium', famille: 'Famille', apercu: 'Aperçu Créateur' };
+    $('t-contenus').replaceChildren(...Object.entries(r.catalogue).flatMap(([g, items]) => [ligne(el('b', g)), ...Object.entries(items).map(([id, n]) => {
+      const s = el('select'); for (const [v, t] of Object.entries(NIV)) s.appendChild(el('option', t, { value: v, selected: v === n }));
+      s.onchange = () => occupe(s, async () => { await C.api('/api/admin/catalogue', { methode: 'POST', corps: { groupe: g, id, niveau: s.value } }); etat(g + ' / ' + id + ' : ' + NIV[s.value]); });
+      return ligne(id, s); })])); },
+  journal: paginer('/api/admin/journal', 'journal', $('t-journal'), $('plus-journal'), j => { const { id, t, action, ...rest } = j;
+    return ligne(new Date(t).toLocaleString('fr-FR'), action, Object.entries(rest).map(([k, v]) => k + ' : ' + (typeof v === 'string' && v.length > 24 ? v.slice(0, 12) + '…' : v)).join(' · ')); })
+};
+async function prolonger(a, jours) {
+  const base = a.actif && a.fin ? a.fin : Date.now();
+  await C.api('/api/admin/acces/' + a.id + '/prolonger', { methode: 'POST', corps: jours === null ? { permanent: true } : { fin: base + jours * 86400000 } });
+  await CHARGER.acces(); etat('Accès mis à jour.');
+}
+async function detail(uid) {
+  const r = await C.api('/api/admin/comptes/' + encodeURIComponent(uid)); const d = $('detail'); d.classList.remove('cache');
+  d.replaceChildren(el('h2', r.email), el('p', 'Créé le ' + date(r.creeLe) + ' · ' + r.totalEnfants + ' profil(s) enfant'),
+    el('p', r.abonnement ? 'Abonnement ' + r.abonnement.formule + ' · ' + r.abonnement.statut + ' · fin de période ' + date(r.abonnement.finPeriode) + (r.abonnement.annulationFinPeriode ? ' (résilié)' : '') : 'Aucun abonnement'),
+    el('p', r.acces.length ? 'Accès offerts : ' + r.acces.map(a => a.niveau + (a.revoqueLe ? ' (révoqué)' : a.fin ? ' → ' + date(a.fin) : ' sans fin')).join(', ') : 'Aucun accès offert'),
+    el('p', 'Profils : ' + (r.enfants.map(e => e.surnom + (e.gele ? ' ❄️' : '')).join(', ') || 'aucun') + (r.suite ? '…' : '')));
+  d.scrollIntoView({ behavior: 'smooth' });
+}
+$('f-inv').onsubmit = e => { e.preventDefault(); const f = async () => {
+  const r = await C.api('/api/admin/invitations', { methode: 'POST', corps: { email: $('inv-email').value.trim(), niveau: $('inv-niveau').value, dureeJours: DUREE($('inv-duree').value), libelle: $('inv-libelle').value } });
+  $('inv-lien').textContent = r.lien; $('inv-resultat').classList.remove('cache');
+  $('inv-whatsapp').href = 'https://wa.me/?text=' + encodeURIComponent('Je t\'offre un accès aux Lanternes de Nour 🏮 Ouvre ce lien (valable 14 jours) avec ton adresse ' + $('inv-email').value.trim() + ' : ' + r.lien);
+  $('inv-email').value = ''; $('inv-libelle').value = ''; await CHARGER.invitations(); etat('Invitation créée.'); };
+  occupe(e.submitter, f); };
+$('inv-copier').onclick = async () => { try { await navigator.clipboard.writeText($('inv-lien').textContent); etat('Lien copié.'); } catch (e) { etat('Copie impossible : sélectionnez le lien à la main.', true); } };
+$('f-direct').onsubmit = e => { e.preventDefault(); occupe(e.submitter, async () => {
+  await C.api('/api/admin/acces', { methode: 'POST', corps: { email: $('d-email').value.trim(), niveau: $('d-niveau').value, dureeJours: DUREE($('d-duree').value) } });
+  $('d-email').value = ''; await CHARGER.acces(); etat('Accès offert.'); }); };
+$('f-bandeau').onsubmit = e => { e.preventDefault(); occupe(e.submitter, async () => { await C.api('/api/admin/bandeau', { methode: 'POST', corps: { texte: $('bandeau').value.trim() || null } }); etat('Bandeau enregistré.'); }); };
+
+// ---------- démarrage ----------
+if (C.simulation()) $('bandeau-sim').classList.remove('cache');
+const D = C.comptesActifs() ? await C.moi() : {};
+if (!D.admin) $('v-refus').classList.remove('cache');
+else { $('v-admin').classList.remove('cache'); ouvrirOnglet('resume'); }
+</script>
+<script src="../univers/univers.js?v=1" defer></script>
+</body>
+</html>

@@ -15,3 +15,7 @@
 // Ces valeurs sont publiques par nature : la sécurité vient des règles Firestore.
 
 export const FIREBASE = null;
+
+// Émulateur LOCAL (outils/emulateur) : toujours false dans le dépôt. Le serveur local de test remplace ce fichier
+// à la volée quand LDN_EMULATEUR=1 ; la version publiée ne peut donc jamais l'activer.
+export const EMULATEUR = false;

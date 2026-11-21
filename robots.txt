@@ -5,6 +5,7 @@ Disallow: /compte/
 Disallow: /transfert/
 Disallow: /univers/
 Disallow: /admin/
+Disallow: /tarifs/
 Disallow: /api/
 Disallow: /outils/
 
