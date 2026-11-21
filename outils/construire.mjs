@@ -24,7 +24,10 @@ let n = 0, octets = 0;
 if (PREPROD) { // page d'écoute des voix (outil interne, non indexée) disponible uniquement en préproduction
   fs.mkdirSync(path.join(SORTIE, 'outils'), { recursive: true }); fs.copyFileSync(path.join(RACINE, 'outils/ecoute-voix.html'), path.join(SORTIE, 'outils/ecoute-voix.html')); n++;
   // la préproduction ne doit jamais être indexée par Google
-  fs.appendFileSync(path.join(SORTIE, '_headers'), '\n/*\n  X-Robots-Tag: noindex, nofollow\n');
+  // ATTENTION : Cloudflare ne garde qu'UN bloc par chemin (le dernier). Le noindex est donc fusionné dans le bloc « /* » existant, jamais ajouté en second bloc.
+  const ent = path.join(SORTIE, '_headers'), src = fs.readFileSync(ent, 'utf8');
+  if (!/^\/\*[ \t]*$/m.test(src)) throw new Error('_headers : bloc « /* » introuvable');
+  fs.writeFileSync(ent, src.replace(/^\/\*[ \t]*\r?\n/m, m => m + '  X-Robots-Tag: noindex, nofollow\n'));
   fs.writeFileSync(path.join(SORTIE, 'robots.txt'), '# Préproduction : rien ne doit être indexé\nUser-agent: *\nDisallow: /\n');
   fs.rmSync(path.join(SORTIE, 'sitemap.xml'), { force: true });
 }
