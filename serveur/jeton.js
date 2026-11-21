@@ -42,6 +42,7 @@ export async function verifierJeton(jeton, { projet, type = 'id', obtenirCle, ma
   if (typeof charge.auth_time !== 'number' || charge.auth_time > t + TOLERANCE_S) throw new JetonInvalide('date-connexion');
   if (typeof charge.sub !== 'string' || !charge.sub || charge.sub.length > 128) throw new JetonInvalide('utilisateur');
   return { uid: charge.sub, email: charge.email || null, emailVerifie: charge.email_verified === true,
+    fournisseur: charge.firebase && typeof charge.firebase.sign_in_provider === 'string' ? charge.firebase.sign_in_provider : null,
     claims: { role: charge.role === 'creator' ? 'creator' : undefined }, authTime: charge.auth_time, charge };
 }
 

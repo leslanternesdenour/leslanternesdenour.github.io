@@ -13,7 +13,7 @@ async function signer(charge, { cle = bonne.privateKey, kid = 'k1', alg = 'RS256
   const sig = Buffer.from(await crypto.subtle.sign('RSASSA-PKCS1-v1_5', cle, new TextEncoder().encode(tete))).toString('base64url');
   return tete + '.' + sig;
 }
-const base = (x = {}) => ({ iss: 'https://securetoken.google.com/' + PROJET, aud: PROJET, sub: 'uid-parent', iat: s - 60, exp: s + 3000, auth_time: s - 120, email: 'p@exemple.fr', email_verified: true, ...x });
+const base = (x = {}) => ({ iss: 'https://securetoken.google.com/' + PROJET, aud: PROJET, firebase: { sign_in_provider: 'password' }, sub: 'uid-parent', iat: s - 60, exp: s + 3000, auth_time: s - 120, email: 'p@exemple.fr', email_verified: true, ...x });
 const obtenirCle = async kid => kid === 'k1' ? bonne.publicKey : null;
 const v = (j, o = {}) => verifierJeton(j, { projet: PROJET, obtenirCle, maintenant: T, ...o });
 const refus = async (j, raison, o) => { await assert.rejects(v(j, o), e => e instanceof JetonInvalide && e.raison === raison, raison); };

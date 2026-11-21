@@ -13,7 +13,9 @@ Les libellés de la console Google peuvent légèrement changer ; si un écran d
 
 ## Étape 2 — Activer E-mail / mot de passe
 Build → **Authentication** → Commencer → onglet « Méthode de connexion » → **E-mail/Mot de passe** → Activer (le lien par e-mail « sans mot de passe » reste **désactivé**) → Enregistrer.
-N'activez aucun autre fournisseur (ni Google, ni téléphone/SMS : le SMS est payant).
+N'activez aucun autre fournisseur : ni **Google**, ni **Apple**, ni téléphone/SMS (le SMS est payant), ni « Anonyme ».
+Le site ne propose que e-mail + mot de passe, et **le serveur refuse tout jeton venant d'un autre fournisseur** (code `fournisseur-non-autorise`, testé) : même un fournisseur activé par erreur ne donnerait aucun accès. Un jour, si une connexion Google est souhaitée, ce sera un développement à part (bouton, CSP, politique de confidentialité), décidé ensemble.
+Si Google ou Apple apparaît déjà « Activé » dans la liste, **désactivez-le** (ouvrez la ligne, interrupteur sur désactivé, Enregistrer).
 
 ## Étape 3 — Réglages de sécurité de l'authentification
 Authentication → **Paramètres** :

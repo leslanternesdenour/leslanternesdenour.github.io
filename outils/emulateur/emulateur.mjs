@@ -35,7 +35,7 @@ export async function creerEmulateur({ mdpCreateur = process.env.LDN_EMUL_MDP_CR
   ajouter('createur@local.test', mdpCreateur, { uid: UID_CREATEUR, verifie: true, role: 'creator' });
   const parUid = uid => [...comptes.entries()].find(([, c]) => c.uid === uid);
   async function jeton(email, c, { authAgo = 0 } = {}) {
-    const s = Math.floor(maintenant() / 1000), tete = b64u({ alg: 'RS256', kid: 'emul' }) + '.' + b64u({ iss: 'https://securetoken.google.com/' + PROJET, aud: PROJET, sub: c.uid, iat: s, exp: s + 3600, auth_time: s - authAgo, email, email_verified: c.verifie, ...(c.role ? { role: c.role } : {}) });
+    const s = Math.floor(maintenant() / 1000), tete = b64u({ alg: 'RS256', kid: 'emul' }) + '.' + b64u({ iss: 'https://securetoken.google.com/' + PROJET, aud: PROJET, firebase: { sign_in_provider: 'password' }, sub: c.uid, iat: s, exp: s + 3600, auth_time: s - authAgo, email, email_verified: c.verifie, ...(c.role ? { role: c.role } : {}) });
     return tete + '.' + Buffer.from(await crypto.webcrypto.subtle.sign('RSASSA-PKCS1-v1_5', cles.privateKey, new TextEncoder().encode(tete))).toString('base64url');
   }
   base.supprimerUtilisateur = async uid => { const e = parUid(uid); if (e) comptes.delete(e[0]); };

@@ -13,8 +13,8 @@ const algo = { name: 'RSASSA-PKCS1-v1_5', modulusLength: 2048, publicExponent: n
 const cles = await crypto.subtle.generateKey(algo, true, ['sign', 'verify']);
 const b64u = o => Buffer.from(JSON.stringify(o)).toString('base64url');
 let maintenant = Date.UTC(2026, 10, 20, 10);
-async function jeton(uid, { email = uid + '@exemple.fr', verifie = true, role, authAgo = 60 } = {}) {
-  const s = Math.floor(maintenant / 1000), tete = b64u({ alg: 'RS256', kid: 'k1' }) + '.' + b64u({ iss: 'https://securetoken.google.com/' + PROJET, aud: PROJET, sub: uid, iat: s - 10, exp: s + 3000, auth_time: s - authAgo, email, email_verified: verifie, ...(role ? { role } : {}) });
+async function jeton(uid, { email = uid + '@exemple.fr', verifie = true, role, authAgo = 60, fournisseur = 'password' } = {}) {
+  const s = Math.floor(maintenant / 1000), tete = b64u({ alg: 'RS256', kid: 'k1' }) + '.' + b64u({ iss: 'https://securetoken.google.com/' + PROJET, aud: PROJET, firebase: { sign_in_provider: fournisseur }, sub: uid, iat: s - 10, exp: s + 3000, auth_time: s - authAgo, email, email_verified: verifie, ...(role ? { role } : {}) });
   return tete + '.' + Buffer.from(await crypto.subtle.sign('RSASSA-PKCS1-v1_5', cles.privateKey, new TextEncoder().encode(tete))).toString('base64url');
 }
 const fichiers = { 'voyage/camp/zone.json': '{"zone":"camp"}', 'maisons/sons/jeu.js': 'export const x=1', 'voyage/village/zone.json': '{}' };
@@ -308,4 +308,18 @@ test('Suppression RGPD et Stripe : aucun lien client conservé, preuve d\'achat 
   d = await instantane(base);
   assert.deepEqual(Object.keys(d).filter(k => k.includes('uid-abo4')), [], 'rien recréé pour le compte supprimé');
   assert.equal(JSON.stringify(Object.values(d)).includes('abo4@exemple.fr'), false);
+});
+
+test('Fournisseurs d\'identité : seule la connexion e-mail + mot de passe ouvre une session (Google, Apple, anonyme, sans fournisseur refusés)', async () => {
+  for (const f of ['google.com', 'apple.com', 'anonymous', 'phone', 'custom', 'github.com']) {
+    const r = await appel('POST', '/api/session', { corps: { idToken: await jeton('uid-idp-' + f, { fournisseur: f }), consentements: CONSENT } });
+    assert.equal(r.s, 403, f); assert.equal(r.j.erreur, 'fournisseur-non-autorise'); assert.equal(r.h.get('Set-Cookie'), null, 'aucune session');
+  }
+  assert.equal(await base.lire('familles', 'uid-idp-google.com'), null, 'aucun compte famille créé');
+  // jeton sans aucune information de fournisseur
+  const s = Math.floor(maintenant / 1000), tete = b64u({ alg: 'RS256', kid: 'k1' }) + '.' + b64u({ iss: 'https://securetoken.google.com/' + PROJET, aud: PROJET, sub: 'uid-sans-fournisseur', iat: s - 10, exp: s + 3000, auth_time: s - 60, email: 'x@exemple.fr', email_verified: true });
+  const sans = tete + '.' + Buffer.from(await crypto.subtle.sign('RSASSA-PKCS1-v1_5', cles.privateKey, new TextEncoder().encode(tete))).toString('base64url');
+  assert.equal((await appel('POST', '/api/session', { corps: { idToken: sans, consentements: CONSENT } })).s, 403);
+  // le parcours normal reste intact
+  assert.equal((await appel('POST', '/api/session', { corps: { idToken: await jeton('uid-idp-ok'), consentements: CONSENT } })).s, 200);
 });

@@ -130,6 +130,8 @@ export async function traiter(req, ctx) {
       if (tropDeTentatives('session:' + ip, 30, 10 * 60000, ctx.maintenant)) return erreur(429, 'trop-de-tentatives');
       const b = await corpsJson(req, 10000);
       let v; try { v = await ctx.auth.verifierIdToken(b.idToken, ctx.maintenant); } catch (e) { return erreur(401, 'jeton-invalide'); }
+      // Seule la connexion e-mail + mot de passe est prise en charge. Un jeton Google, Apple, anonyme… est refusé, même si ce fournisseur était activé par erreur dans la console Firebase.
+      if (v.fournisseur !== 'password') return erreur(403, 'fournisseur-non-autorise');
       let famille = await ctx.base.lire('familles', v.uid);
       if (!famille) {
         const c = b.consentements || {};

@@ -20,7 +20,7 @@ const cles = await crypto.subtle.generateKey(algo, true, ['sign', 'verify']);
 const b64u = o => Buffer.from(JSON.stringify(o)).toString('base64url');
 let maintenant = Date.UTC(2026, 10, 20, 10);
 async function jeton(uid, { email = uid + '@exemple.fr', verifie = true, role, authAgo = 60 } = {}) {
-  const s = Math.floor(maintenant / 1000), tete = b64u({ alg: 'RS256', kid: 'k1' }) + '.' + b64u({ iss: 'https://securetoken.google.com/' + PROJET, aud: PROJET, sub: uid, iat: s - 10, exp: s + 3000, auth_time: s - authAgo, email, email_verified: verifie, ...(role ? { role } : {}) });
+  const s = Math.floor(maintenant / 1000), tete = b64u({ alg: 'RS256', kid: 'k1' }) + '.' + b64u({ iss: 'https://securetoken.google.com/' + PROJET, aud: PROJET, firebase: { sign_in_provider: 'password' }, sub: uid, iat: s - 10, exp: s + 3000, auth_time: s - authAgo, email, email_verified: verifie, ...(role ? { role } : {}) });
   return tete + '.' + Buffer.from(await crypto.subtle.sign('RSASSA-PKCS1-v1_5', cles.privateKey, new TextEncoder().encode(tete))).toString('base64url');
 }
 const fichiers = { 'voyage/camp/contenu.json': JSON.stringify({ format: 'ldn-pack-voyage-1', zone: 'camp', points: { camp: { texte: 'SENTINELLE-TEXTE-CAMP', decouverte: 'SENTINELLE-DEC' } }, lieu: 'SENTINELLE-LIEU', spots: {}, phrases: [['NOUR-VOIX-DEC-007', 'SENTINELLE-TEXTE-CAMP', 'exact']], voix: { 'NOUR-VOIX-DEC-007': ['voyage/camp/voix/v1.mp3'] } }), 'voyage/camp/voix/v1.mp3': 'ID3-synthetique', 'voyage/village/contenu.json': '{}',
