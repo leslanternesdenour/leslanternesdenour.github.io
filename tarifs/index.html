@@ -45,6 +45,13 @@ input[type=text],select{width:100%;border-radius:14px;border:2px solid #3a2a7d;b
 .rangee{display:flex;gap:8px;flex-wrap:wrap}.rangee>*{flex:1}
 .bandeau-sim{background:#ff9fb2;color:#3d0613;font-weight:900;text-align:center;border-radius:14px;padding:8px}
 .formule{border:3px solid transparent}.formule.choisie{border-color:#f5b942}.prix{font:900 26px Poppins,system-ui;color:#f5b942}
+.options{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:10px}
+.option{background:#1b1348;border:2px solid #4a3a99;border-radius:20px;padding:16px 14px;display:flex;flex-direction:column;gap:8px;text-align:center}
+.option button{margin-top:auto}
+.option h3{margin:0;font:800 16px Nunito,system-ui;color:#c9bfe8}
+.option .prix-o{font:900 34px Poppins,system-ui;color:#f5b942;line-height:1.1;margin:0}.option .prix-o small{font:800 17px Nunito,system-ui;color:#ffe3a3}
+.option .detail{margin:0;font-size:14px;color:#e4dcff}
+.eco{justify-self:center;background:#8fe0c0;color:#073b27;border-radius:999px;padding:3px 10px;font:900 13px Nunito,system-ui}
 ul{margin:0;padding-left:20px;color:#e9e2ff;line-height:1.6}
 </style>
 </head>
@@ -61,9 +68,12 @@ ul{margin:0;padding-left:20px;color:#e9e2ff;line-height:1.6}
     <ul><li>Les ablutions et la prière, avec leurs diplômes à imprimer</li><li>Le calendrier du Ramadan 2027</li><li>Le village, le souk, l'oasis et la mission « Les objets perdus de Nour »</li><li>1 profil enfant, progression sur l'appareil</li></ul>
   </section>
   <section class="carte formule" data-formule="premium_annuel">
-    <h2>Premium</h2><p class="prix">39,99 € / an <span class="petit">ou 4,99 € / mois</span></p>
+    <h2>Premium</h2>
     <ul><li>Tout le Gratuit</li><li>Tout le Grand Voyage : les zones avancées et leurs missions</li><li>Les nouvelles maisons, au fur et à mesure de leur sortie</li><li>1 profil enfant</li></ul>
-    <div class="rangee"><button class="doux choisir" data-formule="premium_annuel">Choisir l'année</button><button class="doux choisir" data-formule="premium_mensuel">Choisir le mois</button></div>
+    <div class="options">
+      <div class="option"><h3>Au mois</h3><p class="prix-o">4,99 € <small>/ mois</small></p><p class="detail">Résiliable à tout moment</p><button class="choisir" data-formule="premium_mensuel">Choisir le mois</button></div>
+      <div class="option"><h3>À l'année</h3><p class="prix-o">39,99 € <small>/ an</small></p><p class="detail">soit 3,33 € par mois</p><span class="eco">33 % moins cher que 12 mois à 4,99 €</span><button class="choisir" data-formule="premium_annuel">Choisir l'année</button></div>
+    </div>
   </section>
   <section class="carte formule" data-formule="famille_annuel">
     <h2>Famille</h2><p class="prix">59,99 € / an</p>
