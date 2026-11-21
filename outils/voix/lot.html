@@ -2,30 +2,47 @@
 <html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex"><title>Écoute d'un lot de voix · outil interne</title>
 <style>:root{color-scheme:dark}body{font:16px Nunito,system-ui,sans-serif;background:#191345;color:#f4efff;margin:0;padding:16px;max-width:800px;margin-inline:auto}
-h1{font-size:20px}.n{color:#c9bff0;font-size:14px}.t{border:1px solid #3a2a7d;border-radius:12px;padding:10px;margin:10px 0}.t.ok{border-color:#3fbf7f}.t.ko{border-color:#e5605a}
+h1{font-size:20px}.n{color:#c9bff0;font-size:14px}.t{border:1px solid #3a2a7d;border-radius:12px;padding:10px;margin:10px 0}.t.ok{border-color:#3fbf7f}.t.ko{border-color:#e5605a}.t.cur{outline:3px solid #e8b64c;outline-offset:2px}
 .k{font-weight:800}.tx{margin:6px 0;line-height:1.4}.l{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0}
 button{font:inherit;padding:8px 12px;border-radius:10px;border:1px solid #6a55c9;background:#2b1f69;color:#fff;cursor:pointer;min-height:44px}
 button.on{background:#3fbf7f;color:#102;border-color:#3fbf7f}button.ko.on{background:#e5605a;border-color:#e5605a;color:#fff}
-.bar{position:sticky;top:0;background:#191345;padding:8px 0;border-bottom:1px solid #3a2a7d}audio{width:100%}</style></head><body>
+.bar{position:sticky;top:0;background:#191345;padding:8px 0;border-bottom:1px solid #3a2a7d;z-index:2;display:flex;flex-wrap:wrap;gap:8px;align-items:center}audio{width:100%}
+kbd{background:#2b1f69;border:1px solid #6a55c9;border-radius:5px;padding:0 6px;font-size:13px}label{font-size:14px}</style></head><body>
 <h1 id="titre">Écoute d'un lot</h1>
-<p class="n">Voix de la narratrice. Pour chaque phrase : écoute, vérifie que ça dit <b>exactement</b> le texte, que la prononciation est juste (surtout les mots arabes), puis <b>✓ je valide</b> ou <b>✗ je refuse</b> avec une remarque. Rien n'est branché dans les jeux avant ton accord.</p>
-<div class="bar"><span id="cpt" class="n"></span> <button id="copie">Copier le résultat</button></div>
+<p class="n">Écoute chaque phrase : elle doit dire <b>exactement</b> le texte, avec une prononciation juste (surtout les mots arabes). Rien n'est branché dans les jeux avant ton accord.</p>
+<p class="n"><b>Raccourcis :</b> <kbd>Espace</kbd> écouter / pause · <kbd>V</kbd> valider et passer à la suivante · <kbd>X</kbd> refuser et passer à la suivante · <kbd>↓</kbd> / <kbd>↑</kbd> suivante / précédente.</p>
+<div class="bar"><span id="cpt" class="n"></span>
+ <label><input type="checkbox" id="auto" checked> lecture auto de la suivante</label>
+ <button id="tout">✓ Tout valider (non jugées)</button> <button id="copie">Copier le résultat</button></div>
 <div id="liste"></div>
 <textarea id="texte" rows="8" style="display:none;width:100%;box-sizing:border-box;background:#120e33;color:#fff;border:1px solid #6a55c9;border-radius:8px;padding:8px;font:14px monospace" readonly></textarea>
 <script>
 const N=new URLSearchParams(location.search).get('n')||'1',CLE='lot'+N;let ST={};try{ST=JSON.parse(localStorage.getItem(CLE)||'{}')}catch(e){}
-const sauve=()=>{try{localStorage.setItem(CLE,JSON.stringify(ST))}catch(e){}};let L=[];
+const sauve=()=>{try{localStorage.setItem(CLE,JSON.stringify(ST))}catch(e){}};let L=[],cur=0;
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+const audios=()=>[...document.querySelectorAll('#liste audio')];
+function jouer(i){const a=audios();a.forEach((x,j)=>{if(j!==i)x.pause()});if(a[i]){a[i].currentTime=0;a[i].play().catch(()=>{})}}
+function aller(i,lire){cur=Math.max(0,Math.min(L.length-1,i));dessiner();const c=document.querySelectorAll('.t')[cur];if(c)c.scrollIntoView({block:'center',behavior:'smooth'});if(lire&&document.getElementById('auto').checked)jouer(cur)}
+function verdict(v){const x=L[cur];if(!x)return;ST[x.cle]={...ST[x.cle],v};sauve();aller(cur+1,true)}
 function dessiner(){const Z=document.getElementById('liste');Z.innerHTML='';let ok=0,ko=0;
- for(const x of L){const e=ST[x.cle]||{};if(e.v==='ok')ok++;if(e.v==='ko')ko++;const d=document.createElement('div');d.className='t '+(e.v||'');
-  d.innerHTML=`<div class="k">${esc(x.cle)}</div><div class="tx"><b>Texte du jeu :</b> ${esc(x.texte)}</div>${x.a_tester?`<div class="tx" style="color:#e8b64c">⚠ Contient des termes arabes <b>pas encore écoutés</b> : ${esc(x.a_tester)}. Écoute-les avec une attention particulière.</div>`:''}${x.texte!==x.texte_voix?`<div class="tx n"><b>Envoyé à la voix :</b> <span dir="auto">${esc(x.texte_voix)}</span></div>`:''}<audio controls preload="none" src="lots/${esc(x.fichier)}"></audio>
+ L.forEach((x,i)=>{const e=ST[x.cle]||{};if(e.v==='ok')ok++;if(e.v==='ko')ko++;const d=document.createElement('div');d.className='t '+(e.v||'')+(i===cur?' cur':'');
+  d.innerHTML=`<div class="k">${i+1}/${L.length} · ${esc(x.cle)}</div><div class="tx"><b>Texte du jeu :</b> ${esc(x.texte)}</div>${x.a_tester?`<div class="tx" style="color:#e8b64c">⚠ Contient des termes arabes <b>pas encore écoutés</b> : ${esc(x.a_tester)}. Écoute-les avec une attention particulière.</div>`:''}${x.texte!==x.texte_voix?`<div class="tx n"><b>Envoyé à la voix :</b> <span dir="auto">${esc(x.texte_voix)}</span></div>`:''}<audio controls preload="none" src="lots/${esc(x.fichier)}"></audio>
   <div class="l"><button data-r="ok" class="${e.v==='ok'?'on':''}">✓ je valide</button><button data-r="ko" class="ko ${e.v==='ko'?'on':''}">✗ je refuse</button></div>
   <input type="text" placeholder="Remarque (mot mal prononcé, phrase coupée…)" style="width:100%;box-sizing:border-box;padding:8px;border-radius:8px;border:1px solid #6a55c9;background:#120e33;color:#fff;font:inherit" value="${esc(e.c||'')}">`;
-  d.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{ST[x.cle]={...ST[x.cle],v:b.dataset.r};sauve();dessiner()});
-  d.querySelector('input').onchange=ev=>{ST[x.cle]={...ST[x.cle],c:ev.target.value};sauve()};Z.appendChild(d)}
+  d.addEventListener('click',()=>{if(cur!==i){cur=i;document.querySelectorAll('.t').forEach((c,j)=>c.classList.toggle('cur',j===i))}});
+  d.querySelectorAll('[data-r]').forEach(b=>b.onclick=ev=>{ev.stopPropagation();cur=i;verdict(b.dataset.r)});
+  d.querySelector('input').onchange=ev=>{ST[x.cle]={...ST[x.cle],c:ev.target.value};sauve()};
+  d.querySelector('audio').addEventListener('play',ev=>{cur=i;audios().forEach((y,j)=>{if(j!==i)y.pause()});document.querySelectorAll('.t').forEach((c,j)=>c.classList.toggle('cur',j===i))});Z.appendChild(d)});
  document.getElementById('cpt').textContent=ok+' validées · '+ko+' refusées · '+(L.length-ok-ko)+' à juger'}
+document.addEventListener('keydown',ev=>{if(ev.target.tagName==='INPUT'&&ev.target.type==='text'||ev.ctrlKey||ev.metaKey||ev.altKey)return;const k=ev.key.toLowerCase();
+ if(k===' '||k==='enter'&&ev.target.tagName!=='BUTTON'){ev.preventDefault();const a=audios()[cur];if(a){if(a.paused){jouer(cur)}else a.pause()}}
+ else if(k==='v'){ev.preventDefault();verdict('ok')}else if(k==='x'){ev.preventDefault();verdict('ko')}
+ else if(k==='arrowdown'||k==='j'){ev.preventDefault();aller(cur+1,true)}else if(k==='arrowup'||k==='k'){ev.preventDefault();aller(cur-1,true)}});
+document.getElementById('tout').onclick=()=>{const nj=L.filter(x=>!(ST[x.cle]||{}).v);if(!nj.length){alert('Toutes les phrases sont déjà jugées.');return}
+ if(!confirm('Valider les '+nj.length+' phrases non jugées sans les écouter une par une ?\n(Les phrases déjà refusées restent refusées.)'))return;
+ nj.forEach(x=>{ST[x.cle]={...ST[x.cle],v:'ok'}});sauve();dessiner()};
 document.getElementById('copie').onclick=async()=>{let s='RÉSULTAT LOT '+N+' (voix narratrice)\n';for(const x of L){const e=ST[x.cle]||{};s+=x.cle+' : '+(e.v==='ok'?'VALIDE':e.v==='ko'?'REFUSE':'non jugé')+(e.c?' — '+e.c:'')+'\n'}
  const z=document.getElementById('texte');z.style.display='block';z.value=s;z.select();try{await navigator.clipboard.writeText(s);document.getElementById('copie').textContent='Copié ✓ — colle-le dans le chat'}catch(e){document.getElementById('copie').textContent='Sélectionné : copie-le à la main'}};
 document.getElementById('titre').textContent='Écoute du lot '+N;
-fetch('lots/lot'+N+'.json').then(r=>r.json()).then(j=>{L=j;dessiner()});
+fetch('lots/lot'+N+'.json').then(r=>r.json()).then(j=>{L=j;const i=j.findIndex(x=>!(ST[x.cle]||{}).v);cur=i<0?0:i;dessiner()});
 </script></body></html>
