@@ -15,36 +15,36 @@ button.on{background:#e8b64c;color:#191345;border-color:#e8b64c}
 .btns{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
 input[type=text]{width:100%;box-sizing:border-box;padding:8px;border-radius:8px;border:1px solid #6a55c9;background:#120e33;color:#fff;font:inherit}
 </style></head><body>
-<h1>Validation des voix (Ablutions · Prière)</h1>
-<p class="n">Pour chaque phrase : écoute la <b>nouvelle voix</b> (ElevenLabs, un fichier par phrase), compare avec l'<b>ancienne</b>, puis valide. Rien n'est branché dans les jeux tant que tu n'as pas validé. Tes choix sont gardés sur cet appareil ; « Copier le résultat » me les envoie.</p>
+<h1>Validation des voix (Ablutions · Prière · Calendrier)</h1>
+<p class="n">Pour chaque phrase : écoute la <b>nouvelle voix</b> (ElevenLabs, un fichier par phrase), compare avec l'<b>ancienne</b>, puis valide. Rien n'est branché dans les jeux tant que tu n'as pas validé. Calendrier : il n'y a pas encore de nouvelle voix, tu écoutes la voix actuelle et tu indiques ce qui est à refaire. Tes choix sont gardés sur cet appareil ; « Copier le résultat » me les envoie.</p>
 <div class="bar">
- <select id="jeu"><option value="ablutions">Ablutions</option><option value="priere">Prière</option></select>
+ <select id="jeu"><option value="ablutions">Ablutions</option><option value="priere">Prière</option><option value="calendrier">Calendrier Ramadan</option></select>
  <select id="filtre"><option value="tout">Toutes</option><option value="prio">À écouter en priorité</option><option value="att">Pas encore jugées</option><option value="ko">Refusées / doutes</option></select>
  <span id="cpt" class="n"></span><button id="copie">Copier le résultat</button><button id="stop">⏹ Stop</button>
 </div>
 <div id="liste"></div>
 <script>
-const PRIO={ablutions:['q2_bras'],priere:['g4ok','d_gh']};
+const PRIO={ablutions:['q2_bras'],priere:['g4ok','d_gh'],calendrier:[]};
 const A=new Audio();let tm=0;
 const stop=()=>{clearTimeout(tm);A.pause()};
 function jouer(src,d,f){stop();A.src=src;A.onloadedmetadata=()=>{A.currentTime=d||0;A.play();if(f)tm=setTimeout(()=>A.pause(),(f-(d||0))*1000+120)};A.load()}
 let ST={};try{ST=JSON.parse(localStorage.getItem('validation-voix')||'{}')}catch(e){}
 const sauve=()=>{try{localStorage.setItem('validation-voix',JSON.stringify(ST))}catch(e){}};
 let D=null;
-async function charger(){const [tx,...r]=await Promise.all([fetch('textes-ecoute.json').then(r=>r.json()),...['ablutions','priere'].flatMap(p=>[fetch('../../'+p+'/voix/voix-catalogue.json').then(r=>r.json()),fetch('../../'+p+'/voix/voix-ancienne.json').then(r=>r.json())])]);
- D={ablutions:{tx:tx.ablutions,nv:r[0],an:r[1],va:tx.variable.ablutions},priere:{tx:tx.priere,nv:r[2],an:r[3],va:tx.variable.priere}};dessiner()}
+async function charger(){const [tx,cal,...r]=await Promise.all([fetch('textes-ecoute.json').then(r=>r.json()),fetch('../../calendrier/voix/voix.json').then(r=>r.json()),...['ablutions','priere'].flatMap(p=>[fetch('../../'+p+'/voix/voix-catalogue.json').then(r=>r.json()),fetch('../../'+p+'/voix/voix-ancienne.json').then(r=>r.json())])]);
+ D={ablutions:{tx:tx.ablutions,nv:r[0],an:r[1],va:tx.variable.ablutions},priere:{tx:tx.priere,nv:r[2],an:r[3],va:tx.variable.priere},calendrier:{tx:tx.calendrier,nv:null,an:cal,va:[],inc:tx.incertain}};dessiner()}
 function dessiner(){const p=jeu.value,d=D[p],f=filtre.value,L=liste;L.innerHTML='';let n=0,ok=0,ko=0;
- for(const k of Object.keys(d.nv)){const e=ST[p+'/'+k]||{};n++;if(e.v==='ok')ok++;if(e.v==='ko'||e.v==='dt')ko++;
+ const cal=!d.nv;for(const k of Object.keys(cal?d.an:d.nv)){const e=ST[p+'/'+k]||{};n++;if(e.v==='ok')ok++;if(e.v==='ko'||e.v==='dt')ko++;
   const pr=PRIO[p].includes(k)||(p==='priere'&&k.startsWith('d_'));
   if(f==='prio'&&!pr)continue;if(f==='att'&&e.v)continue;if(f==='ko'&&!(e.v==='ko'||e.v==='dt'))continue;
-  const nv=d.nv[k],an=d.an[k],txt=d.tx[k];
+  const nv=cal?null:d.nv[k],an=d.an[k],txt=d.tx[k];
   const row=document.createElement('div');row.className='row '+(e.v||'');
-  row.innerHTML=`<div><span class="k">${k}</span>${pr?'<span class="pr">à écouter en priorité</span>':''} <span class="n">${nv[3]||''}</span></div>
-  <div class="t ${txt?'':'vide'}">${txt?txt.replace(/</g,'&lt;'):'(texte non disponible)'}</div>${d.va.includes(k)?'<div class="n">⚠ Le jeu dit plusieurs variantes avec ce seul clip : écoute si la nouvelle voix dit bien l\'une d\'elles.</div>':''}
-  <div class="btns"><button data-a="nv">▶ Nouvelle voix</button><button data-a="an">▶ Ancienne voix</button></div>
-  <div class="btns"><button data-v="ok" class="${e.v==='ok'?'on':''}">✓ Je valide</button><button data-v="dt" class="${e.v==='dt'?'on':''}">? Doute</button><button data-v="ko" class="${e.v==='ko'?'on':''}">✗ Je refuse</button></div>
+  row.innerHTML=`<div><span class="k">${k}</span>${pr?'<span class="pr">à écouter en priorité</span>':''} <span class="n">${nv?nv[3]||'':'ancienne voix (pas de nouvelle voix)'}</span></div>
+  <div class="t ${txt?'':'vide'}">${txt?txt.replace(/</g,'&lt;'):'(texte du clip non retrouvé dans le code du jeu : note ce que tu entends)'}</div>${cal&&txt&&d.inc.includes(k)?'<div class="n">⚠ Texte reconstitué depuis l\'écran du jeu (les … = le prénom) : vérifie qu\'il correspond à ce que tu entends.</div>':''}${d.va.includes(k)?'<div class="n">⚠ Le jeu dit plusieurs variantes avec ce seul clip : écoute si la nouvelle voix dit bien l\'une d\'elles.</div>':''}
+  <div class="btns">${cal?'':'<button data-a="nv">▶ Nouvelle voix</button>'}<button data-a="an">▶ ${cal?'Voix actuelle':'Ancienne voix'}</button></div>
+  <div class="btns"><button data-v="ok" class="${e.v==='ok'?'on':''}">✓ ${cal?'Je garde':'Je valide'}</button><button data-v="dt" class="${e.v==='dt'?'on':''}">? Doute</button><button data-v="ko" class="${e.v==='ko'?'on':''}">✗ ${cal?'À refaire':'Je refuse'}</button></div>
   <input type="text" placeholder="Remarque (ex. mot mal prononcé, phrase coupée, mauvaise phrase…)" value="${(e.c||'').replace(/"/g,'&quot;')}">`;
-  row.querySelector('[data-a=nv]').onclick=()=>jouer(new URL(nv[0],location.href.replace(/outils\/voix\/.*/,p+'/voix/')).href,nv[1],nv[2]);
+  if(nv)row.querySelector('[data-a=nv]').onclick=()=>jouer(new URL(nv[0],location.href.replace(/outils\/voix\/.*/,p+'/voix/')).href,nv[1],nv[2]);
   const ba=row.querySelector('[data-a=an]');if(an)ba.onclick=()=>jouer(new URL(an[0],location.href.replace(/outils\/voix\/.*/,p+'/voix/')).href,an[1],an[2]);else{ba.disabled=true;ba.textContent='— pas d\'ancienne'}
   row.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{ST[p+'/'+k]={...ST[p+'/'+k],v:b.dataset.v};sauve();dessiner()});
   row.querySelector('input').onchange=ev=>{ST[p+'/'+k]={...ST[p+'/'+k],c:ev.target.value};sauve()};

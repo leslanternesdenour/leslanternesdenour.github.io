@@ -50,5 +50,28 @@ Object.assign(p,{
  j3_fin:'Bravo ! Tu as fait une prière de 2 rak‘at dans le bon ordre.',
 });
 const variable={ablutions:['g1ok'],priere:['g1ok','g4ok','g4ko']};
-writeFileSync(new URL('./textes-ecoute.json',import.meta.url),JSON.stringify({ablutions:a,priere:p,variable},null,1));
+// ---- Calendrier Ramadan : textes dérivés de calendrier/data.js et calendrier/app.js (anciennes voix uniquement, aucune nouvelle voix n'existe) ----
+globalThis.window={};await import('../../calendrier/data.js');
+const D=window.D, c={}, incertain=[];
+for(const m of D.M){c['ms'+m[0]]=m[2]+'. '+m[3];c['mb'+m[0]]=m[2]+'. '+m[4];}
+const S=D.S[0];c.msstar=S[2]+'. '+S[3];c.mbstar=S[2]+'. '+S[4];
+['Bravo !',"Machâ'Allah !",'Ta lanterne brille !','Super, continue !','Bârak Allâhou fîk !'].forEach((t,i)=>c['cheer'+i]=t);
+Object.assign(c,{
+ l10:"Déjà 10 lanternes allumées, … ! Machâ'Allah !",l20:'20 lanternes ! Plus que 10, tu es presque arrivé(e) !',l29:"Plus qu'une lanterne avant ton diplôme !",
+ fin:"Félicitations … ! Tu as allumé tes 30 lanternes pendant le Ramadan. Tu es une vraie lanterne de lumière !",
+ debut:"Ramadan moubârak … ! Allume ta première lanterne ce soir.",
+ guide:"Allume ta lanterne, c'est le calendrier du Ramadan des enfants de 3 à 10 ans : une petite mission chaque soir, pendant tout le mois béni.",
+ guide2:"Comment ça marche : Présente-toi. Prénom, âge, garçon ou fille : les missions s'adaptent toutes seules (3-5 ans ou 6-10 ans). Chaque soir du Ramadan : touche la lanterne du jour et lis la mission avec tes parents. Mission réussie ? Appuie sur « J'ai réussi, j'allume ! » et regarde ta lanterne briller. Joue et regarde : devinettes, questions-réponses, memory et histoires des prophètes en vidéo. À la 30e lanterne : une grande fête et ton diplôme de lumière à imprimer !",
+ guide3:"Pourquoi c'est bien : vivre le Ramadan à sa hauteur, les enfants n'ont pas besoin de jeûner pour participer, chaque bonne action compte. Prendre de bonnes habitudes : dire Bismillâh, sourire, aider, partager, pardonner. Apprendre l'islam avec des sources vérifiées (Coran et hadiths authentiques). Découvrir des mots en arabe avec leur traduction en français. Un moment en famille chaque soir, sans écran trop long et sans rien acheter. Être fier de soi en voyant ses lanternes s'allumer jour après jour.",
+ guide4:"Conseil aux parents : 10 minutes par soir suffisent. On encourage, on ne gronde pas : une mission oubliée se fait le lendemain. Les petits ne sont jamais obligés de jeûner.",
+});
+incertain.push('l10','l20','l29','fin','debut','guide','guide2','guide3','guide4');
+const jeux={dp:D.J.dev.s,dg:D.J.dev.b,qp:D.J.qr.s,qg:D.J.qr.b};
+for(const [pre,L] of Object.entries(jeux))L.forEach((x,i)=>{c[pre+i+'q']=x.q;c[pre+i+'a']=x.a;});
+for(const w of ['fanous','hilal','masjid','quran','tamr','sajjada','kaaba','misbaha']){}
+const MEMW=await import('node:fs').then(f=>f.readFileSync(new URL('../../calendrier/app.js',import.meta.url),'utf8').match(/const MEM=(\[.*?\]);/s));
+if(MEMW){try{for(const m of JSON.parse(MEMW[1]))c['w_'+m.k]=m.fr+' ('+m.tr+')';}catch(e){}}
+Object.keys(c).filter(k=>k.startsWith('w_')).forEach(k=>incertain.push(k));
+const calendrier=c;
+writeFileSync(new URL('./textes-ecoute.json',import.meta.url),JSON.stringify({ablutions:a,priere:p,calendrier,incertain,variable},null,1));
 console.log('ablutions',Object.keys(a).length,'priere',Object.keys(p).length);
