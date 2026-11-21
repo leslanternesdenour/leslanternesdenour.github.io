@@ -4,6 +4,8 @@
 import fs from 'fs'; import path from 'path'; import { fileURLToPath } from 'url';
 const RACINE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SORTIE = path.join(RACINE, 'dist');
+// Garde-fou : sur Cloudflare Pages (CF_PAGES_BRANCH défini), seule la branche « preproduction » peut être construite. Toute autre branche, dont « main », fait échouer le build.
+if (process.env.CF_PAGES_BRANCH && process.env.CF_PAGES_BRANCH !== 'preproduction') { console.error(`Build refusé : la branche « ${process.env.CF_PAGES_BRANCH} » ne peut pas être publiée (seule « preproduction » l'est).`); process.exit(1); }
 const PREPROD = process.env.LDN_PREPROD === '1' || (process.env.CF_PAGES_BRANCH && process.env.CF_PAGES_BRANCH !== 'main');
 // jamais publiés : outillage, fonctions serveur (Cloudflare les prend à part), configuration, documents de travail
 const EXCLUS = new Set(['.git', '.github', 'dist', 'node_modules', 'functions', 'serveur', 'outils', 'wrangler.toml', 'package.json', 'package-lock.json',

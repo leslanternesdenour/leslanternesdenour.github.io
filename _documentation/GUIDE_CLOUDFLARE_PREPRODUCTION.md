@@ -31,6 +31,12 @@ Coût : 0 €. Aucune carte bancaire n'est nécessaire pour l'offre gratuite.
 5. Paramètres du projet → **Builds** → *Branches de prévisualisation* : choisissez **Aucune** (aucune autre branche,
    et surtout pas `main`, n'est publiée automatiquement).
 
+## Garde-fous contre toute publication de `main`
+- Branche de production = `preproduction` et prévisualisations = **Aucune** : Cloudflare ne construit aucune autre branche.
+- `main` ne contient pas `outils/construire.mjs`, `functions/`, `wrangler.toml` ni `_headers` : un build lancé depuis `main` échouerait.
+- En plus, `construire.mjs` refuse toute branche autre que `preproduction` (message « Build refusé », aucun `dist/`). Testé : `outils/tests/garde-branche.test.mjs`.
+- Le domaine `leslanternesdenour.fr` n'est **pas** ajouté à Cloudflare : aucun DNS n'est touché.
+
 ## 3. Ce que je vérifie ensuite
 - `https://…pages.dev/api/sante` répond `{"ok":true,…}` (fonctions serveur actives).
 - En-têtes de sécurité et `X-Robots-Tag: noindex` présents.
