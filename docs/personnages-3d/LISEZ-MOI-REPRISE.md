@@ -79,3 +79,18 @@ Lancer un test : `node --test personnages3d/logique.test.js` (avec le garde acti
 
 ## 7. Ce qui reste uniquement sur l'ordinateur du client (pas sur GitHub)
 Espace de travail 3D hors dépôt (`Lanternes-de-Nour-3d`, ≈ 1,2 Go dont Blender portable) : fichiers Blender définitifs (`fille.blend`, `garcon.blend` et N1), GLB N0, planches, rapports détaillés, scripts de la chaîne (génération, simulation de tissu, export, tests, extraction des poses), rendus des 26 postures des Ablutions ; **sauvegarde complète du site** (copie + `.bundle`) ; mémoire de projet de l'assistant. Sans eux on peut intégrer les N1 dans la Prière, mais **le lot de modèle des Ablutions (nouvelles formes de tissu) exige cet espace de travail et Blender**.
+
+---
+
+## DÉCISION DU 21/11/2026 — on garde les anciens personnages
+
+Après essai visuel (Prière : prosternation vue de dos ; Ablutions : assis sur le tabouret vu de dos),
+les nouveaux personnages N1 (garçon et fille) montrent une robe déchirée laissant voir la peau au bas du dos.
+Les essais (masquage de chaque maillage, polygonOffset) montrent que les trous sont dans la géométrie du
+maillage `robe` (cible morph « prosterne ») : ce n'est pas un défaut de code, il faudrait corriger le modèle dans Blender.
+
+**Décision du client : « on laisse tomber, on garde l'ancien, les 2 sont mal faits ».**
+
+- Les deux jeux restent sur `PAR_DEFAUT = 'ancien'` : aucun joueur ne voit les nouveaux modèles.
+- Le code (`personnages3d/`, adaptateur, `?perso=nouveau`) et les fichiers .glb sont CONSERVÉS (aucune suppression), désactivés par défaut, au cas où une reprise serait décidée plus tard.
+- Ne pas passer `PAR_DEFAUT` à `'nouveau'` sans nouveau modèle corrigé et validation explicite du client.
