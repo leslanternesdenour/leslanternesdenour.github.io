@@ -12,6 +12,7 @@ etape "Script local du rôle Créateur" bash -c 'set -o pipefail; node --test ou
 etape "Firestore REST (requêtes, conversions, compte de service)" bash -c 'set -o pipefail; node --test outils/tests/firestore.test.mjs 2>&1 | grep -E "^# (pass|fail)" | tr "\n" " "; echo; node --test outils/tests/firestore.test.mjs >/dev/null 2>&1'
 etape "Restauration de la base des comptes (export → age → import → API)" bash -c 'set -o pipefail; node --test outils/tests/restauration.test.mjs 2>&1 | grep -E "^# (pass|fail)" | tr "\n" " "; echo; node --test outils/tests/restauration.test.mjs >/dev/null 2>&1'
 etape "Garde-fou de branche (main refusée)" bash -c 'set -o pipefail; node --test outils/tests/garde-branche.test.mjs 2>&1 | grep -E "^# (pass|fail)" | tr "\n" " "; echo; node --test outils/tests/garde-branche.test.mjs >/dev/null 2>&1'
+etape "Envoi du pack vers R2 (simulation, garde-fous)" bash -c 'set -o pipefail; node --test outils/tests/envoi-r2.test.mjs 2>&1 | grep -E "^# (pass|fail)" | tr "\n" " "; echo; node --test outils/tests/envoi-r2.test.mjs >/dev/null 2>&1'
 etape "Dossier publié (aucune fuite)" bash -c 'set -o pipefail; node outils/construire.mjs >/dev/null && node outils/tests/verifier-dist.mjs | tail -1'
 etape "Aucune fuite Premium (dépôt public + dist)" bash -c 'set -o pipefail; node outils/tests/fuite-premium.mjs | tail -1; node outils/tests/fuite-premium.mjs >/dev/null'
 etape "Exercice de restauration chiffrée" bash -c 'set -o pipefail; bash outils/sauvegarde/exercice-restauration.sh | tail -1'

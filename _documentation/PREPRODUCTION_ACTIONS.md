@@ -35,17 +35,21 @@ sans secrets l'API répond 503 « comptes-non-configurés » et le site gratuit 
 Les identifiants publics (`FIREBASE_PROJET`, plus tard les `price_…` Stripe) : donnez-les-moi, je les mets dans `wrangler.toml` (Cloudflare verrouille dans le tableau de bord ce qui est déclaré dans ce fichier).
 Si le tableau de bord refuse d'ajouter un secret à cause de `wrangler.toml`, dites-le-moi : alternative `wrangler pages secret put`.
 
-## D. Votre compte Créateur
-1. Sur `https://….pages.dev/compte/` : créez votre compte (e-mail dédié, mot de passe unique long), cliquez le lien de vérification reçu par e-mail.
-2. Sur votre ordinateur : `node outils/admin/poser-role-createur.mjs <fichier-cle.json> <votre-email>` (la clé ne quitte pas votre ordinateur).
-   Copiez l'UID affiché dans le secret `CREATOR_UID`, redéployez, reconnectez-vous : `/admin/` et `/apercu/` s'ouvrent.
+## D. Votre compte Créateur (en un clic, sans script)
+1. Sur `https://lanternes-de-nour.pages.dev/compte/` : créez votre compte (e-mail dédié, mot de passe unique long), cliquez le lien de vérification reçu par e-mail.
+2. Console Firebase → Authentication → Utilisateurs : copiez l'**UID** de votre compte et enregistrez-le dans le secret Cloudflare `CREATOR_UID` (puis un nouveau déploiement : Deployments → Retry, ou un push).
+3. Reconnectez-vous sur `/compte/` : un encadré « Ce compte est désigné comme Créateur » apparaît. Touchez **Activer l'espace Créateur** une seule fois.
+   `/admin/` et `/apercu/` s'ouvrent. Le double verrou est conservé : UID dans Cloudflare **et** rôle dans Firebase ; l'activation n'est possible que pour le compte désigné, adresse vérifiée, connexion récente, et elle est journalisée.
+   (Méthode de secours en ligne de commande : `node outils/admin/poser-role-createur.mjs <fichier-cle.json> <votre-email>`.)
+
+**Contrôle de configuration à tout moment** : `https://lanternes-de-nour.pages.dev/api/sante` affiche, en préproduction seulement, un OUI/NON par élément (`sessions`, `firebaseProjet`, `firebaseCompteDeService`, `createurDesigne`, `stripe`, `stripeWebhook`, `stockagePremium`). Jamais une valeur.
 
 ## E. Stripe (mode TEST, facultatif pour cette étape)
 Compte Stripe en **mode test** : 3 prix récurrents test, un point d'accès webhook `https://….pages.dev/api/stripe/webhook` (événements `customer.subscription.*`, `checkout.session.completed`) →
 secrets `STRIPE_CLE_SECRETE` (`sk_test_…`, une clé `sk_live_` est refusée par le code) et `STRIPE_SECRET_WEBHOOK` ; envoyez-moi les 3 `price_…`.
 
 ## F. Pack Premium privé / R2 — EN ATTENTE DE VOTRE DÉCISION
-R2 est le seul stockage conforme prévu (privé, lié au Worker) et il demande en pratique un moyen de paiement même pour le palier gratuit (10 Go, 1 M écritures, 10 M lectures, sorties gratuites). **Je n'active rien.**
+R2 est le seul stockage conforme prévu (privé, lié au Worker) et il demande en pratique un moyen de paiement même pour le palier gratuit (10 Go, 1 M écritures, 10 M lectures, sorties gratuites). **Je n'active rien.** Quand vous déciderez : créer le bucket (ex. `ldn-premium`) et le lier sous le nom `R2_PREMIUM`, puis `node outils/admin/envoyer-premium-r2.mjs <dossier-du-pack> ldn-premium` (simulation par défaut, `--executer` pour envoyer ; refuse tout fichier suspect ou un dossier dans le dépôt).
 Le pack est prêt (5 zones : 5 `contenu.json` + 21 voix ; maison « Chasse aux mots » : 4 fichiers ; voir CONTENUS_PREMIUM.md) et hors dépôt.
 Sans R2 la préproduction fonctionne pleinement pour le gratuit, les comptes et l'administration ; les zones Premium restent fermées et la Chasse aux mots indisponible.
 
