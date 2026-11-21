@@ -62,7 +62,7 @@ async function deconnecter(page) { await page.click('#deconnexion'); await page.
   // 5. nouveau compte Google depuis l'onglet connexion : écran des consentements, puis annulation propre
   await ouvrirCompte(page); await googleConnexion(page, g, 'parent.g2@local.test');
   t('Nouveau compte Google depuis « Se connecter » : écran des consentements affiché', await visible(page, '#f-consent'));
-  await page.click('#consent-annuler'); await page.waitForSelector('#v-acces:not(.cache)', { timeout: 5000 });
+  await page.click('#consent-annuler'); await page.waitForFunction(() => /annulée/.test(document.getElementById('etat').textContent), null, { timeout: 5000 }).catch(() => {});   // (le conteneur est déjà visible : on attend le message lui-même)
   t('Annulation : message clair et aucune session ouverte', /annulée/.test(await etat(page)) && (await api(page, '/api/moi')).j.connecte === false);
   await googleConnexion(page, g, 'parent.g2@local.test');
   t('Après annulation, le compte Google n\'existait plus : les consentements sont redemandés', await visible(page, '#f-consent'));

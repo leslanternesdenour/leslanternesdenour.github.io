@@ -15,6 +15,11 @@ const SECRETS = /AIza[0-9A-Za-z_-]{35}|sk_(live|test)_[0-9A-Za-z]{10,}|whsec_[0-
 let ko = 0;
 for (const f of fichiers) {
   for (const [re, quoi] of INTERDITS) if (re.test(f)) { ko++; console.log(`✗ ${f} : ${quoi}`); }
-  if (/\.(js|html|json|css|txt|webmanifest|toml)$/.test(f) && SECRETS.test(fs.readFileSync(path.join(DIST, f), 'utf8'))) { ko++; console.log(`✗ ${f} : ressemble à une clé secrète`); }
+  if (/\.(js|html|json|css|txt|webmanifest|toml)$/.test(f)) {
+    let texte = fs.readFileSync(path.join(DIST, f), 'utf8');
+    // Seule exception : la clé d'API WEB de Firebase (publique par conception), uniquement dans compte/config.js et sous la forme exacte « apiKey: "AIza… ».
+    if (f === 'compte/config.js') texte = texte.replace(/apiKey:\s*"AIza[0-9A-Za-z_-]{35}"/g, 'apiKey: "(clé web publique)"');
+    if (SECRETS.test(texte)) { ko++; console.log(`✗ ${f} : ressemble à une clé secrète`); }
+  }
 }
 console.log(`${fichiers.length} fichiers publiés contrôlés, ${ko} problème(s).`); process.exit(ko ? 1 : 0);
