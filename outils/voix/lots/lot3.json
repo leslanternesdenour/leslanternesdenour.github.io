@@ -1,0 +1,142 @@
+[
+ {
+  "cle": "ablutions/g1ok",
+  "texte": "Bravo ! (ou : Oui ! / C'est ça ! / Super !) Et maintenant, l'étape N ?",
+  "texte_voix": "Bravo ! Et maintenant, l'étape suivante ?",
+  "fichier": "lot3/ablutions-g1ok.mp3",
+  "a_tester": "texte arabe du jeu / texte unique"
+ },
+ {
+  "cle": "ablutions/g2ko3",
+  "texte": "Presque ! 3 fois, c'est la sunna. Mais une fois bien lavé, c'est déjà valable !",
+  "texte_voix": "Presque ! 3 fois, c'est la سُنَّة. Mais une fois bien lavé, c'est déjà valable !",
+  "fichier": "lot3/ablutions-g2ko3.mp3",
+  "a_tester": "wudû / sunna / Sajjadou"
+ },
+ {
+  "cle": "ablutions/g2ok3",
+  "texte": "Bravo ! 3 fois, c'est la sunna. Mais une fois bien lavé, c'est déjà valable !",
+  "texte_voix": "Bravo ! 3 fois, c'est la سُنَّة. Mais une fois bien lavé, c'est déjà valable !",
+  "fichier": "lot3/ablutions-g2ok3.mp3",
+  "a_tester": "wudû / sunna / Sajjadou"
+ },
+ {
+  "cle": "ablutions/r1",
+  "texte": "Bravo d'avoir essayé ! On rejoue ?",
+  "texte_voix": "Bravo d'avoir essayé ! On rejoue ?",
+  "fichier": "lot3/ablutions-r1.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "ablutions/r2",
+  "texte": "Très bien ! Encore un petit effort pour la 3e étoile.",
+  "texte_voix": "Très bien ! Encore un petit effort pour la 3e étoile.",
+  "fichier": "lot3/ablutions-r2.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "ablutions/s0",
+  "texte": "L'intention. Dans ton cœur, tu décides : « Je fais mes ablutions pour prier Allah. » Pas besoin de le dire à voix haute.",
+  "texte_voix": "L'intention. Dans ton cœur, tu décides : « Je fais mes ablutions pour prier اللَّه. » Pas besoin de le dire à voix haute.",
+  "fichier": "lot3/ablutions-s0.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "ablutions/s1",
+  "texte": "Dire Bismillâh. Avant de toucher l'eau, dis : « Bismillâh » (au nom d'Allah).",
+  "texte_voix": "Dire بِسْمِ اللَّهِ. Avant de toucher l'eau, dis : « بِسْمِ اللَّهِ » (au nom d'اللَّه).",
+  "fichier": "lot3/ablutions-s1.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "ablutions/s2",
+  "texte": "Les mains. Lave tes deux mains jusqu'aux poignets. Frotte bien entre les doigts !",
+  "texte_voix": "Les mains. Lave tes deux mains jusqu'aux poignets. Frotte bien entre les doigts !",
+  "fichier": "lot3/ablutions-s2.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "ablutions/s3",
+  "texte": "La bouche. Prends un peu d'eau avec ta main droite, fais-la tourner dans ta bouche, puis recrache-la.",
+  "texte_voix": "La bouche. Prends un peu d'eau avec ta main droite, fais-la tourner dans ta bouche, puis recrache-la.",
+  "fichier": "lot3/ablutions-s3.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "ablutions/s4",
+  "texte": "Le nez. Fais entrer doucement un peu d'eau dans ton nez, puis souffle pour la faire sortir.",
+  "texte_voix": "Le nez. Fais entrer doucement un peu d'eau dans ton nez, puis souffle pour la faire sortir.",
+  "fichier": "lot3/ablutions-s4.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "ablutions/s5",
+  "texte": "Le visage. Lave tout ton visage : du haut du front jusqu'au menton, et d'une oreille à l'autre.",
+  "texte_voix": "Le visage. Lave tout ton visage : du haut du front jusqu'au menton, et d'une oreille à l'autre.",
+  "fichier": "lot3/ablutions-s5.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "ablutions/s6",
+  "texte": "Les bras. Lave ton bras droit, du bout des doigts jusqu'au coude (le coude aussi !). Puis le bras gauche.",
+  "texte_voix": "Les bras. Lave ton bras droit, du bout des doigts jusqu'au coude (le coude aussi !). Puis le bras gauche.",
+  "fichier": "lot3/ablutions-s6.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "ablutions/t0",
+  "texte": "L'intention, c'est dans le cœur. Allah sait ce qu'il y a dans ton cœur !",
+  "texte_voix": "L'intention, c'est dans le cœur. اللَّه sait ce qu'il y a dans ton cœur !",
+  "fichier": "lot3/ablutions-t0.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "ablutions/t1",
+  "texte": "Répète avec moi : Bismillâh !",
+  "texte_voix": "Répète avec moi : بِسْمِ اللَّهِ !",
+  "fichier": "lot3/ablutions-t1.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "ablutions/t2",
+  "texte": "N'oublie pas entre les doigts, c'est là que les petites saletés se cachent !",
+  "texte_voix": "N'oublie pas entre les doigts, c'est là que les petites saletés se cachent !",
+  "fichier": "lot3/ablutions-t2.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "ablutions/why",
+  "texte": "Pourquoi on fait les ablutions ? Parce qu'Allah nous le demande avant la prière. Sans ablutions, la prière n'est pas acceptée. Et l'eau emporte les petites fautes. Laver trois fois, c'est la sunna, mais une fois bien lavé, c'est déjà valable. La tête, on la passe une seule fois.",
+  "texte_voix": "Pourquoi on fait les ablutions ? Parce qu'اللَّه nous le demande avant la prière. Sans ablutions, la prière n'est pas acceptée. Et l'eau emporte les petites fautes. Laver trois fois, c'est la سُنَّة, mais une fois bien lavé, c'est déjà valable. La tête, on la passe une seule fois.",
+  "fichier": "lot3/ablutions-why.mp3",
+  "a_tester": "wudû / sunna / Sajjadou"
+ },
+ {
+  "cle": "priere/d_ak",
+  "texte": "Allâhou akbar",
+  "texte_voix": "اللَّهُ أَكْبَرُ",
+  "fichier": "lot3/priere-d_ak.mp3",
+  "a_tester": "texte arabe du jeu / texte unique ; takbîr / Allâhou akbar"
+ },
+ {
+  "cle": "priere/d_ts",
+  "texte": "As-salâmou ‘alaykoum wa rahmatou llâh",
+  "texte_voix": "السَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللَّهِ",
+  "fichier": "lot3/priere-d_ts.mp3",
+  "a_tester": "texte arabe du jeu / texte unique"
+ },
+ {
+  "cle": "priere/dip",
+  "texte": "Félicitations ! Tu connais les étapes de ta prière. Voici ton diplôme !",
+  "texte_voix": "Félicitations ! Tu connais les étapes de ta prière. Voici ton diplôme !",
+  "fichier": "lot3/priere-dip.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "priere/done",
+  "texte": "Machâ'Allah ! Tu connais toutes les étapes de la prière ! Maintenant, on joue ?",
+  "texte_voix": "مَا شَاءَ اللَّهُ ! Tu connais toutes les étapes de la prière ! Maintenant, on joue ?",
+  "fichier": "lot3/priere-done.mp3",
+  "a_tester": ""
+ }
+]

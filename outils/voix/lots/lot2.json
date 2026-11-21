@@ -1,0 +1,92 @@
+[
+ {
+  "cle": "ablutions/done",
+  "texte": "Machâ'Allah ! Tu connais maintenant les ablutions. Après les ablutions, on dit l'attestation de foi. Demande à tes parents de la répéter avec toi.",
+  "texte_voix": "مَا شَاءَ اللَّهُ ! Tu connais maintenant les ablutions. Après les ablutions, on dit l'attestation de foi. Demande à tes parents de la répéter avec toi.",
+  "fichier": "lot2/ablutions-done.mp3"
+ },
+ {
+  "cle": "ablutions/g2koe",
+  "texte": "Presque ! Les oreilles, on les essuie une seule fois, avec la tête.",
+  "texte_voix": "Presque ! Les oreilles, on les essuie une seule fois, avec la tête.",
+  "fichier": "lot2/ablutions-g2koe.mp3"
+ },
+ {
+  "cle": "ablutions/g2kot",
+  "texte": "Presque ! La tête, on passe les mains mouillées une seule fois.",
+  "texte_voix": "Presque ! La tête, on passe les mains mouillées une seule fois.",
+  "fichier": "lot2/ablutions-g2kot.mp3"
+ },
+ {
+  "cle": "ablutions/g2oke",
+  "texte": "Bravo ! Les oreilles, on les essuie une seule fois, avec la tête.",
+  "texte_voix": "Bravo ! Les oreilles, on les essuie une seule fois, avec la tête.",
+  "fichier": "lot2/ablutions-g2oke.mp3"
+ },
+ {
+  "cle": "ablutions/g2okt",
+  "texte": "Bravo ! La tête, on passe les mains mouillées une seule fois.",
+  "texte_voix": "Bravo ! La tête, on passe les mains mouillées une seule fois.",
+  "fichier": "lot2/ablutions-g2okt.mp3"
+ },
+ {
+  "cle": "ablutions/games",
+  "texte": "Choisis un jeu !",
+  "texte_voix": "Choisis un jeu !",
+  "fichier": "lot2/ablutions-games.mp3"
+ },
+ {
+  "cle": "ablutions/h8",
+  "texte": "On termine tout en bas, avec ce qui sert à marcher !",
+  "texte_voix": "On termine tout en bas, avec ce qui sert à marcher !",
+  "fichier": "lot2/ablutions-h8.mp3"
+ },
+ {
+  "cle": "ablutions/q2_mains",
+  "texte": "Combien de fois on lave les mains ? Un, deux, ou trois ?",
+  "texte_voix": "Combien de fois on lave les mains ? Un, deux, ou trois ?",
+  "fichier": "lot2/ablutions-q2_mains.mp3"
+ },
+ {
+  "cle": "ablutions/q2_bouche",
+  "texte": "Combien de fois on lave la bouche ? Un, deux, ou trois ?",
+  "texte_voix": "Combien de fois on lave la bouche ? Un, deux, ou trois ?",
+  "fichier": "lot2/ablutions-q2_bouche.mp3"
+ },
+ {
+  "cle": "ablutions/q2_nez",
+  "texte": "Combien de fois on lave le nez ? Un, deux, ou trois ?",
+  "texte_voix": "Combien de fois on lave le nez ? Un, deux, ou trois ?",
+  "fichier": "lot2/ablutions-q2_nez.mp3"
+ },
+ {
+  "cle": "ablutions/q2_visage",
+  "texte": "Combien de fois on lave le visage ? Un, deux, ou trois ?",
+  "texte_voix": "Combien de fois on lave le visage ? Un, deux, ou trois ?",
+  "fichier": "lot2/ablutions-q2_visage.mp3"
+ },
+ {
+  "cle": "ablutions/q2_tete",
+  "texte": "Combien de fois on passe les mains sur la tête ? Un, deux, ou trois ?",
+  "texte_voix": "Combien de fois on passe les mains sur la tête ? Un, deux, ou trois ?",
+  "fichier": "lot2/ablutions-q2_tete.mp3"
+ },
+ {
+  "cle": "ablutions/q2_oreilles",
+  "texte": "Combien de fois on essuie les oreilles ? Un, deux, ou trois ?",
+  "texte_voix": "Combien de fois on essuie les oreilles ? Un, deux, ou trois ?",
+  "fichier": "lot2/ablutions-q2_oreilles.mp3"
+ },
+ {
+  "cle": "ablutions/q2_pieds",
+  "texte": "Combien de fois on lave les pieds ? Un, deux, ou trois ?",
+  "texte_voix": "Combien de fois on lave les pieds ? Un, deux, ou trois ?",
+  "fichier": "lot2/ablutions-q2_pieds.mp3"
+ },
+ {
+  "cle": "ablutions/q3_start",
+  "texte": "Par quoi commence-t-on à laver ?",
+  "texte_voix": "Par quoi commence-t-on à laver ?",
+  "fichier": "lot2/ablutions-q3_start.mp3"
+ }
+]

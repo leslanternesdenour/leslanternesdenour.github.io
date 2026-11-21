@@ -1,0 +1,100 @@
+[
+ {
+  "cle": "calendrier/ms7",
+  "texte": "Ma lanterne en papier. Colorie la lanterne du kit, puis plie-la avec un parent.",
+  "texte_voix": "Ma lanterne en papier. Colorie la lanterne du kit, puis plie-la avec un parent.",
+  "fichier": "lot6/calendrier-ms7.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/mb7",
+  "texte": "Ma lanterne en papier. Fabrique une lanterne avec une feuille pliée et découpée en bandes (ciseaux à bouts ronds, avec un adulte). Écris dessus ton invocation préférée.",
+  "texte_voix": "Ma lanterne en papier. Fabrique une lanterne avec une feuille pliée et découpée en bandes (ciseaux à bouts ronds, avec un adulte). Écris dessus ton invocation préférée.",
+  "fichier": "lot6/calendrier-mb7.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/ms8",
+  "texte": "Al-Fâtiha. Écoute un parent réciter Al-Fâtiha et répète le premier verset en tapant doucement dans tes mains.",
+  "texte_voix": "الْفَاتِحَة. Écoute un parent réciter الْفَاتِحَة et répète le premier verset en tapant doucement dans tes mains.",
+  "fichier": "lot6/calendrier-ms8.mp3",
+  "a_tester": "sourate / Al-Fâtiha / Al-Ghâchiya"
+ },
+ {
+  "cle": "calendrier/mb8",
+  "texte": "Al-Fâtiha. Récite Al-Fâtiha, ou apprends-en 3 versets. On la récite dans chaque unité de prière.",
+  "texte_voix": "الْفَاتِحَة. Récite الْفَاتِحَة, ou apprends-en 3 versets. On la récite dans chaque unité de prière.",
+  "fichier": "lot6/calendrier-mb8.mp3",
+  "a_tester": "sourate / Al-Fâtiha / Al-Ghâchiya"
+ },
+ {
+  "cle": "calendrier/ms9",
+  "texte": "Nouh. Regarde l'épisode de Nouh, puis construis une « arche » avec des coussins et ranges-y tes doudous deux par deux.",
+  "texte_voix": "نُوح. Regarde l'épisode de نُوح, puis construis une « arche » avec des coussins et ranges-y tes doudous deux par deux.",
+  "fichier": "lot6/calendrier-ms9.mp3",
+  "a_tester": "prophètes (Adam, Nouh, Younous…)"
+ },
+ {
+  "cle": "calendrier/mb9",
+  "texte": "Nouh. Raconte l'histoire en 4 dessins, comme une bande dessinée. Nouh a appelé son peuple pendant 950 ans sans abandonner.",
+  "texte_voix": "نُوح. Raconte l'histoire en 4 dessins, comme une bande dessinée. نُوح a appelé son peuple pendant 950 ans sans abandonner.",
+  "fichier": "lot6/calendrier-mb9.mp3",
+  "a_tester": "prophètes (Adam, Nouh, Younous…)"
+ },
+ {
+  "cle": "calendrier/ms10",
+  "texte": "Les bonnes paroles. Pendant le repas, chacun dit une gentille chose à son voisin de table.",
+  "texte_voix": "Les bonnes paroles. Pendant le repas, chacun dit une gentille chose à son voisin de table.",
+  "fichier": "lot6/calendrier-ms10.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/mb10",
+  "texte": "Les bonnes paroles. Compteur de bonnes paroles : une feuille sur le frigo, un trait à chaque mot gentil. Apprends : « qu'il dise du bien ou qu'il se taise ».",
+  "texte_voix": "Les bonnes paroles. Compteur de bonnes paroles : une feuille sur le frigo, un trait à chaque mot gentil. Apprends : « qu'il dise du bien ou qu'il se taise ».",
+  "fichier": "lot6/calendrier-mb10.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/ms11",
+  "texte": "Les 5 piliers. Les 5 doigts de la main : le parent nomme un pilier par doigt, tu répètes en montrant le doigt.",
+  "texte_voix": "Les 5 piliers. Les 5 doigts de la main : le parent nomme un pilier par doigt, tu répètes en montrant le doigt.",
+  "fichier": "lot6/calendrier-ms11.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/mb11",
+  "texte": "Les 5 piliers. Dessine une maison posée sur 5 piliers et écris leur nom : chahâda, prière, zakât, jeûne du Ramadan, pèlerinage.",
+  "texte_voix": "Les 5 piliers. Dessine une maison posée sur 5 piliers et écris leur nom : chahâda, prière, zakât, jeûne du رَمَضَان, pèlerinage.",
+  "fichier": "lot6/calendrier-mb11.mp3",
+  "a_tester": "Ramadan"
+ },
+ {
+  "cle": "calendrier/ms12",
+  "texte": "Le chemin dégagé. Ramasse ce qui traîne par terre dans le couloir pour que personne ne tombe.",
+  "texte_voix": "Le chemin dégagé. Ramasse ce qui traîne par terre dans le couloir pour que personne ne tombe.",
+  "fichier": "lot6/calendrier-ms12.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/mb12",
+  "texte": "Le chemin dégagé. Fais le tour de la maison pour enlever ce qui gêne le passage. Retirer un obstacle du chemin fait partie de la foi.",
+  "texte_voix": "Le chemin dégagé. Fais le tour de la maison pour enlever ce qui gêne le passage. Retirer un obstacle du chemin fait partie de la foi.",
+  "fichier": "lot6/calendrier-mb12.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/ms13",
+  "texte": "Le soleil et la lune. Jeu des ombres : avec la lumière d'une fenêtre ou d'un téléphone, fais des formes avec tes mains sur le mur.",
+  "texte_voix": "Le soleil et la lune. Jeu des ombres : avec la lumière d'une fenêtre ou d'un téléphone, fais des formes avec tes mains sur le mur.",
+  "fichier": "lot6/calendrier-ms13.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/mb14",
+  "texte": "Ibrahim. Prépare toi-même un petit plateau d'accueil (eau, dattes) pour la famille ou un invité, comme Ibrahim avec ses hôtes.",
+  "texte_voix": "إِبْرَاهِيم. Prépare toi-même un petit plateau d'accueil (eau, dattes) pour la famille ou un invité, comme إِبْرَاهِيم avec ses hôtes.",
+  "fichier": "lot6/calendrier-mb14.mp3",
+  "a_tester": ""
+ }
+]

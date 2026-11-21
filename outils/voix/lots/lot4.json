@@ -1,0 +1,142 @@
+[
+ {
+  "cle": "priere/e_fatiha",
+  "texte": "Al-Fâtiha. Tu récites Al-Fâtiha, la sourate d'ouverture. On la récite dans chaque rak‘a. Écoute le récitateur, puis répète verset par verset.",
+  "texte_voix": "الْفَاتِحَة. Tu récites الْفَاتِحَة, la sourate d'ouverture. On la récite dans chaque رَكْعَة. Écoute le récitateur, puis répète verset par verset.",
+  "fichier": "lot4/priere-e_fatiha.mp3",
+  "a_tester": "sourate / Al-Fâtiha / Al-Ghâchiya ; Roukoû‘ / Soujoûd / Jouloûs / Qiyâm / rak‘a"
+ },
+ {
+  "cle": "priere/e_itidal",
+  "texte": "Le redressement. Tu te relèves en disant : Sami‘a llâhou liman hamidah. Une fois bien droit, tu dis : Rabbanâ wa laka l-hamd.",
+  "texte_voix": "Le redressement. Tu te relèves en disant : Sami‘a llâhou liman hamidah. Une fois bien droit, tu dis : Rabbanâ wa laka l-hamd.",
+  "fichier": "lot4/priere-e_itidal.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "priere/e_jalsa",
+  "texte": "Assis entre les deux prosternations. Tu te redresses en disant Allâhou akbar et tu t'assois un instant. Tu dis : Rabbi ghfir lî.",
+  "texte_voix": "Assis entre les deux prosternations. Tu te redresses en disant اللَّهُ أَكْبَرُ et tu t'assois un instant. Tu dis : Rabbi ghfir lî.",
+  "fichier": "lot4/priere-e_jalsa.mp3",
+  "a_tester": "takbîr / Allâhou akbar"
+ },
+ {
+  "cle": "priere/e_niyya",
+  "texte": "L'intention. Avant de commencer, tu décides dans ton cœur quelle prière tu vas faire, par exemple la prière du Fajr. Pas besoin de le dire à voix haute.",
+  "texte_voix": "L'intention. Avant de commencer, tu décides dans ton cœur quelle prière tu vas faire, par exemple la prière du Fajr. Pas besoin de le dire à voix haute.",
+  "fichier": "lot4/priere-e_niyya.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "priere/e_qiyam",
+  "texte": "Debout, vers la qibla. Tu te tiens debout, tourné vers la Kaaba, la qibla. Tes yeux regardent l'endroit où ira ton front.",
+  "texte_voix": "Debout, vers la الْقِبْلَة. Tu te tiens debout, tourné vers la الْكَعْبَة, la الْقِبْلَة. Tes yeux regardent l'endroit où ira ton front.",
+  "fichier": "lot4/priere-e_qiyam.mp3",
+  "a_tester": "Kaaba ; qibla"
+ },
+ {
+  "cle": "priere/e_rakaa",
+  "texte": "La rak‘a suivante. Bravo, tu as fini une rak‘a ! Tu te relèves en disant Allâhou akbar, et tu recommences : Al-Fâtiha, le roukoû‘ et les deux prosternations.",
+  "texte_voix": "La رَكْعَة suivante. Bravo, tu as fini une رَكْعَة ! Tu te relèves en disant اللَّهُ أَكْبَرُ, et tu recommences : الْفَاتِحَة, le roukoû‘ et les deux prosternations.",
+  "fichier": "lot4/priere-e_rakaa.mp3",
+  "a_tester": "takbîr / Allâhou akbar ; sourate / Al-Fâtiha / Al-Ghâchiya ; Roukoû‘ / Soujoûd / Jouloûs / Qiyâm / rak‘a"
+ },
+ {
+  "cle": "priere/e_roukou",
+  "texte": "Le roukoû‘ (inclinaison). Tu dis Allâhou akbar et tu te penches, le dos bien droit, les mains sur les genoux. Tu dis trois fois : Soubhâna rabbiya l-‘adhîm.",
+  "texte_voix": "Le roukoû‘ (inclinaison). Tu dis اللَّهُ أَكْبَرُ et tu te penches, le dos bien droit, les mains sur les genoux. Tu dis trois fois : Soubhâna rabbiya l-‘adhîm.",
+  "fichier": "lot4/priere-e_roukou.mp3",
+  "a_tester": "takbîr / Allâhou akbar ; Roukoû‘ / Soujoûd / Jouloûs / Qiyâm / rak‘a"
+ },
+ {
+  "cle": "priere/e_soujoud1",
+  "texte": "Le soujoûd (prosternation). Tu dis Allâhou akbar et tu te prosternes sur 7 parties : le front avec le nez, les deux mains, les deux genoux et le bout des pieds. Tu dis trois fois : Soubhâna rabbiya l-a‘lâ.",
+  "texte_voix": "Le soujoûd (prosternation). Tu dis اللَّهُ أَكْبَرُ et tu te prosternes sur 7 parties : le front avec le nez, les deux mains, les deux genoux et le bout des pieds. Tu dis trois fois : Soubhâna rabbiya l-a‘lâ.",
+  "fichier": "lot4/priere-e_soujoud1.mp3",
+  "a_tester": "takbîr / Allâhou akbar ; Roukoû‘ / Soujoûd / Jouloûs / Qiyâm / rak‘a"
+ },
+ {
+  "cle": "priere/e_soujoud2",
+  "texte": "La deuxième prosternation. Allâhou akbar, et tu te prosternes une deuxième fois, comme la première : Soubhâna rabbiya l-a‘lâ.",
+  "texte_voix": "La deuxième prosternation. اللَّهُ أَكْبَرُ, et tu te prosternes une deuxième fois, comme la première : Soubhâna rabbiya l-a‘lâ.",
+  "fichier": "lot4/priere-e_soujoud2.mp3",
+  "a_tester": "takbîr / Allâhou akbar"
+ },
+ {
+  "cle": "priere/e_sourate",
+  "texte": "Une petite sourate. Dans les deux premières rak‘at, on ajoute une petite sourate après Al-Fâtiha, par exemple Al-Ikhlâs.",
+  "texte_voix": "Une petite sourate. Dans les deux premières رَكَعَات, on ajoute une petite sourate après الْفَاتِحَة, par exemple Al-Ikhlâs.",
+  "fichier": "lot4/priere-e_sourate.mp3",
+  "a_tester": "sourate / Al-Fâtiha / Al-Ghâchiya ; Roukoû‘ / Soujoûd / Jouloûs / Qiyâm / rak‘a"
+ },
+ {
+  "cle": "priere/e_takbir",
+  "texte": "Le takbîr d'ouverture. Tu lèves les mains à hauteur des épaules ou des oreilles et tu dis : Allâhou akbar. La prière commence !",
+  "texte_voix": "Le تَكْبِير d'ouverture. Tu lèves les mains à hauteur des épaules ou des oreilles et tu dis : اللَّهُ أَكْبَرُ. La prière commence !",
+  "fichier": "lot4/priere-e_takbir.mp3",
+  "a_tester": "takbîr / Allâhou akbar"
+ },
+ {
+  "cle": "priere/e_tachahhoud",
+  "texte": "Le tachahhoud. Après la deuxième rak‘a, tu restes assis et tu récites le tachahhoud, en levant l'index. À la fin de la prière, on ajoute aussi la prière sur le Prophète, paix et salut sur lui.",
+  "texte_voix": "Le تَشَهُّد. Après la deuxième رَكْعَة, tu restes assis et tu récites le تَشَهُّد, en levant l'index. À la fin de la prière, on ajoute aussi la prière sur le Prophète, paix et salut sur lui.",
+  "fichier": "lot4/priere-e_tachahhoud.mp3",
+  "a_tester": "Roukoû‘ / Soujoûd / Jouloûs / Qiyâm / rak‘a ; tachahhoud / taslîm / niyya"
+ },
+ {
+  "cle": "priere/f_ak",
+  "texte": "Allah est le plus Grand.",
+  "texte_voix": "اللَّه est le plus Grand.",
+  "fichier": "lot4/priere-f_ak.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "priere/f_sm",
+  "texte": "Allah entend celui qui Le loue.",
+  "texte_voix": "اللَّه entend celui qui Le loue.",
+  "fichier": "lot4/priere-f_sm.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "priere/f_th",
+  "texte": "Les salutations sont pour Allah, ainsi que les prières et les bonnes paroles. Que la paix soit sur toi, ô Prophète, ainsi que la miséricorde d’Allah et Ses bénédictions. Que la paix soit sur nous et sur les bons serviteurs d’Allah. J’atteste qu’il n’y a de divinité qu’Allah, et j’atteste que Mouhammad est Son serviteur et Son messager.",
+  "texte_voix": "Les salutations sont pour اللَّه, ainsi que les prières et les bonnes paroles. Que la paix soit sur toi, ô Prophète, ainsi que la miséricorde d’اللَّه et Ses bénédictions. Que la paix soit sur nous et sur les bons serviteurs d’اللَّه. J’atteste qu’il n’y a de divinité qu’اللَّه, et j’atteste que مُحَمَّد est Son serviteur et Son messager.",
+  "fichier": "lot4/priere-f_th.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "priere/g3ko_jouloûs",
+  "texte": "Presque ! C'est le Jouloûs (assis).",
+  "texte_voix": "Presque ! C'est le جُلُوس (assis).",
+  "fichier": "lot4/priere-g3ko_jouloûs.mp3",
+  "a_tester": "Roukoû‘ / Soujoûd / Jouloûs / Qiyâm / rak‘a"
+ },
+ {
+  "cle": "priere/g3ok_jouloûs",
+  "texte": "Bravo ! C'est le Jouloûs (assis) !",
+  "texte_voix": "Bravo ! C'est le جُلُوس (assis) !",
+  "fichier": "lot4/priere-g3ok_jouloûs.mp3",
+  "a_tester": "Roukoû‘ / Soujoûd / Jouloûs / Qiyâm / rak‘a"
+ },
+ {
+  "cle": "priere/g4ko",
+  "texte": "Presque ! (puis la formule en transcription : « Ici, on dit : … »)",
+  "texte_voix": "Presque !",
+  "fichier": "lot4/priere-g4ko.mp3",
+  "a_tester": "texte arabe du jeu / texte unique"
+ },
+ {
+  "cle": "priere/g4ok",
+  "texte": "Bravo ! (puis la formule en transcription : « Ici, on dit : … »)",
+  "texte_voix": "Bravo !",
+  "fichier": "lot4/priere-g4ok.mp3",
+  "a_tester": "texte arabe du jeu / texte unique"
+ },
+ {
+  "cle": "priere/g4q",
+  "texte": "Et maintenant ?",
+  "texte_voix": "Et maintenant ?",
+  "fichier": "lot4/priere-g4q.mp3",
+  "a_tester": ""
+ }
+]

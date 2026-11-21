@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex"><title>Tous les lots de voix · outil interne</title>
+<style>:root{color-scheme:dark}body{font:17px Nunito,system-ui,sans-serif;background:#191345;color:#f4efff;margin:0;padding:16px;max-width:700px;margin-inline:auto}
+h1{font-size:20px}.n{color:#c9bff0;font-size:14px}a.l{display:flex;justify-content:space-between;gap:8px;border:1px solid #3a2a7d;border-radius:12px;padding:14px;margin:10px 0;color:#f4efff;text-decoration:none}a.l:hover{border-color:#e8b64c}.b{color:#e8b64c;font-weight:800}</style></head><body>
+<h1>Voix de la narratrice : tous les lots à écouter</h1>
+<p class="n">Un lot = environ 20 phrases. Écoute chaque lot, valide ou refuse chaque phrase, puis « Copier le résultat » et colle-le dans le chat. Rien n'est branché dans les jeux avant ton accord.</p>
+<div id="liste"></div>
+<script>
+fetch('lots/index.json').then(r=>r.json()).then(L=>{const Z=document.getElementById('liste');let ok=0;
+ for(const l of L){let v='';try{const S=JSON.parse(localStorage.getItem('lot'+l.n)||'{}');const o=Object.values(S).filter(e=>e.v==='ok').length,k=Object.values(S).filter(e=>e.v==='ko').length;v=o+' ✓ · '+k+' ✗'}catch(e){}
+  const a=document.createElement('a');a.className='l';a.href='lot.html?n='+l.n;a.innerHTML=`<span><b>Lot ${l.n}</b> <span class="n">${l.jeux.join(' + ')}</span></span><span><span class="n">${l.nb} phrases</span> <span class="b">${v}</span></span>`;Z.appendChild(a)}})
+</script></body></html>

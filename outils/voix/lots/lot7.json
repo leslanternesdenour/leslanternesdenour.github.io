@@ -1,0 +1,23 @@
+[
+ {
+  "cle": "calendrier/ms17",
+  "texte": "L'arbre des bienfaits. Dessine un arbre. Sur chaque feuille, le parent écrit une chose pour laquelle tu dis merci à Allah.",
+  "texte_voix": "L'arbre des bienfaits. Dessine un arbre. Sur chaque feuille, le parent écrit une chose pour laquelle tu dis merci à اللَّه.",
+  "fichier": "lot7/calendrier-ms17.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/mb17",
+  "texte": "L'arbre des bienfaits. Écris toi-même 10 bienfaits sur les feuilles, puis lis le verset : les bienfaits d'Allah sont impossibles à compter.",
+  "texte_voix": "L'arbre des bienfaits. Écris toi-même 10 bienfaits sur les feuilles, puis lis le verset : les bienfaits d'اللَّه sont impossibles à compter.",
+  "fichier": "lot7/calendrier-mb17.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/ms18",
+  "texte": "Al-Ikhlâs. Répète « Qoul houwa llâhou ahad » avec un parent, en levant un doigt sur « ahad » (Unique).",
+  "texte_voix": "Al-Ikhlâs. Répète « Qoul houwa llâhou ahad » avec un parent, en levant un doigt sur « ahad » (Unique).",
+  "fichier": "lot7/calendrier-ms18.mp3",
+  "a_tester": ""
+ }
+]

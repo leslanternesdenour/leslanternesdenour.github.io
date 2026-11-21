@@ -1,0 +1,142 @@
+[
+ {
+  "cle": "priere/h1_5",
+  "texte": "Entre les deux prosternations, on s'assoit…",
+  "texte_voix": "Entre les deux prosternations, on s'assoit…",
+  "fichier": "lot5/priere-h1_5.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "priere/h1_6",
+  "texte": "Et pour finir la rak‘a, une deuxième prosternation !",
+  "texte_voix": "Et pour finir la رَكْعَة, une deuxième prosternation !",
+  "fichier": "lot5/priere-h1_6.mp3",
+  "a_tester": "Roukoû‘ / Soujoûd / Jouloûs / Qiyâm / rak‘a"
+ },
+ {
+  "cle": "priere/home",
+  "texte": "Assalâmou ‘alaykoum ! Après les ablutions, on apprend la prière. Tu viens avec moi ?",
+  "texte_voix": "السَّلَامُ عَلَيْكُمْ ! Après les ablutions, on apprend la prière. Tu viens avec moi ?",
+  "fichier": "lot5/priere-home.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "priere/sens",
+  "texte": "Ça veut dire :",
+  "texte_voix": "Ça veut dire :",
+  "fichier": "lot5/priere-sens.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "priere/d_rb",
+  "texte": "Rabbanâ wa laka l-hamd",
+  "texte_voix": "رَبَّنَا وَلَكَ الْحَمْدُ",
+  "fichier": "lot5/priere-d_rb.mp3",
+  "a_tester": "texte arabe du jeu / texte unique"
+ },
+ {
+  "cle": "priere/d_sj",
+  "texte": "Soubhâna rabbiya l-a‘lâ",
+  "texte_voix": "سُبْحَانَ رَبِّيَ الْأَعْلَى",
+  "fichier": "lot5/priere-d_sj.mp3",
+  "a_tester": "texte arabe du jeu / texte unique"
+ },
+ {
+  "cle": "priere/d_th",
+  "texte": "At-tahiyyâtou lillâhi wa s-salawâtou wa t-tayyibât. As-salâmou ‘alayka ayyouha n-nabiyyou wa rahmatou llâhi wa barakâtouh. As-salâmou ‘alaynâ wa ‘alâ ‘ibâdi llâhi s-sâlihîn. Ach-hadou an lâ ilâha illa llâh, wa ach-hadou anna Mouhammadan ‘abdouhou wa rasoûlouh.",
+  "texte_voix": "التَّحِيَّاتُ لِلَّهِ وَالصَّلَوَاتُ وَالطَّيِّبَاتُ، السَّلَامُ عَلَيْكَ أَيُّهَا النَّبِيُّ وَرَحْمَةُ اللَّهِ وَبَرَكَاتُهُ، السَّلَامُ عَلَيْنَا وَعَلَى عِبَادِ اللَّهِ الصَّالِحِينَ، أَشْهَدُ أَنْ لَا إِلَٰهَ إِلَّا اللَّهُ، وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ",
+  "fichier": "lot5/priere-d_th.mp3",
+  "a_tester": "texte arabe du jeu / texte unique"
+ },
+ {
+  "cle": "priere/e_taslim",
+  "texte": "Le salut final (taslîm). Tu tournes la tête à droite en disant : As-salâmou ‘alaykoum wa rahmatou llâh, puis à gauche. Ta prière est terminée, machâ’Allah !",
+  "texte_voix": "Le salut final (تَسْلِيم). Tu tournes la tête à droite en disant : السَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللَّهِ, puis à gauche. Ta prière est terminée, مَا شَاءَ اللَّهُ !",
+  "fichier": "lot5/priere-e_taslim.mp3",
+  "a_tester": "tachahhoud / taslîm / niyya"
+ },
+ {
+  "cle": "calendrier/ms1",
+  "texte": "La lune du Ramadan. À la tombée de la nuit, cherche la lune avec un parent et dessine-la dans ton passeport. Ciel couvert ? Dessine-la de mémoire.",
+  "texte_voix": "La lune du رَمَضَان. À la tombée de la nuit, cherche la lune avec un parent et dessine-la dans ton passeport. Ciel couvert ? Dessine-la de mémoire.",
+  "fichier": "lot5/calendrier-ms1.mp3",
+  "a_tester": "Ramadan"
+ },
+ {
+  "cle": "calendrier/mb1",
+  "texte": "La lune du Ramadan. Dessine la lune chaque soir de la semaine pour la voir grandir. Apprends que le Ramadan est le mois où le Coran a commencé à être révélé.",
+  "texte_voix": "La lune du رَمَضَان. Dessine la lune chaque soir de la semaine pour la voir grandir. Apprends que le رَمَضَان est le mois où le الْقُرْآن a commencé à être révélé.",
+  "fichier": "lot5/calendrier-mb1.mp3",
+  "a_tester": "Coran / Qur'an (mot français) ; Ramadan"
+ },
+ {
+  "cle": "calendrier/ms2",
+  "texte": "Le sourire. Jeu du sourire : souris à chaque personne de la maison et compte sur tes doigts.",
+  "texte_voix": "Le sourire. Jeu du sourire : souris à chaque personne de la maison et compte sur tes doigts.",
+  "fichier": "lot5/calendrier-ms2.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/mb2",
+  "texte": "Le sourire. Fais sourire 3 personnes (un compliment, une gentille surprise) et raconte-le au dîner. Sourire à son frère est une aumône.",
+  "texte_voix": "Le sourire. Fais sourire 3 personnes (un compliment, une gentille surprise) et raconte-le au dîner. Sourire à son frère est une aumône.",
+  "fichier": "lot5/calendrier-mb2.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/ms3",
+  "texte": "Bismillâh et la main droite. Dis « Bismillâh » avant de manger et mange de la main droite. Un parent joue au détective !",
+  "texte_voix": "بِسْمِ اللَّهِ et la main droite. Dis « بِسْمِ اللَّهِ » avant de manger et mange de la main droite. Un parent joue au détective !",
+  "fichier": "lot5/calendrier-ms3.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/mb3",
+  "texte": "Bismillâh et la main droite. Apprends les 3 conseils du Prophète (paix sur lui) à un garçon : dire Bismillâh, manger de la main droite, manger ce qui est devant soi. Si tu as oublié : « Bismillâhi awwalahou wa âkhirahou ».",
+  "texte_voix": "بِسْمِ اللَّهِ et la main droite. Apprends les 3 conseils du Prophète (paix sur lui) à un garçon : dire بِسْمِ اللَّهِ, manger de la main droite, manger ce qui est devant soi. Si tu as oublié : « بِسْمِ اللَّهِi awwalahou wa âkhirahou ».",
+  "fichier": "lot5/calendrier-mb3.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/ms4",
+  "texte": "Adam. Regarde l'épisode d'Adam, puis dis « pardon » à quelqu'un pour une petite bêtise.",
+  "texte_voix": "آدَم. Regarde l'épisode d'آدَم, puis dis « pardon » à quelqu'un pour une petite bêtise.",
+  "fichier": "lot5/calendrier-ms4.mp3",
+  "a_tester": "prophètes (Adam, Nouh, Younous…)"
+ },
+ {
+  "cle": "calendrier/mb4",
+  "texte": "Adam. Apprends le début de l'invocation d'Adam et Hawwâ : « Rabbanâ dhalamnâ anfousanâ ». Pourquoi faut-il du courage pour demander pardon ?",
+  "texte_voix": "آدَم. Apprends le début de l'invocation d'آدَم et Hawwâ : « Rabbanâ dhalamnâ anfousanâ ». Pourquoi faut-il du courage pour demander pardon ?",
+  "fichier": "lot5/calendrier-mb4.mp3",
+  "a_tester": "prophètes (Adam, Nouh, Younous…)"
+ },
+ {
+  "cle": "calendrier/ms5",
+  "texte": "L'eau. Chasse à l'eau : trouve 5 endroits de la maison où il y a de l'eau et dis « Al-hamdou lillâh » devant chacun.",
+  "texte_voix": "L'eau. Chasse à l'eau : trouve 5 endroits de la maison où il y a de l'eau et dis « الْحَمْدُ لِلَّهِ » devant chacun.",
+  "fichier": "lot5/calendrier-ms5.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/mb5",
+  "texte": "L'eau. Fais un trait à chaque fois que tu utilises l'eau aujourd'hui, compte le soir et écris une phrase de merci.",
+  "texte_voix": "L'eau. Fais un trait à chaque fois que tu utilises l'eau aujourd'hui, compte le soir et écris une phrase de merci.",
+  "fichier": "lot5/calendrier-mb5.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/ms6",
+  "texte": "Le ftour. Apporte une datte et un verre d'eau à chaque personne qui rompt son jeûne.",
+  "texte_voix": "Le ftour. Apporte une datte et un verre d'eau à chaque personne qui rompt son jeûne.",
+  "fichier": "lot5/calendrier-ms6.mp3",
+  "a_tester": ""
+ },
+ {
+  "cle": "calendrier/mb6",
+  "texte": "Le ftour. Prépare l'assiette de dattes, sers les jeûneurs en premier et dis avec eux l'invocation de la rupture du jeûne.",
+  "texte_voix": "Le ftour. Prépare l'assiette de dattes, sers les jeûneurs en premier et dis avec eux l'invocation de la rupture du jeûne.",
+  "fichier": "lot5/calendrier-mb6.mp3",
+  "a_tester": ""
+ }
+]

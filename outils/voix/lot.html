@@ -18,7 +18,7 @@ const sauve=()=>{try{localStorage.setItem(CLE,JSON.stringify(ST))}catch(e){}};le
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
 function dessiner(){const Z=document.getElementById('liste');Z.innerHTML='';let ok=0,ko=0;
  for(const x of L){const e=ST[x.cle]||{};if(e.v==='ok')ok++;if(e.v==='ko')ko++;const d=document.createElement('div');d.className='t '+(e.v||'');
-  d.innerHTML=`<div class="k">${esc(x.cle)}</div><div class="tx"><b>Texte du jeu :</b> ${esc(x.texte)}</div>${x.texte!==x.texte_voix?`<div class="tx n"><b>Envoyé à la voix :</b> <span dir="auto">${esc(x.texte_voix)}</span></div>`:''}<audio controls preload="none" src="lots/${esc(x.fichier)}"></audio>
+  d.innerHTML=`<div class="k">${esc(x.cle)}</div><div class="tx"><b>Texte du jeu :</b> ${esc(x.texte)}</div>${x.a_tester?`<div class="tx" style="color:#e8b64c">⚠ Contient des termes arabes <b>pas encore écoutés</b> : ${esc(x.a_tester)}. Écoute-les avec une attention particulière.</div>`:''}${x.texte!==x.texte_voix?`<div class="tx n"><b>Envoyé à la voix :</b> <span dir="auto">${esc(x.texte_voix)}</span></div>`:''}<audio controls preload="none" src="lots/${esc(x.fichier)}"></audio>
   <div class="l"><button data-r="ok" class="${e.v==='ok'?'on':''}">✓ je valide</button><button data-r="ko" class="ko ${e.v==='ko'?'on':''}">✗ je refuse</button></div>
   <input type="text" placeholder="Remarque (mot mal prononcé, phrase coupée…)" style="width:100%;box-sizing:border-box;padding:8px;border-radius:8px;border:1px solid #6a55c9;background:#120e33;color:#fff;font:inherit" value="${esc(e.c||'')}">`;
   d.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{ST[x.cle]={...ST[x.cle],v:b.dataset.r};sauve();dessiner()});
