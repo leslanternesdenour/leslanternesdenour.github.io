@@ -93,16 +93,12 @@ const A = 'parent.a@local.test', MDP_A = 'motdepasse-A1';
   await page.goto(BASE + '/compte/'); await page.waitForSelector('#v-enfants:not(.cache)');
   t('Gratuit : contenu Premium refusé (403)', (await apiDepuis(page, PREMIUM)).s === 403);
   t('Gratuit : la synchronisation est refusée par le serveur (403)', (await apiDepuis(page, '/api/enfants/' + p1.id + '/progression', { m: 'PUT', b: { progression: {} } })).s === 403);
-  // tarifs : e-mail non vérifié → refus ; puis vérification, porte parentale, consentements, paiement simulé
+  // tarifs : e-mail non vérifié → refus ; puis vérification, consentements, paiement simulé
   await verifierEmail(page);
   t('Validation de l\'adresse (lien simulé) reconnue', !(await visible(page, '#e-verif')));
   await page.goto(BASE + '/tarifs/'); t('Tarifs : bandeau MODE TEST visible', await visible(page, '#bandeau-test'));
-  await page.click('button[data-formule=famille_annuel]'); await page.waitForSelector('#p-porte:not(.cache)');
-  const q = await page.locator('#p-q').textContent(); const [x, y] = q.split('×').map(Number);
-  await page.fill('#p-r', String(x * y + 1)); await page.click('#p-porte button');
-  t('Porte parentale : mauvaise réponse refusée', !(await visible(page, '#p-form')));
-  await page.fill('#p-r', String(x * y)); await page.click('#p-porte button');
-  t('Porte parentale : bonne réponse → consentements', await visible(page, '#p-form'));
+  await page.click('button[data-formule=famille_annuel]'); await page.waitForSelector('#p-form:not(.cache)');
+  t('Tarifs : plus de question à résoudre, les consentements s\'affichent directement', !(await page.locator('#p-porte').count()) && await visible(page, '#p-form'));
   await page.click('#p-form button[type=submit]');
   t('Paiement : impossible sans CGV et renonciation à la rétractation', /cocher/.test(await etat(page)));
   await page.check('#p-cgv'); await page.check('#p-exec'); await page.click('#p-form button[type=submit]');
@@ -111,7 +107,7 @@ const A = 'parent.a@local.test', MDP_A = 'motdepasse-A1';
   t('Après paiement simulé : statut Abonné · Famille (webhook signé traité)', /Abonné · Famille/.test(await statut(page)), await statut(page));
   t('Famille : contenu Premium servi avec Cache-Control private, no-store', await apiDepuis(page, PREMIUM).then(r => r.s === 200 && r.cc === 'private, no-store'));
   await page.goto(BASE + '/tarifs/'); await page.click('button[data-formule=premium_annuel]'); await page.waitForTimeout(400);
-  t('Double facturation : un abonné ne peut pas reprendre un abonnement', await visible(page, '#p-bloque') && !(await visible(page, '#p-porte')));
+  t('Double facturation : un abonné ne peut pas reprendre un abonnement', await visible(page, '#p-bloque') && !(await visible(page, '#p-form')));
   t('Double facturation : l\'API refuse aussi (409)', (await apiDepuis(page, '/api/paiement/session', { m: 'POST', b: { formule: 'premium_annuel', consentements: { cgv: true, executionImmediate: true } } })).s === 409);
   // profils et synchronisation événementielle
   await page.goto(BASE + '/compte/'); await page.waitForSelector('#v-enfants:not(.cache)');
