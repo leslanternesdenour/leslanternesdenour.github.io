@@ -34,6 +34,7 @@ const EXTRA = [
 const { DH } = await import('../../priere/jeu3d/contenu.js');
 const SURCHARGES = { // formules / phrases à clip unique : texte exact envoyé à la voix
   'ablutions/s1': "Dire بِسْمِ اللَّهِ. Avant de toucher l'eau, dis : « بِسْمِ اللَّهِ » (au nom de اللَّهِ).", // variante A validée à l'oreille (lot 16)
+  'calendrier/qg1a': 'الْفَجْر، الظُّهْر، الْعَصْر، الْمَغْرِب et الْعِشَاء.', // variante B validée à l'oreille (lot 19)
   'priere/g4ok': 'Bravo !', 'priere/g4ko': 'Presque !', 'ablutions/g1ok': "Bravo ! Et maintenant, l'étape suivante ?",
 };
 for (const k of Object.keys(DH)) SURCHARGES['priere/d_' + k] = DH[k].ar;   // formules arabes : le texte arabe du jeu
