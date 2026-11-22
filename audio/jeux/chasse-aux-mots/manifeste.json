@@ -1,8 +1,8 @@
 {
  "jeu": "chasse-aux-mots",
  "genere": "inventaire.mjs",
- "total": 161,
- "enregistrees": 161,
+ "total": 160,
+ "enregistrees": 160,
  "phrases": [
   {
    "id": "bienvenue",
@@ -1103,17 +1103,6 @@
    "duree": 3.63,
    "prononciationVerifiee": false,
    "voixId": "pzZMNBXJh6wfnYfk2wLK"
-  },
-  {
-   "id": "rejouer",
-   "role": "narrateur",
-   "langue": "fr",
-   "texte": "On y retourne ? Il reste encore de belles choses à découvrir.",
-   "sousTitre": "On y retourne ? Il reste encore de belles choses à découvrir.",
-   "fichier": "rejouer.mp3",
-   "duree": 3.32,
-   "prononciationVerifiee": false,
-   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "mot.lanterne",

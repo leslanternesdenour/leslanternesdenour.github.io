@@ -38,3 +38,5 @@ button{font:inherit;cursor:pointer}button:focus-visible{outline:3px solid #fff;o
 .ligne{display:flex;align-items:center;justify-content:space-between;gap:12px;font-weight:800;padding:10px 0}.ligne input[type=checkbox]{width:26px;height:26px}.ligne input[type=range]{flex:1;max-width:200px}
 @media (max-width:480px){.cible img{width:64px;height:64px}.cible .mot-fr{font-size:22px}.lieux{grid-template-columns:repeat(2,1fr)}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.mot-btn{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;color:inherit;font:inherit;text-align:inherit;padding:0;min-height:52px}.mots.grille .mot-btn{flex-direction:column;justify-content:center}.mot-btn i{font-style:normal;margin-left:auto;opacity:.6}.mots li:has(.mot-btn){padding:4px 10px}

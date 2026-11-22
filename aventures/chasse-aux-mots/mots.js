@@ -67,8 +67,7 @@ export const PHRASES = {
   fin: { role: 'guide', texte: "Félicitations ! Tu as tout retrouvé. Une nouvelle découverte t'attend !" },
   fin_diplome: { role: 'narratrice', texte: "Félicitations ! Tu as gagné un diplôme d'explorateur !" },
   fin_grand: { role: 'narratrice', texte: "Incroyable ! Tu as exploré tous les lieux. Tu es un grand explorateur des lanternes !" },
-  mot_nouveau: { role: 'loumi', texte: "Tu as appris un nouveau mot, en français et en arabe !" },
-  rejouer: { role: 'guide', texte: 'On y retourne ? Il reste encore de belles choses à découvrir.' }
+  mot_nouveau: { role: 'loumi', texte: "Tu as appris un nouveau mot, en français et en arabe !" }
 };
 
 // Remplit une phrase pour un objet

@@ -3,7 +3,7 @@
 // la sauvegarde du profil (clé « aventure_mots », synchronisée par l'Espace famille). Aucune voix de synthèse du téléphone, aucun chronomètre, aucune sanction.
 import * as THREE from 'three';
 import { creerObjet, creerDecor, emplacements, IDS_OBJETS } from './objets3d.js?v=1';
-import { OBJETS, LIEUX, GUIDES, PHRASES, BRAVOS, ERREURS, dire as remplir } from './mots.js?v=1';
+import { OBJETS, LIEUX, GUIDES, PHRASES, BRAVOS, ERREURS, dire as remplir } from './mots.js?v=2';
 import * as G from './logique.js?v=1';
 import { chargerVoix, ajouterVoix, existe, dire as direVoix, arreterVoix } from '../../monde/socle/voix.js?v=1';
 import { reveiller, reglerVolume } from '../../monde/socle/audio.js?v=1';
@@ -56,9 +56,9 @@ function sousTitre(texte, qui, ms = 4200) {
   el.innerHTML = (qui ? `<b>${qui}</b> ` : '') + texte; el.classList.remove('cache'); stTimer = setTimeout(() => el.classList.add('cache'), ms);
 }
 // Dit une phrase : la voix si le fichier existe ; le sous-titre s'affiche si l'enfant l'a choisi OU s'il n'y a pas de voix (jamais de consigne muette ET invisible)
-function parler(id, texte, qui) {
+function parler(id, texte, qui, fini) {
   const voix = existe(id); reveiller();
-  if (voix) direVoix(id); if (etat.sousTitres || !voix) sousTitre(texte, qui);
+  if (voix) direVoix(id, fini); if (etat.sousTitres || !voix) sousTitre(texte, qui);
   return voix;
 }
 
@@ -128,12 +128,13 @@ function erreur(o) {
 function finir() {
   manche.fin = true; $('cible').classList.add('cache'); const r = G.terminerManche(etat, { lieu: manche.lieu, niveau: manche.niveau, aides: manche.aides, cibles: manche.cibles }); sauver();
   const e = G.etoilesPour(manche.aides); const L = LIEUX[manche.lieu]; arreterVoix();
-  const dip = r.diplomes.includes('grand') ? 'fin_grand' : r.diplomes.length ? 'fin_diplome' : 'fin'; parler(dip, PHRASES[dip].texte, guideDef.nom, 7000);
+  const dip = r.diplomes.includes('grand') ? 'fin_grand' : r.diplomes.length ? 'fin_diplome' : 'fin', m2 = manche;
+  parler(dip, PHRASES[dip].texte, guideDef.nom, () => { if (r.mots.length && manche === m2) parler('mot_nouveau', PHRASES.mot_nouveau.texte, 'Loumi'); });
   $('fin-etoiles').textContent = '⭐'.repeat(e) + '☆'.repeat(3 - e); $('fin-titre').textContent = r.diplomes.length ? '🎓 Diplôme d\'explorateur !' : 'Bravo, explorateur !';
-  $('fin-mots').innerHTML = manche.cibles.map(id => `<li><img alt="" src="${icone(id, 96)}"><b>${OBJETS[id].fr}</b> <span lang="ar" dir="rtl">${OBJETS[id].ar}</span>${r.mots.includes(id) ? ' <em>nouveau !</em>' : ''}</li>`).join('');
+  $('fin-mots').innerHTML = manche.cibles.map(id => `<li><button class="mot-btn" data-mot="${id}" aria-label="Écouter le mot ${OBJETS[id].fr}"><img alt="" src="${icone(id, 96)}"><b>${OBJETS[id].fr}</b> <span lang="ar" dir="rtl">${OBJETS[id].ar}</span>${r.mots.includes(id) ? ' <em>nouveau !</em>' : ''} <i>🔊</i></button></li>`).join('');
   $('fin-recompenses').innerHTML = [r.lanterne ? '🏮 Une lanterne gagnée' : '', r.etoiles ? `⭐ +${r.etoiles}` : '', ...r.diplomes.map(d => d === 'grand' ? '🏆 Grand explorateur des lanternes' : `🎓 Diplôme : ${LIEUX[d].nom}`)].filter(Boolean).map(x => `<span>${x}</span>`).join('');
   const sv = G.suite(etat, manche.lieu, manche.niveau); const b = $('fin-suite'); b.classList.toggle('cache', !sv); if (sv) { b.textContent = sv.lieu === manche.lieu ? `Niveau ${sv.niveau} ›` : `${LIEUX[sv.lieu].icone} ${LIEUX[sv.lieu].nom} ›`; b.onclick = () => entrer(sv.lieu, sv.niveau); }
-  $('fin-rejouer').onclick = () => entrer(manche.lieu, manche.niveau); $('fin').classList.remove('cache'); $('hud').classList.add('cache');
+  $('fin-rejouer').onclick = () => entrer(manche.lieu, manche.niveau); $('fin').classList.remove('cache'); $('hud').classList.add('cache'); brancherMots($('fin-mots'));
 }
 
 // ---------- accueil : lieux et niveaux ----------
@@ -153,12 +154,16 @@ function afficherAccueil() {
 document.querySelectorAll('[data-age]').forEach(b => b.onclick = () => { etat.age = b.dataset.age; sauver(); $('age-bloc').dataset.ouvert = ''; afficherAccueil(); });
 $('changer-age').onclick = () => { $('age-bloc').dataset.ouvert = '1'; $('reglages').classList.add('cache'); afficherAccueil(); };
 
+// Un mot appris : on l'entend en français puis en arabe (une seule voix à la fois, jamais de chevauchement)
+function direMot(id) { const o = OBJETS[id]; parler('mot.' + id, o.det + '.', 'Narratrice', () => parler('ar.' + id, o.ar, 'Narratrice')); }
+function brancherMots(liste) { liste.querySelectorAll('[data-mot]').forEach(b => { b.onclick = () => direMot(b.dataset.mot); }); }
+
 // ---------- collection ----------
 function afficherCollection() {
   const tous = [...new Set(Object.values(LIEUX).flatMap(l => l.objets))];
-  $('collection-liste').innerHTML = tous.map(id => { const vu = etat.trouves.includes(id); return `<li class="${vu ? '' : 'inconnu'}">${vu ? `<img alt="" src="${icone(id, 96)}"><b>${OBJETS[id].fr}</b><span lang="ar" dir="rtl">${OBJETS[id].ar}</span>` : '<i>?</i>'}</li>`; }).join('');
+  $('collection-liste').innerHTML = tous.map(id => { const vu = etat.trouves.includes(id); return `<li class="${vu ? '' : 'inconnu'}">${vu ? `<button class="mot-btn" data-mot="${id}" aria-label="Écouter le mot ${OBJETS[id].fr}"><img alt="" src="${icone(id, 96)}"><b>${OBJETS[id].fr}</b><span lang="ar" dir="rtl">${OBJETS[id].ar}</span></button>` : '<i>?</i>'}</li>`; }).join('');
   $('collection-dip').innerHTML = etat.diplomes.length ? etat.diplomes.map(d => `<span>${d === 'grand' ? '🏆 Grand explorateur' : '🎓 ' + LIEUX[d].nom}</span>`).join('') : '<span class="vide">Termine le niveau 5 d\'un lieu pour gagner un diplôme.</span>';
-  $('collection').classList.remove('cache');
+  $('collection').classList.remove('cache'); brancherMots($('collection-liste'));
 }
 
 // ---------- commandes ----------
@@ -199,4 +204,4 @@ function boucle(now) {
 requestAnimationFrame(boucle);
 chargerAudio();
 afficherAccueil();
-window.__chasse = { etat: () => etat, manche: () => manche, entrer, aide, tap: id => { const o = objets.find(x => x.id === id); if (o) { if (o.id === cible()) trouve(o); else erreur(o); } }, cibleId: cible, objets: () => objets.map(o => o.id), ecran: id => { const o = objets.find(x => x.id === id); if (!o) return null; const v = new THREE.Vector3(o.base.x, 0.6, o.base.z).project(camera); const r = canvas.getBoundingClientRect(); return { x: r.left + (v.x * 0.5 + 0.5) * r.width, y: r.top + (-v.y * 0.5 + 0.5) * r.height, derriere: v.z > 1 }; }, tourner: a => { az = azCible = a; }, voix: () => [...dispo] };
+window.__chasse = { direMot, etat: () => etat, manche: () => manche, entrer, aide, tap: id => { const o = objets.find(x => x.id === id); if (o) { if (o.id === cible()) trouve(o); else erreur(o); } }, cibleId: cible, objets: () => objets.map(o => o.id), ecran: id => { const o = objets.find(x => x.id === id); if (!o) return null; const v = new THREE.Vector3(o.base.x, 0.6, o.base.z).project(camera); const r = canvas.getBoundingClientRect(); return { x: r.left + (v.x * 0.5 + 0.5) * r.width, y: r.top + (-v.y * 0.5 + 0.5) * r.height, derriere: v.z > 1 }; }, tourner: a => { az = azCible = a; }, voix: () => [...dispo] };
