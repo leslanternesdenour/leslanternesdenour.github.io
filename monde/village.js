@@ -11,6 +11,7 @@ import { qualiteAuto, reglages, surveillerFluidite } from './socle/qualite.js?v=
 import { BATIMENTS } from './batiments.js?v=3';
 import { chargerMaisons, TEXTE_RESERVE } from './maisons-premium.js?v=1';
 import { mascotte } from './mascottes.js?v=1';
+import { PEAUX, NOMS_PEAUX, indicePeau, visageSVG } from './socle/peaux.js?v=1';
 
 const $ = id => document.getElementById(id);
 const S = sauvegarde.get();
@@ -129,9 +130,24 @@ document.querySelectorAll('#accueil [data-genre]').forEach(btn => btn.addEventLi
   const p = S.personnage || { tenue: 'ecru', peau: 1 };
   sauvegarde.regler('personnage', { ...p, genre: btn.dataset.genre, choisi: Date.now() });
   majChoixPerso();
+
   chargerVoix('voix/').then(() => dire(btn.dataset.genre === 'fille' ? 'NOUR-VOIX-ACC-004' : 'NOUR-VOIX-ACC-005'));
 }));
 majChoixPerso();
+
+// ---------- accueil : visages d'enfants dans la couleur de peau choisie (jamais d'émoji jaune) ----------
+function majPeau() {
+  const i = indicePeau((S.personnage || {}).peau);
+  $('accueil').style.setProperty('--peau', PEAUX[i]);
+  document.querySelectorAll('#choix-peau [data-peau]').forEach(b => b.setAttribute('aria-pressed', +b.dataset.peau === i));
+}
+document.querySelectorAll('#accueil .visage').forEach(e => { e.innerHTML = visageSVG(e.dataset.visage); });
+$('choix-peau').innerHTML = PEAUX.map((c, i) => `<button type="button" data-peau="${i}" aria-pressed="false" style="background:${c}" aria-label="${NOMS_PEAUX[i]}"></button>`).join('');
+document.querySelectorAll('#choix-peau [data-peau]').forEach(b => b.addEventListener('click', () => {
+  sauvegarde.regler('personnage', { ...(S.personnage || { tenue: 'ecru' }), peau: +b.dataset.peau });   // la teinte seule : on ne marque pas le personnage comme « choisi »
+  majPeau();
+}));
+majPeau();
 
 // ---------- accueil : qui joue ? (ce toucher débloque aussi le son) ----------
 function entrerDansLeVillage(age) {

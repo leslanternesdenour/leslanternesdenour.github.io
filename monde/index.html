@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&family=Nunito:wght@400;600;700&family=Amiri:wght@700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="monde.css?v=5">
+<link rel="stylesheet" href="monde.css?v=6">
 <script type="importmap">
 { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js" } }
 </script>
@@ -46,9 +46,11 @@
   </div>
   <p class="sous-titre petit">Ton personnage pour les grands voyages</p>
   <div class="choix-perso" role="group" aria-label="Ton personnage">
-    <button data-genre="fille" aria-pressed="false"><span>👧</span>Une voyageuse</button>
-    <button data-genre="garcon" aria-pressed="false"><span>👦</span>Un voyageur</button>
+    <button data-genre="fille" aria-pressed="false"><span class="visage" data-visage="fille"></span>Une voyageuse</button>
+    <button data-genre="garcon" aria-pressed="false"><span class="visage" data-visage="garcon"></span>Un voyageur</button>
   </div>
+  <p class="sous-titre petit">Ta couleur de peau</p>
+  <div class="choix-peau" id="choix-peau" role="group" aria-label="Ta couleur de peau"></div>
   <p class="note-parents">Gratuit · sans publicité · sans compte. La progression reste sur cet appareil.</p>
 </div>
 
@@ -144,7 +146,7 @@
 <script src="socle/portail-logique.js?v=1"></script>
 <script src="socle/portail.js?v=2"></script>   <!-- portail d'entrée (remplace socle/ouverture.js, conservé dans le dépôt) -->
 <script type="module" src="../compte/synchro.js?v=2"></script>
-<script type="module" src="village.js?v=15"></script>
+<script type="module" src="village.js?v=16"></script>
 <script src="../univers/univers.js?v=1" defer></script>
 </body>
 </html>
