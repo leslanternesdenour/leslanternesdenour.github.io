@@ -7,7 +7,8 @@ import { OBJETS, LIEUX, GUIDES, PHRASES, BRAVOS, ERREURS, dire as remplir } from
 import * as G from './logique.js?v=1';
 import { chargerVoix, ajouterVoix, existe, dire as direVoix, arreterVoix } from '../../monde/socle/voix.js?v=1';
 import { reveiller, reglerVolume } from '../../monde/socle/audio.js?v=1';
-import { creerReaction } from '../commun/base.js?v=2';
+import { creerReaction } from '../commun/base.js?v=3';
+import { placerSurSol, hauteurDecor } from '../commun/placement.js?v=1';
 
 const $ = id => document.getElementById(id);
 const lsGet = k => { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } };
@@ -75,9 +76,9 @@ let manche = null, objets = [], boite = null, dernierTap = 0, inactif = 0;
 function vider() { while (monde.children.length) { const o = monde.children[0]; monde.remove(o); o.traverse?.(c => { if (c.geometry && !c.geometry.userData.garde) c.geometry.dispose?.(); }); } objets = []; guide = null; }
 async function entrer(lieu, niveau) {
   arreterVoix(); vider(); const L = LIEUX[lieu]; scene.background = new THREE.Color(L.ciel); scene.fog.color.set(L.brume); sol.material.color.set(L.sol);
-  const decor = creerDecor(lieu); monde.add(decor);
+  const decor = creerDecor(lieu); monde.add(decor); monde.updateMatrixWorld(true);
   const params = G.parametres(niveau, etat.age), cibles = G.choisirCibles(L.objets, params.cibles, Math.random, etat.trouves);
-  const slots = emplacements(lieu), ordre = [...L.objets].sort(() => Math.random() - 0.5);
+  const slots = placerSurSol(emplacements(lieu), [decor], [{ x: -1.6, z: 1.4 }]), ordre = [...L.objets].sort(() => Math.random() - 0.5);
   ordre.forEach((id, i) => { const o = creerObjet(id), s = slots[i]; o.scale.setScalar(1.7); o.position.set(s.x, s.y, s.z); o.rotation.y = s.a * 1.7; monde.add(o);
     const hit = new THREE.Mesh(new THREE.SphereGeometry(0.62 * 1.7 * params.rayon, 8, 6), new THREE.MeshBasicMaterial({ visible: false })); hit.position.set(s.x, 0.5, s.z); hit.userData.id = id; monde.add(hit);
     objets.push({ id, mesh: o, hit, base: { x: s.x, z: s.z }, trouve: false, anim: 0, secoue: 0 }); });
@@ -205,4 +206,4 @@ function boucle(now) {
 requestAnimationFrame(boucle);
 chargerAudio();
 afficherAccueil();
-window.__chasse = { direMot, etat: () => etat, manche: () => manche, entrer, aide, tap: id => { const o = objets.find(x => x.id === id); if (o) { if (o.id === cible()) trouve(o); else erreur(o); } }, cibleId: cible, objets: () => objets.map(o => o.id), ecran: id => { const o = objets.find(x => x.id === id); if (!o) return null; const v = new THREE.Vector3(o.base.x, 0.6, o.base.z).project(camera); const r = canvas.getBoundingClientRect(); return { x: r.left + (v.x * 0.5 + 0.5) * r.width, y: r.top + (-v.y * 0.5 + 0.5) * r.height, derriere: v.z > 1 }; }, tourner: a => { az = azCible = a; }, voix: () => [...dispo] };
+window.__chasse = { enfouis: () => objets.filter(o => [[0, 0], [0.9, 0], [-0.9, 0], [0, 0.9], [0, -0.9]].some(([dx, dz]) => hauteurDecor(o.base.x + dx, o.base.z + dz, [monde.children[0]]) > 0.22)).map(o => o.id), direMot, etat: () => etat, manche: () => manche, entrer, aide, tap: id => { const o = objets.find(x => x.id === id); if (o) { if (o.id === cible()) trouve(o); else erreur(o); } }, cibleId: cible, objets: () => objets.map(o => o.id), ecran: id => { const o = objets.find(x => x.id === id); if (!o) return null; const v = new THREE.Vector3(o.base.x, 0.6, o.base.z).project(camera); const r = canvas.getBoundingClientRect(); return { x: r.left + (v.x * 0.5 + 0.5) * r.width, y: r.top + (-v.y * 0.5 + 0.5) * r.height, derriere: v.z > 1 }; }, tourner: a => { az = azCible = a; }, voix: () => [...dispo] };

@@ -1,7 +1,7 @@
 // LES MYSTÈRES DU DÉSERT — moteur : 7 chapitres (observer → trouver les indices → résoudre l'énigme → ouvrir le passage → découvrir un trésor).
 // Réutilise le socle commun (aventures/commun/base.js : 3D, voix, sous-titres), les décors et objets de la Chasse aux mots, les personnages du Grand Voyage.
 // Aucun chronomètre, aucune sanction : une erreur donne une explication douce ; les étoiles ne dépendent que des aides demandées.
-import { creerBase, creerReaction, $, lsGet, lsSet, THREE, existe, arreterVoix, reglerVolume } from '../commun/base.js?v=2';
+import { creerBase, creerReaction, $, lsGet, lsSet, THREE, existe, arreterVoix, reglerVolume } from '../commun/base.js?v=3';
 import { creerObjet, decor, creerPassage } from './decors.js?v=1';
 import { emplacements } from '../chasse-aux-mots/objets3d.js?v=1';
 import { CHAPITRES, ORDRE_CHAPITRES, GUIDES, NOMS_OBJETS, PHRASES, BRAVOS, ERREURS } from './contenu.js?v=1';
@@ -32,8 +32,9 @@ async function creerGuide(def) {
 function entrer(id, niv) {
   arreterVoix(); B.vider(); guide = null; tresorObj = null; ouv = 0; ouvrant = false; indice = null; inactif = 0; fermerCartes();
   const D = CHAPITRES[id], params = G.parametres(niv, etat.age); B.ambiance(D.ciel, D.sol, D.brume);
-  B.monde.add(decor(D.decor)); passage = creerPassage(); B.monde.add(passage);
-  const slots = emplacements(D.decor), sel = D.indices.slice(0, params.indices);
+  const relief = decor(D.decor); B.monde.add(relief); passage = creerPassage(); B.monde.add(passage); B.monde.updateMatrixWorld(true);
+  // aucun indice n'est jamais enfoui dans une dune, derrière une colonne ou dans le passage : chaque emplacement est replacé sur un sol dégagé
+  const slots = B.placerSurSol(emplacements(D.decor), [relief, passage], [{ x: -1.7, z: 1.6 }, { x: 0, z: -5.6 }]), sel = D.indices.slice(0, params.indices);
   clues = sel.map((c, i) => { const o = creerObjet(c.objet), s = slots[(i * 2 + 1) % 8], k = niv === 'avance' ? 1.25 : 1.7; o.scale.setScalar(k); o.position.set(s.x, 0, s.z); o.rotation.y = s.a; B.monde.add(o);
     const hit = new THREE.Mesh(new THREE.SphereGeometry(0.62 * 1.7 * params.rayon, 8, 6), new THREE.MeshBasicMaterial({ visible: false })); hit.position.set(s.x, 0.5, s.z); B.monde.add(hit);
     return { i, def: c, mesh: o, hit, base: s, k, trouve: false, anim: 0 }; });
@@ -159,4 +160,4 @@ B.onFrame = (dt, t) => {
   if (guide) { guide.animer(dt, 0, t); reaction.maj(dt); guide.racine.lookAt(B.camera.position.x, 0, B.camera.position.z); }
 };
 B.chargerAudio(); afficherAccueil();
-window.__mystere = { etat: () => etat, ch: () => ch, entrer, aide, indices: () => clues.map(c => c.def.objet), tap: o => { const c = clues.find(x => x.def.objet === o && !x.trouve); if (c) trouveIndice(c); }, enigme: () => ch && ch.enigme, voix: () => [...B.dispo], ecran: o => { const c = clues.find(x => x.def.objet === o); return c ? B.ecran(c.base.x, 0.6, c.base.z) : null; }, tourner: a => { B.az = B.azCible = a; } };
+window.__mystere = { enfouis: () => clues.filter(c => B.hauteurDecor(c.base.x, c.base.z, [B.monde.children[0], passage]) > 0.22 || [[0.9, 0], [-0.9, 0], [0, 0.9], [0, -0.9]].some(([dx, dz]) => B.hauteurDecor(c.base.x + dx, c.base.z + dz, [B.monde.children[0], passage]) > 0.22)).map(c => c.def.objet), etat: () => etat, ch: () => ch, entrer, aide, indices: () => clues.map(c => c.def.objet), tap: o => { const c = clues.find(x => x.def.objet === o && !x.trouve); if (c) trouveIndice(c); }, enigme: () => ch && ch.enigme, voix: () => [...B.dispo], ecran: o => { const c = clues.find(x => x.def.objet === o); return c ? B.ecran(c.base.x, 0.6, c.base.z) : null; }, tourner: a => { B.az = B.azCible = a; } };

@@ -1,6 +1,6 @@
 // LES QUIZ ET DÉFIS DE NOUR — moteur : un personnage (guide du thème) pose une question dans un décor 3D, des réponses illustrées apparaissent,
 // le personnage réagit tout de suite (joie ou réflexion), explique doucement, et l'enfant peut toujours réessayer. Aucun chronomètre, aucune sanction.
-import { creerBase, creerReaction, $, lsGet, lsSet, THREE, existe, arreterVoix, reglerVolume } from '../commun/base.js?v=2';
+import { creerBase, creerReaction, $, lsGet, lsSet, THREE, existe, arreterVoix, reglerVolume } from '../commun/base.js?v=3';
 import { decor, creerObjet } from '../mysteres-desert/decors.js?v=1';
 import { CATEGORIES, ORDRE_CATEGORIES, GUIDES, PHRASES, BRAVOS, ERREURS } from './contenu.js?v=1';
 import * as G from './logique.js?v=1';

@@ -3,6 +3,7 @@
 import * as THREE from 'three';
 import { chargerVoix, ajouterVoix, existe, dire as direVoix, arreterVoix } from '../../monde/socle/voix.js?v=1';
 import { reveiller, reglerVolume } from '../../monde/socle/audio.js?v=1';
+import { hauteurDecor, emplacementLibre, placerSurSol } from './placement.js?v=1';
 export { THREE, existe, arreterVoix, reglerVolume };
 
 export const $ = id => document.getElementById(id);
@@ -35,6 +36,7 @@ export function creerBase({ canvas, dossierAudio, brume = '#f3dfb5', rayonCamera
   B.toucher = (e, cibles) => { const r = canvas.getBoundingClientRect(); pt.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1); ray.setFromCamera(pt, camera); const h = ray.intersectObjects(cibles); return h.length ? h[0].object : null; };
   B.ecran = (x, y, z) => { const v = new THREE.Vector3(x, y, z).project(camera), r = canvas.getBoundingClientRect(); return { x: r.left + (v.x * 0.5 + 0.5) * r.width, y: r.top + (-v.y * 0.5 + 0.5) * r.height, derriere: v.z > 1 }; };
   B.vider = () => { while (monde.children.length) { const o = monde.children[0]; monde.remove(o); o.traverse?.(c => { if (c.geometry) c.geometry.dispose?.(); }); } };
+  B.hauteurDecor = hauteurDecor; B.emplacementLibre = emplacementLibre; B.placerSurSol = (slots, maillages, reserves) => placerSurSol(slots, maillages, reserves, centre[2]);
   B.ambiance = (ciel, solCouleur, brumeCouleur) => { scene.background = new THREE.Color(ciel); sol.material.color.set(solCouleur); scene.fog.color.set(brumeCouleur); };
 
   // icônes d'objets (rendu 3D → image) pour les boutons des énigmes
