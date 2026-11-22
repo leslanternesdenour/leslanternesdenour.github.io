@@ -77,3 +77,17 @@ test('voix : un rôle garde toujours la même voix ; aucune voix créée (limite
   assert.equal(r.narratrice, 'hddT377hAwvRoOKqMj0E', 'narratrice des contenus existants'); assert.notEqual(r.loumi, r['perso-hakim']);
   for (const g of Object.values(M.GUIDES)) assert.ok(r[g.voix], g.voix); for (const k of ['narrateur', 'loumi']) assert.ok(r[k], k);
 });
+
+test('aucun dialogue silencieux par erreur : chaque identifiant demandé par le jeu a son audio enregistré', () => {
+  const man = JSON.parse(fs.readFileSync(path.join(RACINE, 'audio/jeux/chasse-aux-mots/manifeste.json'), 'utf8')), ok = new Set(man.phrases.filter(p => p.fichier).map(p => p.id));
+  const src = fs.readFileSync(path.join(RACINE, 'aventures/chasse-aux-mots/jeu.js'), 'utf8');
+  // identifiants construits par jeu.js (même logique) pour tous les objets, lieux et phrases communes
+  const demandes = new Set(['bienvenue', 'age', 'aide', 'fin', 'fin_diplome', 'fin_grand', 'mot_nouveau', 'bravo3', ...M.ERREURS]);
+  for (const o of Object.keys(M.OBJETS)) for (const pre of ['trouve', 'trouve_mot', 'trouve_ecoute', 'enigme', 'mot', 'ar']) demandes.add(pre + '.' + o);
+  for (const o of Object.keys(M.OBJETS)) for (const b of M.BRAVOS.filter(x => x !== 'bravo3')) demandes.add(b + '.' + o);
+  for (const l of Object.keys(M.LIEUX)) demandes.add('intro.' + l);
+  for (const id of demandes) assert.ok(ok.has(id), 'audio manquant : ' + id);
+  // et inversement : toute phrase enregistrée est utilisée (pas de fichier orphelin ni de phrase jamais dite)
+  for (const id of ok) assert.ok(demandes.has(id), 'phrase enregistrée jamais utilisée : ' + id);
+  for (const motif of ["'trouve.'", "'trouve_mot.'", "'trouve_ecoute.'", "'enigme.'", "'intro.'", "'mot_nouveau'", "'ar.'", "'mot.'"]) assert.ok(src.includes(motif), 'jeu.js demande ' + motif);
+});
