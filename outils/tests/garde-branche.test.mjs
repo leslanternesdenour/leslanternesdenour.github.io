@@ -64,7 +64,7 @@ test('production : dossier de production = dossier de préproduction moins les s
   const seulementPre = [...pre].filter(f => !prod.has(f)), seulementProd = [...prod].filter(f => !pre.has(f));
   assert.ok(seulementPre.every(f => f.startsWith('outils/')), 'seuls les outils internes manquent en production : ' + seulementPre.filter(f => !f.startsWith('outils/')).slice(0, 5));
   assert.deepEqual(seulementProd, ['sitemap.xml'], 'seul le sitemap est propre à la production');
-  for (const f of ['monde/socle/portail.js', 'monde/voix/accueil-portail.mp3', 'audio/narratrice/calendrier/guide.mp3', 'ablutions/jeu3d/index.html', 'compte/index.html', 'tarifs/index.html', 'admin/index.html', 'apercu/index.html']) assert.ok(prod.has(f), f + ' absent de la production');
+  for (const f of ['monde/socle/portail.js', 'monde/voix/accueil-portail.json', 'audio/narratrice/calendrier/guide.mp3', 'ablutions/jeu3d/index.html', 'compte/index.html', 'tarifs/index.html', 'admin/index.html', 'apercu/index.html']) assert.ok(prod.has(f), f + ' absent de la production');
 });
 
 test('production : la branche « production » suit exactement les mêmes règles que « main » (refusée sans déclaration, acceptée avec, mode production)', () => {

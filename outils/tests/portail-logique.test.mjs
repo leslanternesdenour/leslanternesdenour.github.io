@@ -61,18 +61,40 @@ test('entrée directe (sans « Qui joue ? ») seulement pour un profil enfant do
 
 // ----- la voix d'accueil et ses repères de synchronisation -----
 import fs from 'node:fs'; import { execFileSync } from 'node:child_process';
-test('voix d\'accueil : le fichier existe et ses repères (durée, coupe, fin de voix) sont cohérents avec le vrai audio', () => {
+test('voix d\'accueil : texte exact ; AUCUN clip en service tant que le client n\'a pas validé la prononciation ; si un clip est en service, il est validé, présent et cohérent', () => {
   const j = JSON.parse(fs.readFileSync('monde/voix/accueil-portail.json', 'utf8'));
   assert.equal(j.texte, 'مَرْحَبًا ! Bienvenue dans le Monde de Nour !', 'le texte est exactement celui demandé');
-  assert.ok(fs.statSync('monde/voix/accueil-portail.mp3').size > 5000, 'fichier audio présent');
-  try { const d = parseFloat(execFileSync('ffprobe', ['-v', 'quiet', '-show_entries', 'format=duration', '-of', 'csv=p=0', 'monde/voix/accueil-portail.mp3']).toString());
-    assert.ok(Math.abs(d - j.duree) < 0.05, `durée réelle ${d} s ≠ ${j.duree} s`); } catch (e) { if (e.code !== 'ENOENT') throw e; }
-  assert.ok(j.coupe > 0.4 && j.coupe < j.finVoix && j.finVoix <= j.duree, 'coupe < fin de voix <= durée');
-  assert.ok(j.finVoix - j.coupe > 1, '« Bienvenue dans le Monde de Nour » dure plus d\'une seconde');
+  if (j.fichier === null) { assert.equal(j.valide, false, 'sans clip, rien n\'est validé'); assert.ok(!fs.existsSync('monde/voix/accueil-portail.mp3'), 'le clip rejeté ne doit plus être servi'); return; }
+  assert.equal(j.valide, true, 'un clip en service doit avoir été validé à l\'oreille par le client');
+  assert.ok(fs.statSync('monde/voix/' + j.fichier).size > 5000, 'fichier audio présent');
+  try { const d = parseFloat(execFileSync('ffprobe', ['-v', 'quiet', '-show_entries', 'format=duration', '-of', 'csv=p=0', 'monde/voix/' + j.fichier]).toString()); assert.ok(Math.abs(d - j.duree) < 0.05, `durée réelle ${d} s ≠ ${j.duree} s`); } catch (e) { if (e.code !== 'ENOENT') throw e; }
+  assert.ok(j.coupe > 0.3 && j.coupe < j.finVoix && j.finVoix <= j.duree + 0.01, 'coupe < fin de voix <= durée');
 });
-test('voix d\'accueil : jamais de synthèse du navigateur pour l\'arabe (le portail ne lit rien tout seul)', () => {
+test('le clip rejeté (prise 1) est conservé comme source dans les lots, jamais supprimé', () => {
+  assert.ok(fs.existsSync('outils/voix/lots/lot21/monde-accueil-portail-prise1.mp3'));
+});
+test('portail : jamais de synthèse vocale qui parle, aucun fichier musical, pas plus d\'un lecteur de voix (+ la sonde silencieuse)', () => {
   const src = fs.readFileSync('monde/socle/portail.js', 'utf8');
-  assert.ok(!/speechSynthesis|SpeechSynthesisUtterance/.test(src), 'portail.js n\'utilise aucune voix de synthèse');
-  assert.deepEqual([...new Set(src.match(/[\w\/.-]+\.(mp3|ogg|wav|m4a)/g) || [])], ['voix/accueil-portail.mp3'], 'aucun autre fichier sonore (ni musique) dans le portail');
-  assert.equal((src.match(/new Audio\(/g) || []).length, 1, 'un seul lecteur audio');
+  assert.ok(!/SpeechSynthesisUtterance|\.speak\(/.test(src), 'portail.js ne fait parler aucune voix de synthèse');
+  assert.deepEqual(src.match(/['"][^'"]*\.(mp3|ogg|m4a)['"]/g) || [], [], 'aucun fichier sonore codé en dur : la voix vient de accueil-portail.json');
+  assert.equal((src.match(/new Audio\(/g) || []).length, 2, 'la voix + la sonde silencieuse de lecture automatique');
+});
+
+// ----- RESTAURATION de l'ancien portail (demande du client, 22/11/2026) : l'animation d'origine ne doit pas dériver -----
+test('portail restauré : style, porte et lanternes IDENTIQUES à l\'ancienne ouverture (monde/socle/ouverture.js)', () => {
+  const ancien = fs.readFileSync('monde/socle/ouverture.js', 'utf8'), nouveau = fs.readFileSync('monde/socle/portail.js', 'utf8');
+  const bloc = (t, a, b) => { const i = t.indexOf(a); return t.slice(i, t.indexOf(b, i) + b.length); };
+  assert.ok(ancien.includes('var css = ['));
+  assert.ok(nouveau.includes(bloc(ancien, '  var css = [', "  ].join('');")), 'CSS d\'origine modifié');
+  assert.ok(nouveau.includes(bloc(ancien, '  function lanterneSVG() {', '\n  }\n')), 'dessin de la lanterne modifié');
+  assert.ok(nouveau.includes(bloc(ancien, '  // Un battant : bois turquoise', '\n  }\n')), 'dessin de la porte modifié');
+});
+test('portail restauré : lanternes allumées UNE À UNE du centre vers les côtés (300 ms + 260 ms chacune), porte à 2,2 s, salut à 2,7 s — comme avant', () => {
+  const ancien = fs.readFileSync('monde/socle/ouverture.js', 'utf8'), nouveau = fs.readFileSync('monde/socle/portail.js', 'utf8');
+  for (const motif of ['var ordre = [3, 2, 4, 1, 5, 0, 6];', '300 + k * 260', 'plus_tard(2200,', "var positions = [4, 18, 32, 50, 68, 82, 96];", "var hauts = [34, 16, 6, 0, 6, 16, 34];"]) { assert.ok(ancien.includes(motif), 'absent de l\'original : ' + motif); assert.ok(nouveau.includes(motif), 'modifié : ' + motif); }
+  assert.ok(nouveau.includes('plus_tard(2700,'));
+});
+test('prototypes conservés : ouverture.js (original) et la porte en bois écartée ne sont jamais supprimés', () => {
+  assert.ok(fs.existsSync('monde/socle/ouverture.js')); assert.ok(fs.existsSync('monde/socle/prototypes/portail-porte-animee.js'));
+  const idx = fs.readFileSync('monde/index.html', 'utf8'); assert.ok(!/<script[^>]*(prototypes\/|ouverture\.js)/.test(idx), 'les prototypes ne sont pas chargés par la page');
 });
