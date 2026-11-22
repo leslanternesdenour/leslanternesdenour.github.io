@@ -2,6 +2,7 @@
 // Tout est construit par code (pas de modèle à télécharger) pour rester léger.
 import * as THREE from 'three';
 import { BATIMENTS } from './batiments.js?v=3';
+import { creerIcone3d, creerSablier, vignette as vignetteIcone } from './icones3d.js?v=2';
 
 const R_MAISONS = 20;          // rayon du cercle des maisons
 const R_REMPART = 31;
@@ -106,17 +107,19 @@ function texIcone(emoji, couleur, bientot) {
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 2; return t;
 }
 
-function texNom(texte) {
-  const c = document.createElement('canvas'); c.width = 1024; c.height = 128;
-  const g = c.getContext('2d');
-  g.font = '700 54px Nunito, system-ui, sans-serif';
-  const l = Math.min(1000, g.measureText(texte).width + 60);
-  g.fillStyle = 'rgba(25,19,69,.78)';
-  const x = (1024 - l) / 2;
-  g.beginPath(); g.roundRect ? g.roundRect(x, 22, l, 84, 42) : g.rect(x, 22, l, 84); g.fill();
-  g.fillStyle = '#ffffff'; g.textAlign = 'center'; g.textBaseline = 'middle';
-  g.fillText(texte, 512, 66);
-  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+function texNom(texte, couleur = '#f5b942') {
+  const c = document.createElement('canvas'); c.width = 1024; c.height = 256;
+  const g = c.getContext('2d'); g.font = '800 62px Nunito, Poppins, system-ui, sans-serif';
+  const mots = texte.split(' '); let lignes = [texte];
+  if (g.measureText(texte).width > 640 && mots.length > 1) { let best = 0, bd = 1e9; for (let i = 1; i < mots.length; i++) { const d = Math.abs(g.measureText(mots.slice(0, i).join(' ')).width - g.measureText(mots.slice(i).join(' ')).width); if (d < bd) { bd = d; best = i; } } lignes = [mots.slice(0, best).join(' '), mots.slice(best).join(' ')]; }
+  const l = Math.min(980, Math.max(...lignes.map(s => g.measureText(s).width)) + 110), h = lignes.length === 1 ? 118 : 196, x = (1024 - l) / 2, y = (256 - h) / 2;
+  const plaque = (xx, yy, ww, hh, r) => { g.beginPath(); if (g.roundRect) g.roundRect(xx, yy, ww, hh, r); else g.rect(xx, yy, ww, hh); };
+  g.shadowColor = 'rgba(0,0,0,.45)'; g.shadowBlur = 18; g.shadowOffsetY = 6; plaque(x, y, l, h, 58); g.fillStyle = '#3b2a63'; g.fill(); g.shadowColor = 'transparent';
+  const grad = g.createLinearGradient(0, y, 0, y + h); grad.addColorStop(0, '#5a4296'); grad.addColorStop(1, '#2d1f52'); plaque(x + 8, y + 8, l - 16, h - 16, 50); g.fillStyle = grad; g.fill();
+  plaque(x, y, l, h, 58); g.lineWidth = 9; g.strokeStyle = couleur; g.stroke(); plaque(x + 12, y + 12, l - 24, h - 24, 46); g.lineWidth = 2.5; g.strokeStyle = 'rgba(255,230,160,.55)'; g.stroke();
+  g.fillStyle = '#ffffff'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.shadowColor = 'rgba(0,0,0,.5)'; g.shadowBlur = 4;
+  lignes.forEach((s, i) => g.fillText(s, 512, 128 + (i - (lignes.length - 1) / 2) * 70 + 3));
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t;
 }
 
 // ---------- couleurs ----------
@@ -132,8 +135,8 @@ const CLES = [
   { h: 0, haut: '#070a26', hor: '#1b1f55', lum: 0.18 },
   { h: 4.8, haut: '#0b1035', hor: '#2a2a6a', lum: 0.2 },
   { h: 6.2, haut: '#3a4f9a', hor: '#f7b58a', lum: 0.6 },
-  { h: 8, haut: '#4aa3e8', hor: '#cdeefc', lum: 1 },
-  { h: 16.5, haut: '#4aa3e8', hor: '#cdeefc', lum: 1 },
+  { h: 8, haut: '#4f9fe0', hor: '#f3e6cc', lum: 1 },
+  { h: 16.5, haut: '#5a8fd8', hor: '#fbe0b8', lum: 1 },
   { h: 18.3, haut: '#4b4a9a', hor: '#f59a5a', lum: 0.65 },
   { h: 19.8, haut: '#1d1a5a', hor: '#6a3f7a', lum: 0.3 },
   { h: 21, haut: '#0b1035', hor: '#2a2a6a', lum: 0.2 },
@@ -149,7 +152,7 @@ export function creerVillage(canvas, opts) {
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
   const scene = new THREE.Scene();
-  scene.fog = new THREE.Fog(0xcdeefc, 60, 170);
+  scene.fog = new THREE.Fog(0xcdeefc, 110, 380);
   const camera = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, 0.5, 600);
 
   const matVC = new THREE.MeshLambertMaterial({ vertexColors: true, flatShading: true });
@@ -214,7 +217,7 @@ export function creerVillage(canvas, opts) {
   // ---------- sol ----------
   const sol = [];
   const plat = (geo, c, y, ry = 0, x = 0, z = 0) => sol.push({ geo, c, m: M(x, y, z, -Math.PI / 2, 0, 0).premultiply(M(0, 0, 0, 0, ry, 0)) });
-  plat(new THREE.CircleGeometry(160, 48), C.sable, 0);
+  plat(new THREE.CircleGeometry(330, 48), C.sable, 0);
   plat(new THREE.CircleGeometry(R_REMPART - 0.3, 64), C.herbe, 0.02);
   plat(new THREE.CircleGeometry(10, 48), C.dalle, 0.04);
   plat(new THREE.RingGeometry(9.3, 10, 48), C.turquoise, 0.06);
@@ -234,6 +237,16 @@ export function creerVillage(canvas, opts) {
     jardins.push({ a, x, z });
     plat(new THREE.CircleGeometry(2.6, 20), '#7fb85a', 0.05, 0, x, z);
   }
+  // tapis devant chaque porte + bordures de pierre le long des allées + anneaux de mosaïque
+  for (const b of BATIMENTS) {
+    const a = b.emplacement * PAS, d = R_MAISONS - 5.6, rot = M(0, 0, 0, 0, a, 0);
+    sol.push({ geo: new THREE.PlaneGeometry(2.7, 1.9), c: assombrir(b.couleur, 0.15), m: M(0, 0.07, d, -Math.PI / 2, 0, 0).premultiply(rot) });
+    sol.push({ geo: new THREE.PlaneGeometry(2.2, 1.4), c: '#f6ecd8', m: M(0, 0.075, d, -Math.PI / 2, 0, 0).premultiply(rot) });
+    sol.push({ geo: new THREE.PlaneGeometry(1.7, 0.9), c: eclaircir(b.couleur, 0.1), m: M(0, 0.08, d, -Math.PI / 2, 0, 0).premultiply(rot) });
+  }
+  for (let k = 0; k < 10; k++) { const a = k * PAS, fin = k === 0 ? R_REMPART + 2 : R_MAISONS - 3, lg = fin - 9.8; for (const s of [-1.5, 1.5]) sol.push({ geo: new THREE.PlaneGeometry(0.22, lg), c: '#c9a96e', m: M(s, 0.06, 9.8 + lg / 2, -Math.PI / 2, 0, 0).premultiply(M(0, 0, 0, 0, a, 0)) }); }
+  plat(new THREE.RingGeometry(11.2, 11.7, 48), C.or, 0.06); plat(new THREE.RingGeometry(12.2, 12.6, 48), '#c77a4a', 0.055);
+  for (let k = 0; k < 16; k++) plat(etoile8(0.55, 0.22), k % 2 ? C.turquoise : '#e5677b', 0.065, 0, Math.sin(k / 16 * Math.PI * 2) * 10.7, Math.cos(k / 16 * Math.PI * 2) * 10.7);
   const mSol = new THREE.Mesh(fusionner(sol), matVC);
   mSol.receiveShadow = R.ombres;
   scene.add(mSol);
@@ -245,6 +258,13 @@ export function creerVillage(canvas, opts) {
   ft.push({ geo: new THREE.CylinderGeometry(0.5, 0.75, 2.1, 8), c: C.fontaine, m: M(0, 1.05, 0) });
   ft.push({ geo: new THREE.CylinderGeometry(1.5, 0.6, 0.45, 8), c: C.fontaine, m: M(0, 2.2, 0, 0, Math.PI / 8) });
   ft.push({ geo: new THREE.SphereGeometry(0.28, 8, 6), c: C.or, m: M(0, 2.7, 0) });
+  // fontaine plus riche : huit colonnettes dorées autour du bassin, vasque supérieure à festons, grande lanterne au sommet
+  for (let k = 0; k < 8; k++) { const a = k / 8 * Math.PI * 2 + Math.PI / 8; ft.push({ geo: new THREE.CylinderGeometry(0.14, 0.18, 1.25, 6), c: C.fontaine, m: M(Math.sin(a) * 4.15, 1.3, Math.cos(a) * 4.15) }); ft.push({ geo: new THREE.SphereGeometry(0.22, 8, 6), c: C.or, m: M(Math.sin(a) * 4.15, 2.05, Math.cos(a) * 4.15) }); }
+  ft.push({ geo: new THREE.CylinderGeometry(4.9, 5.1, 0.4, 8), c: '#d9c29a', m: M(0, 0.2, 0, 0, Math.PI / 8) }); ft.push({ geo: new THREE.CylinderGeometry(4.55, 4.55, 0.12, 8), c: C.turquoise, m: M(0, 0.44, 0, 0, Math.PI / 8) });
+  ft.push({ geo: new THREE.TorusGeometry(1.5, 0.12, 6, 8), c: C.or, m: M(0, 2.45, 0, Math.PI / 2, 0, Math.PI / 8) });
+  ft.push({ geo: new THREE.CylinderGeometry(0.18, 0.18, 0.7, 6), c: C.or, m: M(0, 3.05, 0) }); ft.push({ geo: new THREE.ConeGeometry(0.55, 0.5, 6), c: C.or, m: M(0, 3.65, 0) });
+  lanternes.push({ p: new THREE.Vector3(0, 3.0, 0), c: C.or, halo: true, gros: true });
+  for (const a of [Math.PI * 0.25, Math.PI * 1.25]) lanternes.push({ p: new THREE.Vector3(Math.sin(a) * 4.15, 2.5, Math.cos(a) * 4.15), c: '#ffb04a', halo: true, gros: true });
   const mFont = ombre(new THREE.Mesh(fusionner(ft), matVC));
   scene.add(mFont);
   const matEau = new THREE.MeshLambertMaterial({ color: C.eau, emissive: 0x1a6f7a, emissiveIntensity: 0.4, transparent: true, opacity: 0.88 });
@@ -281,22 +301,29 @@ export function creerVillage(canvas, opts) {
     cibles.push(mesh);
     lant.forEach(l => lanternes.push({ p: l.p.applyMatrix4(base), c: l.c, halo: l.halo }));
 
-    const icone = new THREE.Sprite(new THREE.SpriteMaterial({ map: texIcone(b.icone, b.couleur, b.etat !== 'ouvert'), depthWrite: false }));
-    icone.scale.set(3.2, 3.2, 1);
-    icone.position.set(pos.x, hTot + 2.4, pos.z);
-    icone.userData.b = b;
-    icone.renderOrder = 5;
+    // l'icône : un vrai objet 3D (livre, lanterne, goutte, dôme, tapis, loupe, tableau, chameau) posé au-dessus du toit
+    const icone = creerIcone3d(b.id, { halo });
+    const hautIcone = hTot + 1.15;
+    icone.position.set(pos.x, hautIcone, pos.z);
+    icone.rotation.y = ry + Math.PI;                       // la face du livre / du tableau regarde le centre de la place
+    const baseRot = icone.rotation.y;
+    icone.traverse(o => { if (o.isMesh) { o.userData.b = b; ombre(o); cibles.push(o); } });
+    const zoneTouche = new THREE.Mesh(new THREE.SphereGeometry(2.1, 8, 6), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false }));
+    zoneTouche.position.set(pos.x, hautIcone + 1.4, pos.z); zoneTouche.userData.b = b; scene.add(zoneTouche); cibles.push(zoneTouche);   // zone de toucher confortable (doigt)
     scene.add(icone);
-    cibles.push(icone);
+    const haloIcone = new THREE.Sprite(new THREE.SpriteMaterial({ map: halo, color: b.couleur, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0.35 }));
+    haloIcone.scale.setScalar(6.4); haloIcone.position.set(pos.x, hautIcone + 1.4, pos.z); haloIcone.renderOrder = 4; scene.add(haloIcone);
+    let sablier = null;
+    if (b.etat !== 'ouvert') { sablier = creerSablier(); sablier.scale.setScalar(1.1); sablier.position.set(pos.x + Math.cos(ry) * 2.7, hautIcone + 0.3, pos.z - Math.sin(ry) * 2.7); scene.add(sablier); }
 
-    const nom = new THREE.Sprite(new THREE.SpriteMaterial({ map: texNom(b.nom), depthWrite: false, transparent: true }));
-    nom.scale.set(8, 1, 1);
-    nom.position.set(pos.x, hTot + 0.55, pos.z);
+    const nom = new THREE.Sprite(new THREE.SpriteMaterial({ map: texNom(b.nom, b.couleur), depthWrite: false, transparent: true }));
+    nom.scale.set(11, 2.75, 1);
+    nom.position.set(pos.x, hTot - 0.25, pos.z);
     nom.renderOrder = 6;
     nom.visible = !!opts.noms;
     scene.add(nom);
 
-    maisons.push({ b, mesh, pos, a, icone, nom, hTot, phase: rnd() * 6 });
+    maisons.push({ b, mesh, pos, a, icone, haloIcone, sablier, nom, hTot, hautIcone, baseRot, phase: rnd() * 6 });
   }
 
   // ---------- porte du village, rempart, lampadaires ----------
@@ -333,6 +360,12 @@ export function creerVillage(canvas, opts) {
   for (let i = 0; i < 12; i++) {
     const a = i / 12 * Math.PI * 2 + rnd() * 0.3, r = 75 + rnd() * 35;
     deco.push({ geo: new THREE.SphereGeometry(1, 12, 6), c: i % 2 ? '#e8d3a0' : '#dcc28a', m: M(Math.sin(a) * r, -1, Math.cos(a) * r, 0, a, 0, 14 + rnd() * 12, 4 + rnd() * 4, 8 + rnd() * 6) });
+  }
+  // montagnes désertiques à l'horizon (formes facettées ; teintes chaudes puis violettes qui se fondent dans la brume)
+  for (let i = 0; i < 40; i++) {
+    const a = i / 40 * Math.PI * 2 + rnd() * 0.12, r = 205 + rnd() * 60, hh = 34 + rnd() * 46, base = 34 + rnd() * 34, tons = ['#c28a6e', '#b57a74', '#a5708a', '#9a6f98', '#cf9a78'];
+    deco.push({ geo: new THREE.ConeGeometry(base, hh, 5 + (i % 3)), c: tons[i % tons.length], m: M(Math.sin(a) * r, hh / 2 - 3, Math.cos(a) * r, 0, rnd() * 3, 0, 1, 1, 0.8 + rnd() * 0.5) });
+    deco.push({ geo: new THREE.ConeGeometry(base * 0.42, hh * 0.32, 5), c: '#f6dcb6', m: M(Math.sin(a) * r, hh - 3 - hh * 0.16, Math.cos(a) * r, 0, rnd() * 3) });   // sommet éclairé
   }
   const mDeco = ombre(new THREE.Mesh(fusionner(deco), matVC));
   scene.add(mDeco);
@@ -396,7 +429,18 @@ export function creerVillage(canvas, opts) {
     scene.add(m);
     return m;
   };
-  inst(geoPalmier, palmiers); inst(geoCypres, cypres); inst(geoBuisson, buissons);
+  // les palmiers se balancent doucement (le vent déplace le haut du tronc et les palmes, pas le pied)
+  const uTemps = { value: 0 }, matPalme = matVC.clone();
+  matPalme.onBeforeCompile = sh => { sh.uniforms.uTemps = uTemps; sh.vertexShader = 'uniform float uTemps;\n' + sh.vertexShader.replace('#include <begin_vertex>', `#include <begin_vertex>
+    float hv = max(position.y - 1.2, 0.0);
+    #ifdef USE_INSTANCING
+      float ph = instanceMatrix[3].x * 0.7 + instanceMatrix[3].z * 0.5;
+    #else
+      float ph = 0.0;
+    #endif
+    transformed.x += sin(uTemps * 1.35 + ph) * 0.05 * hv;
+    transformed.z += cos(uTemps * 1.05 + ph * 1.3) * 0.035 * hv;`); };
+  inst(geoPalmier, palmiers, matPalme); inst(geoCypres, cypres); inst(geoBuisson, buissons);
   const mFl = new THREE.InstancedMesh(geoFleur, new THREE.MeshLambertMaterial({ flatShading: true }), fleurs.length);
   const cf = new THREE.Color();
   fleurs.forEach((f, i) => { mFl.setMatrixAt(i, f.m); mFl.setColorAt(i, cf.set(f.c)); });
@@ -453,13 +497,14 @@ export function creerVillage(canvas, opts) {
 
   // ---------- caméra : tourner, zoomer, toucher ----------
   const portrait = () => innerWidth / innerHeight < 0.85;
-  const rDefaut = () => portrait() ? 58 : 50;
-  const PHI = 0.85;
-  const phiDefaut = () => portrait() ? 0.72 : PHI;
+  const rDefaut = () => portrait() ? 86 : 54;
+  const PHI = 0.98;
+  const phiDefaut = () => portrait() ? 0.88 : PHI;
   const cam = { theta: 0.5, phi: 1.1, r: 80, cible: new THREE.Vector3() };
   const but = { theta: 0, phi: phiDefaut(), r: rDefaut(), cible: new THREE.Vector3() };
-  let choisie = null, inactif = 0;
+  let choisie = null, survol = null, inactif = 0;
 
+  const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
   const pointeurs = new Map();
   let depart = null, distPince = 0;
   canvas.addEventListener('pointerdown', e => {
@@ -480,7 +525,7 @@ export function creerVillage(canvas, opts) {
       but.phi = THREE.MathUtils.clamp(but.phi - dy * 0.004, 0.55, 1.32);
     } else if (pointeurs.size === 2) {
       const d = ecart();
-      if (distPince > 0) but.r = THREE.MathUtils.clamp(but.r * distPince / d, 12, 75);
+      if (distPince > 0) but.r = THREE.MathUtils.clamp(but.r * distPince / d, 12, 95);
       distPince = d;
     }
     inactif = 0;
@@ -492,12 +537,17 @@ export function creerVillage(canvas, opts) {
     if (pointeurs.size < 2) distPince = 0;
     if (pointeurs.size === 0) depart = null;
   };
+  canvas.addEventListener('pointermove', e => {          // survol : la maison visée est mise en valeur (souris seulement)
+    if (e.pointerType !== 'mouse' || pointeurs.size) return;
+    ndc.set(e.clientX / innerWidth * 2 - 1, -(e.clientY / innerHeight) * 2 + 1); ray.setFromCamera(ndc, camera);
+    const hit = ray.intersectObjects(cibles, false)[0], b = hit ? hit.object.userData.b : null; survol = b ? maisons.find(m => m.b === b) || null : null; canvas.style.cursor = survol ? 'pointer' : '';
+  });
+  canvas.addEventListener('pointerleave', () => { survol = null; canvas.style.cursor = ''; });
   canvas.addEventListener('pointerup', fin);
   canvas.addEventListener('pointercancel', e => { pointeurs.delete(e.pointerId); depart = null; });
-  canvas.addEventListener('wheel', e => { e.preventDefault(); but.r = THREE.MathUtils.clamp(but.r * (1 + e.deltaY * 0.001), 12, 75); inactif = 0; }, { passive: false });
+  canvas.addEventListener('wheel', e => { e.preventDefault(); but.r = THREE.MathUtils.clamp(but.r * (1 + e.deltaY * 0.001), 12, 95); inactif = 0; }, { passive: false });
   function ecart() { const [a, b] = [...pointeurs.values()]; return Math.hypot(a.x - b.x, a.y - b.y) || 1; }
 
-  const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
   ray.camera = camera;
   function toucher(x, y) {
     ndc.set(x / innerWidth * 2 - 1, -(y / innerHeight) * 2 + 1);
@@ -567,6 +617,13 @@ export function creerVillage(canvas, opts) {
   majHeure();
   let prochainHeure = 0;
 
+  // petites lumières qui flottent au-dessus de la place (lucioles dorées, très discrètes)
+  const NL = R.leger ? 0 : 46, pl = new Float32Array(NL * 3), phl = new Float32Array(NL);
+  for (let i = 0; i < NL; i++) { const a = rnd() * 6.28, r = 3 + rnd() * 22; pl[i * 3] = Math.sin(a) * r; pl[i * 3 + 1] = 1 + rnd() * 5; pl[i * 3 + 2] = Math.cos(a) * r; phl[i] = rnd() * 6.28; }
+  const gL = new THREE.BufferGeometry(); gL.setAttribute('position', new THREE.BufferAttribute(pl, 3));
+  const lucioles = NL ? new THREE.Points(gL, new THREE.PointsMaterial({ color: 0xffe08a, size: 0.34, map: halo, transparent: true, opacity: 0.8, depthWrite: false, blending: THREE.AdditiveBlending })) : null; if (lucioles) scene.add(lucioles);
+  const luc0 = pl.slice();
+
   // ---------- boucle ----------
   const horloge = new THREE.Clock();
   let tTotal = 0, enMarche = true, enPause = false;
@@ -606,12 +663,19 @@ export function creerVillage(canvas, opts) {
       e.position.set(Math.cos(a) * 0.75, corps.position.y + Math.sin(a * 1.7) * 0.25, Math.sin(a) * 0.75);
     });
 
-    // icônes qui respirent
+    uTemps.value = tTotal;
+    if (lucioles) { for (let i = 0; i < NL; i++) { pl[i * 3] = luc0[i * 3] + Math.sin(tTotal * 0.5 + phl[i]) * 0.9; pl[i * 3 + 1] = luc0[i * 3 + 1] + Math.sin(tTotal * 0.8 + phl[i] * 2) * 0.5; pl[i * 3 + 2] = luc0[i * 3 + 2] + Math.cos(tTotal * 0.45 + phl[i]) * 0.9; } gL.attributes.position.needsUpdate = true; lucioles.material.opacity = 0.35 + 0.5 * facteurNuit + 0.15 * Math.sin(tTotal * 1.7); }
+    // icônes 3D : flottent, se balancent, brillent plus au survol / à la sélection
     maisons.forEach(m => {
-      const actif = m === choisie;
-      const s = (actif ? 4.6 : 4) + Math.sin(tTotal * (actif ? 4 : 1.6) + m.phase) * (actif ? 0.25 : 0.1);
-      m.icone.scale.set(s, s, 1);
-      m.icone.position.y = m.hTot + 2.8 + Math.sin(tTotal * 1.3 + m.phase) * 0.15;
+      const actif = m === choisie, survole = m === survol, f = actif ? 1 : survole ? 0.7 : 0;
+      const ech = m.icone.userData.base * (1 + 0.2 * f + Math.sin(tTotal * (actif ? 3.2 : 1.4) + m.phase) * (actif ? 0.04 : 0.015));
+      m.icone.scale.setScalar(m.icone.scale.x + (ech - m.icone.scale.x) * Math.min(1, dt * 8));
+      m.icone.position.y = m.hautIcone + Math.sin(tTotal * 1.3 + m.phase) * 0.22 + 0.25 * f;
+      m.icone.rotation.y = Math.atan2(camera.position.x - m.pos.x, camera.position.z - m.pos.z) + Math.sin(tTotal * 0.8 + m.phase) * 0.3 + (actif ? Math.sin(tTotal * 2.4) * 0.18 : 0);   // l'icône fait face au regard, avec un léger balancement
+      m.icone.traverse(o => { if (o.userData.tourne) o.rotation.y = tTotal * 1.6 + m.phase; });
+      m.haloIcone.position.y = m.icone.position.y + 1.4;
+      m.haloIcone.material.opacity = 0.28 + 0.18 * facteurNuit + 0.4 * f + Math.sin(tTotal * 2 + m.phase) * 0.05;
+      if (m.sablier) { m.sablier.rotation.y = tTotal * 0.8; m.sablier.position.y = m.hautIcone + 0.3 + Math.sin(tTotal * 1.6 + m.phase) * 0.12; }
     });
     anneau.material.opacity += ((choisie ? 0.55 + Math.sin(tTotal * 4) * 0.2 : 0) - anneau.material.opacity) * k;
 
@@ -652,6 +716,8 @@ export function creerVillage(canvas, opts) {
       const v = m.mesh.geometry.boundingSphere.center.clone().project(camera);
       return { x: (v.x + 1) / 2 * innerWidth, y: (1 - v.y) / 2 * innerHeight };
     },
+    ecranIcone(id) { const m = maisons.find(x => x.b.id === id); if (!m) return null; const v = m.icone.position.clone().add(new THREE.Vector3(0, 1.4, 0)).project(camera); return { x: (v.x + 1) / 2 * innerWidth, y: (1 - v.y) / 2 * innerHeight }; },
+    vignette(id) { try { return vignetteIcone(renderer, id, 192); } catch (e) { return null; } },
     infos: () => ({ appels: renderer.info.render.calls, triangles: renderer.info.render.triangles, maisons: maisons.length })
   };
 }

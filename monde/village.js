@@ -13,6 +13,8 @@ import { chargerMaisons, TEXTE_RESERVE } from './maisons-premium.js?v=1';
 import { mascotte } from './mascottes.js?v=2';
 import { PEAUX, NOMS_PEAUX, indicePeau, visageSVG } from './socle/peaux.js?v=2';
 
+const ICO_SON = '<svg viewBox="0 0 32 32" width="30" height="30" aria-hidden="true"><path d="M5 12h5l7-6v20l-7-6H5z" fill="#3b4a7a" stroke="#1f2a52" stroke-width="1.600" stroke-linejoin="round"/><path d="M21 11c2.500 2.600 2.500 7.400 0 10M24.500 8c4.500 4.500 4.500 11.500 0 16" fill="none" stroke="#3b4a7a" stroke-width="2.400" stroke-linecap="round"/></svg>', ICO_SON_OFF = '<svg viewBox="0 0 32 32" width="30" height="30" aria-hidden="true"><path d="M5 12h5l7-6v20l-7-6H5z" fill="#8a8fa8" stroke="#555a75" stroke-width="1.600" stroke-linejoin="round"/><path d="M22 12l7 8M29 12l-7 8" stroke="#d6455a" stroke-width="2.800" stroke-linecap="round"/></svg>';
+
 const $ = id => document.getElementById(id);
 const S = sauvegarde.get();
 // Portail d'entrée (socle/portail.js) et profil enfant actif (Espace famille) : voir socle/portail-logique.js
@@ -93,16 +95,16 @@ async function init() {
   const profil = profilEnfant();
   appliquerProfilEnfant(profil);
   let mod;
-  try { mod = await import('./scene.js?v=7'); }
+  try { mod = await import('./scene.js?v=9'); }
   catch (e) { return montrerErreur(e); }
   await portailPret();
 
   try {
     const p = new URLSearchParams(location.search);
-    village = mod.creerVillage($('scene'), {
+    village = window.__village = mod.creerVillage($('scene'), {
       reglages: R,
       heure: p.has('heure') ? parseFloat(p.get('heure')) : null,
-      noms: S.age === 'grands',
+      noms: true,                       // les noms restent sous les icônes pour tous les âges (plaques lisibles)
       surTap,
       surImage: image,
       surAmbiance: majAmbiance
@@ -153,7 +155,7 @@ majPeau();
 function entrerDansLeVillage(age) {
   if (dansLeVillage) return;
   sauvegarde.regler('age', age);
-  village && village.noms(age === 'grands');
+  village && village.noms(true);
   $('accueil').classList.add('cache');
   $('hud').classList.remove('cache');
   $('bulle').classList.remove('cache');
@@ -185,7 +187,7 @@ function ouvrirPanneau(b) {
   if (window.decorerUnivers) window.decorerUnivers(pan, pan.dataset.univers);
   const m = mascotte(b.univers);
   $('pan-icone').classList.toggle('avec-mascotte', !!m);
-  if (m) $('pan-icone').innerHTML = m; else $('pan-icone').textContent = b.icone;
+  if (m) $('pan-icone').innerHTML = m; else { const v = vignettes.get(b.id) || (village && village.vignette ? village.vignette(b.id) : null); if (v) { vignettes.set(b.id, v); $('pan-icone').innerHTML = `<img alt="" src="${v}">`; } else $('pan-icone').textContent = b.icone; }
   $('pan-nom').textContent = b.nom;
   $('pan-texte').textContent = b.texte;
   const n = sauvegarde.jeu(b.id).etoiles || 0;
@@ -227,6 +229,7 @@ const cheminsJeux = () => BATIMENTS.filter(b => b.lien).map(b => new URL(b.lien,
 // maisons du stockage privé : leur état (ouverte, réservée, bientôt) vient du serveur, sans bloquer l'ouverture du village
 chargerMaisons(BATIMENTS).catch(() => null);
 let cadre = null;
+const vignettes = new Map();   // vignettes 2D des icônes 3D (panneau d'information)
 const mediasJeu = new Set();
 
 function ouvrirJeu(b) {
@@ -321,7 +324,7 @@ function majPanneauSon() {
   }
   const on = !!s.musiqueActive;
   $('musique-bascule').setAttribute('aria-pressed', String(on));
-  $('btn-son').textContent = on && s.musique > 0 ? '🔊' : '🔇';
+  $('btn-son').innerHTML = on && s.musique > 0 ? ICO_SON : ICO_SON_OFF;
   $('btn-son').setAttribute('aria-label', on ? 'Sons et musique (musique activée)' : 'Sons et musique (musique coupée)');
   $('musique-absente').classList.toggle('cache', !musiqueIndisponible());
 }
@@ -371,7 +374,7 @@ $('reg-fermer').addEventListener('click', fermerReglages);
 $('reglages').addEventListener('click', e => { if (e.target.id === 'reglages') fermerReglages(); });
 $('reg-sons').addEventListener('click', () => { fermerReglages(); ouvrirPanneauSon(); });
 document.querySelectorAll('#reglages [data-age]').forEach(b => b.addEventListener('click', () => {
-  sauvegarde.regler('age', b.dataset.age); village && village.noms(b.dataset.age === 'grands'); majBascules(); goutte();
+  sauvegarde.regler('age', b.dataset.age); village && village.noms(true); majBascules(); goutte();
 }));
 document.querySelectorAll('#reglages [data-qualite]').forEach(b => b.addEventListener('click', () => {
   if (b.dataset.qualite === qualite) return;
