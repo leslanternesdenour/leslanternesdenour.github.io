@@ -87,12 +87,23 @@ function texHalo() {
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
 }
 
-function texIcone(emoji, couleur, bientot) {
+function texIcone(emoji, couleur, bientot, image) {
   const c = document.createElement('canvas'); c.width = c.height = 256;
   const g = c.getContext('2d');
-  g.beginPath(); g.arc(128, 128, 112, 0, Math.PI * 2);
-  g.fillStyle = '#fff8e7'; g.fill();
-  g.lineWidth = 16; g.strokeStyle = couleur; g.stroke();
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 2;
+  const fond = () => {
+    g.beginPath(); g.arc(128, 128, 112, 0, Math.PI * 2);
+    g.fillStyle = '#fff8e7'; g.fill();
+    if (image) { const r = g.createRadialGradient(128, 112, 10, 128, 128, 112); r.addColorStop(0, 'rgba(255,253,243,1)'); r.addColorStop(0.55, 'rgba(255,248,231,1)'); r.addColorStop(1, couleur + '55'); g.fillStyle = r; g.fill(); }
+    g.lineWidth = 16; g.strokeStyle = couleur; g.stroke();
+  };
+  fond();
+  if (image) {            // icône 3D dédiée (image rendue en 3D, fond transparent), centrée dans la pastille
+    const img = new Image();
+    img.onload = () => { g.save(); g.beginPath(); g.arc(128, 128, 106, 0, Math.PI * 2); g.clip(); g.clearRect(0, 0, 256, 256); fond(); g.save(); g.beginPath(); g.arc(128, 128, 106, 0, Math.PI * 2); g.clip(); g.drawImage(img, 6, 8, 244, 244); g.restore(); g.restore(); t.needsUpdate = true; };
+    img.src = new URL(image, import.meta.url).href;
+    return t;
+  }
   g.font = '128px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
   g.textAlign = 'center'; g.textBaseline = 'middle';
   g.globalAlpha = bientot ? 0.55 : 1;
@@ -103,7 +114,7 @@ function texIcone(emoji, couleur, bientot) {
     g.font = '56px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
     g.fillText('⏳', 200, 204);
   }
-  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 2; return t;
+  return t;
 }
 
 function texNomAncien(texte) {
@@ -314,7 +325,7 @@ export function creerVillage(canvas, opts) {
     lant.forEach(l => lanternes.push({ p: l.p.applyMatrix4(base), c: l.c, halo: l.halo }));
 
     // icônes et noms : retour au modèle d'origine (pastille ronde avec pictogramme, plaque de nom au-dessus du toit)
-    const icone = new THREE.Sprite(new THREE.SpriteMaterial({ map: texIcone(b.icone, b.couleur, b.etat !== 'ouvert'), depthWrite: false }));
+    const icone = new THREE.Sprite(new THREE.SpriteMaterial({ map: texIcone(b.icone, b.couleur, b.etat !== 'ouvert', b.image), depthWrite: false }));
     icone.scale.set(3.2, 3.2, 1);
     icone.position.set(pos.x, hTot + 2.4, pos.z);
     icone.userData.b = b;
