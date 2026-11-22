@@ -25,7 +25,7 @@ input[type=search]{flex:1;min-width:160px;min-height:44px;border-radius:12px;bor
 <audio id="son" preload="none"></audio>
 <script>
 (async function () {
-  var JEUX = { 'chasse-aux-mots': 'La Chasse aux mots', 'mysteres-desert': 'Les Mystères du désert', 'quiz-nour': 'Les Quiz de Nour', 'ecole-lettres': 'L\'École des lettres arabes', 'ecole-lecture': 'Je découvre la lecture arabe' };
+  var JEUX = { 'chasse-aux-mots': 'La Chasse aux mots', 'mysteres-desert': 'Les Mystères du désert', 'quiz-nour': 'Les Quiz de Nour', 'ecole-lettres': 'L\'École des lettres arabes', 'ecole-lecture': 'Je découvre la lecture arabe', 'ecole-chiffres': 'Les chiffres et les nombres arabes' };
   var racine = new URL('../../../', location.href).href, notes = {}; try { notes = JSON.parse(localStorage.getItem('ldn_ecoute_voix') || '{}'); } catch (e) {}
   var nom = {}, roles = {}; try { (await (await fetch('voix-nour.json')).json()).voix.forEach(function (v) { nom[v.id] = v.nom; }); } catch (e) {} try { roles = (await (await fetch('voix-roles.json')).json())._associations || {}; } catch (e) {}
   var donnees = {}, jeu = 'chasse-aux-mots', filtre = 'tout', son = document.getElementById('son'), cle = function (j, id) { return j + '/' + id; };
