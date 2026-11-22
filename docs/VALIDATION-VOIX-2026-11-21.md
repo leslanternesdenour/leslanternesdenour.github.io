@@ -54,3 +54,5 @@ Les clips validés peuvent être branchés (après accord). Les refusés sont à
 - **Lot 6 (relu)** : calendrier/ms10 validée. **TOUT EST VALIDÉ : 237 phrases (68 jeux + 169 calendrier) avec la voix de la narratrice.** Prochaine étape : branchement dans les jeux sur une branche à part, puis essai par le client avant preproduction.
 
 - **Accueil du portail (lot 22, 22/11/2026)** : prise 1 (lot 21) rejetée (prononciation de مَرْحَبًا). Candidats : **B et D validés** (mot arabe sans tanwin final, « marḥabā », modèles eleven_v4 et eleven_v3) ; A, C, E, F, G, H refusés (tanwin « -an », sans voyelles, modèle multilingue). **Mis en service : B** (même modèle que le français et les autres voix). D disponible : `python3 outils/voix/choisir-accueil.py 22 D --valide`.
+
+- **Lot 23 (Grand Voyage, 19 clips régénérés le 18/11 : DEC-019/040/041, MAS-001, PNJ-001/007/013/014, QST-001 à 008, 017, 019, 037)** : 19/19 validés par le client le 22/11/2026. Ces fichiers étaient déjà en service (identiques à la préproduction et à la production Cloudflare) : aucun remplacement nécessaire. Les 193 autres phrases du Grand Voyage (212 au total) n'ont pas été passées à l'écoute.
