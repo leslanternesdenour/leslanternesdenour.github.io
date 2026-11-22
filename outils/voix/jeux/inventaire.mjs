@@ -9,9 +9,10 @@ export async function construire(jeu) {
   const m = await import(pathToFileURL(path.join(RACINE, JEUX[jeu])).href);
   const dossier = path.join(RACINE, 'audio/jeux', jeu), fich = path.join(dossier, 'manifeste.json');
   fs.mkdirSync(dossier, { recursive: true });
+  const roles = JSON.parse(fs.readFileSync(path.join(RACINE, 'outils/voix/jeux/voix-roles.json'), 'utf8'));
   let ancien = {}; if (fs.existsSync(fich)) for (const p of JSON.parse(fs.readFileSync(fich, 'utf8')).phrases || []) ancien[p.id] = p;
   const phrases = m.inventaire().map(p => {
-    const a = ancien[p.id], present = a && a.fichier && fs.existsSync(path.join(dossier, a.fichier)) && a.texte === p.texte;       // texte modifié = à régénérer
+    const a = ancien[p.id], present = a && a.fichier && fs.existsSync(path.join(dossier, a.fichier)) && a.texte === p.texte && a.voixId === roles[p.role];       // texte modifié OU voix différente de celle du rôle = à régénérer
     return { id: p.id, role: p.role, langue: p.langue, texte: p.texte, sousTitre: p.texte, fichier: present ? a.fichier : null, duree: present ? a.duree : 0, prononciationVerifiee: present ? !!a.prononciationVerifiee : false, voixId: present ? a.voixId || null : null };
   });
   const sortie = { jeu, genere: 'inventaire.mjs', total: phrases.length, enregistrees: phrases.filter(p => p.fichier).length, phrases };

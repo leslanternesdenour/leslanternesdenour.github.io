@@ -1,7 +1,7 @@
 {
- "_note": "Un rôle = UNE voix stable, la même dans tous les jeux. Source : voix déjà présentes dans le compte ElevenLabs du fondateur (recensées le 22/11/2026). Les 10 voix « Nour - … » créées pour le projet atteignent la limite de 10 : AUCUNE voix n'est créée ; les nouveaux personnages réutilisent celles des personnages existants, choisies selon l'âge, le sexe et le caractère. Ne jamais modifier une association déjà utilisée.",
+ "_note": "Un rôle = UNE voix stable, la même dans tous les jeux. Seules les 10 voix « Nour - … » du compte ElevenLabs sont autorisées (voir voix-nour.json) ; la voix de la mascotte Nour est réservée à Nour. AUCUNE voix n'est créée ; les nouveaux personnages réutilisent celles des personnages existants. Ne jamais modifier une association déjà utilisée.",
  "narratrice": "hddT377hAwvRoOKqMj0E",
- "narrateur": "kSNoLVC4Ox0vkBz1IKux",
+ "narrateur": "8aQsvxWbavqMpn00DVgR",
  "loumi": "pzZMNBXJh6wfnYfk2wLK",
  "perso-karim": "lM87a4ey2IQxE37nDvti",
  "perso-hakim": "hbGEl9097evPuRZp5BNY",
@@ -11,7 +11,7 @@
  "perso-samir": "4sifSi2zIrBX7VkoWfjD",
  "_associations": {
   "narratrice": "Nour - Narratrice (maîtresse) — voix des contenus existants",
-  "narrateur": "Damien Doré - Deep Narrator (voix professionnelle française, narrateur masculin)",
+  "narrateur": "Nour - Salim (voyageur), homme d'une quarantaine d'années, chaleureux — narrateur masculin (remplace « Damien Doré », voix extérieure non autorisée). Partagée avec l'explorateur Idriss : seul rôle à partager une voix, car 9 voix « Nour » sont disponibles (celle de la mascotte est réservée) pour 10 rôles.",
   "loumi": "Nour - Amina (jeune femme d'une vingtaine d'années : claire, vive — Loumi est une petite lanterne joyeuse ; distincte de Nour-mascotte)",
   "perso-karim": "Nour - Karim (marchand) — le même Karim que le marchand du Grand Voyage",
   "perso-hakim": "Nour - Hakim (ancien) — le même Hakim que le sage du village",

@@ -9,7 +9,10 @@ import { construire } from './inventaire.mjs';
 const RACINE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 const [jeu, ...opts] = process.argv.slice(2); if (!jeu) { console.error('Indiquer le jeu (ex. chasse-aux-mots)'); process.exit(1); }
 const dry = opts.includes('--dry'), role = opts.includes('--role') ? opts[opts.indexOf('--role') + 1] : null, max = opts.includes('--max') ? Number(opts[opts.indexOf('--max') + 1]) : Infinity;
+const AUTORISEES = JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), 'voix-nour.json'), 'utf8')).voix;
 const roles = JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), 'voix-roles.json'), 'utf8')), R = roles.reglages;
+// GARDE-FOU : chaque rôle doit utiliser l'une des 10 voix « Nour » autorisées, sinon rien n'est généré
+for (const [k, v] of Object.entries(roles)) if (typeof v === 'string' && !k.startsWith('_') && !AUTORISEES.some(a => a.id === v)) { console.error(`REFUSÉ : le rôle « ${k} » utilise une voix hors des 10 voix « Nour » (${v}). Aucune génération.`); process.exit(1); }
 const m = await construire(jeu), dossier = path.join(RACINE, 'audio/jeux', jeu), fich = path.join(dossier, 'manifeste.json');
 const aFaire = m.phrases.filter(p => !p.fichier && (!role || p.role === role));
 const faisables = aFaire.filter(p => roles[p.role]), sansVoix = aFaire.filter(p => !roles[p.role]);
@@ -18,7 +21,9 @@ console.log(`${jeu} : ${m.enregistrees}/${m.total} déjà enregistrées ; ${fais
 if (dry) process.exit(0);
 // Contrôle : chaque voix attribuée doit exister dans le compte (aucune voix n'est créée ici)
 { const r = await fetch('https://api.elevenlabs.io/v1/voices'); if (!r.ok) { console.error('Accès ElevenLabs indisponible (' + r.status + ') : rien généré. Les textes et le manifeste sont prêts.'); process.exit(0); }
-  const ids = new Set((await r.json()).voices.map(v => v.voice_id)); const inconnues = Object.entries(roles).filter(([k, v]) => typeof v === 'string' && !k.startsWith('_') && k !== 'reglages' && !ids.has(v));
+  const compte = (await r.json()).voices; const ids = new Set(compte.map(v => v.voice_id));
+  for (const a of AUTORISEES) { const c = compte.find(v => v.voice_id === a.id); if (!c || c.name !== a.nom) { console.error('Voix « Nour » introuvable ou renommée dans le compte :', a.nom, a.id); process.exit(1); } }       // les 10 voix sont vérifiées avant toute génération const inconnues = Object.entries(roles).filter(([k, v]) => typeof v === 'string' && !k.startsWith('_') && k !== 'reglages' && !ids.has(v));
+  const inconnues = Object.entries(roles).filter(([k, v]) => typeof v === 'string' && !k.startsWith('_') && k !== 'reglages' && !ids.has(v));
   if (inconnues.length) { console.error('Voix introuvables dans le compte :', inconnues.map(([k]) => k).join(', ')); process.exit(1); } }
 let n = 0;
 for (const p of faisables) {
