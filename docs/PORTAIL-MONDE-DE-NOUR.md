@@ -38,3 +38,8 @@ Modifiés : `monde/index.html`, `monde/village.js` (entrée directe, attente du 
 ## Tests
 - `node --test outils/tests/portail-logique.test.mjs` (16 tests) : règle « une fois par session », synchronisation voix/portes, profil sans écrasement, fichier audio cohérent.
 - `bash outils/tests/portail.sh` : parcours complet dans Chrome avec émulateur (parent, formule Famille simulée, 2 enfants, portail, voix, entrée directe, progression, déconnexion/reconnexion sur « nouvel appareil », autre enfant, retour d'un jeu, visiteur, lecture automatique refusée), ordinateur **et** téléphone.
+
+## Vérifié sur le site de préproduction (22/11/2026, commit 2122dfe)
+Chrome réel sur https://lanternes-de-nour.pages.dev/monde/, ordinateur et téléphone, visiteur et profil enfant : 28/28 vérifications (portail affiché, voix automatique en une seule lecture, bouton « Entrer », entrée directe dans le village sans « Qui joue ? », âge/personnage du profil, retour d'un mini-jeu sans portail, aucune erreur JavaScript). Parcours complet avec comptes (parent, 2 enfants, Famille, déconnexion/reconnexion, progression) : 83/83 sur le serveur local avec émulateur ; suite complète `tout.sh` : verte.
+**Non vérifié en conditions réelles** : la connexion Google / e-mail d'un vrai parent sur Firebase (demande les identifiants du client ; aucun compte réel n'a été créé par les tests).
+**À valider par le client** : la prononciation de « مَرْحَبًا » dans le clip d'accueil (prise 1 sur 3).
