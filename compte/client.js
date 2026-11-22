@@ -7,7 +7,7 @@
 //  - toute réponse 401/403 du serveur et toute déconnexion purgent les caches privés du service worker.
 import { FIREBASE, EMULATEUR } from './config.js?v=2';
 
-export const CLES_JEU = ['ablutions', 'priere', 'lanternes2', 'monde', 'monde_voyage', 'maison_mots'];
+export const CLES_JEU = ['ablutions', 'priere', 'lanternes2', 'monde', 'monde_voyage', 'maison_mots', 'aventure_mots'];
 const CLE_PROFIL = 'ldn_profil_actif', CLE_EMPREINTE = 'ldn_synchro_empreinte';
 const lsGet = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
 const lsSet = (k, v) => { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} };

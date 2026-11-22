@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>La Chasse aux mots – Les Lanternes de Nour</title>
+<meta name="description" content="Explore le marché, la maison, le jardin, la bibliothèque, l'oasis et le village : retrouve les objets cachés et apprends leurs noms en français et en arabe.">
+<meta name="theme-color" content="#191345">
+<link rel="icon" href="../../intro/favicon-48.png">
+<link rel="stylesheet" href="jeu.css?v=1">
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js" } }
+</script>
+</head>
+<body>
+<canvas id="scene" aria-label="Décor 3D de la Chasse aux mots : touche l'objet demandé"></canvas>
+
+<!-- Accueil : âge, lieux, niveaux -->
+<main id="accueil" aria-labelledby="titre-jeu">
+  <header><a class="retour-aventures" href="../">‹ Les Aventures</a><h1 id="titre-jeu">🔎 La Chasse aux mots</h1>
+    <div class="outils"><button id="btn-collection" class="rond" aria-label="Ma collection de mots" title="Ma collection">📖</button><button id="btn-reglages" class="rond" aria-label="Réglages" title="Réglages">⚙️</button></div></header>
+  <p id="bilan" class="bilan" aria-live="polite"></p>
+  <section id="age-bloc" class="cache"><h2>Quel âge as-tu ?</h2>
+    <div class="ages"><button data-age="petits"><b>3 – 5 ans</b><span>grandes images, peu de lecture</span></button><button data-age="moyens"><b>6 – 8 ans</b><span>mots et petits défis</span></button><button data-age="grands"><b>9 – 10 ans</b><span>énigmes et vocabulaire</span></button></div></section>
+  <section id="lieux-bloc" class="cache"><h2>Où veux-tu chercher ?</h2><div id="lieux" class="lieux"></div><div id="niveaux" class="niveaux cache"></div></section>
+</main>
+
+<!-- Jeu -->
+<div id="hud" class="cache">
+  <div class="haut"><button id="retour" class="rond" aria-label="Retour au choix des lieux">‹</button><span id="titre-lieu"></span>
+    <div class="outils"><button id="reecouter" class="rond" aria-label="Réécouter la consigne" title="Réécouter">🔊</button><button id="aide" class="rond" aria-label="Un petit indice" title="Indice">💡</button></div></div>
+  <button id="cible" class="cible cache" aria-live="polite" aria-label="La consigne : touche pour la réécouter"></button>
+  <button id="gauche" class="nav g" aria-label="Tourner à gauche">‹</button><button id="droite" class="nav d" aria-label="Tourner à droite">›</button>
+</div>
+<p id="sous-titres" class="sous-titres cache" role="status" aria-live="polite"></p>
+
+<!-- Fin de manche -->
+<section id="fin" class="carte cache" role="dialog" aria-labelledby="fin-titre"><h2 id="fin-titre"></h2><p id="fin-etoiles" class="grandes-etoiles" aria-hidden="true"></p>
+  <div id="fin-recompenses" class="recompenses"></div><ul id="fin-mots" class="mots"></ul>
+  <div class="actions"><button id="fin-suite" class="principal"></button><button id="fin-rejouer">Rejouer</button><button id="fin-accueil">Choisir un lieu</button></div></section>
+
+<!-- Collection -->
+<section id="collection" class="carte cache" role="dialog" aria-labelledby="collection-titre"><h2 id="collection-titre">📖 Ma collection de mots</h2><div id="collection-dip" class="recompenses"></div><ul id="collection-liste" class="mots grille"></ul><div class="actions"><button id="collection-fermer" class="principal">Fermer</button></div></section>
+
+<!-- Réglages -->
+<section id="reglages" class="carte petit cache" role="dialog" aria-labelledby="reglages-titre"><h2 id="reglages-titre">Réglages</h2>
+  <label class="ligne"><input type="checkbox" id="st-case" checked> Sous-titres</label>
+  <label class="ligne">Volume de la voix <input type="range" id="volume" min="0" max="1" step="0.05" value="1" aria-label="Volume de la voix"></label>
+  <button id="changer-age">Changer mon groupe d'âge</button><div class="actions"><button id="reglages-fermer" class="principal">Fermer</button></div></section>
+
+<script type="module" src="jeu.js?v=1"></script>
+<script src="../../compte/barre.js?v=3" defer data-menu="1" data-pos="bas-droite"></script>
+</body>
+</html>

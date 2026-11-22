@@ -5,6 +5,9 @@
 //                 + étoiles de la Chasse aux mots (clé « maison_mots », 6 max : 3 par jeu)
 //   🏮 lanternes = lanternes allumées dans le calendrier du Ramadan (tous les profils) + lanternes cachées trouvées dans le Grand Voyage
 
+// Les Aventures des Lanternes : « La Chasse aux mots » (clé « aventure_mots ») — étoiles (90 max) et lanternes (une par lieu et niveau réussis)
+import { lire as lireAventureMots, etoilesTotal as etoilesMots, lanternes as lanternesMots } from '../../aventures/chasse-aux-mots/logique.js';
+
 const JEUX_ABLUTIONS = ['g1', 'g2', 'g3', 'g4'];
 const JEUX_PRIERE = ['g1', 'g3', 'g4'];
 
@@ -12,12 +15,13 @@ const etoilesDe = (p, jeux) => p ? jeux.reduce((s, k) => s + Math.max(0, Math.mi
 
 // lire(cle) → objet JSON ou null
 export function calculerRecompenses(lire) {
-  const abl = lire('ablutions'), pri = lire('priere'), cal = lire('lanternes2'), voy = lire('monde_voyage'), mots = lire('maison_mots');
+  const abl = lire('ablutions'), pri = lire('priere'), cal = lire('lanternes2'), voy = lire('monde_voyage'), mots = lire('maison_mots'), av = lireAventureMots(lire('aventure_mots'));
 
   const ablutions = etoilesDe(abl, JEUX_ABLUTIONS);
   const priere = etoilesDe(pri, JEUX_PRIERE);
   const chasse = mots && mots.etoiles ? etoilesDe(mots.etoiles, ['paires', 'bonmot']) : 0;
 
+  const aventureEtoiles = etoilesMots(av), aventureLanternes = lanternesMots(av);
   let lanternesRamadan = 0;
   const jeuxRamadan = new Set();
   if (cal && Array.isArray(cal.kids)) cal.kids.forEach(k => {
@@ -30,14 +34,15 @@ export function calculerRecompenses(lire) {
   const lanternesVoyage = new Set(ramasses.filter(k => typeof k === 'string' && k.startsWith('lanterne'))).size;
 
   return {
-    etoiles: ablutions + priere + jeuxRamadan.size + chasse,
-    lanternes: lanternesRamadan + lanternesVoyage,
+    etoiles: ablutions + priere + jeuxRamadan.size + chasse + aventureEtoiles,
+    lanternes: lanternesRamadan + lanternesVoyage + aventureLanternes,
     jeux: {
       ablutions: { etoiles: ablutions, appris: !!(abl && abl.learned) },
       priere: { etoiles: priere, appris: !!(pri && pri.learn) },
       ramadan: { etoiles: jeuxRamadan.size, lanternes: lanternesRamadan },
       desert: { lanternes: lanternesVoyage },
-      mots: { etoiles: chasse }
+      mots: { etoiles: chasse },
+      chasse_aux_mots: { etoiles: aventureEtoiles, lanternes: aventureLanternes, appris: av.trouves.length }
     }
   };
 }
