@@ -458,3 +458,6 @@ body.jumelles-actives #scene{filter:none}
 @keyframes besoin-doux{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 @media (prefers-reduced-motion:reduce){#soins .besoin.bas{animation:none}}
 @media (max-width:480px){#soins .besoin{width:40px;height:40px}#soins .besoin .ib{font-size:19px;line-height:34px}#soins{gap:6px}}
+/* Réglages : le panneau défile quand il est plus haut que l'écran (la section « Compte » est tout en bas) */
+#panneau-reglages{max-height:calc(100% - 96px - var(--haut));overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+#panneau-reglages{z-index:60}

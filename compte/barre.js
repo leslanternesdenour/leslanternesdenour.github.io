@@ -10,6 +10,7 @@
   window.__ldnBarre = 1;
   var s = document.currentScript;
   var pos = (s && s.getAttribute('data-pos')) || 'haut-droite';
+  var modeMenu = !!(s && s.getAttribute('data-menu'));      // page de jeu : « Espace famille » et « Se déconnecter » vivent dans le menu Paramètres
   var decalage = parseInt((s && s.getAttribute('data-decalage')) || '0', 10) || 0;    // pixels sous les boutons du haut de la page (ex. le village)
   var base = s ? new URL('./', s.src).href : new URL('/compte/', location.href).href;        // …/compte/
   var racine = new URL('../', base).href;                                                      // racine du site
@@ -37,7 +38,9 @@
   function afficher(moi) {
     if (document.getElementById('ldn-compte')) return;
     css();
+    if (moi.connecte && modeMenu) return;
     var b = el('div'); b.id = 'ldn-compte'; b.className = pos; b.setAttribute('role', 'navigation'); b.setAttribute('aria-label', 'Compte');
+    if (moi.connecte && modeMenu) return;          // rien n'est affiché en permanence : les boutons sont dans les Paramètres
     if (!moi.connecte) {
       b.appendChild(el('a', 'p', '🔑 Se connecter', cible + '#connexion'));
       b.appendChild(el('a', 'plus', 'Créer un compte', cible + '#inscription'));    // sur petit écran : « Se connecter » seul (l'onglet « Créer un compte » est sur la page suivante)
@@ -56,10 +59,35 @@
     document.body.appendChild(b);
   }
 
+  // Section « Compte » (connecté seulement), tout en bas d'un menu Paramètres : <div data-compte-reglages></div>
+  function sectionMenu(moi) {
+    var cont = document.querySelectorAll('[data-compte-reglages]');
+    if (!cont.length || !moi.connecte) return;
+    var st = document.getElementById('ldn-compte-css2');
+    if (!st) { st = document.createElement('style'); st.id = 'ldn-compte-css2';
+      st.textContent = '.ldn-cs-section{display:flex;flex-direction:column;gap:16px;margin-top:32px;padding-top:20px;border-top:2px solid rgba(29,111,122,.35)}' +
+        '.ldn-cs-section .ldn-cs-t{margin:0;font:800 15px/1.2 Nunito,system-ui,sans-serif;color:#1d6f7a;text-transform:uppercase;letter-spacing:.04em}' +
+        '.ldn-cs-section .ldn-cs-p{margin:0;font:700 14px/1.3 Nunito,system-ui,sans-serif;color:#5a4a30}' +
+        '.ldn-cs-section a,.ldn-cs-section button{display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 16px;border-radius:14px;border:2px solid #1d8f9c;background:#fff;color:#1d3a5e;font:800 16px/1 Nunito,system-ui,sans-serif;text-decoration:none;cursor:pointer;width:100%;box-sizing:border-box}' +
+        '.ldn-cs-section button.ldn-cs-quitter{border-color:#c9776b;color:#8a2f22}' +
+        '.ldn-cs-section a:focus-visible,.ldn-cs-section button:focus-visible{outline:3px solid #f5b942;outline-offset:2px}';
+      (document.head || document.documentElement).appendChild(st); }
+    cont.forEach(function (c) {
+      if (c.querySelector('.ldn-cs-section')) return;
+      var sec = el('div', 'ldn-cs-section'); var pr = profil();
+      sec.appendChild(el('p', 'ldn-cs-t', 'Compte'));
+      if (pr && pr.surnom) sec.appendChild(el('p', 'ldn-cs-p', 'Profil actif : ' + (pr.avatar === 'fille' ? '👧 ' : '👦 ') + pr.surnom));
+      sec.appendChild(el('a', '', '👨‍👩‍👧 Espace famille', base));
+      var q = el('button', 'ldn-cs-quitter', 'Se déconnecter'); q.type = 'button';
+      q.onclick = function () { q.disabled = true; import(base + 'client.js?v=1').then(function (C) { return C.deconnexion(); }).catch(function () {}).then(function () { location.reload(); }); };
+      sec.appendChild(q); c.appendChild(sec);
+    });
+  }
+
   function lancer() {
     fetch(racine + 'api/moi', { credentials: 'same-origin', cache: 'no-store' })
       .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (j) { if (j && typeof j.connecte === 'boolean') afficher(j); })
+      .then(function (j) { if (j && typeof j.connecte === 'boolean') { afficher(j); sectionMenu(j); } })
       .catch(function () {});
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', lancer); else lancer();

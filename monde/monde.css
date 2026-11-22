@@ -169,3 +169,6 @@ input[type=range]:disabled{opacity:.45}
 .choix-peau button[aria-pressed=true]::after{content:"✓";position:absolute;inset:0;display:grid;place-items:center;font:800 18px Nunito,sans-serif;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.6)}
 .choix-peau button:focus-visible{outline:3px solid #1b3a57;outline-offset:3px}
 .choix-perso button[aria-pressed=true]{background:#fff3d6;color:#5a3a08;box-shadow:inset 0 0 0 4px #f5b942,0 4px 0 #d9952a}
+/* Réglages : la fenêtre défile si elle est plus haute que l'écran (la section « Compte » est tout en bas) */
+#reglages .carte{max-height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+#reglages{z-index:60}
