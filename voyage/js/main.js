@@ -40,7 +40,7 @@ import { mascotte } from '../../monde/mascottes.js?v=3';
 import { creerLoumi } from './loumi.js?v=5';
 import { creerHabitants } from './habitants.js?v=2';
 import { creerHud } from './hud.js?v=1';
-import { noeud as noeudLoumi, depart as departLoumi } from './loumi-dialogues.js?v=1';
+import { noeud as noeudLoumi, depart as departLoumi } from './loumi-dialogues.js?v=2';
 import { creerSoins, BESOINS, INFOS, LIEUX_SOINS, DUREES as DUREES_SOINS, poseSoin, PLANCHER, BAS } from './soins.js?v=2';
 
 const $ = id => document.getElementById(id);

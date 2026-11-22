@@ -73,3 +73,11 @@ test('Nour (goutte) : habitant facultatif, DÉSACTIVÉ par défaut, sans lien av
   assert.ok(/nourHabitant: false/.test(main), 'désactivé par défaut'); assert.ok(/if \(etat\.options\.nourHabitant === true\)/.test(main), 'activé seulement par réglage explicite');
   const av = lire('aventure.js'); assert.ok(!/habitants|nourHabitant/.test(av), 'les missions ne connaissent pas les habitants');
 });
+
+test('Étape 5 : les explications de Loumi (eau, nourriture, repos, câlins, avant de partir) existent, sont atteignables depuis « montures » et ne sont jamais automatiques', () => {
+  for (const id of ['soins', 'eau', 'foin', 'repos', 'calin', 'avant']) assert.ok(NOEUDS[id], id);
+  assert.ok(NOEUDS.montures.choix.some(c => c.vers === 'soins') && NOEUDS.montures.choix.some(c => c.vers === 'avant'));
+  assert.ok(NOEUDS.montures.texte.startsWith("Les montures vivent à l'écurie, avec Nabil, leur gardien."), 'texte existant conservé');
+  const main = lire('main.js');
+  assert.ok(!/(setInterval|requestAnimationFrame)[^;]*parlerLoumi/.test(main) && !/majVeille[^}]*parlerLoumi/.test(main), 'aucun appel automatique de la conversation');
+});
