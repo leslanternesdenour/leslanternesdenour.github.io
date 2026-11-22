@@ -49,7 +49,7 @@ NODE_USE_ENV_PROXY=1 NODE_EXTRA_CA_CERTS=/root/.ccr/ca-bundle.crt node outils/mi
 4. Mettre à jour `docs/MIGRATION-PRODUCTION.md` (état final) et le rapport demandé : transféré, opérationnel, fichiers/branches, commits, modifications DNS, tests, erreurs, restes, adresse publique définitive.
 
 ## 5. Points encore OUVERTS indépendants de la migration (à rappeler au client)
-- **Voix du portail** : la prononciation de « مَرْحَبًا » a été rejetée ; **aucune voix n'est en service**. Candidats à écouter : `https://preproduction.lanternes-de-nour.pages.dev/outils/voix/lot?n=22` ; après validation : `python3 outils/voix/choisir-accueil.py 22 <A..H> --valide` (puis `promouvoir.sh --pousser`). Sans candidat correct : enregistrement humain.
+- **Voix du portail** : validée par le client le 22/11 (lot 22, candidats B et D) ; **B en service** (D disponible via `choisir-accueil.py 22 D --valide`). Question ouverte : la légende affichée « مَرْحَبًا » (tanwin) diffère du son validé « مَرْحَبَا ».
 - **Portail** : ancienne animation aux lanternes restaurée, **en attente de validation explicite du client**.
 - Aucun paiement réel (Stripe non configuré en production), stockage Premium non activé, 5 maisons Premium et 13 voix arabes humaines à venir, connexion Apple reportée.
 - Voix du Grand Voyage : branche `voix-reparation` jamais déployée (à écouter avant décision).

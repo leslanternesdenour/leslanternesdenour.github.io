@@ -1,8 +1,8 @@
 // Parcours COMPLET du portail du Monde de Nour (ancienne « ouverture magique » aux lanternes, RESTAURÉE) dans un vrai navigateur, contre la
 // préproduction locale AVEC ÉMULATEUR : parent → compte familial → profil enfant → portail (lanternes une à une, porte, voix, bouton) →
 // entrée directe dans le monde → progression conservée → déconnexion / nouvelle connexion → autre enfant → retour d'un mini-jeu.
-// Ordinateur ET téléphone. Aucune voix validée n'est en service : un clip d'ESSAI (la prise rejetée, jamais publiée) est servi uniquement
-// dans le navigateur de test pour vérifier la synchronisation ; le scénario « sans voix » vérifie le comportement réel du site.
+// Ordinateur ET téléphone. La voix VALIDÉE en service est testée telle quelle (sinon, un clip d'ESSAI est servi
+// uniquement dans le navigateur de test) ; le scénario « sans voix » est simulé par interception.
 // Démarrer : node outils/construire.mjs && LDN_EMULATEUR=1 LDN_EMUL_MDP_CREATEUR=createur-local-123 node outils/serveur-preprod.mjs 8795
 // Puis : node outils/tests/portail.mjs http://localhost:8795     (script complet : bash outils/tests/portail.sh)
 import { createRequire } from 'module'; import fs from 'node:fs';
@@ -17,20 +17,23 @@ if (fs.existsSync('/usr/bin/google-chrome')) lancement.executablePath = '/usr/bi
 let nav = null;      // lancé au premier besoin : le scénario « lecture automatique refusée » tourne AVANT, dans un navigateur à part
 const erreurs = [];
 const BRUIT = /Transition was aborted because of invalid state/;
-const COUPE = 1.12, FIN_VOIX = 3.26;
+// La voix EN SERVICE (monde/voix/accueil-portail.json) est testée telle quelle ; sans clip en service, un clip d'ESSAI est servi dans le navigateur de test seulement.
+const J = JSON.parse(fs.readFileSync(new URL('../../monde/voix/accueil-portail.json', import.meta.url), 'utf8')), REELLE = !!J.fichier, MODE_PRINCIPAL = REELLE ? 'reelle' : 'essai';
+const COUPE = REELLE ? J.coupe : 1.12, FIN_VOIX = REELLE ? J.finVoix : 3.26;
 
-async function routes(ctx, avecVoix) {
+async function routes(ctx, mode) {
   await ctx.route(/fonts\.(googleapis|gstatic)|ytimg|youtube|islamic\.network|alquran|googleusercontent/, r => r.abort());
   if (THREE) await ctx.route(/cdn\.jsdelivr\.net\/npm\/three@[^/]+\/(.*)/, r => { const f = THREE + '/' + r.request().url().match(/three@[^/]+\/(.*)/)[1]; fs.existsSync(f) ? r.fulfill({ path: f, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' } }) : r.abort(); });
-  if (avecVoix) {   // clip d'ESSAI, uniquement dans ce navigateur de test (le site réel n'a aucune voix en service)
+  if (mode === 'aucune') await ctx.route(/voix\/accueil-portail\.json/, r => r.fulfill({ contentType: 'application/json', body: JSON.stringify({ fichier: null }) }));   // simule « aucune voix en service »
+  if (mode === 'essai') {   // clip d'ESSAI, uniquement dans ce navigateur de test (utilisé seulement si aucune voix n'est en service)
     await ctx.route(/voix\/accueil-portail\.json/, r => r.fulfill({ contentType: 'application/json', body: JSON.stringify({ fichier: 'essai-accueil.mp3', coupe: COUPE, finVoix: FIN_VOIX, duree: 3.631 }) }));
     await ctx.route(/voix\/essai-accueil\.mp3/, r => r.fulfill({ path: CLIP_ESSAI, contentType: 'audio/mpeg' }));
   }
 }
-async function contexte(mobile, avecVoix = true) {
+async function contexte(mobile, mode = MODE_PRINCIPAL) {
   nav = nav || await chromium.launch(lancement);
   const ctx = await nav.newContext(mobile ? { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, locale: 'fr-FR' } : { viewport: { width: 1180, height: 780 }, locale: 'fr-FR' });
-  await routes(ctx, avecVoix);
+  await routes(ctx, mode);
   // L'introduction du SITE (page d'accueil) est coupée ; le portail, lui, n'est JAMAIS contourné ici.
   await ctx.addInitScript(() => {
     try { localStorage.getItem('lanternes_intro') || localStorage.setItem('lanternes_intro', JSON.stringify({ off: 1 })); } catch (e) {}
@@ -131,7 +134,8 @@ async function parcours(mobile) {
   await page.waitForFunction(() => window.__lectures >= 1, null, { timeout: 5000 }).catch(() => {});
   const dPlay = await page.evaluate(() => Math.round(window.__tPlay - window.__j.salue));
   t(`${D} : la voix se déclenche automatiquement avec la bienvenue (${dPlay} ms d'écart avec le salut)`, await page.evaluate(() => window.__lectures >= 1 && Math.abs(window.__tPlay - window.__j.salue) < 400));
-  t(`${D} : « مَرْحَبًا » apparaît avec la voix`, await page.evaluate(() => !!window.__j.ar && Math.abs(window.__j.ar - window.__tPlay) < 500));
+  await page.waitForFunction(() => window.__j.ar, null, { timeout: 6000 }).catch(() => {});   // le vrai clip met un instant à décoder avant de démarrer
+  t(`${D} : « مَرْحَبًا » apparaît avec la voix`, await page.evaluate(() => !!window.__j.ar && Math.abs(window.__j.ar - window.__tPlay) < 1000));
   await page.waitForFunction(() => window.__j.fr, null, { timeout: 6000 }).catch(() => {});
   const dFr = await page.evaluate(() => Math.round(window.__j.fr - window.__tPlay));
   t(`${D} : « Bienvenue dans le Monde de Nour » apparaît quand la voix passe au français (${dFr} ms après le début, attendu ~${Math.round(COUPE * 1000)})`, dFr > COUPE * 1000 - 350 && dFr < COUPE * 1000 + 450);
@@ -207,10 +211,10 @@ async function parcours(mobile) {
   await ctx.close();
 }
 
-// Le site RÉEL : aucune voix validée en service → la séquence se déroule en silence, légendes et bouton compris.
+// Aucune voix en service (simulé par interception si une voix est en service) → la séquence se déroule en silence, légendes et bouton compris.
 async function visiteurSansVoix(mobile) {
   const D = mobile ? 'Téléphone' : 'Ordinateur';
-  const { ctx, page } = await contexte(mobile, false);
+  const { ctx, page } = await contexte(mobile, 'aucune');
   await page.goto(BASE + '/monde/');
   t(`${D} (visiteur sans compte, sans voix en service) : le portail s'affiche aussi à la première entrée`, await page.waitForFunction(() => window.__portail && window.__portail.actif && document.getElementById('ouverture'), null, { timeout: 8000 }).then(() => true).catch(() => false));
   await espionner(page);
@@ -229,8 +233,8 @@ async function autoplayRefuse() {
   const { executablePath, ...sansChemin } = lancement;      // Chromium fourni : applique la vraie politique de refus de la lecture automatique
   const b2 = await chromium.launch({ ...sansChemin, args: sansChemin.args.filter(a => !/autoplay/.test(a)) });
   const ctx = await b2.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
-  await routes(ctx, true);
-  await ctx.addInitScript(() => { window.__lectures = 0; const p = HTMLMediaElement.prototype.play; HTMLMediaElement.prototype.play = function () { if (/essai-accueil/.test(this.src)) window.__lectures++; return p.apply(this, arguments); }; });
+  await routes(ctx, MODE_PRINCIPAL);
+  await ctx.addInitScript(() => { window.__lectures = 0; const p = HTMLMediaElement.prototype.play; HTMLMediaElement.prototype.play = function () { if (/essai-accueil|accueil-portail/.test(this.src)) window.__lectures++; return p.apply(this, arguments); }; });
   const page = await ctx.newPage();
   await page.goto(BASE + '/monde/');
   await page.waitForTimeout(3000);     // attente PASSIVE : interroger la page pendant le chargement lui donnerait une « interaction utilisateur » (Playwright) et autoriserait la lecture

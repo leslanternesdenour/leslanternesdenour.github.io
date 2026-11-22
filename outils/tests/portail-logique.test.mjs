@@ -66,6 +66,7 @@ test('voix d\'accueil : texte exact ; AUCUN clip en service tant que le client n
   assert.equal(j.texte, 'مَرْحَبًا ! Bienvenue dans le Monde de Nour !', 'le texte est exactement celui demandé');
   if (j.fichier === null) { assert.equal(j.valide, false, 'sans clip, rien n\'est validé'); assert.ok(!fs.existsSync('monde/voix/accueil-portail.mp3'), 'le clip rejeté ne doit plus être servi'); return; }
   assert.equal(j.valide, true, 'un clip en service doit avoir été validé à l\'oreille par le client');
+  assert.match(j.source || '', /lot 22, candidat [BD]\b/, 'seuls les candidats B et D du lot 22 ont été validés par le client (22/11/2026)');
   assert.ok(fs.statSync('monde/voix/' + j.fichier).size > 5000, 'fichier audio présent');
   try { const d = parseFloat(execFileSync('ffprobe', ['-v', 'quiet', '-show_entries', 'format=duration', '-of', 'csv=p=0', 'monde/voix/' + j.fichier]).toString()); assert.ok(Math.abs(d - j.duree) < 0.05, `durée réelle ${d} s ≠ ${j.duree} s`); } catch (e) { if (e.code !== 'ENOENT') throw e; }
   assert.ok(j.coupe > 0.3 && j.coupe < j.finVoix && j.finVoix <= j.duree + 0.01, 'coupe < fin de voix <= durée');
