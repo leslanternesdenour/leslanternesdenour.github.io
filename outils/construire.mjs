@@ -39,6 +39,9 @@ if (PREPROD) { // page d'écoute des voix (outil interne, non indexée) disponib
   // pages de contrôle des personnages (mode sans visage, amélioration des personnages) : préproduction seulement, jamais en production
   if (fs.existsSync(path.join(RACINE, 'outils/personnages'))) { fs.mkdirSync(path.join(SORTIE, 'outils/personnages'), { recursive: true });
     for (const f of fs.readdirSync(path.join(RACINE, 'outils/personnages'))) if (/\.(html|js|css)$/.test(f)) { fs.copyFileSync(path.join(RACINE, 'outils/personnages', f), path.join(SORTIE, 'outils/personnages', f)); n++; } }
+  // page d'écoute des voix des jeux « Les Aventures des Lanternes » (interne, préproduction seulement)
+  fs.mkdirSync(path.join(SORTIE, 'outils/voix/jeux'), { recursive: true });
+  for (const f of ['ecoute.html', 'voix-roles.json']) { fs.copyFileSync(path.join(RACINE, 'outils/voix/jeux', f), path.join(SORTIE, 'outils/voix/jeux', f)); n++; }
   // la préproduction ne doit jamais être indexée par Google
   // ATTENTION : Cloudflare ne garde qu'UN bloc par chemin (le dernier). Le noindex est donc fusionné dans le bloc « /* » existant, jamais ajouté en second bloc.
   const ent = path.join(SORTIE, '_headers'), src = fs.readFileSync(ent, 'utf8');
