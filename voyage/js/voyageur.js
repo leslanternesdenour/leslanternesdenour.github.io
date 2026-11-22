@@ -136,18 +136,28 @@ export class Voyageur {
             piece(B(), c2, { p: [-0.07, 0.24, 0.165], s: [0.025, 0.46, 0.01] }), piece(B(), c2, { p: [0.07, 0.24, 0.165], s: [0.025, 0.46, 0.01] }));
         }
       }
+      // bandoulière : une VRAIE sangle qui épouse le tronc (anneau incliné autour du buste), faite de petits segments
+      // (avant : une tige droite posée à plat devant le corps, qui ressemblait à un bâton)
+      const bandouliere = (couleur, largeur = 0.034) => {
+        const N = 40, A = 0.193, rayon = y => 0.15 + 0.018 * (0.46 - y) / 0.46;
+        const out = [];
+        for (let k = 0; k < N; k++) {
+          const f1 = (k + 0.5) / N * Math.PI * 2, y = 0.265 - A * Math.sin(f1), r = rayon(y) + 0.012, d = A * Math.cos(f1) * (Math.PI * 2 / N), ds = r * (Math.PI * 2 / N);
+          out.push(piece(B(), couleur, { p: [r * Math.sin(f1), y, r * Math.cos(f1)], r: [0, f1, Math.atan2(-d, ds)], s: [Math.hypot(ds, d) * 1.25, largeur, 0.014], m: M.cuir }));
+        }
+        return out;
+      };
       // sacs et accessoires portés sur le corps
       if (sacA && sacA.forme === 'sacdos') p.push(
         piece(B(), sacA.couleurs[0], { p: [0, 0.27, -0.22], s: [0.28, 0.32, 0.13], m: M.cuir }), piece(B(), sacA.couleurs[1], { p: [0, 0.4, -0.215], s: [0.3, 0.07, 0.15], m: M.cuir }),
         piece(B(), sacA.couleurs[1], { p: [-0.1, 0.32, -0.12], r: [0.2, 0, 0], s: [0.035, 0.3, 0.02] }), piece(B(), sacA.couleurs[1], { p: [0.1, 0.32, -0.12], r: [0.2, 0, 0], s: [0.035, 0.3, 0.02] }),
         piece(SPH(0.07, 10, 8), '#a8582c', { p: [0.1, 0.16, -0.3], s: [1, 0.5, 1.3], m: M.terre }));
       else if (sacA) { // besace en bandoulière
-        p.push(piece(B(), sacA.couleurs[1], { p: [0, 0.27, 0.16], r: [0, 0, 0.82], s: [0.035, 0.62, 0.015], m: M.cuir }),
-          piece(B(), sacA.couleurs[1], { p: [0, 0.27, -0.16], r: [0, 0, 0.82], s: [0.035, 0.62, 0.015], m: M.cuir }),
-          piece(B(), sacA.couleurs[0], { p: [0.22, 0.02, 0.02], s: [0.08, 0.2, 0.22], m: M.tissu }), piece(B(), sacA.couleurs[1], { p: [0.225, 0.09, 0.02], s: [0.09, 0.07, 0.23], m: M.cuir }));
+        p.push(...bandouliere(sacA.couleurs[1], 0.036),
+          piece(B(), sacA.couleurs[0], { p: [0.215, 0.0, 0.02], s: [0.08, 0.2, 0.22], m: M.tissu }), piece(B(), sacA.couleurs[1], { p: [0.22, 0.07, 0.02], s: [0.09, 0.07, 0.23], m: M.cuir }));
       } else if (!f) { // la petite sacoche artisanale du garçon
-        p.push(piece(B(), '#6b4428', { p: [0, 0.27, 0.16], r: [0, 0, 0.82], s: [0.03, 0.62, 0.012], m: M.cuir }),
-          piece(B(), '#8a5a35', { p: [0.2, 0.0, 0.07], r: [0, 0.3, 0], s: [0.06, 0.13, 0.15], m: M.cuir }), piece(SPH(0.016, 6, 5), '#c9a14a', { p: [0.235, 0.02, 0.1] }));
+        p.push(...bandouliere('#6b4428'),
+          piece(B(), '#8a5a35', { p: [0.215, -0.01, 0.05], r: [0, 0.2, 0], s: [0.07, 0.15, 0.17], m: M.cuir }), piece(B(), '#7a4c2c', { p: [0.218, 0.06, 0.05], r: [0, 0.2, 0], s: [0.078, 0.05, 0.18], m: M.cuir }), piece(SPH(0.014, 8, 6), '#c9a14a', { p: [0.255, 0.04, 0.085] }));
       }
       if (hancheA) p.push(piece(SPH(0.09, 12, 10), hancheA.couleurs[0], { p: [-0.21, 0.0, 0.0], s: [0.75, 1.15, 0.9], m: M.cuir }), piece(CYL(0.02, 0.025, 0.06, 8), hancheA.couleurs[1], { p: [-0.21, 0.12, 0] }),
         piece(B(), hancheA.couleurs[1], { p: [-0.06, 0.27, 0.15], r: [0, 0, -0.75], s: [0.025, 0.55, 0.012], m: M.cuir }));
@@ -211,7 +221,7 @@ export class Voyageur {
       this.yeux = new THREE.Group(); this.yeux.position.set(0, 0.012, f ? 0.155 : 0.167); this.tete.add(this.yeux);   // la tête du garçon est un peu plus grosse : les yeux étaient enfouis dans le visage (seuls les reflets se voyaient)
       const o = [];
       for (const s of [-1, 1]) {
-        o.push(piece(SPH(f ? 0.03 : 0.028, 10, 8), '#2a1c18', { p: [s * 0.066, 0, 0], s: [0.9, 1.15, 0.6] }), piece(SPH(0.009, 6, 5), '#ffffff', { p: [s * 0.066 + 0.01, 0.013, 0.015] }));
+        o.push(piece(SPH(f ? 0.03 : 0.028, 10, 8), '#2a1c18', { p: [s * 0.066, 0, 0], s: [0.9, 1.15, 0.6] }), piece(SPH(0.0072, 10, 8), '#ffffff', { p: [s * 0.066 + (f ? 0.0085 : 0.008), f ? 0.0125 : 0.0115, (f ? 0.0178 : 0.0165) * 0.82], s: [1, 1, 0.4] }));   // reflet : une petite tache plate POSÉE sur l'œil (avant : une boule blanche qui dépassait)
         if (f) for (let i = 0; i < 3; i++) o.push(piece(B(), '#1e1410', { p: [s * (0.066 + 0.024 + i * 0.006), 0.022 - i * 0.006, 0.006], r: [0, 0, s * (-0.6 - i * 0.3)], s: [0.022, 0.006, 0.004] }));
       }
       const yeux = new THREE.Mesh(fusion(o), mat); this.yeux.add(yeux);
