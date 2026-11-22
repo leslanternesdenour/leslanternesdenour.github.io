@@ -37,6 +37,7 @@ import { reglageGrain, materiau } from './formes.js?v=4';
 import { mascotte } from '../../monde/mascottes.js?v=3';
 import { creerLoumi } from './loumi.js?v=4';
 import { creerHabitants } from './habitants.js?v=2';
+import { creerHud } from './hud.js?v=1';
 import { noeud as noeudLoumi, depart as departLoumi } from './loumi-dialogues.js?v=1';
 import { creerSoins, BESOINS, INFOS, LIEUX_SOINS, DUREES as DUREES_SOINS, poseSoin, PLANCHER, BAS } from './soins.js?v=1';
 
@@ -162,8 +163,10 @@ async function demarrer() {
   let monte = !!etat.monte;
   let sequence = null;   // animation pour monter / descendre
 
-  let nuitActuelle = false;
+  let nuitActuelle = false, zoneVillage = true;
   const soins = creerSoins({ A: AV, enregistrer });
+  const hud = creerHud();                  // interface contextuelle : tout ce qui n'est pas essentiel apparaît puis s'efface (voir hud.js)
+  let suiviPret = false; setTimeout(() => { suiviPret = true; }, 5000);      // pas d'affichage de mission pendant le démarrage
 
   // ============ Les habitants du village : registre commun ============
   // Un habitant ne parle JAMAIS de lui-même : il apparaît comme action « Parler » quand l'enfant s'approche, et sa conversation se ferme quand l'enfant s'éloigne.
@@ -265,16 +268,19 @@ async function demarrer() {
     const b = btn.dataset.b, n = soins.niveau(AV.monture, b), m = monture(AV.monture);
     montrerIndice(n < BAS ? `${m.nom} ${INFOS[b].texte}. ${b === 'soif' ? "L'abreuvoir est près du puits !" : b === 'faim' ? 'La mangeoire est près du puits !' : b === 'bienEtre' ? 'Fais-lui un câlin !' : 'La litière de paille est à côté du puits.'}` : `${INFOS[b].nom} : ${m.nom} va bien.`, 4500);
   });
+  // Les besoins : une petite carte au-dessus de la monture, seulement quand l'enfant est près d'elle (ou pendant un soin). Jamais de colonne à l'écran.
+  const vS = new THREE.Vector3();
   function majSoinsHUD(dt, force) {
+    const jeuVisible = !$('hud').classList.contains('cache') && $('perso').classList.contains('cache') && !interface_ouverte;
+    const pres = jeuVisible && !monte && !sequence && (soin || Math.hypot(J.x - C.x, J.z - C.z) < 6);
+    if (!pres) { hudSoins.classList.add('cache'); return; }
+    vS.set(C.x, H(C.x, C.z) + (chameau.espece === 'elephant' ? 4.2 : chameau.espece === 'cheval' ? 2.5 : 3.0), C.z).project(camera);
+    if (vS.z > 1 || Math.abs(vS.x) > 1.1 || Math.abs(vS.y) > 1.1) { hudSoins.classList.add('cache'); return; }
+    hudSoins.classList.remove('cache');
+    hudSoins.style.left = Math.max(110, Math.min(innerWidth - 110, (vS.x * 0.5 + 0.5) * innerWidth)) + 'px'; hudSoins.style.top = Math.max(60, (-vS.y * 0.5 + 0.5) * innerHeight) + 'px';
     derMaj += dt; if (!force && derMaj < 0.4) return; derMaj = 0;
-    const montre = !$('hud').classList.contains('cache') && $('perso').classList.contains('cache') && !interface_ouverte;
-    hudSoins.classList.toggle('cache', !montre); if (!montre) return;
     const n = soins.niveaux(AV.monture);
     hudSoins.querySelectorAll('.besoin').forEach(btn => { const b = btn.dataset.b, v = n[b]; btn.querySelector('i').style.height = Math.round(v) + '%'; btn.classList.toggle('bas', v < BAS); });
-    // un signal très doux (jamais plus d'une fois par besoin et par visite) quand un besoin est bas
-    const u = soins.urgent(AV.monture);
-    if (u && !dejaIndique[u] && tTotal > 20 && !soin && !interface_ouverte) { dejaIndique[u] = 1; montrerIndice(`${nomMonture()} ${INFOS[u].texte}. ${u === 'soif' ? 'Allons à l\'abreuvoir !' : u === 'faim' ? 'Allons à la mangeoire !' : u === 'bienEtre' ? 'Un petit câlin ?' : 'Un peu de repos ?'}`, 5000); }
-    if (!u) dejaIndique = {};
   }
 
   // ---------- commandes ----------
@@ -442,7 +448,7 @@ async function demarrer() {
   // Pièces de Nour gagnées : petit « +n » qui monte, la bourse bondit
   let timerGain = null;
   function afficherGain(total, n, raison) {
-    $('nb-pieces').textContent = total;
+    $('nb-pieces').textContent = total; hud.temporaire($('bourse'), 4500);
     const b = $('bourse'); b.classList.remove('bondit'); void b.offsetWidth; b.classList.add('bondit');
     const g = $('gain'); g.classList.add('cache'); void g.offsetWidth;
     g.innerHTML = `+${n} <span class="piece"></span><small>${raison || ''}</small>`; g.classList.remove('cache');
@@ -463,12 +469,12 @@ async function demarrer() {
     const s = $('suivi');
     const mj = quotidien ? quotidien.missions() : [], faitesJour = mj.filter(m => m.fini).length;
     const ligneJour = mj.length ? `<span class="sac">☀️ Missions du jour : ${faitesJour}/${mj.length}</span>` : '';
-    if (!enCours.length && !AV.sac.length && !ligneJour) { s.classList.add('cache'); return; }
+    if (!enCours.length && !AV.sac.length && !ligneJour) { hud.cacher(s); return; }
     const k = enCours.includes(AV.suiviPrefere) ? AV.suiviPrefere : enCours[0];
     const nomsSac = AV.sac.map(x => x.startsWith('dattes') ? '🌴' : x.startsWith('eau') ? '💧' : x === 'seau' ? '🪣' : x === 'gourde' ? '🫙' : '🚿').join(' ');
     s.innerHTML = (k ? `${MISSIONS[k].icone} <b>${MISSIONS[k].titre}</b> · ${AV.missions[k].n}/${MISSIONS[k].total}` : '') +
       (AV.sac.length ? `<span class="sac">🎒 ${nomsSac} (${AV.sac.length}/${AV.capacite})</span>` : '') + ligneJour;
-    s.classList.remove('cache');
+    if (suiviPret) hud.temporaire(s, 6500);        // seulement quand quelque chose change ; le carnet 📖 garde le détail
   }
   $('suivi').addEventListener('click', () => ouvrirCarnet('missions'));
   $('bourse').addEventListener('click', () => ouvrirCarnet('collection'));
@@ -522,6 +528,7 @@ async function demarrer() {
     if (z) quotidien.evenement('zone', z);
     const info = ZONES.find(o => o.id === z);
     $('lieu').textContent = info ? info.icone + ' ' + info.nom : (J.z < -140 ? '🪨 Le chemin du col' : '🐫 Le désert');
+    hud.temporaire($('lieu'), 4500); zoneVillage = z === 'village'; majJumelles();
     if (z && !etat.zones.includes(z)) {
       etat.zones.push(z); enregistrer();
       if (z === 'village') { bandeau('Tu découvres', info.nom); S.sonDecouverte(); }
@@ -710,7 +717,7 @@ async function demarrer() {
   };
   ['musique-active', 'vol-musique', 'vol-effets', 'vol-voix'].forEach(id => $(id).addEventListener('input', changerSons));
   function fermerPanneaux() { $('panneau-son').classList.add('cache'); $('panneau-reglages').classList.add('cache'); }
-  $('btn-son').addEventListener('click', () => { const ouvrir = $('panneau-son').classList.contains('cache'); fermerPanneaux(); if (ouvrir) { majPanneauSon(); $('panneau-son').classList.remove('cache'); } });
+  $('ouvrir-sons').addEventListener('click', () => { const ouvrir = $('panneau-son').classList.contains('cache'); fermerPanneaux(); if (ouvrir) { majPanneauSon(); $('panneau-son').classList.remove('cache'); } });
   $('son-fermer').addEventListener('click', fermerPanneaux);
   $('btn-reglages').addEventListener('click', () => {
     const ouvrir = $('panneau-reglages').classList.contains('cache'); fermerPanneaux();
@@ -789,6 +796,8 @@ async function demarrer() {
     else if (a.cat !== 'outil') E[a.id === 'lanterne-sablo' ? a.id : a.type] = oui;
     appliquerEquipement();
   }
+  // le faucon n'a de sens qu'en exploration : il n'encombre pas l'écran du village
+  function majJumelles() { $('btn-jumelles').classList.toggle('cache', !(AV.equipement && AV.equipement.jumelles) || zoneVillage); }
   function appliquerEquipement() {
     const E = AV.equipement, a = id => article(E[id]) || null;
     AV.capacite = E.sac ? 6 : 3;
@@ -801,7 +810,7 @@ async function demarrer() {
     nouveau.racine.position.copy(ancien.position); nouveau.racine.rotation.copy(ancien.rotation); nouveau.pose = pose;
     scene.remove(ancien); ancien.traverse(o => { if (o.geometry) o.geometry.dispose(); });
     scene.add(nouveau.racine); enfant = nouveau;
-    $('btn-jumelles').classList.toggle('cache', !E.jumelles);
+    majJumelles();
     if (E.lanterne && !lumiere) { lumiere = new THREE.PointLight('#ffc870', 0, 14, 1.6); scene.add(lumiere); }
     cour.maj(AV);
     enregistrer(); majSuivi();
@@ -1357,7 +1366,7 @@ async function demarrer() {
 
     // --- soins de la monture : besoins, marche d'approche, poses ---
     soins.tick(AV.monture, dt, { monte, vit: C.vit }); avancerSoin(dt);
-    loumi.maj(dt, tTotal, J); habitants.maj(J, () => fermerLecture());
+    loumi.maj(dt, tTotal, J); habitants.maj(J, () => fermerLecture()); majSoinsHUD(dt);
     if (nourSprite) nourSprite.position.set(NOUR.x, H(NOUR.x, NOUR.z) + 1.6 + Math.sin(tTotal * 1.8) * 0.12, NOUR.z);
     // --- placer les modèles ---
     chameau.racine.position.set(C.x, H(C.x, C.z), C.z);
