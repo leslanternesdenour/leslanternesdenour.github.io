@@ -1,0 +1,23 @@
+[
+ {
+  "cle": "monde/accueil-portail-prise-1",
+  "texte": "مَرْحَبًا ! Bienvenue dans le Monde de Nour !",
+  "texte_voix": "مَرْحَبًا ! Bienvenue dans le Monde de Nour !",
+  "fichier": "lot21/monde-accueil-portail-prise1.mp3",
+  "a_tester": "مَرْحَبًا (à écouter avec la plus grande attention)"
+ },
+ {
+  "cle": "monde/accueil-portail-prise-2",
+  "texte": "مَرْحَبًا ! Bienvenue dans le Monde de Nour !",
+  "texte_voix": "مَرْحَبًا ! Bienvenue dans le Monde de Nour !",
+  "fichier": "lot21/monde-accueil-portail-prise2.mp3",
+  "a_tester": "مَرْحَبًا (à écouter avec la plus grande attention)"
+ },
+ {
+  "cle": "monde/accueil-portail-prise-3",
+  "texte": "مَرْحَبًا ! Bienvenue dans le Monde de Nour !",
+  "texte_voix": "مَرْحَبًا ! Bienvenue dans le Monde de Nour !",
+  "fichier": "lot21/monde-accueil-portail-prise3.mp3",
+  "a_tester": "مَرْحَبًا (à écouter avec la plus grande attention)"
+ }
+]
