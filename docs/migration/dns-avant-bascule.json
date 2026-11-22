@@ -1,0 +1,130 @@
+{
+ "date": "2026-11-22T10:35:25.171Z",
+ "domaine": "leslanternesdenour.fr",
+ "zone": "5f67c472739d858ca6ed930d4d8652f9",
+ "enregistrements": [
+  {
+   "id": "4d1e682cceec7f971ec83eca2616828f",
+   "type": "A",
+   "name": "leslanternesdenour.fr",
+   "content": "185.199.111.153",
+   "proxied": true,
+   "ttl": 1
+  },
+  {
+   "id": "5946574384bed48f0291d0f93fd807d8",
+   "type": "A",
+   "name": "leslanternesdenour.fr",
+   "content": "185.199.110.153",
+   "proxied": true,
+   "ttl": 1
+  },
+  {
+   "id": "6f56074d246ba787a890635d057a2810",
+   "type": "A",
+   "name": "leslanternesdenour.fr",
+   "content": "185.199.109.153",
+   "proxied": true,
+   "ttl": 1
+  },
+  {
+   "id": "d181dae78029338441496efa43a7f001",
+   "type": "A",
+   "name": "leslanternesdenour.fr",
+   "content": "185.199.108.153",
+   "proxied": true,
+   "ttl": 1
+  },
+  {
+   "id": "ba260e69c62331e3780a543360fc91a8",
+   "type": "AAAA",
+   "name": "leslanternesdenour.fr",
+   "content": "2606:50c0:8003::153",
+   "proxied": true,
+   "ttl": 1
+  },
+  {
+   "id": "de9dddcd2c7ebcc687488e71ffd8714b",
+   "type": "AAAA",
+   "name": "leslanternesdenour.fr",
+   "content": "2606:50c0:8002::153",
+   "proxied": true,
+   "ttl": 1
+  },
+  {
+   "id": "5fe176aa424d6c5bf9c6f6898cae4aee",
+   "type": "AAAA",
+   "name": "leslanternesdenour.fr",
+   "content": "2606:50c0:8001::153",
+   "proxied": true,
+   "ttl": 1
+  },
+  {
+   "id": "c8ad9addc21c97469450f237dc5741f7",
+   "type": "AAAA",
+   "name": "leslanternesdenour.fr",
+   "content": "2606:50c0:8000::153",
+   "proxied": true,
+   "ttl": 1
+  },
+  {
+   "id": "f585d74af1842378a93040619d786a0e",
+   "type": "CNAME",
+   "name": "ftp.leslanternesdenour.fr",
+   "content": "leslanternesdenour.fr",
+   "proxied": true,
+   "ttl": 1
+  },
+  {
+   "id": "36cf3bb8fa1bf755a065103704410eb1",
+   "type": "CNAME",
+   "name": "www.leslanternesdenour.fr",
+   "content": "leslanternesdenour.github.io",
+   "proxied": true,
+   "ttl": 1
+  },
+  {
+   "id": "273ea08d014ee9a24d9c605b6c82f769",
+   "type": "MX",
+   "name": "leslanternesdenour.fr",
+   "content": "mx3.mail.ovh.net",
+   "proxied": false,
+   "ttl": 1,
+   "priority": 100
+  },
+  {
+   "id": "98a8451edbdab0c28c13397529a0674c",
+   "type": "MX",
+   "name": "leslanternesdenour.fr",
+   "content": "mx2.mail.ovh.net",
+   "proxied": false,
+   "ttl": 1,
+   "priority": 5
+  },
+  {
+   "id": "15b3c19df1374091d91f525131336648",
+   "type": "MX",
+   "name": "leslanternesdenour.fr",
+   "content": "mx1.mail.ovh.net",
+   "proxied": false,
+   "ttl": 1,
+   "priority": 1
+  },
+  {
+   "id": "bcd2e9fdd7f2dc1568c19bc58bec8411",
+   "type": "TXT",
+   "name": "leslanternesdenour.fr",
+   "content": "\"v=spf1 include:mx.ovh.com -all\"",
+   "proxied": false,
+   "ttl": 1
+  },
+  {
+   "id": "d26ba71b94dd5d2ad5e2b9ace66bb5c1",
+   "type": "TXT",
+   "name": "leslanternesdenour.fr",
+   "content": "\"1|www.leslanternesdenour.fr\"",
+   "proxied": false,
+   "ttl": 1
+  }
+ ]
+}
