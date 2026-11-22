@@ -1,7 +1,7 @@
 // Voix et sous-titres des jeux « 2D » (sans scène 3D) : même système que les autres jeux — manifeste audio généré à l'avance, une seule voix à la fois (socle monde/socle/voix.js),
 // jamais de synthèse vocale du navigateur. Une phrase sans fichier reste SOUS-TITRÉE. Mode silencieux (muet) : aucun son, tout est sous-titré. Les interruptions (onglet masqué) coupent la voix.
-import { chargerVoix, ajouterVoix, existe, dire as direVoix, arreterVoix } from '../../monde/socle/voix.js?v=2';
-import { reveiller, reglerVolume } from '../../monde/socle/audio.js?v=2';
+import { chargerVoix, ajouterVoix, existe, dire as direVoix, arreterVoix } from '../../monde/socle/voix.js?v=1';
+import { reveiller, reglerVolume } from '../../monde/socle/audio.js?v=1';
 export { reglerVolume };
 export function creerVoix({ dossierAudio, racine = '../../', etat, elSousTitres }) {
   const dispo = new Set(); let st = 0;

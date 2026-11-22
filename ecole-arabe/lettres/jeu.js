@@ -2,8 +2,8 @@
 // Les activités sont des modules indépendants (activites/*.js) qui partagent un seul moteur pédagogique (moteur/competences.js) : suivi réel de la maîtrise, adaptation dynamique, révision ciblée.
 // Réutilise : profils enfants (âge/tranche), sauvegarde synchronisée par l'Espace famille (clé « ecole_lettres »), voix du socle, mascottes de l'univers Nour (2D). Aucun chronomètre, aucune punition.
 import { creerVoix, reglerVolume } from '../../aventures/commun/voix-jeu.js?v=2';
-import { mascotte } from '../../monde/mascottes.js?v=2';
-import { contexte, sortie } from '../../monde/socle/audio.js?v=2';
+import { mascotte } from '../../monde/mascottes.js?v=1';
+import { contexte, sortie } from '../../monde/socle/audio.js?v=1';
 import { montrerDecor } from '../commun/decor.js?v=2';
 import { chargerGlyphes, svgLettre } from './rendu.js?v=2';
 import { LETTRES, PAR_ID, CHAPITRES, ESPACES, ACTIVITES, GROUPES, groupeDepuisAge } from './donnees/lettres.js?v=2';
