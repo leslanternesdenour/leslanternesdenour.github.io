@@ -4,9 +4,21 @@
 import fs from 'fs'; import path from 'path'; import { fileURLToPath } from 'url';
 const RACINE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SORTIE = path.join(RACINE, 'dist');
-// Garde-fou : sur Cloudflare Pages (CF_PAGES_BRANCH défini), seule la branche « preproduction » peut être construite. Toute autre branche, dont « main », fait échouer le build.
-if (process.env.CF_PAGES_BRANCH && process.env.CF_PAGES_BRANCH !== 'preproduction') { console.error(`Build refusé : la branche « ${process.env.CF_PAGES_BRANCH} » ne peut pas être publiée (seule « preproduction » l'est).`); process.exit(1); }
-const PREPROD = process.env.LDN_PREPROD === '1' || (process.env.CF_PAGES_BRANCH && process.env.CF_PAGES_BRANCH !== 'main');
+// Garde-fou de branche (Cloudflare Pages : CF_PAGES_BRANCH défini). Le MODE de publication n'est jamais deviné : il est DÉCLARÉ dans le wrangler.toml
+// de la branche construite (ENVIRONNEMENT = "preproduction" | "production") et doit correspondre à la branche :
+//   « preproduction » ne se construit que si son wrangler.toml déclare « preproduction » ;
+//   « production » et « main » ne se construisent que si leur wrangler.toml déclare « production » (la mise en production est donc un acte explicite, versionné) ;
+//   toute autre branche est refusée. Aucun dossier publié n'est produit en cas de refus.
+const BRANCHE = process.env.CF_PAGES_BRANCH || '';
+const WRANGLER = process.env.LDN_WRANGLER || path.join(RACINE, 'wrangler.toml');
+const ENV_DECLAREE = (fs.existsSync(WRANGLER) && (fs.readFileSync(WRANGLER, 'utf8').match(/^[ \t]*ENVIRONNEMENT[ \t]*=[ \t]*"([^"]*)"/m) || [])[1]) || '';
+if (BRANCHE) {
+  const attendu = BRANCHE === 'preproduction' ? 'preproduction' : (BRANCHE === 'production' || BRANCHE === 'main') ? 'production' : null;
+  if (!attendu) { console.error(`Build refusé : la branche « ${BRANCHE} » ne peut pas être publiée (seules « preproduction », « production » et « main », ces deux dernières uniquement si leur wrangler.toml déclare la production, le sont).`); process.exit(1); }
+  if (ENV_DECLAREE !== attendu) { console.error(`Build refusé : la branche « ${BRANCHE} » exige ENVIRONNEMENT = "${attendu}" dans wrangler.toml (trouvé : « ${ENV_DECLAREE || 'rien'} »). ` + (BRANCHE === 'main' || BRANCHE === 'production' ? 'La production n\'est pas activée sur cette version.' : 'Une configuration de production ne doit jamais être publiée comme préproduction.')); process.exit(1); }
+}
+const PRODUCTION = BRANCHE === 'main' || BRANCHE === 'production';
+const PREPROD = process.env.LDN_PREPROD === '1' || (BRANCHE && !PRODUCTION);
 // jamais publiés : outillage, fonctions serveur (Cloudflare les prend à part), configuration, documents de travail
 const EXCLUS = new Set(['.git', '.github', 'dist', 'node_modules', 'functions', 'serveur', 'outils', '.node-version', 'wrangler.toml', 'package.json', 'package-lock.json',
   '_documentation', 'docs', 'premium', 'tests', 'compte/comptes.js', 'firestore.rules', 'firestore.indexes.json', 'firebase.json', '.gitignore', '.dev.vars', 'CNAME']);
@@ -34,4 +46,4 @@ if (PREPROD) { // page d'écoute des voix (outil interne, non indexée) disponib
 }
 // Quel commit est réellement en ligne ? (le dépôt est public : le numéro de commit n'est pas un secret)
 fs.writeFileSync(path.join(SORTIE, 'version.json'), JSON.stringify({ commit: process.env.CF_PAGES_COMMIT_SHA || 'local', branche: process.env.CF_PAGES_BRANCH || 'local' }) + '\n');
-console.log(`dist/ : ${n} fichiers, ${(octets / 1048576).toFixed(1)} Mo${PREPROD ? ' (préproduction)' : ''}`);
+console.log(`dist/ : ${n} fichiers, ${(octets / 1048576).toFixed(1)} Mo${PREPROD ? ' (préproduction)' : PRODUCTION ? ' (PRODUCTION)' : ''}`);
