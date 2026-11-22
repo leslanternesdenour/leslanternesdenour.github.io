@@ -1,6 +1,7 @@
 // LE JARDIN DES LETTRES — les lettres fleurissent ; l'enfant en touche une pour la DÉCOUVRIR : grande lettre dorée en 3D qu'il peut tourner, son nom, son son, un mot d'exemple illustré,
 // ses formes (début, milieu, fin) et la possibilité de tout réécouter. Une lettre ouverte compte comme « découverte » (premier stade, jamais « maîtrisée »).
-import { svgLettre, tailleCommune } from '../rendu.js?v=1';
+import { svgLettre, svgAlifForme, tailleCommune } from '../rendu.js?v=1';
+import { ALIF } from '../../commun/langue/alphabet.js?v=1';
 import { PAR_ID, formesDe, NOMS_FORMES } from '../donnees/lettres.js?v=1';
 import * as C from '../moteur/competences.js?v=1';
 import { enTete, pause } from './commun.js?v=1';
@@ -11,14 +12,16 @@ export function ouvrirFiche(ctx, id, conteneur, { surFermer } = {}) {
   C.decouverte(ctx.s, id); ctx.sauver(); const tailleF = Math.max(...formes.map(f => tailleCommune([id], f)));
   conteneur.innerHTML = `<div class="fiche"><button class="rond retour-fiche" aria-label="Retour aux fleurs">‹</button>
     <div class="fiche-3d" aria-label="${l.nomFr} en grand"></div>
-    <div class="fiche-info"><h3><span class="ar-nom" lang="ar">${l.nom}</span> <small>${l.nomFr}</small></h3><p class="son-fr">${l.sonFr}</p>
+    <div class="fiche-info"><h3><span class="ar-nom" lang="ar" dir="rtl">${l.nom}</span> <small>${l.nomFr === l.translit ? l.translit : l.nomFr + ' · ' + l.translit}</small></h3><p class="son-fr">${l.sonFr}</p>
       <div class="boutons-son"><button class="gros" data-s="nom">🔊 Son nom</button><button class="gros" data-s="son">🔊 Son son</button></div>
-      <div class="mot-ex"><button class="mot-btn" data-s="mot" aria-label="Écouter le mot"><span class="mot-ar" lang="ar">${l.mot.ar}</span><span class="mot-emoji">${l.mot.emoji}</span></button><small>${l.mot.tr} — ${l.mot.fr}</small></div>
+      <div class="mot-ex"><button class="mot-btn" data-s="mot" aria-label="Écouter le mot"><span class="mot-ar" lang="ar" dir="rtl">${l.mot.ar}</span><span class="mot-emoji">${l.mot.emoji}</span></button><small>${l.mot.tr} — ${l.mot.fr}</small></div>
+      ${id === 'alif' && !petit ? `<div class="alif-bloc"><button class="gros" data-alif>Alif et hamza ›</button><div class="alif-formes cache"><p>${ALIF.forme_simple.texte}</p><div class="tuiles">${ALIF.formes.map(f => `<div class="tuile-forme pop alif-t">${svgAlifForme(f.id)}<small lang="ar" dir="rtl">${f.ar}</small><em>${f.texte}</em></div>`).join('')}</div><p class="hamza"><b lang="ar" dir="rtl">${ALIF.hamza.ar}</b> ${ALIF.hamza.texte}</p></div></div>` : ''}
       ${petit ? '' : `<div class="formes-rang"><p>${l.joint ? 'Sa forme change dans le mot :' : 'Cette lettre ne s\'attache pas à la suivante :'}</p><div class="tuiles">${formes.map(f => `<span class="tuile-forme" data-f="${f}">${svgLettre(id, { forme: f, taille: tailleF })}<small>${NOMS_FORMES[f]}</small></span>`).join('')}</div></div>`}
     </div></div>`;
   const dire = { nom: [`nom.${id}`, l.nomFr], son: [`son.${id}`, l.syllabe], mot: [`mot.${id}`, l.mot.ar] };
   conteneur.querySelectorAll('[data-s]').forEach(b => { b.onclick = () => { const [aid, txt] = dire[b.dataset.s]; b.classList.add('chante'); ctx.parler(aid, txt, 'Nour', { sousTitre: false }).then(() => b.classList.remove('chante')); }; });
-  const rang = conteneur.querySelectorAll('.tuile-forme'); rang.forEach((x, k) => setTimeout(() => x.classList.add('pop'), 900 + k * 450));       // les formes apparaissent l'une après l'autre
+  const ba = conteneur.querySelector('[data-alif]'); if (ba) ba.onclick = () => { const z = conteneur.querySelector('.alif-formes'); z.classList.toggle('cache'); ba.textContent = z.classList.contains('cache') ? 'Alif et hamza ›' : 'Fermer ‹'; };
+  const rang = conteneur.querySelectorAll('.tuile-forme:not(.alif-t)'); rang.forEach((x, k) => setTimeout(() => x.classList.add('pop'), 900 + k * 450));       // les formes apparaissent l'une après l'autre
   let vue = null; (async () => { try { const { creerVue3d } = await import('../vue3d.js?v=1'); vue = creerVue3d(conteneur.querySelector('.fiche-3d')); vue.definir(id, 'isolee'); } catch (e) { conteneur.querySelector('.fiche-3d').innerHTML = svgLettre(id, { classe: 'grand' }); } })();
   setTimeout(() => ctx.parler(`nom.${id}`, l.nomFr, 'Nour', { sousTitre: false }), 700);
   const fermer = () => { if (vue) vue.fermer(); vue = null; conteneur.innerHTML = ''; if (surFermer) surFermer(); }; conteneur.querySelector('.retour-fiche').onclick = fermer; return fermer;

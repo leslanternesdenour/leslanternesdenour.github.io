@@ -1,4 +1,4 @@
-// LE PALAIS DES LETTRES — la collection : les 28 lettres, qui brillent de plus en plus avec la maîtrise (5 stades réels). On touche une lettre pour la revoir en 3D ; les badges et diplômes y sont exposés.
+// LA BIBLIOTHÈQUE DE NOUR (Palais des lettres) — la collection : les 28 lettres, qui brillent de plus en plus avec la maîtrise (5 stades réels). On touche une lettre pour la revoir en 3D ; les badges et diplômes y sont exposés.
 import { svgLettre, tailleCommune } from '../rendu.js?v=1';
 import { LETTRES, PAR_ID, CHAPITRES } from '../donnees/lettres.js?v=1';
 import * as C from '../moteur/competences.js?v=1';
@@ -6,7 +6,7 @@ import { ouvrirFiche } from './decouvrir.js?v=1';
 import { enTete } from './commun.js?v=1';
 export const BADGES = { 'premiere-lettre': ['🌱', 'Première lettre'], traceur: ['✨', 'Traceur magique'], 'bonne-oreille': ['👂', 'Bonne oreille'], 'maitre-des-formes': ['🔄', 'Maître des formes'], 'champion-des-defis': ['🏆', 'Champion des défis'] };
 export default async function collection(ctx) {
-  const ui = enTete(ctx, '🏛️ Le palais des lettres', 1); ui.cible.innerHTML = ''; ui.aide.classList.add('cache'); ui.consigne.classList.add('cache'); ui.msg.textContent = '';
+  const ui = enTete(ctx, '📚 La bibliothèque de Nour', 1); ui.cible.innerHTML = ''; ui.aide.classList.add('cache'); ui.consigne.classList.add('cache'); ui.msg.textContent = '';
   const echelle = tailleCommune(LETTRES.map(l => l.id)); const rec = C.recompenses(ctx.s), g = C.progressionGlobale(ctx.s);
   const rendre = () => {
     const r = C.recompenses(ctx.s);

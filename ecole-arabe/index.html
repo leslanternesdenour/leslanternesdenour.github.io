@@ -7,25 +7,29 @@
 <meta name="description" content="Apprendre l'arabe avec Nour, de 3 à 10 ans : les lettres, la lecture, les chiffres.">
 <meta name="theme-color" content="#191345">
 <link rel="icon" href="../intro/favicon-48.png">
+<link rel="stylesheet" href="commun/decor.css?v=1">
 <style>
 :root{--nuit:#191345;--violet:#4a3aa8;--or:#e8b53a;--ivoire:#fff6e0}*{box-sizing:border-box}
-body{margin:0;min-height:100vh;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ivoire);background:radial-gradient(circle at 50% 0,#4a3aa8,#191345 70%);padding:18px 14px 90px}
+body{margin:0;min-height:100vh;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ivoire);background:#3a2030;padding:18px 14px 130px}main{position:relative;z-index:5}
 main{max-width:760px;margin:0 auto}h1{text-align:center;font-size:clamp(26px,7vw,40px);margin:18px 0 6px}.sous{text-align:center;opacity:.92;margin:0 0 22px}
-.jeu{display:grid;grid-template-columns:76px 1fr;gap:14px;align-items:center;padding:16px;margin:0 0 14px;border-radius:26px;border:4px solid var(--or);background:rgba(25,19,69,.85);color:#fff;text-decoration:none}
+.jeu{display:grid;grid-template-columns:76px 1fr;gap:14px;align-items:center;padding:16px;margin:0 0 14px;border-radius:26px;border:4px solid var(--or);background:linear-gradient(160deg,rgba(94,52,36,.92),rgba(56,30,38,.92));color:#fff;text-decoration:none}
 .jeu .ic{font-size:54px;text-align:center}.jeu b{display:block;font-size:22px;color:var(--or)}.jeu span{font-size:15px;opacity:.95}
 .jeu.bientot{opacity:.6;border-color:#6f63c9;border-style:dashed}.jeu.bientot em{font-style:normal;font-size:13px;background:#6f63c9;border-radius:999px;padding:2px 10px;margin-left:6px}
 .haut{display:flex;justify-content:space-between}.haut a{color:var(--ivoire);font-weight:700}
-</style>
+.pann{display:block;width:min(80vw,360px);margin:6px auto 0;border-radius:22px;filter:drop-shadow(0 6px 10px #0009)}h1,.sous{text-shadow:0 2px 6px #000b}.haut a{background:#381e26cc;border-radius:999px;padding:6px 14px;text-decoration:none}</style>
 </head>
 <body>
+<div id="fond" class="decor" aria-hidden="true"></div>
+<div class="maktoub grand" aria-hidden="true"><div class="cadre"><img src="commun/maktoub/accueil.webp" alt=""></div><span class="nom">Maktoub</span></div>
 <main>
 <div class="haut"><a href="../">🏠 Accueil</a><a href="../aventures/">🎮 Les aventures</a></div>
-<h1>L'École arabe de Nour</h1>
+<img class="pann" src="commun/maktoub/panneau.webp" alt="Maktoub, le livre compagnon de ton école arabe"><h1>L'École arabe de Nour</h1>
 <p class="sous">Trois jeux pour apprendre l'arabe pas à pas, à ton rythme, de 3 à 10 ans.</p>
 <a class="jeu" href="lettres/"><span class="ic" aria-hidden="true">🔤</span><div><b>L'École des lettres arabes</b><span>Les 28 lettres : leur nom, leur son, leurs formes, en 3D, avec des jeux, des puzzles et le tracé magique.</span></div></a>
 <div class="jeu bientot" aria-disabled="true"><span class="ic" aria-hidden="true">📖</span><div><b>Je découvre la lecture arabe <em>Bientôt</em></b><span>Les voyelles, les syllabes, les premiers mots.</span></div></div>
 <div class="jeu bientot" aria-disabled="true"><span class="ic" aria-hidden="true">🔢</span><div><b>Les chiffres et les nombres arabes <em>Bientôt</em></b><span>Compter et reconnaître les chiffres arabes.</span></div></div>
 </main>
+<script type="module">import { montrerDecor } from './commun/decor.js?v=1'; montrerDecor(document.getElementById('fond'), 'cour');</script>
 <script src="../compte/barre.js?v=3" defer data-menu="1" data-pos="bas-droite"></script>
 </body>
 </html>
