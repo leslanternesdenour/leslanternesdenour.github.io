@@ -2,8 +2,8 @@
 // On paie uniquement avec des Pièces de Nour gagnées en jouant. Prix affichés, confirmation avant chaque achat.
 // Aucun hasard, aucune boîte mystère, aucun argent réel.
 import * as THREE from 'three';
-import { piece, fusion, materiau, M } from './formes.js?v=3';
-import { Enfant } from './personnages.js?v=3';
+import { piece, fusion, materiau, M } from './formes.js?v=4';
+import { Enfant } from './personnages.js?v=4';
 
 const mat = materiau({ finesse: 1.4 });
 const B = () => new THREE.BoxGeometry(1, 1, 1);

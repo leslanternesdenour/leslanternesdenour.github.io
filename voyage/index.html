@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
+<script src="../monde/socle/sans-visage.js?v=1"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Le Grand Voyage de Nour — Les Lanternes de Nour</title>
 <meta name="description" content="Un monde à explorer à pied et à dos de chameau : village, oasis, désert et montagnes. Pour les enfants de 3 à 10 ans. Gratuit, sans publicité.">
@@ -216,6 +217,7 @@
   <label class="ligne"><input type="radio" name="qualite" value="equilibre"> Équilibré (téléphones récents, tablettes)</label>
   <label class="ligne"><input type="radio" name="qualite" value="eleve"> Élevé (ordinateurs)</label>
   <p class="note">Le changement de graphismes recharge la page.</p>
+  <p class="note"><a href="../compte/#reglages-famille" style="color:#f5b942">Mode sans visage : réglage des parents (espace famille)</a></p>
   <div class="lecture-boutons"><button class="petit-bouton" id="ouvrir-perso">🧒 Mon personnage</button> <button class="petit-bouton" id="ouvrir-commandes">🎮 Commandes</button>
   <button class="petit-bouton" id="revoir-aide">❔ Aide</button></div>
 </div>
@@ -243,6 +245,6 @@
 <noscript><p style="padding:2em;color:#fff">Active JavaScript pour partir en voyage. <a href="../monde/" style="color:#f5b942">Retour au village</a></p></noscript>
 <script type="module" src="../compte/synchro.js?v=2"></script>
 <script type="module">/* Si la bibliothèque 3D ne se charge pas (pas de connexion, CDN indisponible) : écran de secours au lieu d'un chargement sans fin */import('three').catch(()=>{const c=document.getElementById('chargement'),e=document.getElementById('erreur');if(c)c.classList.add('cache');if(e)e.classList.remove('cache')});</script>
-<script type="module" src="js/main.js?v=10"></script>
+<script type="module" src="js/main.js?v=12"></script>
 </body>
 </html>

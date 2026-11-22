@@ -1,9 +1,9 @@
 // L'aventure : missions, objets cachés, Pièces de Nour, animaux à observer.
 // Tout est gagné en jouant : aucun achat réel, aucun hasard, aucune boîte mystère.
 import * as THREE from 'three';
-import { piece, fusion, materiau } from './formes.js?v=3';
-import { Enfant } from './personnages.js?v=3';
-import { creerAnimaux, FICHES } from './animaux.js?v=3';
+import { piece, fusion, materiau } from './formes.js?v=4';
+import { Enfant } from './personnages.js?v=4';
+import { creerAnimaux, FICHES } from './animaux.js?v=4';
 import { LIEUX } from './terrain.js?v=3';
 
 const mat = materiau({ finesse: 1.6 });

@@ -1,14 +1,14 @@
 // Les animaux du pays de Nour. Chacun a son modèle, sa façon de bouger et sa fiche (informations vérifiables,
 // sans rien d'inventé). Les gazelles s'éloignent si l'on court vers elles : on apprend à approcher doucement.
 import * as THREE from 'three';
-import { piece, fusion, materiau } from './formes.js?v=3';
+import { piece, fusion, materiau } from './formes.js?v=4';
 
 const mat = materiau({ finesse: 2.2 });
 const B = () => new THREE.BoxGeometry(1, 1, 1);
 const SPH = (r, w = 10, h = 8) => new THREE.SphereGeometry(r, w, h);
 const CYL = (a, b, h, s = 7) => new THREE.CylinderGeometry(a, b, h, s);
-const yeux = (x, y, z, r = 0.03) => [piece(SPH(r, 6, 5), '#1e1a2e', { p: [-x, y, z] }), piece(SPH(r, 6, 5), '#1e1a2e', { p: [x, y, z] }),
-  piece(SPH(r * 0.4, 4, 3), '#ffffff', { p: [-x - r * 0.3, y + r * 0.4, z + r * 0.7] }), piece(SPH(r * 0.4, 4, 3), '#ffffff', { p: [x + r * 0.3, y + r * 0.4, z + r * 0.7] })];
+const yeux = (x, y, z, r = 0.03) => [piece(SPH(r, 6, 5), '#1e1a2e', { v: 1, p: [-x, y, z] }), piece(SPH(r, 6, 5), '#1e1a2e', { v: 1, p: [x, y, z] }),
+  piece(SPH(r * 0.4, 4, 3), '#ffffff', { v: 1, p: [-x - r * 0.3, y + r * 0.4, z + r * 0.7] }), piece(SPH(r * 0.4, 4, 3), '#ffffff', { v: 1, p: [x + r * 0.3, y + r * 0.4, z + r * 0.7] })];
 
 export const FICHES = {
   dromadaire: { nom: 'Le dromadaire', icone: '🐪', habitat: 'Les déserts chauds d\'Afrique et d\'Arabie.',
@@ -60,7 +60,7 @@ function fennec(ombre) {
     piece(SPH(1, 10, 8), poil, { s: [0.12, 0.11, 0.2], p: [0, 0.18, 0] }),
     piece(SPH(1, 10, 8), poil, { s: [0.1, 0.09, 0.1], p: [0, 0.3, 0.2] }),
     piece(new THREE.ConeGeometry(0.04, 0.12, 6), creme, { p: [0, 0.27, 0.32], r: [Math.PI / 2, 0, 0] }),
-    piece(SPH(0.018, 5, 4), '#1e1a2e', { p: [0, 0.27, 0.38] }),
+    piece(SPH(0.018, 5, 4), '#1e1a2e', { v: 1, p: [0, 0.27, 0.38] }),   // nez
     piece(new THREE.ConeGeometry(0.07, 0.24, 6), poil, { p: [-0.08, 0.45, 0.17], r: [0, 0, 0.45], s: [1, 1, 0.5] }),
     piece(new THREE.ConeGeometry(0.07, 0.24, 6), poil, { p: [0.08, 0.45, 0.17], r: [0, 0, -0.45], s: [1, 1, 0.5] }),
     piece(new THREE.ConeGeometry(0.045, 0.17, 6), '#f6b9a8', { p: [-0.08, 0.44, 0.185], r: [0, 0, 0.45], s: [1, 1, 0.3] }),

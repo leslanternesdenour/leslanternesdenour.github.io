@@ -10,8 +10,8 @@ const VOIX_MAISON = { ablutions: 'VIL-003', priere: 'VIL-004', ramadan: 'VIL-005
 import { qualiteAuto, reglages, surveillerFluidite } from './socle/qualite.js?v=2';
 import { BATIMENTS } from './batiments.js?v=3';
 import { chargerMaisons, TEXTE_RESERVE } from './maisons-premium.js?v=1';
-import { mascotte } from './mascottes.js?v=1';
-import { PEAUX, NOMS_PEAUX, indicePeau, visageSVG } from './socle/peaux.js?v=1';
+import { mascotte } from './mascottes.js?v=2';
+import { PEAUX, NOMS_PEAUX, indicePeau, visageSVG } from './socle/peaux.js?v=2';
 
 const $ = id => document.getElementById(id);
 const S = sauvegarde.get();

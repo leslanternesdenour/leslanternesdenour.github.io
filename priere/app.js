@@ -52,7 +52,7 @@ function sajjadou(m='',cls=''){const u=++SJn;
  <rect x="34.5" y="23.5" width="51" height="103" rx="3" fill="url(#sjc${u})" stroke="#2bb3c0" stroke-width="1.2"/>
  <path d="M39 88V53C39 42 52 35 60 27C68 35 81 42 81 53V88Z" fill="#fff8e7" stroke="#f5b942" stroke-width="2.4" stroke-linejoin="round"/>
  <path d="M60 27v6" stroke="#d9952a" stroke-width="1.4"/><circle cx="60" cy="35" r="2" fill="#f5b942"/>
- <g class="visage">${sourcils}<g class="yeux">${oeilG}${oeilD}</g>
+ <g class="visage sv-visage">${sourcils}<g class="yeux">${oeilG}${oeilD}</g>
  <circle cx="44.5" cy="68" r="4.3" fill="#ff9fb2" opacity=".7"/><circle cx="75.5" cy="68" r="4.3" fill="#ff9fb2" opacity=".7"/>${bouche}</g>
  <g transform="translate(60 107)"><rect x="-8" y="-8" width="16" height="16" fill="#f5b942" stroke="#d9952a" stroke-width="1.2"/><rect x="-8" y="-8" width="16" height="16" fill="#f5b942" stroke="#d9952a" stroke-width="1.2" transform="rotate(45)"/><circle r="4.2" fill="#2bb3c0"/><circle r="1.6" fill="#fff8e7"/></g>
  <path d="M42 107l3-3.5 3 3.5-3 3.5zM72 107l3-3.5 3 3.5-3 3.5z" fill="#1d8f9c"/>

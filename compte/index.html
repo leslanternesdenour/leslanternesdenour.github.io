@@ -2,6 +2,7 @@
 <html lang="fr" data-univers="histoires">
 <head>
 <meta charset="utf-8">
+<script src="../monde/socle/sans-visage.js?v=1"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title>Espace famille · Les Lanternes de Nour</title>
@@ -45,6 +46,7 @@ input[type=text],select{width:100%;border-radius:14px;border:2px solid #3a2a7d;b
 .enfant.actif{outline:3px solid #f5b942}.enfant .nom{flex:1;font-weight:900;color:#fff}.enfant .nom small{display:block;font-weight:600;color:#c9bfe8}
 .enfant button{font-size:15px;padding:8px 12px;box-shadow:0 3px 0 #d9952a}.enfant button.doux{box-shadow:0 3px 0 #120d33}
 .rangee{display:flex;gap:8px;flex-wrap:wrap}.rangee>*{flex:1}
+.interrupteur{display:flex;gap:12px;align-items:center;background:#3a2a7d;border-radius:16px;padding:14px;cursor:pointer;color:#fff}.interrupteur input{width:28px;height:28px;flex:none;accent-color:#f5b942}
 .bandeau-sim{background:#ff9fb2;color:#3d0613;font-weight:900;text-align:center;border-radius:14px;padding:8px}
 </style>
 </head>
@@ -171,6 +173,15 @@ input[type=text],select{width:100%;border-radius:14px;border:2px solid #3a2a7d;b
     </form>
   </section>
 
+  <!-- Réglages de la famille : toujours visibles (le visiteur sans compte garde le réglage sur son appareil) -->
+  <section class="carte" id="reglages-famille" aria-labelledby="rf-titre">
+    <h2 id="rf-titre">Réglages de la famille</h2>
+    <p class="petit" id="rf-explication"></p>
+    <label class="interrupteur"><input type="checkbox" id="rf-sans-visage" role="switch"> <span><b>Mode sans visage :</b> <b id="rf-etat">DÉSACTIVÉ</b></span></label>
+    <p class="petit">Quand le mode est activé, les personnages, mascottes et animaux n'ont plus ni yeux, ni sourcils, ni nez, ni bouche, et les émojis de personnes deviennent des silhouettes. Les têtes, vêtements, cheveux, voiles et animations restent. La progression des enfants n'est pas touchée, et le réglage est le même pour tous les profils.</p>
+    <p class="petit" id="rf-lieu"></p>
+  </section>
+
   <p class="etat" id="etat" role="status" aria-live="polite"></p>
   <p style="text-align:center"><a href="../decouvrir/">Découvrir le Monde de Nour</a> · <a href="../">Retour au site</a></p>
 </main>
@@ -191,9 +202,32 @@ const invitation = () => sessionStorage.getItem('ldn_invite');
 let D = null, enfants = [], suite = null, total = 0, jetonEnAttente = null;
 
 
+// ---------- réglages de la famille : mode sans visage ----------
+const SV = window.LDN_SV;
+function afficherSansVisage() {
+  if (!SV) return; const a = SV.actif();
+  $('rf-sans-visage').checked = a; $('rf-etat').textContent = a ? 'ACTIVÉ' : 'DÉSACTIVÉ';
+  $('rf-lieu').textContent = D && D.connecte ? 'Réglage enregistré dans le compte de la famille : il est le même sur tous vos appareils et pour tous les profils enfants.' : 'Réglage enregistré sur cet appareil. Avec un compte famille, il suivra la famille sur tous ses appareils.';
+}
+async function reglagesFamille() {
+  if (!SV) { $('reglages-famille').classList.add('cache'); return; }
+  $('rf-explication').textContent = SV.TEXTE_PARENTS;
+  if (D && D.connecte) {
+    const r = SV.depuisCompte(D.preferences);                    // le compte fait foi ; sans réglage dans le compte, celui de l'appareil y est enregistré
+    if (r === 'envoyer') { try { await C.api('/api/famille/preferences', { methode: 'PATCH', corps: { sansVisage: SV.actif() } }); } catch (e) {} }
+  }
+  afficherSansVisage();
+}
+$('rf-sans-visage').onchange = async ev => {
+  if (!SV) return; const b = ev.target.checked; SV.definir(b); afficherSansVisage();      // application immédiate, sur l'appareil
+  if (D && D.connecte) { try { await C.api('/api/famille/preferences', { methode: 'PATCH', corps: { sansVisage: b } }); etat(''); } catch (e) { etat('Réglage appliqué sur cet appareil, mais pas enregistré dans le compte : ' + C.messageErreur(e), true); } }
+};
+if (window.LDN_SV) window.LDN_SV.abonner(() => { if ($('rf-etat')) afficherSansVisage(); });
+
 async function demarrer() {
   etat('Chargement…');
   D = await C.moi(); etat('');
+  await reglagesFamille();
   if (!D.connecte || D.fournisseur === 'google.com') C.prechargerAuth();   // fenêtre Google ouverte immédiatement au clic (Safari / iPhone)
   $('v-invitation').classList.toggle('cache', !invitation());
   if (!D.connecte) { voir('v-acces'); if (location.hash === '#inscription' || invitation()) onglet('inscription'); return; }
@@ -331,7 +365,7 @@ $('f-supprimer').onsubmit = e => { e.preventDefault(); occupe(e.submitter, async
 }); };
 
 // ---------- démarrage (après la pose de tous les gestionnaires) ----------
-if (!C.comptesActifs()) voir('v-inactif');
+if (!C.comptesActifs()) { voir('v-inactif'); reglagesFamille(); }
 else {
   if (C.simulation()) { $('bandeau-sim').classList.remove('cache'); $('verif-simuler').classList.remove('cache'); }
   demarrer().catch(e => etat(C.messageErreur(e), true));

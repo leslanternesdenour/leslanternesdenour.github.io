@@ -8,7 +8,8 @@ const _m = new THREE.Matrix4(), _q = new THREE.Quaternion(), _e = new THREE.Eule
 // Matières (pour le relief et le grain) : 0 rien, 1 tissu, 2 cuir, 3 bois, 4 terre cuite, 5 laine, 6 terre crue / pierre
 export const M = { tissu: 1, cuir: 2, bois: 3, terre: 4, laine: 5, pierre: 6 };
 // Une pièce = une forme + une couleur + une position/rotation/échelle (+ une matière)
-export function piece(geo, couleur, { p = [0, 0, 0], r = [0, 0, 0], s = [1, 1, 1], m = 0 } = {}) {
+// v : 1 pour une pièce de VISAGE (œil, sourcil, nez, bouche, joue) : elle disparaît quand le « mode sans visage » est actif (monde/socle/sans-visage.js)
+export function piece(geo, couleur, { p = [0, 0, 0], r = [0, 0, 0], s = [1, 1, 1], m = 0, v = 0 } = {}) {
   const g = geo.index ? geo.toNonIndexed() : geo.clone();
   _m.compose(_p.set(...p), _q.setFromEuler(_e.set(...r)), _s.set(...s));
   g.applyMatrix4(_m);
@@ -17,7 +18,8 @@ export function piece(geo, couleur, { p = [0, 0, 0], r = [0, 0, 0], s = [1, 1, 1
   for (let i = 0; i < n; i++) { col[i * 3] = c.r; col[i * 3 + 1] = c.g; col[i * 3 + 2] = c.b; }
   g.setAttribute('color', new THREE.BufferAttribute(col, 3));
   g.setAttribute('motif', new THREE.BufferAttribute(new Float32Array(n).fill(m), 1));
-  for (const k of Object.keys(g.attributes)) if (!['position', 'normal', 'color', 'motif'].includes(k)) g.deleteAttribute(k);
+  g.setAttribute('visage', new THREE.BufferAttribute(new Float32Array(n).fill(v), 1));
+  for (const k of Object.keys(g.attributes)) if (!['position', 'normal', 'color', 'motif', 'visage'].includes(k)) g.deleteAttribute(k);
   return g;
 }
 
@@ -25,7 +27,7 @@ export function piece(geo, couleur, { p = [0, 0, 0], r = [0, 0, 0], s = [1, 1, 1
 export function fusion(pieces) {
   let total = 0;
   for (const g of pieces) total += g.attributes.position.count;
-  const pos = new Float32Array(total * 3), nor = new Float32Array(total * 3), col = new Float32Array(total * 3), mot = new Float32Array(total);
+  const pos = new Float32Array(total * 3), nor = new Float32Array(total * 3), col = new Float32Array(total * 3), mot = new Float32Array(total), vis = new Float32Array(total);
   let o = 0;
   for (const g of pieces) {
     if (!g.attributes.normal) g.computeVertexNormals();
@@ -33,6 +35,7 @@ export function fusion(pieces) {
     nor.set(g.attributes.normal.array, o * 3);
     col.set(g.attributes.color.array, o * 3);
     if (g.attributes.motif) mot.set(g.attributes.motif.array, o);
+    if (g.attributes.visage) vis.set(g.attributes.visage.array, o);
     o += g.attributes.position.count;
     g.dispose();
   }
@@ -41,6 +44,7 @@ export function fusion(pieces) {
   out.setAttribute('normal', new THREE.BufferAttribute(nor, 3));
   out.setAttribute('color', new THREE.BufferAttribute(col, 3));
   out.setAttribute('motif', new THREE.BufferAttribute(mot, 1));
+  out.setAttribute('visage', new THREE.BufferAttribute(vis, 1));
   out.computeBoundingSphere();
   return out;
 }
@@ -64,6 +68,9 @@ export function hasard(graine = 1) {
 export const temps = { value: 0 };
 export const vent = { value: 1 };
 export const reglageGrain = { value: 1 };
+// Mode sans visage : 1 = les pièces de visage (attribut « visage ») ne sont pas dessinées. Piloté par LDN_SV (monde/socle/sans-visage.js).
+export const sansVisage = { value: 0 };
+if (typeof globalThis !== 'undefined' && globalThis.LDN_SV) globalThis.LDN_SV.abonner(a => { sansVisage.value = a ? 1 : 0; });
 const GRAIN_VS = `
   attribute float motif;
   varying vec3 vWP; varying vec3 vPL; varying float vMotif;`;
@@ -100,6 +107,10 @@ export function materiau({ balance = 0, emissif = null, grain = 1, finesse = 1 }
   if (emissif) m.emissive = new THREE.Color(emissif);
   const avecGrain = grain > 0;
   m.onBeforeCompile = s => {
+    // pièces de visage : écartées à l'affichage en mode sans visage (valable pour TOUS les objets fabriqués avec materiau())
+    s.uniforms.uSansVisage = sansVisage;
+    s.vertexShader = 'attribute float visage;\nvarying float vVisage;\n' + s.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n  vVisage = visage;');
+    s.fragmentShader = 'uniform float uSansVisage;\nvarying float vVisage;\n' + s.fragmentShader.replace('void main() {', 'void main() {\n  if (vVisage > 0.5 && uSansVisage > 0.5) discard;');
     if (avecGrain) {
       s.uniforms.uGrain = { get value() { return grain * reglageGrain.value; } };
       s.uniforms.uFinesse = { value: finesse };
@@ -129,6 +140,6 @@ export function materiau({ balance = 0, emissif = null, grain = 1, finesse = 1 }
         transformed.z += bal * hb * hb * ${(0.006 * balance).toFixed(4)} * uVent;`);
     }
   };
-  m.customProgramCacheKey = () => 'mat-' + balance + '-' + (avecGrain ? 'g' + finesse : 'n');
+  m.customProgramCacheKey = () => 'sv-mat-' + balance + '-' + (avecGrain ? 'g' + finesse : 'n');
   return m;
 }

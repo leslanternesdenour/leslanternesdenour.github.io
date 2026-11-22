@@ -4,7 +4,7 @@
 // 'imaginaire' (création du jeu, comme les lanternes dorées, emblème des Lanternes de Nour).
 // Les motifs décoratifs sont des créations du jeu, pas des symboles historiques.
 import * as THREE from 'three';
-import { piece, fusion, M } from './formes.js?v=3';
+import { piece, fusion, M } from './formes.js?v=4';
 
 export const RARETES = {
   commun:     { nom: 'Commun',      couleur: '#9a8f7a', fond: '#efe8da' },

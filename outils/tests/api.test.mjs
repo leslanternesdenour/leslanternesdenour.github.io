@@ -102,6 +102,30 @@ test('Profils enfants : limite du gratuit, minimisation des données', async () 
   assert.deepEqual(Object.keys(e).filter(k => e[k] !== undefined).sort(), ['avatar', 'creeLe', 'gele', 'id', 'majLe', 'surnom', 'tranche']);
 });
 
+test('Mode sans visage : préférence de la famille (identique pour tous les profils, conservée, sans effet sur les enfants)', async () => {
+  assert.equal((await appel('PATCH', '/api/famille/preferences', { corps: { sansVisage: true } })).s, 401, 'visiteur refusé (le visiteur garde le réglage sur son appareil)');
+  const c = await connecter('uid-sv1');
+  assert.deepEqual((await appel('GET', '/api/moi', { cookie: c })).j.preferences, {}, 'aucun réglage au départ');
+  await appel('POST', '/api/enfants', { cookie: c, corps: { surnom: 'Amina', tranche: '3-5', avatar: 'fille' } });
+  const avant = (await appel('GET', '/api/enfants', { cookie: c })).j.enfants;
+  assert.equal((await appel('PATCH', '/api/famille/preferences', { cookie: c, corps: { sansVisage: true } })).s, 200);
+  assert.deepEqual((await appel('GET', '/api/moi', { cookie: c })).j.preferences, { sansVisage: true });
+  assert.deepEqual((await appel('GET', '/api/enfants', { cookie: c })).j.enfants, avant, 'les profils enfants ne sont pas modifiés');
+  // conservé après déconnexion / reconnexion (nouvelle session)
+  await appel('POST', '/api/session/fin', { cookie: c });
+  const c2 = await connecter('uid-sv1');
+  assert.deepEqual((await appel('GET', '/api/moi', { cookie: c2 })).j.preferences, { sansVisage: true }, 'relu à la reconnexion');
+  assert.equal((await appel('PATCH', '/api/famille/preferences', { cookie: c2, corps: { sansVisage: false } })).s, 200);
+  assert.deepEqual((await appel('GET', '/api/moi', { cookie: c2 })).j.preferences, { sansVisage: false });
+  // validation : seul un booléen est accepté, rien d'autre n'est écrit
+  for (const mauvais of [{ sansVisage: 'oui' }, { sansVisage: 1 }, {}, { autre: true }]) assert.equal((await appel('PATCH', '/api/famille/preferences', { cookie: c2, corps: mauvais })).s, 400);
+  assert.equal((await appel('PATCH', '/api/famille/preferences', { cookie: c2, corps: { sansVisage: true, admin: true, email: 'x@y.fr' } })).s, 200);
+  const famille = await base.lire('familles', 'uid-sv1'); assert.deepEqual(Object.keys(famille.preferences), ['sansVisage'], 'aucune clé inconnue écrite');
+  // une autre famille n'est pas touchée
+  assert.deepEqual((await appel('GET', '/api/moi', { cookie: await connecter('uid-sv2') })).j.preferences, {});
+  assert.equal((await appel('PATCH', '/api/famille/preferences', { cookie: c2, corps: { sansVisage: true }, entetes: { Origin: 'https://pirate.exemple' } })).s, 403, 'mauvaise origine refusée');
+});
+
 test('Administration : Créateur seul, connexion récente pour toute modification', async () => {
   assert.equal((await appel('GET', '/api/admin/resume', { cookie: await connecter('uid-p3') })).s, 403);
   const ancien = await connecter(CREATEUR, { role: 'creator', authAgo: 3600 });

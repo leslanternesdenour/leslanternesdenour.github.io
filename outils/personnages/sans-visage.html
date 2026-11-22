@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<script src="../../monde/socle/sans-visage.js?v=1"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Mode sans visage — vue de contrôle</title>
+<!-- Page de CONTRÔLE (hors production : /outils n'est pas publié) : tous les personnages 3D et animaux du projet, avec le mode sans visage
+     activable en direct, vus de face, de trois quarts, de profil et de dos. Ne modifie aucun jeu. -->
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+<style>
+  html,body{margin:0;height:100%;background:#cfe8ff;font-family:system-ui,sans-serif}
+  canvas{display:block;width:100%;height:100%}
+  #barre{position:fixed;top:8px;left:8px;right:8px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;z-index:5}
+  #barre button{font:700 14px system-ui;padding:8px 12px;border:0;border-radius:10px;background:#2a2166;color:#fff;cursor:pointer}
+  #barre button[aria-pressed=true]{background:#f5b942;color:#2a2166}
+  #legende{position:fixed;left:0;right:0;bottom:6px;text-align:center;font:600 13px system-ui;color:#2a2166;text-shadow:0 0 4px #fff;z-index:5}
+  #sv-etat{font-weight:800;color:#2a2166;background:#fff;padding:6px 10px;border-radius:10px}
+</style>
+</head>
+<body>
+<div id="barre">
+  <button id="mode" aria-pressed="false">Mode sans visage : <b id="mode-etat">DÉSACTIVÉ</b></button>
+  <span style="width:8px"></span>
+  <button data-vue="face" aria-pressed="true">Face</button><button data-vue="trois" aria-pressed="false">Trois quarts</button><button data-vue="profil" aria-pressed="false">Profil</button><button data-vue="dos" aria-pressed="false">Dos</button>
+  <span style="width:8px"></span>
+  <button data-groupe="humains" aria-pressed="true">Enfants</button><button data-groupe="montures" aria-pressed="false">Montures</button><button data-groupe="animaux" aria-pressed="false">Animaux</button><button data-groupe="glb" aria-pressed="false">Modèles GLB N1</button>
+</div>
+<div id="legende"></div>
+<script type="module">
+import * as THREE from 'three';
+import { Voyageur } from '../../voyage/js/voyageur.js?v=9';
+import { Enfant, Chameau } from '../../voyage/js/personnages.js?v=4';
+import { creerMonture, MONTURES } from '../../voyage/js/montures.js?v=4';
+import { creerAnimaux } from '../../voyage/js/animaux.js?v=4';
+import { creerFaucon } from '../../voyage/js/faucon.js?v=4';
+
+const q = new URLSearchParams(location.search);
+let vue = q.get('vue') || 'face', groupe = q.get('groupe') || 'humains';
+if (q.has('sv')) window.LDN_SV.definir(q.get('sv') === '1');
+
+const rendu = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+rendu.setPixelRatio(Math.min(devicePixelRatio, 2)); document.body.appendChild(rendu.domElement);
+const scene = new THREE.Scene(); scene.background = new THREE.Color('#cfe8ff');
+scene.add(new THREE.HemisphereLight('#ffffff', '#b09870', 1.6)); const d = new THREE.DirectionalLight('#ffffff', 1.6); d.position.set(2, 4, 6); scene.add(d);
+const sol = new THREE.Mesh(new THREE.PlaneGeometry(80, 20), new THREE.MeshBasicMaterial({ color: '#e3c98f' })); sol.rotation.x = -Math.PI / 2; sol.position.y = -0.01; scene.add(sol);
+const cam = new THREE.PerspectiveCamera(30, 1, 0.1, 200);
+
+const ANGLE = { face: 0, trois: 0.65, profil: Math.PI / 2, dos: Math.PI };
+const objets = { humains: [], montures: [], animaux: [], glb: [] }, animes = [];
+const NOMS = { humains: 'Voyageur garçon · Voyageuse · Enfant du voyage · Enfant voilée · Enfant barbu', montures: 'Dromadaire · Cheval · Éléphant', animaux: 'Gazelle · Fennec · Huppe · Chèvres · Colombes · Lézard · Faucon', glb: 'Modèles GLB N1 (fille, garçon) — relief du nez conservé : voir la note de limites' };
+function poser(g, o, x, ech = 1) { o.position.set(x, 0, 0); o.scale.multiplyScalar(ech); scene.add(o); objets[g].push(o); }
+
+// ----- enfants (modèles procéduraux) -----
+{
+  const gar = new Voyageur(false, { genre: 'garcon', tenue: 'ecru', peau: 1 }), fil = new Voyageur(false, { genre: 'fille', tenue: 'ecru', peau: 1 });
+  const e1 = new Enfant(false, { peau: '#c98e66', tunique: '#7a5a3a', pantalon: '#5a4434', cheche: '#f6f0e2', sac: false }); e1.racine.scale.setScalar(1.28);
+  const e2 = new Enfant(false, { peau: '#d9a27a', tunique: '#b8694a', voile: '#f2e9d6' }), e3 = new Enfant(false, { peau: '#a8724c', tunique: '#6b5a3a', barbe: '#4a3a2a' });
+  [[gar, 1.2], [fil, 1.2], [e1, 1.2], [e2, 1.2], [e3, 1.2]].forEach(([p, s], i) => { poser('humains', p.racine, (i - 2) * 1.9); animes.push(p); });
+}
+// ----- montures -----
+{
+  const ids = ['dromadaire', 'cheval', 'elephant'].map(e => MONTURES.find(m => m.espece === e)).filter(Boolean).map(m => m.id);
+  ids.forEach((id, i) => { try { const m = creerMonture(id, false); poser('montures', m.racine, (i - (ids.length - 1) / 2) * 4.8); animes.push(m); } catch (e) { console.warn(id, e); } });
+}
+// ----- animaux (un de chaque, deux chèvres et deux colombes) -----
+{
+  const H = () => 0, liste = creerAnimaux(scene, H, false, null).liste, vus = {}, choisis = [];
+  for (const a of liste) { scene.remove(a.g); const n = vus[a.id] || 0; if (n === 0 || ((a.id === 'chevre' || a.id === 'colombe') && n < 2)) { vus[a.id] = n + 1; choisis.push(a); } }
+  choisis.forEach((a, k) => { a.g.position.set((k - choisis.length / 2) * 2.0, 0, 0); a.g.rotation.set(0, 0, 0); scene.add(a.g); objets.animaux.push(a.g); });
+  try { const f = creerFaucon(scene, H, false); f.racine.visible = true; f.racine.position.set((choisis.length / 2) * 2.0, 0.8, 0); f.racine.rotation.set(0, 0, 0); objets.animaux.push(f.racine); } catch (e) { console.warn('faucon', e); }
+}
+// ----- GLB N1 -----
+const glb = (async () => {
+  try {
+    const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js'); const { PersonnageGLB } = await import('../../personnages3d/personnage-glb.js');
+    const L = new GLTFLoader();
+    for (const [i, g] of ['fille', 'garcon'].entries()) {
+      const gltf = await L.loadAsync('../../personnages3d/modeles/' + g + '_N1.glb'); const p = new PersonnageGLB(gltf, { genre: g, peau: 1 });
+      poser('glb', p.racine, (i - 0.5) * 1.6); animes.push(p);
+    }
+  } catch (e) { console.warn('GLB', e); window.__glbErreur = String(e); }
+})();
+
+const sel = (a, v) => document.querySelectorAll(`[data-${a}]`).forEach(b => b.setAttribute('aria-pressed', b.dataset[a] === v));
+function afficher() {
+  for (const g of Object.keys(objets)) for (const o of objets[g]) { o.visible = g === groupe; o.rotation.y = ANGLE[vue]; }
+  const n = objets[groupe].length || 1, larg = groupe === 'animaux' ? n * 2 + 1 : groupe === 'montures' ? 14 : n * 1.9 + 1;
+  const hauteur = groupe === 'montures' ? 2.6 : groupe === 'animaux' ? 1.6 : 1.8;
+  cam.position.set(0, hauteur * 0.55, Math.max(4.5, Math.max(larg / (2 * Math.tan(cam.fov * Math.PI / 360) * cam.aspect), hauteur / (2 * Math.tan(cam.fov * Math.PI / 360))) + 1.2)); cam.lookAt(0, hauteur * 0.45, 0);
+  if (q.has('cz')) { cam.position.set(+(q.get('cx') || 0), +q.get('cy'), +q.get('cz')); cam.lookAt(+(q.get('cx') || 0), +q.get('cy'), 0); }   // gros plan (contrôle)
+  document.getElementById('legende').textContent = NOMS[groupe]; sel('vue', vue); sel('groupe', groupe);
+}
+function taille() { rendu.setSize(innerWidth, innerHeight); cam.aspect = innerWidth / innerHeight; cam.updateProjectionMatrix(); afficher(); }
+addEventListener('resize', taille);
+document.querySelectorAll('[data-vue]').forEach(b => b.onclick = () => { vue = b.dataset.vue; afficher(); });
+document.querySelectorAll('[data-groupe]').forEach(b => b.onclick = () => { groupe = b.dataset.groupe; afficher(); });
+const maj = a => { document.getElementById('mode').setAttribute('aria-pressed', a); document.getElementById('mode-etat').textContent = a ? 'ACTIVÉ' : 'DÉSACTIVÉ'; };
+document.getElementById('mode').onclick = () => window.LDN_SV.definir(!window.LDN_SV.actif());
+window.LDN_SV.abonner(maj);
+const horloge = new THREE.Clock(); taille();
+glb.then(afficher);
+function boucle() {
+  const dt = Math.min(horloge.getDelta(), 0.05), t = horloge.elapsedTime;
+  if (!window.__fige) for (const a of animes) { try { if (a.animer) a.animer(dt, 0, t); else if (a.maj) a.maj(dt, 0, t); } catch (e) {} }
+  rendu.render(scene, cam); window.__pret = true; requestAnimationFrame(boucle);
+}
+boucle();
+// (contrôle automatique) bande horizontale de l'écran occupée par chaque personnage visible, et nombre de pièces de visage étiquetées
+window.__bandes = () => objets[groupe].filter(o => o.visible).map(o => {
+  const b = new THREE.Box3().setFromObject(o), pts = []; let sommets = 0, visage = 0;
+  for (const x of [b.min.x, b.max.x]) for (const y of [b.min.y, b.max.y]) for (const z of [b.min.z, b.max.z]) pts.push(new THREE.Vector3(x, y, z).project(cam));
+  o.traverse(m => { const g = m.geometry; if (g && g.attributes.visage) { sommets += g.attributes.visage.count; for (const v of g.attributes.visage.array) if (v > 0.5) visage++; } });
+  const xs = pts.map(p => (p.x + 1) / 2 * innerWidth), ys = pts.map(p => (1 - p.y) / 2 * innerHeight);
+  return { x0: Math.min(...xs), x1: Math.max(...xs), y0: Math.min(...ys), y1: Math.max(...ys), sommets, visage, nom: o.name || '' };
+});
+const caps = {};
+window.__cap = k => { const c = document.createElement('canvas'); c.width = rendu.domElement.width; c.height = rendu.domElement.height; const x = c.getContext('2d'); x.drawImage(rendu.domElement, 0, 0); caps[k] = x.getImageData(0, 0, c.width, c.height); return true; };
+window.__diff = (a, b, x0, x1, y0, y1) => { const A = caps[a], B = caps[b], k = A.width / innerWidth; let n = 0, bx0 = 1e9, bx1 = -1, by0 = 1e9, by1 = -1;
+  for (let y = Math.max(0, Math.floor(y0 * k)); y < Math.min(A.height, Math.ceil(y1 * k)); y++) for (let x = Math.max(0, Math.floor(x0 * k)); x < Math.min(A.width, Math.ceil(x1 * k)); x++) { const i = (y * A.width + x) * 4;
+    if (Math.abs(A.data[i] - B.data[i]) + Math.abs(A.data[i + 1] - B.data[i + 1]) + Math.abs(A.data[i + 2] - B.data[i + 2]) > 40) { n++; bx0 = Math.min(bx0, x); bx1 = Math.max(bx1, x); by0 = Math.min(by0, y); by1 = Math.max(by1, y); } } window.__dernier = { bx0, bx1, by0, by1 }; return n; };
+window.__vue = (v, g) => { if (v) vue = v; if (g) groupe = g; afficher(); };
+</script>
+</body>
+</html>

@@ -39,6 +39,36 @@ export class PersonnageGLB {
       this.maillages.push(o);
     });
     this.teinte(peau);
+    this.sv = false;
+    if (globalThis.LDN_SV) globalThis.LDN_SV.abonnerObjet(this, 'sansVisage');      // mode sans visage (réglage de la famille)
+  }
+  // MODE SANS VISAGE : les yeux (maillage séparé) sont masqués, les formes faciales sont forcées à zéro et les traits peints sur la peau
+  // (sourcils, bouche, joues : couleurs de sommets) reprennent la couleur de la peau. LIMITE CONNUE : le RELIEF du nez et de la bouche fait partie
+  // de la géométrie de la peau et ne peut pas être retiré sans retoucher le modèle dans Blender : il reste visible en relief, sans couleur.
+  sansVisage(actif) {
+    this.sv = !!actif;
+    for (const m of this.maillages) {
+      if (m.name === 'yeux') m.visible = !this.sv;
+      if (m.name === 'peau') this.#couleursVisage(m, this.sv);
+    }
+  }
+  #couleursVisage(m, masque) {
+    const g = m.geometry, col = g && g.attributes.color, pos = g && g.attributes.position; if (!col || !pos) return;
+    if (!g.userData.visage) {                                                   // calculé une fois par géométrie (partagée entre personnages du même genre)
+      const n = col.count, cle = i => [col.getX(i), col.getY(i), col.getZ(i)].map(x => Math.round(x * 100)).join(','), compte = new Map();
+      for (let i = 0; i < n; i++) { const k = cle(i); compte.set(k, (compte.get(k) || 0) + 1); }
+      const dom = [...compte.entries()].sort((a, b) => b[1] - a[1])[0][0].split(',').map(x => Number(x) / 100);
+      const idx = [], origine = [];
+      for (let i = 0; i < n; i++) {
+        if (pos.getY(i) < 1.1 || pos.getZ(i) < 0.02) continue;                  // visage seulement (devant de la tête)
+        const c = [col.getX(i), col.getY(i), col.getZ(i)];
+        if (Math.hypot(c[0] - dom[0], c[1] - dom[1], c[2] - dom[2]) > 0.03) { idx.push(i); origine.push(c); }
+      }
+      g.userData.visage = { dom, idx, origine };
+    }
+    const { dom, idx, origine } = g.userData.visage;
+    for (let k = 0; k < idx.length; k++) { const c = masque ? dom : origine[k]; col.setXYZ(idx[k], c[0], c[1], c[2]); }
+    col.needsUpdate = true;
   }
   // Teint : multiplie la couleur du matériau de la peau (couleurs peintes sur les sommets). Les vêtements gardent leurs couleurs validées.
   teinte(indexPeau) {
@@ -59,6 +89,7 @@ export class PersonnageGLB {
       for (const f of FORMES) if (d[f] !== undefined) inf[d[f]] = this.influence[f];
       if (d.clignement !== undefined) inf[d.clignement] = cl.clignement;
       if (d.clignement_mi !== undefined) inf[d.clignement_mi] = cl.clignement_mi;
+      if (this.sv) for (const f of ['sourire', 'sourire_large', 'bouche_ouverte', 'sourcils_etonne', 'sourcils_concentre']) if (d[f] !== undefined) inf[d[f]] = 0;   // aucune expression faciale en mode sans visage
     }
   }
 

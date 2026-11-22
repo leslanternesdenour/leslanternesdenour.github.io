@@ -1,7 +1,7 @@
 // « Ma cour » : l'espace de l'enfant devant sa maison, dans le village.
 // Les objets de collection achetés au souk y sont exposés (l'enfant choisit lesquels dans son armoire).
 import * as THREE from 'three';
-import { piece, fusion, materiau, M } from './formes.js?v=3';
+import { piece, fusion, materiau, M } from './formes.js?v=4';
 import { modeleObjet, ARTICLES } from './catalogue.js?v=3';
 
 const mat = materiau({ finesse: 2 });

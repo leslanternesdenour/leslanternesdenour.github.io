@@ -70,3 +70,27 @@
 
 ## 6. Précautions
 Aucun personnage ni fichier original supprimé ni remplacé ; aucune modélisation refaite ; modifications sur la branche `preproduction` d'abord, essai du client avant la production ; pas de changement des données des familles et des profils.
+
+---
+## 7. État de l'intégration (22/11/2026) — sur `preproduction` uniquement, en attente de validation du client
+Décisions du client appliquées : animaux inclus, bannière remplacée par le village sans personnage (bannière d'origine conservée), émojis de personnes remplacés par une silhouette, visiteurs sans compte autorisés (réglage local), mode sans visage d'abord puis amélioration des personnages.
+
+**Ce qui a été fait**
+- `monde/socle/sans-visage.js` : module central (état, `<html data-sans-visage>` posé avant l'affichage, événement, synchronisation entre onglets, texte des parents, silhouettes pour les émojis) ; chargé dans le `<head>` des 15 pages publiques.
+- 3D : option `v: 1` des pièces de visage (`voyage/js/formes.js`) + écartement dans le matériau commun ; pièces étiquetées pour `Voyageur` (garçon/fille), `Enfant`, chameau, cheval, éléphant, 6 animaux, faucon ; GLB N1 : `sansVisage()` dans `personnages3d/personnage-glb.js`.
+- SVG : Nour (Ablutions et village), Sajjadou (Prière), visages du choix fille/garçon, visage de l'illustration « Le visage » des Ablutions.
+- Accueil : `<picture class="sv-avec">` (bannière d'origine) et `<picture class="sv-sans">` (village).
+- Réglage : section « Réglages de la famille » dans `/compte/` ; liens depuis le village et le Grand Voyage ; API `PATCH /api/famille/preferences` + `preferences` dans `/api/moi` (compte de la famille, jamais un profil enfant).
+- Pages de contrôle (préproduction seulement) : `/outils/personnages/sans-visage.html` (tous les personnages, vues face/trois quarts/profil/dos, mode activable en direct).
+- Tests : `outils/tests/sans-visage-garde.test.mjs` (9), `outils/tests/api.test.mjs` (+1), `outils/tests/sans-visage.sh` (223 vérifications dans Chrome, ordinateur et téléphone, avec compte, déconnexion et reconnexion sur appareil neuf). Captures avant/après : `docs/sans-visage/`.
+
+**LIMITES CONNUES (à lire)**
+1. **GLB N1 (fille_N1, garcon_N1) : le visage n'est PAS entièrement masqué.** Les yeux disparaissent, les formes d'expression sont forcées à zéro et les sourcils/bouche/joues peints reprennent la couleur de la peau, mais le **relief** du nez, de la bouche et des arcades fait partie de la géométrie de la peau : il reste visible en relief, sans couleur. Le retirer demande de retoucher le modèle dans Blender. Ces modèles ne sont pas utilisés par défaut (`?perso=nouveau` seulement).
+2. **Image de partage** (`accueil/og-partage.jpg`, aperçu sur les réseaux sociaux) : elle montre les deux enfants et ne peut pas suivre le réglage d'une famille. La vignette YouTube de l'accueil est externe.
+3. **Bannière de remplacement** : `village.webp` (888 px de large) est recadrée à la place de la bannière : un peu moins nette sur grand écran. Une illustration sans visage dédiée serait préférable.
+4. **Animaux** : yeux (et nez du fennec) masqués ; becs, museaux et bouts de queue sont de l'anatomie et restent.
+5. **Émojis** : seuls les émojis dans le texte de la page sont remplacés ; ceux d'un titre d'onglet, d'une info-bulle ou d'une liste déroulante native ne le sont pas.
+6. **Hors-ligne** : le calendrier hors-ligne n'embarque pas le module (pas de personnage à masquer dans ce jeu).
+7. **Appareil partagé** : le réglage est gardé sur l'appareil ; à la connexion, le compte de la famille fait foi. Un compte sans réglage reprend celui de l'appareil.
+
+**Pour un futur personnage ou jeu** : pièces de visage avec `v: 1` ; groupes SVG de visage avec la classe `sv-visage` ; modèle GLB avec une méthode `sansVisage(actif)` abonnée par `LDN_SV.abonnerObjet` ; la nouvelle page charge `monde/socle/sans-visage.js`. Le test `sans-visage-garde.test.mjs` échoue si une petite sphère sombre (œil, nez) n'est pas étiquetée.
