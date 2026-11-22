@@ -7,7 +7,7 @@ const seed = a => () => (a = (a * 16807) % 2147483647) / 2147483647; const sansV
 test('28 lettres arabes, uniques, dans l\'ordre de l\'alphabet, avec nom arabe, nom français et son', () => {
   assert.equal(D.LETTRES.length, 28); assert.equal(new Set(D.IDS).size, 28); assert.equal(new Set(D.LETTRES.map(l => l.ar)).size, 28);
   assert.equal(D.LETTRES.map(l => l.ar).join(''), 'ابتثنيجحخدذرزسشصضطظعغفقكلمهو'.length === 28 ? D.LETTRES.map(l => l.ar).join('') : '', 'ordre');
-  for (const l of D.LETTRES) { assert.match(l.ar, /^[ء-ي]$/, l.id); assert.match(l.nom, /^[ء-ي]+$/, l.id + ' nom arabe en alphabet arabe'); assert.ok(l.nomFr && l.sonFr && l.syllabe.includes('َ'), l.id + ' syllabe avec fatha'); }
+  for (const l of D.LETTRES) { assert.match(l.ar, /^[ء-ي]$/, l.id); assert.match(l.nom, /^[ء-ي\u064B-\u0652]+$/, l.id + ' nom arabe en alphabet arabe'); assert.ok(l.nomFr && l.sonFr && l.syllabe.includes('َ'), l.id + ' syllabe avec fatha'); }
 });
 test('les lettres qui ne se lient pas à la suivante sont exactement ا د ذ ر ز و', () => {
   assert.deepEqual(D.LETTRES.filter(l => !l.joint).map(l => l.ar).sort(), ['ا', 'د', 'ذ', 'ر', 'ز', 'و'].sort());

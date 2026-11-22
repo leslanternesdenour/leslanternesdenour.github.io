@@ -31,6 +31,9 @@ for (const [id, codes] of Object.entries(FORMES)) {
     sortie[id][NOMS_FORMES[i]] = { cp: 'U+' + cp.toString(16).toUpperCase(), d: ch.toPathData(1), largeur: arrondi(g.advanceWidth), bb: [arrondi(bb.x1), arrondi(bb.y1), arrondi(bb.x2), arrondi(bb.y2)], parties: parties(ch) };
   });
 }
+// Les quatre formes de l'alif (alif seul + hamza dessus / hamza dessous / madda / wasla) : caractères Unicode isolés, contours EXACTS de la police
+const ALIF_FORMES = { hamza_dessus: 0x0623, hamza_dessous: 0x0625, madda: 0x0622, wasla: 0x0671 }, alifFormes = {};
+for (const [k, cp] of Object.entries(ALIF_FORMES)) { const g = font.charToGlyph(String.fromCodePoint(cp)); if (!g || !g.index) throw new Error('glyphe absent ' + k); const ch = g.getPath(0, 0, 1000), bb = ch.getBoundingBox(); alifFormes[k] = { cp: 'U+' + cp.toString(16).toUpperCase(), d: ch.toPathData(1), largeur: arrondi(g.advanceWidth), bb: [arrondi(bb.x1), arrondi(bb.y1), arrondi(bb.x2), arrondi(bb.y2)], parties: parties(ch) }; }
 const dest = path.join(RACINE, 'ecole-arabe/lettres/donnees/glyphes.json');
-fs.writeFileSync(dest, JSON.stringify({ police: 'Amiri (SIL OFL 1.1)', unites: 1000, lettres: sortie }));
+fs.writeFileSync(dest, JSON.stringify({ police: 'Amiri (SIL OFL 1.1)', unites: 1000, lettres: sortie, alifFormes }));
 console.log('28 lettres exportées :', Object.keys(sortie).length, '; formes :', Object.values(sortie).reduce((s, l) => s + Object.keys(l).length, 0), '; taille', (fs.statSync(dest).size / 1024).toFixed(0), 'Ko');

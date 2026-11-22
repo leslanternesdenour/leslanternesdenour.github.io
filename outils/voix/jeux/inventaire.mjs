@@ -13,7 +13,7 @@ export async function construire(jeu) {
   let ancien = {}; if (fs.existsSync(fich)) for (const p of JSON.parse(fs.readFileSync(fich, 'utf8')).phrases || []) ancien[p.id] = p;
   const phrases = m.inventaire().map(p => {
     const a = ancien[p.id], present = a && a.fichier && fs.existsSync(path.join(dossier, a.fichier)) && a.texte === p.texte && a.voixId === roles[p.role];       // texte modifié OU voix différente de celle du rôle = à régénérer
-    return { id: p.id, role: p.role, langue: p.langue, texte: p.texte, sousTitre: p.texte, fichier: present ? a.fichier : null, duree: present ? a.duree : 0, prononciationVerifiee: present ? !!a.prononciationVerifiee : false, voixId: present ? a.voixId || null : null };
+    return { id: p.id, ...(p.lettre ? { lettre: p.lettre } : {}), role: p.role, langue: p.langue, texte: p.texte, sousTitre: p.texte, fichier: present ? a.fichier : null, duree: present ? a.duree : 0, prononciationVerifiee: present ? !!a.prononciationVerifiee : false, voixId: present ? a.voixId || null : null };
   });
   const sortie = { jeu, genere: 'inventaire.mjs', total: phrases.length, enregistrees: phrases.filter(p => p.fichier).length, phrases };
   fs.writeFileSync(fich, JSON.stringify(sortie, null, 1) + '\n'); return sortie;

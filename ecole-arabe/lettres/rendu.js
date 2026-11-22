@@ -29,3 +29,9 @@ export function svgMot(ids, opts = {}) {
 }
 // Plus grande dimension commune d'un groupe de lettres (pour les comparer à la même échelle : lettres jumelles)
 export function tailleCommune(ids, forme = 'isolee') { return Math.max(...ids.map(id => { const b = G.lettres[id][forme].bb; return Math.max(b[2] - b[0], b[3] - b[1]); })); }
+
+// Les formes de l'alif (أ إ آ ٱ) : contours exacts de la police, à la même échelle pour pouvoir les comparer. Le corps est en encre, la hamza / madda / wasla en turquoise.
+export function svgAlifForme(cle) {
+  const F = G.alifFormes, f = F[cle], T = Math.max(...Object.values(F).map(x => Math.max(x.bb[2] - x.bb[0], x.bb[3] - x.bb[1]))) * 1.3, cx = (f.bb[0] + f.bb[2]) / 2, cy = (f.bb[1] + f.bb[3]) / 2;
+  return `<svg class="lettre-svg" viewBox="${(cx - T / 2).toFixed(1)} ${(cy - T / 2).toFixed(1)} ${T.toFixed(1)} ${T.toFixed(1)}" role="img" aria-label="alif : ${cle.replace('_', ' ')}">${f.parties.map(p => `<path d="${p.d}" fill="${p.type === 'corps' ? COULEURS.encre : COULEURS.points}"/>`).join('')}</svg>`;
+}
