@@ -208,7 +208,7 @@ export class Voyageur {
       }
       ajoute(this.tete, p);
       // les yeux (à part pour cligner)
-      this.yeux = new THREE.Group(); this.yeux.position.set(0, 0.012, 0.155); this.tete.add(this.yeux);
+      this.yeux = new THREE.Group(); this.yeux.position.set(0, 0.012, f ? 0.155 : 0.167); this.tete.add(this.yeux);   // la tête du garçon est un peu plus grosse : les yeux étaient enfouis dans le visage (seuls les reflets se voyaient)
       const o = [];
       for (const s of [-1, 1]) {
         o.push(piece(SPH(f ? 0.03 : 0.028, 10, 8), '#2a1c18', { p: [s * 0.066, 0, 0], s: [0.9, 1.15, 0.6] }), piece(SPH(0.009, 6, 5), '#ffffff', { p: [s * 0.066 + 0.01, 0.013, 0.015] }));
@@ -310,7 +310,8 @@ export class Voyageur {
         bd.haut.rotation.set(-1.35 * k, 0, -0.1); bd.bas.rotation.set(-0.35 * k + Math.sin(g.t * 9) * 0.25 * k, 0, 0);
         this.tete.rotation.x += 0.15 * k;
       } else if (g.type === 'salut') {
-        bd.haut.rotation.set(-0.3 * k, 0, -2.4 * k); bd.bas.rotation.set(0, 0, -0.3 * k + Math.sin(g.t * 12) * 0.35 * k);
+        // le bras se lève vers l'EXTÉRIEUR (avant : signe inversé, le bras passait devant le corps et la main finissait derrière la tête)
+        bd.haut.rotation.set(-0.3 * k, 0, bd.s * 2.4 * k); bd.bas.rotation.set(0, 0, bd.s * (0.3 * k + Math.sin(g.t * 12) * 0.35 * k));
       } else if (g.type === 'joie') {
         corpsY += Math.abs(Math.sin(g.t * Math.PI * 2 / g.d * 2)) * 0.12 * k;
         for (const b of this.bras) b.haut.rotation.set(-0.3 * k, 0, b.s * 2.3 * k);

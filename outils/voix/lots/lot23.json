@@ -1,0 +1,116 @@
+[
+ {
+  "cle": "voyage/NOUR-VOIX-DEC-019",
+  "texte": "Le Prophète ﷺ a raconté l'histoire d'un homme qui a donné à boire à un chien qui avait très soif : Allah l'a remercié et lui a pardonné.",
+  "texte_voix": "Le Prophète ﷺ a raconté l'histoire d'un homme qui a donné à boire à un chien qui avait très soif : Allah l'a remercié et lui a pardonné.",
+  "fichier": "lot23/nour-voix-dec-019.mp3"
+ },
+ {
+  "cle": "voyage/NOUR-VOIX-DEC-040",
+  "texte": "Le village de Nour",
+  "texte_voix": "Le village de Nour",
+  "fichier": "lot23/nour-voix-dec-040.mp3"
+ },
+ {
+  "cle": "voyage/NOUR-VOIX-DEC-041",
+  "texte": "Le souk",
+  "texte_voix": "Le souk",
+  "fichier": "lot23/nour-voix-dec-041.mp3"
+ },
+ {
+  "cle": "voyage/NOUR-VOIX-MAS-001",
+  "texte": "As-salâmou ʿalaykoum ! Bienvenue dans mon village. Le chameau Sablo t'attend à la sortie du village, du côté du soleil levant. Monte sur son dos, et partez découvrir l'oasis, le camp des caravanes et le grand désert !",
+  "texte_voix": "As-salâmou ʿalaykoum ! Bienvenue dans mon village. Le chameau Sablo t'attend à la sortie du village, du côté du soleil levant. Monte sur son dos, et partez découvrir l'oasis, le camp des caravanes et le grand désert !",
+  "fichier": "lot23/nour-voix-mas-001.mp3"
+ },
+ {
+  "cle": "voyage/NOUR-VOIX-PNJ-001",
+  "texte": "As-salâmou ʿalaykoum ! Je traverse le désert avec ma caravane, mais nos provisions sont presque finies. Peux-tu m'apporter 2 paniers de dattes et 2 outres d'eau ? Tu trouveras tout cela à l'oasis.",
+  "texte_voix": "As-salâmou ʿalaykoum ! Je traverse le désert avec ma caravane, mais nos provisions sont presque finies. Peux-tu m'apporter 2 paniers de dattes et 2 outres d'eau ? Tu trouveras tout cela à l'oasis.",
+  "fichier": "lot23/nour-voix-pnj-001.mp3"
+ },
+ {
+  "cle": "voyage/NOUR-VOIX-PNJ-007",
+  "texte": "Tout pour bien voyager : sacs, outres, sandales… et quelques trésors utiles !",
+  "texte_voix": "Tout pour bien voyager : sacs, outres, sandales… et quelques trésors utiles !",
+  "fichier": "lot23/nour-voix-pnj-007.mp3"
+ },
+ {
+  "cle": "voyage/NOUR-VOIX-PNJ-013",
+  "texte": "As-salâmou ʿalaykoum, mon enfant. J'ai trois questions pour toi aujourd'hui. Écoute bien !",
+  "texte_voix": "As-salâmou ʿalaykoum, mon enfant. J'ai trois questions pour toi aujourd'hui. Écoute bien !",
+  "fichier": "lot23/nour-voix-pnj-013.mp3"
+ },
+ {
+  "cle": "voyage/NOUR-VOIX-PNJ-014",
+  "texte": "Tu as répondu à toutes mes questions du jour. Reviens un autre jour, j'en aurai d'autres ! Prends soin de toi.",
+  "texte_voix": "Tu as répondu à toutes mes questions du jour. Reviens un autre jour, j'en aurai d'autres ! Prends soin de toi.",
+  "fichier": "lot23/nour-voix-pnj-014.mp3"
+ },
+ {
+  "cle": "voyage/NOUR-VOIX-QST-001",
+  "texte": "Combien de bosses a le dromadaire ?",
+  "texte_voix": "Combien de bosses a le dromadaire ?",
+  "fichier": "lot23/nour-voix-qst-001.mp3"
+ },
+ {
+  "cle": "voyage/NOUR-VOIX-QST-002",
+  "texte": "Le dromadaire a une seule bosse. Le chameau de Bactriane, lui, en a deux.",
+  "texte_voix": "Le dromadaire a une seule bosse. Le chameau de Bactriane, lui, en a deux.",
+  "fichier": "lot23/nour-voix-qst-002.mp3"
+ },
+ {
+  "cle": "voyage/NOUR-VOIX-QST-003",
+  "texte": "Que garde le dromadaire dans sa bosse ?",
+  "texte_voix": "Que garde le dromadaire dans sa bosse ?",
+  "fichier": "lot23/nour-voix-qst-003.mp3"
+ },
+ {
+  "cle": "voyage/NOUR-VOIX-QST-004",
+  "texte": "Sa bosse est une réserve de graisse, donc d'énergie. Ce n'est pas de l'eau.",
+  "texte_voix": "Sa bosse est une réserve de graisse, donc d'énergie. Ce n'est pas de l'eau.",
+  "fichier": "lot23/nour-voix-qst-004.mp3"
+ },
+ {
+  "cle": "voyage/NOUR-VOIX-QST-005",
+  "texte": "Comment appelle-t-on un endroit du désert où il y a de l'eau et des palmiers ?",
+  "texte_voix": "Comment appelle-t-on un endroit du désert où il y a de l'eau et des palmiers ?",
+  "fichier": "lot23/nour-voix-qst-005.mp3"
+ },
+ {
+  "cle": "voyage/NOUR-VOIX-QST-006",
+  "texte": "C'est une oasis : grâce à l'eau, les palmiers poussent.",
+  "texte_voix": "C'est une oasis : grâce à l'eau, les palmiers poussent.",
+  "fichier": "lot23/nour-voix-qst-006.mp3"
+ },
+ {
+  "cle": "voyage/NOUR-VOIX-QST-007",
+  "texte": "Quel fruit pousse sur les palmiers de l'oasis ?",
+  "texte_voix": "Quel fruit pousse sur les palmiers de l'oasis ?",
+  "fichier": "lot23/nour-voix-qst-007.mp3"
+ },
+ {
+  "cle": "voyage/NOUR-VOIX-QST-008",
+  "texte": "Les palmiers dattiers donnent des dattes.",
+  "texte_voix": "Les palmiers dattiers donnent des dattes.",
+  "fichier": "lot23/nour-voix-qst-008.mp3"
+ },
+ {
+  "cle": "voyage/NOUR-VOIX-QST-017",
+  "texte": "Pendant quel mois les musulmans jeûnent-ils ?",
+  "texte_voix": "Pendant quel mois les musulmans jeûnent-ils ?",
+  "fichier": "lot23/nour-voix-qst-017.mp3"
+ },
+ {
+  "cle": "voyage/NOUR-VOIX-QST-019",
+  "texte": "Que dit-on avant de manger ?",
+  "texte_voix": "Que dit-on avant de manger ?",
+  "fichier": "lot23/nour-voix-qst-019.mp3"
+ },
+ {
+  "cle": "voyage/NOUR-VOIX-QST-037",
+  "texte": "Je suis pleine le matin et légère le soir, après une longue marche. On me remplit au puits. Qui suis-je ?",
+  "texte_voix": "Je suis pleine le matin et légère le soir, après une longue marche. On me remplit au puits. Qui suis-je ?",
+  "fichier": "lot23/nour-voix-qst-037.mp3"
+ }
+]
