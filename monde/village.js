@@ -13,7 +13,6 @@ import { chargerMaisons, TEXTE_RESERVE } from './maisons-premium.js?v=1';
 import { mascotte } from './mascottes.js?v=2';
 import { PEAUX, NOMS_PEAUX, indicePeau, visageSVG } from './socle/peaux.js?v=2';
 
-const ICO_SON = '<svg viewBox="0 0 32 32" width="30" height="30" aria-hidden="true"><path d="M5 12h5l7-6v20l-7-6H5z" fill="#3b4a7a" stroke="#1f2a52" stroke-width="1.600" stroke-linejoin="round"/><path d="M21 11c2.500 2.600 2.500 7.400 0 10M24.500 8c4.500 4.500 4.500 11.500 0 16" fill="none" stroke="#3b4a7a" stroke-width="2.400" stroke-linecap="round"/></svg>', ICO_SON_OFF = '<svg viewBox="0 0 32 32" width="30" height="30" aria-hidden="true"><path d="M5 12h5l7-6v20l-7-6H5z" fill="#8a8fa8" stroke="#555a75" stroke-width="1.600" stroke-linejoin="round"/><path d="M22 12l7 8M29 12l-7 8" stroke="#d6455a" stroke-width="2.800" stroke-linecap="round"/></svg>';
 
 const $ = id => document.getElementById(id);
 const S = sauvegarde.get();
@@ -95,7 +94,7 @@ async function init() {
   const profil = profilEnfant();
   appliquerProfilEnfant(profil);
   let mod;
-  try { mod = await import('./scene.js?v=9'); }
+  try { mod = await import('./scene.js?v=10'); }
   catch (e) { return montrerErreur(e); }
   await portailPret();
 
@@ -324,7 +323,7 @@ function majPanneauSon() {
   }
   const on = !!s.musiqueActive;
   $('musique-bascule').setAttribute('aria-pressed', String(on));
-  $('btn-son').innerHTML = on && s.musique > 0 ? ICO_SON : ICO_SON_OFF;
+  $('btn-son').textContent = on && s.musique > 0 ? '🔊' : '🔇';
   $('btn-son').setAttribute('aria-label', on ? 'Sons et musique (musique activée)' : 'Sons et musique (musique coupée)');
   $('musique-absente').classList.toggle('cache', !musiqueIndisponible());
 }

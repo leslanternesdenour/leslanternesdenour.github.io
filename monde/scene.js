@@ -303,7 +303,7 @@ export function creerVillage(canvas, opts) {
 
     // l'icône : un vrai objet 3D (livre, lanterne, goutte, dôme, tapis, loupe, tableau, chameau) posé au-dessus du toit
     const icone = creerIcone3d(b.id, { halo });
-    const hautIcone = hTot + 1.15;
+    const hautIcone = hTot + 2.7;   // bien au-dessus du toit : l'icône flotte, elle ne touche plus le bâtiment
     icone.position.set(pos.x, hautIcone, pos.z);
     icone.rotation.y = ry + Math.PI;                       // la face du livre / du tableau regarde le centre de la place
     const baseRot = icone.rotation.y;
@@ -317,8 +317,9 @@ export function creerVillage(canvas, opts) {
     if (b.etat !== 'ouvert') { sablier = creerSablier(); sablier.scale.setScalar(1.1); sablier.position.set(pos.x + Math.cos(ry) * 2.7, hautIcone + 0.3, pos.z - Math.sin(ry) * 2.7); scene.add(sablier); }
 
     const nom = new THREE.Sprite(new THREE.SpriteMaterial({ map: texNom(b.nom, b.couleur), depthWrite: false, transparent: true }));
-    nom.scale.set(11, 2.75, 1);
-    nom.position.set(pos.x, hTot - 0.25, pos.z);
+    nom.scale.set(9.6, 2.4, 1);
+    { const d = Math.hypot(pos.x, pos.z) || 1, k = Math.max(0, d - 6.5) / d;   // la plaque est posée devant le bâtiment, côté place, loin de l'icône
+      nom.position.set(pos.x * k, 1.5, pos.z * k); }
     nom.renderOrder = 6;
     nom.visible = !!opts.noms;
     scene.add(nom);
