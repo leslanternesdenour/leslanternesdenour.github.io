@@ -180,11 +180,12 @@ export class Voyageur {
     this.tete = new THREE.Group(); this.tete.position.set(0, 0.64, 0.005); this.buste.add(this.tete);
     {
       const R = f ? 0.188 : 0.192;
+      const zJoue = (x, y) => (f ? 0.98 * R : 0.98 * R) * Math.sqrt(Math.max(0.05, 1 - (x / ((f ? 1 : 1.02) * R)) ** 2 - (y / ((f ? 1.03 : 1) * R)) ** 2)) - 0.004;   // hauteur de la peau à cet endroit du visage
       const p = [
         piece(SPH(R, 24, 18), peau, { s: f ? [1, 1.03, 0.98] : [1.02, 1, 0.98] }),
-        piece(SPH(R * 0.86, 16, 10), peau, { p: [0, -0.06, 0.03], s: [0.92, 0.75, 0.92] }),                          // joues et menton
+        piece(SPH(R * 0.86, 16, 10), peau, { p: [0, -0.06, 0.02], s: [0.92, 0.75, 0.8] }),                          // joues et menton
         piece(SPH(0.018, 8, 6), peau, { p: [0, -0.025, R * 0.98], s: [1.1, 0.9, 1] }),                                  // petit nez
-        piece(SPH(0.032, 8, 6), '#f0948a', { p: [-0.105, -0.055, 0.145], s: [1.2, 0.8, 0.5] }), piece(SPH(0.032, 8, 6), '#f0948a', { p: [0.105, -0.055, 0.145], s: [1.2, 0.8, 0.5] }),
+        ...[-1, 1].map(sg => piece(SPH(0.036, 14, 10), '#f0948a', { p: [sg * 0.105, -0.055, zJoue(sg * 0.105, -0.055)], r: [0, sg * 0.6, 0], s: [1.15, 0.8, 0.14] })),   // joues : taches roses PLATES posées sur la peau (avant : boules qui dépassaient)
         piece(TOR(0.03, 0.007, Math.PI, 10), '#9a4a3e', { p: [0, -0.075, 0.172], r: [0.2, 0, Math.PI] }),               // sourire
         piece(B(), '#4a3020', { p: [-0.065, 0.065, 0.172], r: [0.1, 0.25, f ? 0.12 : 0.05], s: [0.05, 0.012, 0.01] }), piece(B(), '#4a3020', { p: [0.065, 0.065, 0.172], r: [0.1, -0.25, f ? -0.12 : -0.05], s: [0.05, 0.012, 0.01] })
       ];
