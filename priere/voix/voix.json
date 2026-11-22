@@ -1,342 +1,342 @@
 {
-"e_niyya": [
-"P1-etapes.mp3",
-0.0,
-9.867
-],
-"e_qiyam": [
-"P1-etapes.mp3",
-10.467,
-19.096
-],
-"e_takbir": [
-"P1-etapes.mp3",
-19.696,
-27.504
-],
-"e_fatiha": [
-"P1-etapes.mp3",
-28.104,
-38.824
-],
-"e_sourate": [
-"P1-etapes.mp3",
-39.424,
-47.829
-],
-"e_roukou": [
-"P1-etapes.mp3",
-48.429,
-59.032
-],
-"e_itidal": [
-"P1-etapes.mp3",
-59.632,
-68.027
-],
-"e_soujoud1": [
-"P1-etapes.mp3",
-68.627,
-82.472
-],
-"e_jalsa": [
-"P1-etapes.mp3",
-83.072,
-92.277
-],
-"e_soujoud2": [
-"P1-etapes.mp3",
-92.877,
-101.88
-],
-"e_rakaa": [
-"P1-etapes.mp3",
-102.48,
-112.944
-],
-"e_tachahhoud": [
-"P1-etapes.mp3",
-113.544,
-126.504
-],
-"e_taslim": [
-"P1-etapes.mp3",
-127.104,
-137.301
-],
-"d_ak": [
-"P2-paroles.mp3",
-0.0,
-1.547
-],
-"f_ak": [
-"P2-paroles.mp3",
-2.147,
-4.899
-],
-"d_rk": [
-"P2-paroles.mp3",
-5.499,
-7.707
-],
-"f_rk": [
-"P2-paroles.mp3",
-8.307,
-12.371
-],
-"d_sm": [
-"P2-paroles.mp3",
-12.971,
-15.093
-],
-"f_sm": [
-"P2-paroles.mp3",
-15.693,
-19.203
-],
-"d_rb": [
-"P2-paroles.mp3",
-19.803,
-21.723
-],
-"f_rb": [
-"P2-paroles.mp3",
-22.323,
-25.843
-],
-"d_sj": [
-"P2-paroles.mp3",
-26.443,
-28.832
-],
-"f_sj": [
-"P2-paroles.mp3",
-29.432,
-33.24
-],
-"d_gh": [
-"P2-paroles.mp3",
-33.84,
-36.304
-],
-"f_gh": [
-"P2-paroles.mp3",
-36.904,
-39.091
-],
-"d_th": [
-"P2-paroles.mp3",
-39.691,
-60.469
-],
-"f_th": [
-"P2-paroles.mp3",
-61.069,
-82.029
-],
-"d_ts": [
-"P2-paroles.mp3",
-82.629,
-85.712
-],
-"f_ts": [
-"P2-paroles.mp3",
-86.312,
-91.357
-],
-"h1_0": [
-"P3-jeux.mp3",
-0.0,
-5.28
-],
-"h1_1": [
-"P3-jeux.mp3",
-5.88,
-11.363
-],
-"h1_2": [
-"P3-jeux.mp3",
-11.963,
-19.141
-],
-"h1_3": [
-"P3-jeux.mp3",
-19.741,
-25.245
-],
-"h1_4": [
-"P3-jeux.mp3",
-25.845,
-31.904
-],
-"h1_5": [
-"P3-jeux.mp3",
-32.504,
-38.328
-],
-"h1_6": [
-"P3-jeux.mp3",
-38.928,
-45.563
-],
-"g3ok_qiyam": [
-"P3-jeux.mp3",
-46.163,
-48.765
-],
-"g3ko_qiyam": [
-"P3-jeux.mp3",
-49.365,
-53.344
-],
-"g3ok_roukou": [
-"P3-jeux.mp3",
-53.944,
-56.963
-],
-"g3ko_roukou": [
-"P3-jeux.mp3",
-57.563,
-61.989
-],
-"g3ok_soujoud": [
-"P3-jeux.mp3",
-62.589,
-65.949
-],
-"g3ko_soujoud": [
-"P3-jeux.mp3",
-66.549,
-70.805
-],
-"g3ok_jouloûs": [
-"P3-jeux.mp3",
-71.405,
-74.413
-],
-"g3ko_jouloûs": [
-"P3-jeux.mp3",
-75.013,
-79.451
-],
-"rep": [
-"P3-jeux.mp3",
-80.051,
-81.597
-],
-"slow": [
-"P3-jeux.mp3",
-82.197,
-84.576
-],
-"sens": [
-"P3-jeux.mp3",
-85.176,
-86.979
-],
-"learn_ok": [
-"P3-jeux.mp3",
-87.579,
-90.779
-],
-"home": [
-"P3-jeux.mp3",
-91.379,
-97.757
-],
-"done": [
-"P3-jeux.mp3",
-98.357,
-104.085
-],
-"games": [
-"P3-jeux.mp3",
-104.685,
-107.16
-],
-"r3": [
-"P3-jeux.mp3",
-107.76,
-110.288
-],
-"r2": [
-"P3-jeux.mp3",
-110.888,
-114.088
-],
-"r1": [
-"P3-jeux.mp3",
-114.688,
-117.056
-],
-"g1i": [
-"P3-jeux.mp3",
-117.656,
-120.856
-],
-"g1ok": [
-"P3-jeux.mp3",
-121.456,
-123.259
-],
-"g3i": [
-"P3-jeux.mp3",
-123.859,
-125.459
-],
-"g3q": [
-"P3-jeux.mp3",
-126.059,
-127.243
-],
-"g4i": [
-"P3-jeux.mp3",
-127.843,
-132.397
-],
-"g4q": [
-"P3-jeux.mp3",
-132.997,
-135.184
-],
-"g4ok": [
-"P3-jeux.mp3",
-135.784,
-137.384
-],
-"g4ko": [
-"P3-jeux.mp3",
-137.984,
-139.808
-],
-"dip": [
-"P3-jeux.mp3",
-140.408,
-145.656
-],
-"dip_no": [
-"P3-jeux.mp3",
-146.256,
-152.955
-],
-"j3_h7": [
-"j3-h7.mp3",
-0.0,
-3.605
-],
-"j3_h13": [
-"j3-h13.mp3",
-0.0,
-3.944
-],
-"j3_h14": [
-"j3-h14.mp3",
-0.0,
-4.31
-],
-"j3_fin": [
-"j3-fin.mp3",
-0.0,
-4.467
-]
+ "e_niyya": [
+  "../../audio/narratrice/priere/e_niyya.mp3",
+  0,
+  10.266
+ ],
+ "e_qiyam": [
+  "../../audio/narratrice/priere/e_qiyam.mp3",
+  0,
+  9.091
+ ],
+ "e_takbir": [
+  "../../audio/narratrice/priere/e_takbir.mp3",
+  0,
+  10.188
+ ],
+ "e_fatiha": [
+  "../../audio/narratrice/priere/e_fatiha.mp3",
+  0,
+  12.121
+ ],
+ "e_sourate": [
+  "../../audio/narratrice/priere/e_sourate.mp3",
+  0,
+  9.091
+ ],
+ "e_roukou": [
+  "../../audio/narratrice/priere/e_roukou.mp3",
+  0,
+  11.389
+ ],
+ "e_itidal": [
+  "../../audio/narratrice/priere/e_itidal.mp3",
+  0,
+  10.606
+ ],
+ "e_soujoud1": [
+  "../../audio/narratrice/priere/e_soujoud1.mp3",
+  0,
+  15.386
+ ],
+ "e_jalsa": [
+  "../../audio/narratrice/priere/e_jalsa.mp3",
+  0,
+  10.371
+ ],
+ "e_soujoud2": [
+  "../../audio/narratrice/priere/e_soujoud2.mp3",
+  0,
+  9.796
+ ],
+ "e_rakaa": [
+  "../../audio/narratrice/priere/e_rakaa.mp3",
+  0,
+  12.434
+ ],
+ "e_tachahhoud": [
+  "../../audio/narratrice/priere/e_tachahhoud.mp3",
+  0,
+  13.949
+ ],
+ "e_taslim": [
+  "../../audio/narratrice/priere/e_taslim.mp3",
+  0,
+  12.748
+ ],
+ "d_ak": [
+  "../../audio/narratrice/priere/d_ak.mp3",
+  0,
+  1.881
+ ],
+ "f_ak": [
+  "../../audio/narratrice/priere/f_ak.mp3",
+  0,
+  2.038
+ ],
+ "d_rk": [
+  "../../audio/fr/priere/nour-voix-pri-016.mp3",
+  0,
+  2.194
+ ],
+ "f_rk": [
+  "../../audio/fr/priere/nour-voix-pri-017.mp3",
+  0,
+  3.657
+ ],
+ "d_sm": [
+  "../../audio/fr/priere/nour-voix-pri-018.mp3",
+  0,
+  2.247
+ ],
+ "f_sm": [
+  "../../audio/narratrice/priere/f_sm.mp3",
+  0,
+  2.769
+ ],
+ "d_rb": [
+  "../../audio/narratrice/priere/d_rb.mp3",
+  0,
+  2.194
+ ],
+ "f_rb": [
+  "../../audio/fr/priere/nour-voix-pri-021.mp3",
+  0,
+  3.683
+ ],
+ "d_sj": [
+  "../../audio/narratrice/priere/d_sj.mp3",
+  0,
+  2.351
+ ],
+ "f_sj": [
+  "../../audio/fr/priere/nour-voix-pri-023.mp3",
+  0,
+  3.553
+ ],
+ "d_gh": [
+  "../../audio/fr/priere/nour-voix-pri-024.mp3",
+  0,
+  1.332
+ ],
+ "f_gh": [
+  "../../audio/fr/priere/nour-voix-pri-025.mp3",
+  0,
+  3.03
+ ],
+ "d_th": [
+  "../../audio/narratrice/priere/d_th.mp3",
+  0,
+  19.958
+ ],
+ "f_th": [
+  "../../audio/narratrice/priere/f_th.mp3",
+  0,
+  21.629
+ ],
+ "d_ts": [
+  "../../audio/narratrice/priere/d_ts.mp3",
+  0,
+  2.926
+ ],
+ "f_ts": [
+  "../../audio/fr/priere/nour-voix-pri-029.mp3",
+  0,
+  4.885
+ ],
+ "h1_0": [
+  "../../audio/fr/priere/nour-voix-pri-030.mp3",
+  0,
+  5.094
+ ],
+ "h1_1": [
+  "../../audio/fr/priere/nour-voix-pri-031.mp3",
+  0,
+  5.433
+ ],
+ "h1_2": [
+  "../../audio/fr/priere/nour-voix-pri-032.mp3",
+  0,
+  6.139
+ ],
+ "h1_3": [
+  "../../audio/fr/priere/nour-voix-pri-033.mp3",
+  0,
+  5.59
+ ],
+ "h1_4": [
+  "../../audio/fr/priere/nour-voix-pri-034.mp3",
+  0,
+  5.094
+ ],
+ "h1_5": [
+  "../../audio/narratrice/priere/h1_5.mp3",
+  0,
+  3.082
+ ],
+ "h1_6": [
+  "../../audio/narratrice/priere/h1_6.mp3",
+  0,
+  3.631
+ ],
+ "g3ok_qiyam": [
+  "../../audio/fr/priere/nour-voix-pri-037.mp3",
+  0,
+  3.918
+ ],
+ "g3ko_qiyam": [
+  "../../audio/fr/priere/nour-voix-pri-038.mp3",
+  0,
+  3.709
+ ],
+ "g3ok_roukou": [
+  "../../audio/fr/priere/nour-voix-pri-039.mp3",
+  0,
+  3.866
+ ],
+ "g3ko_roukou": [
+  "../../audio/fr/priere/nour-voix-pri-040.mp3",
+  0,
+  3.683
+ ],
+ "g3ok_soujoud": [
+  "../../audio/fr/priere/nour-voix-pri-041.mp3",
+  0,
+  3.709
+ ],
+ "g3ko_soujoud": [
+  "../../audio/fr/priere/nour-voix-pri-042.mp3",
+  0,
+  3.527
+ ],
+ "g3ok_jouloûs": [
+  "../../audio/narratrice/priere/g3ok_joulous.mp3",
+  0,
+  3.396
+ ],
+ "g3ko_jouloûs": [
+  "../../audio/narratrice/priere/g3ko_joulous.mp3",
+  0,
+  3.788
+ ],
+ "rep": [
+  "../../audio/fr/priere/nour-voix-pri-045.mp3",
+  0,
+  1.62
+ ],
+ "slow": [
+  "../../audio/fr/priere/nour-voix-pri-046.mp3",
+  0,
+  1.907
+ ],
+ "sens": [
+  "../../audio/narratrice/priere/sens.mp3",
+  0,
+  1.228
+ ],
+ "learn_ok": [
+  "../../audio/narratrice/priere/learn_ok.mp3",
+  0,
+  3.788
+ ],
+ "home": [
+  "../../audio/narratrice/priere/home.mp3",
+  0,
+  5.956
+ ],
+ "done": [
+  "../../audio/narratrice/priere/done.mp3",
+  0,
+  5.799
+ ],
+ "games": [
+  "../../audio/fr/priere/nour-voix-pri-051.mp3",
+  0,
+  2.847
+ ],
+ "r3": [
+  "../../audio/fr/priere/nour-voix-pri-052.mp3",
+  0,
+  2.403
+ ],
+ "r2": [
+  "../../audio/fr/priere/nour-voix-pri-053.mp3",
+  0,
+  3.579
+ ],
+ "r1": [
+  "../../audio/fr/priere/nour-voix-pri-054.mp3",
+  0,
+  2.325
+ ],
+ "g1i": [
+  "../../audio/fr/priere/nour-voix-pri-055.mp3",
+  0,
+  4.101
+ ],
+ "g1ok": [
+  "../../audio/fr/priere/nour-voix-pri-056.mp3",
+  0,
+  1.933
+ ],
+ "g3i": [
+  "../../audio/fr/priere/nour-voix-pri-057.mp3",
+  0,
+  1.672
+ ],
+ "g3q": [
+  "../../audio/fr/priere/nour-voix-pri-058.mp3",
+  0,
+  0.81
+ ],
+ "g4i": [
+  "../../audio/fr/priere/nour-voix-pri-059.mp3",
+  0,
+  4.911
+ ],
+ "g4q": [
+  "../../audio/narratrice/priere/g4q.mp3",
+  0,
+  1.228
+ ],
+ "g4ok": [
+  "../../audio/narratrice/priere/g4ok.mp3",
+  0,
+  1.228
+ ],
+ "g4ko": [
+  "../../audio/narratrice/priere/g4ko.mp3",
+  0,
+  1.149
+ ],
+ "dip": [
+  "../../audio/narratrice/priere/dip.mp3",
+  0,
+  5.251
+ ],
+ "dip_no": [
+  "../../audio/fr/priere/nour-voix-pri-064.mp3",
+  0,
+  6.975
+ ],
+ "j3_h7": [
+  "j3-h7.mp3",
+  0.0,
+  3.605
+ ],
+ "j3_h13": [
+  "j3-h13.mp3",
+  0.0,
+  3.944
+ ],
+ "j3_h14": [
+  "j3-h14.mp3",
+  0.0,
+  4.31
+ ],
+ "j3_fin": [
+  "j3-fin.mp3",
+  0.0,
+  4.467
+ ]
 }

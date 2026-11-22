@@ -1,0 +1,1567 @@
+{
+ "ablutions/s0": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/ablutions/s0.mp3",
+  "valide": true
+ },
+ "ablutions/s1": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/ablutions/s1.mp3",
+  "valide": true
+ },
+ "ablutions/s2": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/ablutions/s2.mp3",
+  "valide": true
+ },
+ "ablutions/s3": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/ablutions/s3.mp3",
+  "valide": true
+ },
+ "ablutions/s4": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/ablutions/s4.mp3",
+  "valide": true
+ },
+ "ablutions/s5": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/ablutions/s5.mp3",
+  "valide": true
+ },
+ "ablutions/s6": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/ablutions/s6.mp3",
+  "valide": true
+ },
+ "ablutions/s7": {
+  "source": "catalogue",
+  "fichier": "audio/fr/ablutions/nour-voix-abl-008.mp3",
+  "valide": true
+ },
+ "ablutions/s8": {
+  "source": "catalogue",
+  "fichier": "audio/fr/ablutions/nour-voix-abl-009.mp3",
+  "valide": true
+ },
+ "ablutions/t0": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/ablutions/t0.mp3",
+  "valide": true
+ },
+ "ablutions/t1": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/ablutions/t1.mp3",
+  "valide": true
+ },
+ "ablutions/t2": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/ablutions/t2.mp3",
+  "valide": true
+ },
+ "ablutions/t3": {
+  "source": "catalogue",
+  "fichier": "audio/fr/ablutions/nour-voix-abl-013.mp3",
+  "valide": true
+ },
+ "ablutions/t4": {
+  "source": "catalogue",
+  "fichier": "audio/fr/ablutions/nour-voix-abl-014.mp3",
+  "valide": true
+ },
+ "ablutions/t5": {
+  "source": "catalogue",
+  "fichier": "audio/fr/ablutions/nour-voix-abl-015.mp3",
+  "valide": true
+ },
+ "ablutions/t6": {
+  "source": "catalogue",
+  "fichier": "audio/fr/ablutions/nour-voix-abl-016.mp3",
+  "valide": true
+ },
+ "ablutions/t7": {
+  "source": "catalogue",
+  "fichier": "audio/fr/ablutions/nour-voix-abl-017.mp3",
+  "valide": true
+ },
+ "ablutions/t8": {
+  "source": "catalogue",
+  "fichier": "audio/fr/ablutions/nour-voix-abl-018.mp3",
+  "valide": true
+ },
+ "ablutions/home": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/ablutions/home.mp3",
+  "valide": true
+ },
+ "ablutions/done": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/ablutions/done.mp3",
+  "valide": true
+ },
+ "ablutions/why": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/ablutions/why.mp3",
+  "valide": true
+ },
+ "ablutions/games": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/ablutions/games.mp3",
+  "valide": true
+ },
+ "ablutions/r3": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/ablutions/r3.mp3",
+  "valide": true
+ },
+ "ablutions/r2": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/ablutions/r2.mp3",
+  "valide": true
+ },
+ "ablutions/r1": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/ablutions/r1.mp3",
+  "valide": true
+ },
+ "ablutions/g1i": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/ablutions/g1i.mp3",
+  "valide": true
+ },
+ "ablutions/g1ok": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/ablutions/g1ok.mp3",
+  "valide": true
+ },
+ "ablutions/h0": {
+  "source": "catalogue",
+  "fichier": "audio/fr/ablutions/nour-voix-abl-028.mp3",
+  "valide": true
+ },
+ "ablutions/h1": {
+  "source": "catalogue",
+  "fichier": "audio/fr/ablutions/nour-voix-abl-029.mp3",
+  "valide": true
+ },
+ "ablutions/h2": {
+  "source": "catalogue",
+  "fichier": "audio/fr/ablutions/nour-voix-abl-030.mp3",
+  "valide": true
+ },
+ "ablutions/h3": {
+  "source": "catalogue",
+  "fichier": "audio/fr/ablutions/nour-voix-abl-031.mp3",
+  "valide": true
+ },
+ "ablutions/h4": {
+  "source": "catalogue",
+  "fichier": "audio/fr/ablutions/nour-voix-abl-032.mp3",
+  "valide": true
+ },
+ "ablutions/h5": {
+  "source": "catalogue",
+  "fichier": "audio/fr/ablutions/nour-voix-abl-033.mp3",
+  "valide": true
+ },
+ "ablutions/h6": {
+  "source": "catalogue",
+  "fichier": "audio/fr/ablutions/nour-voix-abl-034.mp3",
+  "valide": true
+ },
+ "ablutions/h7": {
+  "source": "catalogue",
+  "fichier": "audio/fr/ablutions/nour-voix-abl-035.mp3",
+  "valide": true
+ },
+ "ablutions/h8": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/ablutions/h8.mp3",
+  "valide": true
+ },
+ "ablutions/q2_mains": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/ablutions/q2_mains.mp3",
+  "valide": true
+ },
+ "ablutions/q2_bouche": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/ablutions/q2_bouche.mp3",
+  "valide": true
+ },
+ "ablutions/q2_nez": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/ablutions/q2_nez.mp3",
+  "valide": true
+ },
+ "ablutions/q2_visage": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/ablutions/q2_visage.mp3",
+  "valide": true
+ },
+ "ablutions/q2_bras": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/ablutions/q2_bras.mp3",
+  "valide": true
+ },
+ "ablutions/q2_tete": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/ablutions/q2_tete.mp3",
+  "valide": true
+ },
+ "ablutions/q2_oreilles": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/ablutions/q2_oreilles.mp3",
+  "valide": true
+ },
+ "ablutions/q2_pieds": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/ablutions/q2_pieds.mp3",
+  "valide": true
+ },
+ "ablutions/g2ok3": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/ablutions/g2ok3.mp3",
+  "valide": true
+ },
+ "ablutions/g2ko3": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/ablutions/g2ko3.mp3",
+  "valide": true
+ },
+ "ablutions/g2okt": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/ablutions/g2okt.mp3",
+  "valide": true
+ },
+ "ablutions/g2kot": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/ablutions/g2kot.mp3",
+  "valide": true
+ },
+ "ablutions/g2oke": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/ablutions/g2oke.mp3",
+  "valide": true
+ },
+ "ablutions/g2koe": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/ablutions/g2koe.mp3",
+  "valide": true
+ },
+ "ablutions/q3_start": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/ablutions/q3_start.mp3",
+  "valide": true
+ },
+ "ablutions/q3_mains": {
+  "source": "catalogue",
+  "fichier": "audio/fr/ablutions/nour-voix-abl-052.mp3",
+  "valide": true
+ },
+ "ablutions/q3_bouche": {
+  "source": "catalogue",
+  "fichier": "audio/fr/ablutions/nour-voix-abl-053.mp3",
+  "valide": true
+ },
+ "ablutions/q3_nez": {
+  "source": "catalogue",
+  "fichier": "audio/fr/ablutions/nour-voix-abl-054.mp3",
+  "valide": true
+ },
+ "ablutions/q3_visage": {
+  "source": "catalogue",
+  "fichier": "audio/fr/ablutions/nour-voix-abl-055.mp3",
+  "valide": true
+ },
+ "ablutions/q3_bras": {
+  "source": "catalogue",
+  "fichier": "audio/fr/ablutions/nour-voix-abl-056.mp3",
+  "valide": true
+ },
+ "ablutions/q3_tete": {
+  "source": "catalogue",
+  "fichier": "audio/fr/ablutions/nour-voix-abl-057.mp3",
+  "valide": true
+ },
+ "ablutions/g3ok": {
+  "source": "catalogue",
+  "fichier": "audio/fr/ablutions/nour-voix-abl-058.mp3",
+  "valide": true
+ },
+ "ablutions/g3ko_mains": {
+  "source": "catalogue",
+  "fichier": "audio/fr/ablutions/nour-voix-abl-059.mp3",
+  "valide": true
+ },
+ "ablutions/g3ko_bouche": {
+  "source": "catalogue",
+  "fichier": "audio/fr/ablutions/nour-voix-abl-060.mp3",
+  "valide": true
+ },
+ "ablutions/g3ko_nez": {
+  "source": "catalogue",
+  "fichier": "audio/fr/ablutions/nour-voix-abl-061.mp3",
+  "valide": true
+ },
+ "ablutions/g3ko_visage": {
+  "source": "catalogue",
+  "fichier": "audio/fr/ablutions/nour-voix-abl-062.mp3",
+  "valide": true
+ },
+ "ablutions/g3ko_bras": {
+  "source": "catalogue",
+  "fichier": "audio/fr/ablutions/nour-voix-abl-063.mp3",
+  "valide": true
+ },
+ "ablutions/g3ko_tete": {
+  "source": "catalogue",
+  "fichier": "audio/fr/ablutions/nour-voix-abl-064.mp3",
+  "valide": true
+ },
+ "ablutions/g3ko_pieds": {
+  "source": "catalogue",
+  "fichier": "audio/fr/ablutions/nour-voix-abl-065.mp3",
+  "valide": true
+ },
+ "ablutions/g4i": {
+  "source": "catalogue",
+  "fichier": "audio/fr/ablutions/nour-voix-abl-066.mp3",
+  "valide": true
+ },
+ "ablutions/g4ok": {
+  "source": "catalogue",
+  "fichier": "audio/fr/ablutions/nour-voix-abl-067.mp3",
+  "valide": true
+ },
+ "ablutions/g4ko_nez": {
+  "source": "catalogue",
+  "fichier": "audio/fr/ablutions/nour-voix-abl-068.mp3",
+  "valide": true
+ },
+ "ablutions/g4ko_bras": {
+  "source": "catalogue",
+  "fichier": "audio/fr/ablutions/nour-voix-abl-069.mp3",
+  "valide": true
+ },
+ "ablutions/g4ko_pieds": {
+  "source": "catalogue",
+  "fichier": "audio/fr/ablutions/nour-voix-abl-070.mp3",
+  "valide": true
+ },
+ "ablutions/g4ko_ordre": {
+  "source": "catalogue",
+  "fichier": "audio/fr/ablutions/nour-voix-abl-071.mp3",
+  "valide": true
+ },
+ "ablutions/g4ko_oreilles": {
+  "source": "catalogue",
+  "fichier": "audio/fr/ablutions/nour-voix-abl-072.mp3",
+  "valide": true
+ },
+ "ablutions/g4ko_juste": {
+  "source": "catalogue",
+  "fichier": "audio/fr/ablutions/nour-voix-abl-073.mp3",
+  "valide": true
+ },
+ "ablutions/g4ko_visage": {
+  "source": "catalogue",
+  "fichier": "audio/fr/ablutions/nour-voix-abl-074.mp3",
+  "valide": true
+ },
+ "ablutions/j3_fin0": {
+  "source": "catalogue",
+  "fichier": "ablutions/voix/j3-fin0.mp3",
+  "valide": true
+ },
+ "ablutions/j3_fin": {
+  "source": "catalogue",
+  "fichier": "ablutions/voix/j3-fin.mp3",
+  "valide": true
+ },
+ "priere/e_niyya": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/priere/e_niyya.mp3",
+  "valide": true
+ },
+ "priere/e_qiyam": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/priere/e_qiyam.mp3",
+  "valide": true
+ },
+ "priere/e_takbir": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/priere/e_takbir.mp3",
+  "valide": true
+ },
+ "priere/e_fatiha": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/priere/e_fatiha.mp3",
+  "valide": true
+ },
+ "priere/e_sourate": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/priere/e_sourate.mp3",
+  "valide": true
+ },
+ "priere/e_roukou": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/priere/e_roukou.mp3",
+  "valide": true
+ },
+ "priere/e_itidal": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/priere/e_itidal.mp3",
+  "valide": true
+ },
+ "priere/e_soujoud1": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/priere/e_soujoud1.mp3",
+  "valide": true
+ },
+ "priere/e_jalsa": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/priere/e_jalsa.mp3",
+  "valide": true
+ },
+ "priere/e_soujoud2": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/priere/e_soujoud2.mp3",
+  "valide": true
+ },
+ "priere/e_rakaa": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/priere/e_rakaa.mp3",
+  "valide": true
+ },
+ "priere/e_tachahhoud": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/priere/e_tachahhoud.mp3",
+  "valide": true
+ },
+ "priere/e_taslim": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/priere/e_taslim.mp3",
+  "valide": true
+ },
+ "priere/d_ak": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/priere/d_ak.mp3",
+  "valide": true
+ },
+ "priere/f_ak": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/priere/f_ak.mp3",
+  "valide": true
+ },
+ "priere/d_rk": {
+  "source": "catalogue",
+  "fichier": "audio/fr/priere/nour-voix-pri-016.mp3",
+  "valide": true
+ },
+ "priere/f_rk": {
+  "source": "catalogue",
+  "fichier": "audio/fr/priere/nour-voix-pri-017.mp3",
+  "valide": true
+ },
+ "priere/d_sm": {
+  "source": "catalogue",
+  "fichier": "audio/fr/priere/nour-voix-pri-018.mp3",
+  "valide": true
+ },
+ "priere/f_sm": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/priere/f_sm.mp3",
+  "valide": true
+ },
+ "priere/d_rb": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/priere/d_rb.mp3",
+  "valide": true
+ },
+ "priere/f_rb": {
+  "source": "catalogue",
+  "fichier": "audio/fr/priere/nour-voix-pri-021.mp3",
+  "valide": true
+ },
+ "priere/d_sj": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/priere/d_sj.mp3",
+  "valide": true
+ },
+ "priere/f_sj": {
+  "source": "catalogue",
+  "fichier": "audio/fr/priere/nour-voix-pri-023.mp3",
+  "valide": true
+ },
+ "priere/d_gh": {
+  "source": "catalogue",
+  "fichier": "audio/fr/priere/nour-voix-pri-024.mp3",
+  "valide": true
+ },
+ "priere/f_gh": {
+  "source": "catalogue",
+  "fichier": "audio/fr/priere/nour-voix-pri-025.mp3",
+  "valide": true
+ },
+ "priere/d_th": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/priere/d_th.mp3",
+  "valide": true
+ },
+ "priere/f_th": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/priere/f_th.mp3",
+  "valide": true
+ },
+ "priere/d_ts": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/priere/d_ts.mp3",
+  "valide": true
+ },
+ "priere/f_ts": {
+  "source": "catalogue",
+  "fichier": "audio/fr/priere/nour-voix-pri-029.mp3",
+  "valide": true
+ },
+ "priere/h1_0": {
+  "source": "catalogue",
+  "fichier": "audio/fr/priere/nour-voix-pri-030.mp3",
+  "valide": true
+ },
+ "priere/h1_1": {
+  "source": "catalogue",
+  "fichier": "audio/fr/priere/nour-voix-pri-031.mp3",
+  "valide": true
+ },
+ "priere/h1_2": {
+  "source": "catalogue",
+  "fichier": "audio/fr/priere/nour-voix-pri-032.mp3",
+  "valide": true
+ },
+ "priere/h1_3": {
+  "source": "catalogue",
+  "fichier": "audio/fr/priere/nour-voix-pri-033.mp3",
+  "valide": true
+ },
+ "priere/h1_4": {
+  "source": "catalogue",
+  "fichier": "audio/fr/priere/nour-voix-pri-034.mp3",
+  "valide": true
+ },
+ "priere/h1_5": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/priere/h1_5.mp3",
+  "valide": true
+ },
+ "priere/h1_6": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/priere/h1_6.mp3",
+  "valide": true
+ },
+ "priere/g3ok_qiyam": {
+  "source": "catalogue",
+  "fichier": "audio/fr/priere/nour-voix-pri-037.mp3",
+  "valide": true
+ },
+ "priere/g3ko_qiyam": {
+  "source": "catalogue",
+  "fichier": "audio/fr/priere/nour-voix-pri-038.mp3",
+  "valide": true
+ },
+ "priere/g3ok_roukou": {
+  "source": "catalogue",
+  "fichier": "audio/fr/priere/nour-voix-pri-039.mp3",
+  "valide": true
+ },
+ "priere/g3ko_roukou": {
+  "source": "catalogue",
+  "fichier": "audio/fr/priere/nour-voix-pri-040.mp3",
+  "valide": true
+ },
+ "priere/g3ok_soujoud": {
+  "source": "catalogue",
+  "fichier": "audio/fr/priere/nour-voix-pri-041.mp3",
+  "valide": true
+ },
+ "priere/g3ko_soujoud": {
+  "source": "catalogue",
+  "fichier": "audio/fr/priere/nour-voix-pri-042.mp3",
+  "valide": true
+ },
+ "priere/g3ok_jouloûs": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/priere/g3ok_joulous.mp3",
+  "valide": true
+ },
+ "priere/g3ko_jouloûs": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/priere/g3ko_joulous.mp3",
+  "valide": true
+ },
+ "priere/rep": {
+  "source": "catalogue",
+  "fichier": "audio/fr/priere/nour-voix-pri-045.mp3",
+  "valide": true
+ },
+ "priere/slow": {
+  "source": "catalogue",
+  "fichier": "audio/fr/priere/nour-voix-pri-046.mp3",
+  "valide": true
+ },
+ "priere/sens": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/priere/sens.mp3",
+  "valide": true
+ },
+ "priere/learn_ok": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/priere/learn_ok.mp3",
+  "valide": true
+ },
+ "priere/home": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/priere/home.mp3",
+  "valide": true
+ },
+ "priere/done": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/priere/done.mp3",
+  "valide": true
+ },
+ "priere/games": {
+  "source": "catalogue",
+  "fichier": "audio/fr/priere/nour-voix-pri-051.mp3",
+  "valide": true
+ },
+ "priere/r3": {
+  "source": "catalogue",
+  "fichier": "audio/fr/priere/nour-voix-pri-052.mp3",
+  "valide": true
+ },
+ "priere/r2": {
+  "source": "catalogue",
+  "fichier": "audio/fr/priere/nour-voix-pri-053.mp3",
+  "valide": true
+ },
+ "priere/r1": {
+  "source": "catalogue",
+  "fichier": "audio/fr/priere/nour-voix-pri-054.mp3",
+  "valide": true
+ },
+ "priere/g1i": {
+  "source": "catalogue",
+  "fichier": "audio/fr/priere/nour-voix-pri-055.mp3",
+  "valide": true
+ },
+ "priere/g1ok": {
+  "source": "catalogue",
+  "fichier": "audio/fr/priere/nour-voix-pri-056.mp3",
+  "valide": true
+ },
+ "priere/g3i": {
+  "source": "catalogue",
+  "fichier": "audio/fr/priere/nour-voix-pri-057.mp3",
+  "valide": true
+ },
+ "priere/g3q": {
+  "source": "catalogue",
+  "fichier": "audio/fr/priere/nour-voix-pri-058.mp3",
+  "valide": true
+ },
+ "priere/g4i": {
+  "source": "catalogue",
+  "fichier": "audio/fr/priere/nour-voix-pri-059.mp3",
+  "valide": true
+ },
+ "priere/g4q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/priere/g4q.mp3",
+  "valide": true
+ },
+ "priere/g4ok": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/priere/g4ok.mp3",
+  "valide": true
+ },
+ "priere/g4ko": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/priere/g4ko.mp3",
+  "valide": true
+ },
+ "priere/dip": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/priere/dip.mp3",
+  "valide": true
+ },
+ "priere/dip_no": {
+  "source": "catalogue",
+  "fichier": "audio/fr/priere/nour-voix-pri-064.mp3",
+  "valide": true
+ },
+ "priere/j3_h7": {
+  "source": "catalogue",
+  "fichier": "priere/voix/j3-h7.mp3",
+  "valide": true
+ },
+ "priere/j3_h13": {
+  "source": "catalogue",
+  "fichier": "priere/voix/j3-h13.mp3",
+  "valide": true
+ },
+ "priere/j3_h14": {
+  "source": "catalogue",
+  "fichier": "priere/voix/j3-h14.mp3",
+  "valide": true
+ },
+ "priere/j3_fin": {
+  "source": "catalogue",
+  "fichier": "priere/voix/j3-fin.mp3",
+  "valide": true
+ },
+ "calendrier/guide": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/guide.mp3",
+  "valide": true
+ },
+ "calendrier/guide2": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/guide2.mp3",
+  "valide": true
+ },
+ "calendrier/guide3": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/guide3.mp3",
+  "valide": true
+ },
+ "calendrier/guide4": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/guide4.mp3",
+  "valide": true
+ },
+ "calendrier/inscription": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/inscription.mp3",
+  "valide": true
+ },
+ "calendrier/debut": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/debut.mp3",
+  "valide": true
+ },
+ "calendrier/cheer0": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/cheer0.mp3",
+  "valide": true
+ },
+ "calendrier/cheer1": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/cheer1.mp3",
+  "valide": true
+ },
+ "calendrier/cheer2": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/cheer2.mp3",
+  "valide": true
+ },
+ "calendrier/cheer3": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/cheer3.mp3",
+  "valide": true
+ },
+ "calendrier/cheer4": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/cheer4.mp3",
+  "valide": true
+ },
+ "calendrier/l10": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/l10.mp3",
+  "valide": true
+ },
+ "calendrier/l20": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/l20.mp3",
+  "valide": true
+ },
+ "calendrier/l29": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/l29.mp3",
+  "valide": true
+ },
+ "calendrier/fin": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/fin.mp3",
+  "valide": true
+ },
+ "calendrier/diplome": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/diplome.mp3",
+  "valide": true
+ },
+ "calendrier/mem_s": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/mem_s.mp3",
+  "valide": true
+ },
+ "calendrier/mem_b": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/mem_b.mp3",
+  "valide": true
+ },
+ "calendrier/mem_win": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/mem_win.mp3",
+  "valide": true
+ },
+ "calendrier/w_fanous": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/w_fanous.mp3",
+  "valide": true
+ },
+ "calendrier/w_hilal": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/w_hilal.mp3",
+  "valide": true
+ },
+ "calendrier/w_masjid": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/w_masjid.mp3",
+  "valide": true
+ },
+ "calendrier/w_quran": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/w_quran.mp3",
+  "valide": true
+ },
+ "calendrier/w_tamr": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/w_tamr.mp3",
+  "valide": true
+ },
+ "calendrier/w_sajjada": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/w_sajjada.mp3",
+  "valide": true
+ },
+ "calendrier/w_kaaba": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/w_kaaba.mp3",
+  "valide": true
+ },
+ "calendrier/w_misbaha": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/w_misbaha.mp3",
+  "valide": true
+ },
+ "calendrier/ms1": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/ms1.mp3",
+  "valide": true
+ },
+ "calendrier/ms2": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/ms2.mp3",
+  "valide": true
+ },
+ "calendrier/ms3": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/ms3.mp3",
+  "valide": true
+ },
+ "calendrier/ms4": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/ms4.mp3",
+  "valide": true
+ },
+ "calendrier/ms5": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/ms5.mp3",
+  "valide": true
+ },
+ "calendrier/ms6": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/ms6.mp3",
+  "valide": true
+ },
+ "calendrier/ms7": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/ms7.mp3",
+  "valide": true
+ },
+ "calendrier/ms8": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/ms8.mp3",
+  "valide": true
+ },
+ "calendrier/ms9": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/ms9.mp3",
+  "valide": true
+ },
+ "calendrier/ms10": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/ms10.mp3",
+  "valide": true
+ },
+ "calendrier/ms11": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/ms11.mp3",
+  "valide": true
+ },
+ "calendrier/ms12": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/ms12.mp3",
+  "valide": true
+ },
+ "calendrier/ms13": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/ms13.mp3",
+  "valide": true
+ },
+ "calendrier/ms14": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/ms14.mp3",
+  "valide": true
+ },
+ "calendrier/ms15": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/ms15.mp3",
+  "valide": true
+ },
+ "calendrier/mb1": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/mb1.mp3",
+  "valide": true
+ },
+ "calendrier/mb2": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/mb2.mp3",
+  "valide": true
+ },
+ "calendrier/mb3": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/mb3.mp3",
+  "valide": true
+ },
+ "calendrier/mb4": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/mb4.mp3",
+  "valide": true
+ },
+ "calendrier/mb5": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/mb5.mp3",
+  "valide": true
+ },
+ "calendrier/mb6": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/mb6.mp3",
+  "valide": true
+ },
+ "calendrier/mb7": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/mb7.mp3",
+  "valide": true
+ },
+ "calendrier/mb8": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/mb8.mp3",
+  "valide": true
+ },
+ "calendrier/mb9": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/mb9.mp3",
+  "valide": true
+ },
+ "calendrier/mb10": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/mb10.mp3",
+  "valide": true
+ },
+ "calendrier/mb11": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/mb11.mp3",
+  "valide": true
+ },
+ "calendrier/mb12": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/mb12.mp3",
+  "valide": true
+ },
+ "calendrier/mb13": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/mb13.mp3",
+  "valide": true
+ },
+ "calendrier/mb14": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/mb14.mp3",
+  "valide": true
+ },
+ "calendrier/mb15": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/mb15.mp3",
+  "valide": true
+ },
+ "calendrier/ms16": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/ms16.mp3",
+  "valide": true
+ },
+ "calendrier/ms17": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/ms17.mp3",
+  "valide": true
+ },
+ "calendrier/ms18": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/ms18.mp3",
+  "valide": true
+ },
+ "calendrier/ms19": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/ms19.mp3",
+  "valide": true
+ },
+ "calendrier/ms20": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/ms20.mp3",
+  "valide": true
+ },
+ "calendrier/ms21": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/ms21.mp3",
+  "valide": true
+ },
+ "calendrier/ms22": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/ms22.mp3",
+  "valide": true
+ },
+ "calendrier/ms23": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/ms23.mp3",
+  "valide": true
+ },
+ "calendrier/ms24": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/ms24.mp3",
+  "valide": true
+ },
+ "calendrier/ms25": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/ms25.mp3",
+  "valide": true
+ },
+ "calendrier/ms26": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/ms26.mp3",
+  "valide": true
+ },
+ "calendrier/ms27": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/ms27.mp3",
+  "valide": true
+ },
+ "calendrier/ms28": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/ms28.mp3",
+  "valide": true
+ },
+ "calendrier/ms29": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/ms29.mp3",
+  "valide": true
+ },
+ "calendrier/ms30": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/ms30.mp3",
+  "valide": true
+ },
+ "calendrier/msstar": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/msstar.mp3",
+  "valide": true
+ },
+ "calendrier/mb16": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/mb16.mp3",
+  "valide": true
+ },
+ "calendrier/mb17": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/mb17.mp3",
+  "valide": true
+ },
+ "calendrier/mb18": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/mb18.mp3",
+  "valide": true
+ },
+ "calendrier/mb19": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/mb19.mp3",
+  "valide": true
+ },
+ "calendrier/mb20": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/mb20.mp3",
+  "valide": true
+ },
+ "calendrier/mb21": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/mb21.mp3",
+  "valide": true
+ },
+ "calendrier/mb22": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/mb22.mp3",
+  "valide": true
+ },
+ "calendrier/mb23": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/mb23.mp3",
+  "valide": true
+ },
+ "calendrier/mb24": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/mb24.mp3",
+  "valide": true
+ },
+ "calendrier/mb25": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/mb25.mp3",
+  "valide": true
+ },
+ "calendrier/mb26": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/mb26.mp3",
+  "valide": true
+ },
+ "calendrier/mb27": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/mb27.mp3",
+  "valide": true
+ },
+ "calendrier/mb28": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/mb28.mp3",
+  "valide": true
+ },
+ "calendrier/mb29": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/mb29.mp3",
+  "valide": true
+ },
+ "calendrier/mb30": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/mb30.mp3",
+  "valide": true
+ },
+ "calendrier/mbstar": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/mbstar.mp3",
+  "valide": true
+ },
+ "calendrier/dp0q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/dp0q.mp3",
+  "valide": true
+ },
+ "calendrier/dp0a": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/dp0a.mp3",
+  "valide": true
+ },
+ "calendrier/dp1q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/dp1q.mp3",
+  "valide": true
+ },
+ "calendrier/dp1a": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/dp1a.mp3",
+  "valide": true
+ },
+ "calendrier/dp2q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/dp2q.mp3",
+  "valide": true
+ },
+ "calendrier/dp2a": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/dp2a.mp3",
+  "valide": true
+ },
+ "calendrier/dp3q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/dp3q.mp3",
+  "valide": true
+ },
+ "calendrier/dp3a": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/dp3a.mp3",
+  "valide": true
+ },
+ "calendrier/dp4q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/dp4q.mp3",
+  "valide": true
+ },
+ "calendrier/dp4a": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/dp4a.mp3",
+  "valide": true
+ },
+ "calendrier/dp5q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/dp5q.mp3",
+  "valide": true
+ },
+ "calendrier/dp5a": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/dp5a.mp3",
+  "valide": true
+ },
+ "calendrier/dp6q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/dp6q.mp3",
+  "valide": true
+ },
+ "calendrier/dp6a": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/dp6a.mp3",
+  "valide": true
+ },
+ "calendrier/dp7q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/dp7q.mp3",
+  "valide": true
+ },
+ "calendrier/dp7a": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/dp7a.mp3",
+  "valide": true
+ },
+ "calendrier/dp8q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/dp8q.mp3",
+  "valide": true
+ },
+ "calendrier/dp8a": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/dp8a.mp3",
+  "valide": true
+ },
+ "calendrier/dp9q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/dp9q.mp3",
+  "valide": true
+ },
+ "calendrier/dp9a": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/dp9a.mp3",
+  "valide": true
+ },
+ "calendrier/dg0q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/dg0q.mp3",
+  "valide": true
+ },
+ "calendrier/dg0a": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/dg0a.mp3",
+  "valide": true
+ },
+ "calendrier/dg1q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/dg1q.mp3",
+  "valide": true
+ },
+ "calendrier/dg1a": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/dg1a.mp3",
+  "valide": true
+ },
+ "calendrier/dg2q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/dg2q.mp3",
+  "valide": true
+ },
+ "calendrier/dg2a": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/dg2a.mp3",
+  "valide": true
+ },
+ "calendrier/dg3q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/dg3q.mp3",
+  "valide": true
+ },
+ "calendrier/dg3a": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/dg3a.mp3",
+  "valide": true
+ },
+ "calendrier/dg4q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/dg4q.mp3",
+  "valide": true
+ },
+ "calendrier/dg4a": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/dg4a.mp3",
+  "valide": true
+ },
+ "calendrier/dg5q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/dg5q.mp3",
+  "valide": true
+ },
+ "calendrier/dg5a": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/dg5a.mp3",
+  "valide": true
+ },
+ "calendrier/dg6q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/dg6q.mp3",
+  "valide": true
+ },
+ "calendrier/dg6a": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/dg6a.mp3",
+  "valide": true
+ },
+ "calendrier/dg7q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/dg7q.mp3",
+  "valide": true
+ },
+ "calendrier/dg7a": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/dg7a.mp3",
+  "valide": true
+ },
+ "calendrier/dg8q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/dg8q.mp3",
+  "valide": true
+ },
+ "calendrier/dg8a": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/dg8a.mp3",
+  "valide": true
+ },
+ "calendrier/dg9q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/dg9q.mp3",
+  "valide": true
+ },
+ "calendrier/dg9a": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/dg9a.mp3",
+  "valide": true
+ },
+ "calendrier/qp0q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/qp0q.mp3",
+  "valide": true
+ },
+ "calendrier/qp0a": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/qp0a.mp3",
+  "valide": true
+ },
+ "calendrier/qp1q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/qp1q.mp3",
+  "valide": true
+ },
+ "calendrier/qp1a": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/qp1a.mp3",
+  "valide": true
+ },
+ "calendrier/qp2q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/qp2q.mp3",
+  "valide": true
+ },
+ "calendrier/qp2a": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/qp2a.mp3",
+  "valide": true
+ },
+ "calendrier/qp3q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/qp3q.mp3",
+  "valide": true
+ },
+ "calendrier/qp3a": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/qp3a.mp3",
+  "valide": true
+ },
+ "calendrier/qp4q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/qp4q.mp3",
+  "valide": true
+ },
+ "calendrier/qp4a": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/qp4a.mp3",
+  "valide": true
+ },
+ "calendrier/qp5q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/qp5q.mp3",
+  "valide": true
+ },
+ "calendrier/qp5a": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/qp5a.mp3",
+  "valide": true
+ },
+ "calendrier/qp6q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/qp6q.mp3",
+  "valide": true
+ },
+ "calendrier/qp6a": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/qp6a.mp3",
+  "valide": true
+ },
+ "calendrier/qp7q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/qp7q.mp3",
+  "valide": true
+ },
+ "calendrier/qp7a": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/qp7a.mp3",
+  "valide": true
+ },
+ "calendrier/qp8q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/qp8q.mp3",
+  "valide": true
+ },
+ "calendrier/qp8a": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/qp8a.mp3",
+  "valide": true
+ },
+ "calendrier/qp9q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/qp9q.mp3",
+  "valide": true
+ },
+ "calendrier/qp9a": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/qp9a.mp3",
+  "valide": true
+ },
+ "calendrier/qg0q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/qg0q.mp3",
+  "valide": true
+ },
+ "calendrier/qg0a": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/qg0a.mp3",
+  "valide": true
+ },
+ "calendrier/qg1q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/qg1q.mp3",
+  "valide": true
+ },
+ "calendrier/qg1a": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/qg1a.mp3",
+  "valide": true
+ },
+ "calendrier/qg2q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/qg2q.mp3",
+  "valide": true
+ },
+ "calendrier/qg2a": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/qg2a.mp3",
+  "valide": true
+ },
+ "calendrier/qg3q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/qg3q.mp3",
+  "valide": true
+ },
+ "calendrier/qg3a": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/qg3a.mp3",
+  "valide": true
+ },
+ "calendrier/qg4q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/qg4q.mp3",
+  "valide": true
+ },
+ "calendrier/qg4a": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/qg4a.mp3",
+  "valide": true
+ },
+ "calendrier/qg5q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/qg5q.mp3",
+  "valide": true
+ },
+ "calendrier/qg5a": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/qg5a.mp3",
+  "valide": true
+ },
+ "calendrier/qg6q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/qg6q.mp3",
+  "valide": true
+ },
+ "calendrier/qg6a": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/qg6a.mp3",
+  "valide": true
+ },
+ "calendrier/qg7q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/qg7q.mp3",
+  "valide": true
+ },
+ "calendrier/qg7a": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/qg7a.mp3",
+  "valide": true
+ },
+ "calendrier/qg8q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/qg8q.mp3",
+  "valide": true
+ },
+ "calendrier/qg8a": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/qg8a.mp3",
+  "valide": true
+ },
+ "calendrier/qg9q": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/qg9q.mp3",
+  "valide": true
+ },
+ "calendrier/qg9a": {
+  "source": "narratrice",
+  "fichier": "audio/narratrice/calendrier/qg9a.mp3",
+  "valide": true
+ }
+}

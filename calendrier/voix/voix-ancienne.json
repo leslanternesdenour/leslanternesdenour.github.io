@@ -1,0 +1,847 @@
+{
+"guide": [
+"C1-accueil.mp3",
+0.0,
+9.441
+],
+"guide2": [
+"C1-accueil.mp3",
+10.041,
+34.243
+],
+"guide3": [
+"C1-accueil.mp3",
+34.844,
+51.313
+],
+"guide4": [
+"C1-accueil.mp3",
+51.913,
+63.715
+],
+"inscription": [
+"C1-accueil.mp3",
+64.315,
+73.275
+],
+"debut": [
+"C1-accueil.mp3",
+73.875,
+78.297
+],
+"cheer0": [
+"C2-bravo.mp3",
+0.0,
+1.44
+],
+"cheer1": [
+"C2-bravo.mp3",
+2.04,
+3.582
+],
+"cheer2": [
+"C2-bravo.mp3",
+4.182,
+5.75
+],
+"cheer3": [
+"C2-bravo.mp3",
+6.35,
+8.036
+],
+"cheer4": [
+"C2-bravo.mp3",
+8.636,
+10.701
+],
+"l10": [
+"C2-bravo.mp3",
+11.301,
+15.215
+],
+"l20": [
+"C2-bravo.mp3",
+15.815,
+19.601
+],
+"l29": [
+"C2-bravo.mp3",
+20.201,
+23.021
+],
+"fin": [
+"C2-bravo.mp3",
+23.621,
+31.854
+],
+"diplome": [
+"C2-bravo.mp3",
+32.454,
+38.79
+],
+"mem_s": [
+"C2-bravo.mp3",
+39.39,
+42.395
+],
+"mem_b": [
+"C2-bravo.mp3",
+42.995,
+46.181
+],
+"mem_win": [
+"C2-bravo.mp3",
+46.781,
+50.687
+],
+"w_fanous": [
+"C3-memory.mp3",
+0.0,
+2.08
+],
+"w_hilal": [
+"C3-memory.mp3",
+2.68,
+5.197
+],
+"w_masjid": [
+"C3-memory.mp3",
+5.797,
+7.781
+],
+"w_quran": [
+"C3-memory.mp3",
+8.381,
+10.184
+],
+"w_tamr": [
+"C3-memory.mp3",
+10.784,
+12.448
+],
+"w_sajjada": [
+"C3-memory.mp3",
+13.048,
+15.916
+],
+"w_kaaba": [
+"C3-memory.mp3",
+16.516,
+18.318
+],
+"w_misbaha": [
+"C3-memory.mp3",
+18.918,
+21.247
+],
+"ms1": [
+"C4-missions-petits-1-15.mp3",
+0.0,
+11.34
+],
+"ms2": [
+"C4-missions-petits-1-15.mp3",
+11.94,
+18.638
+],
+"ms3": [
+"C4-missions-petits-1-15.mp3",
+19.238,
+28.497
+],
+"ms4": [
+"C4-missions-petits-1-15.mp3",
+29.097,
+36.521
+],
+"ms5": [
+"C4-missions-petits-1-15.mp3",
+37.121,
+46.358
+],
+"ms6": [
+"C4-missions-petits-1-15.mp3",
+46.958,
+54.393
+],
+"ms7": [
+"C4-missions-petits-1-15.mp3",
+54.993,
+62.182
+],
+"ms8": [
+"C4-missions-petits-1-15.mp3",
+62.782,
+72.22
+],
+"ms9": [
+"C4-missions-petits-1-15.mp3",
+72.82,
+82.772
+],
+"ms10": [
+"C4-missions-petits-1-15.mp3",
+83.372,
+90.423
+],
+"ms11": [
+"C4-missions-petits-1-15.mp3",
+91.023,
+101.22
+],
+"ms12": [
+"C4-missions-petits-1-15.mp3",
+101.82,
+110.673
+],
+"ms13": [
+"C4-missions-petits-1-15.mp3",
+111.273,
+120.703
+],
+"ms14": [
+"C4-missions-petits-1-15.mp3",
+121.303,
+131.215
+],
+"ms15": [
+"C4-missions-petits-1-15.mp3",
+131.815,
+140.743
+],
+"mb1": [
+"C5-missions-grands-1-15.mp3",
+0.0,
+12.527
+],
+"mb2": [
+"C5-missions-grands-1-15.mp3",
+13.127,
+24.225
+],
+"mb3": [
+"C5-missions-grands-1-15.mp3",
+24.825,
+41.497
+],
+"mb4": [
+"C5-missions-grands-1-15.mp3",
+42.097,
+53.135
+],
+"mb5": [
+"C5-missions-grands-1-15.mp3",
+53.735,
+62.61
+],
+"mb6": [
+"C5-missions-grands-1-15.mp3",
+63.21,
+72.458
+],
+"mb7": [
+"C5-missions-grands-1-15.mp3",
+73.058,
+86.242
+],
+"mb8": [
+"C5-missions-grands-1-15.mp3",
+86.842,
+96.069
+],
+"mb9": [
+"C5-missions-grands-1-15.mp3",
+96.669,
+106.557
+],
+"mb10": [
+"C5-missions-grands-1-15.mp3",
+107.157,
+118.485
+],
+"mb11": [
+"C5-missions-grands-1-15.mp3",
+119.085,
+131.522
+],
+"mb12": [
+"C5-missions-grands-1-15.mp3",
+132.122,
+142.458
+],
+"mb13": [
+"C5-missions-grands-1-15.mp3",
+143.058,
+153.863
+],
+"mb14": [
+"C5-missions-grands-1-15.mp3",
+154.463,
+166.101
+],
+"mb15": [
+"C5-missions-grands-1-15.mp3",
+166.701,
+178.477
+],
+"ms16": [
+"C6-missions-petits-16-30.mp3",
+0.0,
+7.787
+],
+"ms17": [
+"C6-missions-petits-16-30.mp3",
+8.387,
+19.053
+],
+"ms18": [
+"C6-missions-petits-16-30.mp3",
+19.653,
+27.707
+],
+"ms19": [
+"C6-missions-petits-16-30.mp3",
+28.307,
+38.771
+],
+"ms20": [
+"C6-missions-petits-16-30.mp3",
+39.371,
+48.245
+],
+"ms21": [
+"C6-missions-petits-16-30.mp3",
+48.845,
+57.069
+],
+"ms22": [
+"C6-missions-petits-16-30.mp3",
+57.669,
+69.499
+],
+"ms23": [
+"C6-missions-petits-16-30.mp3",
+70.099,
+79.752
+],
+"ms24": [
+"C6-missions-petits-16-30.mp3",
+80.352,
+89.995
+],
+"ms25": [
+"C6-missions-petits-16-30.mp3",
+90.595,
+98.819
+],
+"ms26": [
+"C6-missions-petits-16-30.mp3",
+99.419,
+107.579
+],
+"ms27": [
+"C6-missions-petits-16-30.mp3",
+108.179,
+117.672
+],
+"ms28": [
+"C6-missions-petits-16-30.mp3",
+118.272,
+129.632
+],
+"ms29": [
+"C6-missions-petits-16-30.mp3",
+130.232,
+140.088
+],
+"ms30": [
+"C6-missions-petits-16-30.mp3",
+140.688,
+150.597
+],
+"msstar": [
+"C6-missions-petits-16-30.mp3",
+151.197,
+161.342
+],
+"mb16": [
+"C7-missions-grands-16-30.mp3",
+0.0,
+11.797
+],
+"mb17": [
+"C7-missions-grands-16-30.mp3",
+12.397,
+24.227
+],
+"mb18": [
+"C7-missions-grands-16-30.mp3",
+24.827,
+35.419
+],
+"mb19": [
+"C7-missions-grands-16-30.mp3",
+36.019,
+48.467
+],
+"mb20": [
+"C7-missions-grands-16-30.mp3",
+49.067,
+57.333
+],
+"mb21": [
+"C7-missions-grands-16-30.mp3",
+57.933,
+72.376
+],
+"mb22": [
+"C7-missions-grands-16-30.mp3",
+72.976,
+82.416
+],
+"mb23": [
+"C7-missions-grands-16-30.mp3",
+83.016,
+96.083
+],
+"mb24": [
+"C7-missions-grands-16-30.mp3",
+96.683,
+108.181
+],
+"mb25": [
+"C7-missions-grands-16-30.mp3",
+108.781,
+120.333
+],
+"mb26": [
+"C7-missions-grands-16-30.mp3",
+120.933,
+134.885
+],
+"mb27": [
+"C7-missions-grands-16-30.mp3",
+135.485,
+145.128
+],
+"mb28": [
+"C7-missions-grands-16-30.mp3",
+145.728,
+157.952
+],
+"mb29": [
+"C7-missions-grands-16-30.mp3",
+158.552,
+175.107
+],
+"mb30": [
+"C7-missions-grands-16-30.mp3",
+175.707,
+187.952
+],
+"mbstar": [
+"C7-missions-grands-16-30.mp3",
+188.552,
+198.141
+],
+"dp0q": [
+"C8-devinettes-petits.mp3",
+0.0,
+7.989
+],
+"dp0a": [
+"C8-devinettes-petits.mp3",
+8.589,
+12.227
+],
+"dp1q": [
+"C8-devinettes-petits.mp3",
+12.827,
+18.171
+],
+"dp1a": [
+"C8-devinettes-petits.mp3",
+18.771,
+24.317
+],
+"dp2q": [
+"C8-devinettes-petits.mp3",
+24.917,
+28.924
+],
+"dp2a": [
+"C8-devinettes-petits.mp3",
+29.524,
+32.807
+],
+"dp3q": [
+"C8-devinettes-petits.mp3",
+33.407,
+37.598
+],
+"dp3a": [
+"C8-devinettes-petits.mp3",
+38.198,
+41.142
+],
+"dp4q": [
+"C8-devinettes-petits.mp3",
+41.742,
+47.086
+],
+"dp4a": [
+"C8-devinettes-petits.mp3",
+47.686,
+53.158
+],
+"dp5q": [
+"C8-devinettes-petits.mp3",
+53.758,
+59.176
+],
+"dp5a": [
+"C8-devinettes-petits.mp3",
+59.776,
+65.483
+],
+"dp6q": [
+"C8-devinettes-petits.mp3",
+66.083,
+70.798
+],
+"dp6a": [
+"C8-devinettes-petits.mp3",
+71.398,
+74.672
+],
+"dp7q": [
+"C8-devinettes-petits.mp3",
+75.273,
+79.269
+],
+"dp7a": [
+"C8-devinettes-petits.mp3",
+79.869,
+84.946
+],
+"dp8q": [
+"C8-devinettes-petits.mp3",
+85.546,
+89.429
+],
+"dp8a": [
+"C8-devinettes-petits.mp3",
+90.029,
+94.669
+],
+"dp9q": [
+"C8-devinettes-petits.mp3",
+95.269,
+100.602
+],
+"dp9a": [
+"C8-devinettes-petits.mp3",
+101.202,
+105.393
+],
+"dg0q": [
+"C9-devinettes-grands.mp3",
+0.0,
+7.036
+],
+"dg0a": [
+"C9-devinettes-grands.mp3",
+7.636,
+13.482
+],
+"dg1q": [
+"C9-devinettes-grands.mp3",
+14.082,
+20.384
+],
+"dg1a": [
+"C9-devinettes-grands.mp3",
+20.984,
+26.531
+],
+"dg2q": [
+"C9-devinettes-grands.mp3",
+27.131,
+33.224
+],
+"dg2a": [
+"C9-devinettes-grands.mp3",
+33.824,
+37.152
+],
+"dg3q": [
+"C9-devinettes-grands.mp3",
+37.752,
+44.801
+],
+"dg3a": [
+"C9-devinettes-grands.mp3",
+45.401,
+52.995
+],
+"dg4q": [
+"C9-devinettes-grands.mp3",
+53.595,
+58.735
+],
+"dg4a": [
+"C9-devinettes-grands.mp3",
+59.335,
+61.973
+],
+"dg5q": [
+"C9-devinettes-grands.mp3",
+62.573,
+71.758
+],
+"dg5a": [
+"C9-devinettes-grands.mp3",
+72.358,
+78.747
+],
+"dg6q": [
+"C9-devinettes-grands.mp3",
+79.347,
+84.964
+],
+"dg6a": [
+"C9-devinettes-grands.mp3",
+85.564,
+92.22
+],
+"dg7q": [
+"C9-devinettes-grands.mp3",
+92.82,
+97.006
+],
+"dg7a": [
+"C9-devinettes-grands.mp3",
+97.606,
+103.793
+],
+"dg8q": [
+"C9-devinettes-grands.mp3",
+104.393,
+115.966
+],
+"dg8a": [
+"C9-devinettes-grands.mp3",
+116.566,
+119.766
+],
+"dg9q": [
+"C9-devinettes-grands.mp3",
+120.366,
+124.814
+],
+"dg9a": [
+"C9-devinettes-grands.mp3",
+125.414,
+130.993
+],
+"qp0q": [
+"C10-questions-petits.mp3",
+0.0,
+1.429
+],
+"qp0a": [
+"C10-questions-petits.mp3",
+2.029,
+5.675
+],
+"qp1q": [
+"C10-questions-petits.mp3",
+6.275,
+8.082
+],
+"qp1a": [
+"C10-questions-petits.mp3",
+8.682,
+11.562
+],
+"qp2q": [
+"C10-questions-petits.mp3",
+12.162,
+13.655
+],
+"qp2a": [
+"C10-questions-petits.mp3",
+14.255,
+18.692
+],
+"qp3q": [
+"C10-questions-petits.mp3",
+19.292,
+21.102
+],
+"qp3a": [
+"C10-questions-petits.mp3",
+21.702,
+24.985
+],
+"qp4q": [
+"C10-questions-petits.mp3",
+25.585,
+27.761
+],
+"qp4a": [
+"C10-questions-petits.mp3",
+28.361,
+33.908
+],
+"qp5q": [
+"C10-questions-petits.mp3",
+34.508,
+36.562
+],
+"qp5a": [
+"C10-questions-petits.mp3",
+37.162,
+41.353
+],
+"qp6q": [
+"C10-questions-petits.mp3",
+41.953,
+46.156
+],
+"qp6a": [
+"C10-questions-petits.mp3",
+46.756,
+52.26
+],
+"qp7q": [
+"C10-questions-petits.mp3",
+52.86,
+55.382
+],
+"qp7a": [
+"C10-questions-petits.mp3",
+55.982,
+60.43
+],
+"qp8q": [
+"C10-questions-petits.mp3",
+61.03,
+64.75
+],
+"qp8a": [
+"C10-questions-petits.mp3",
+65.35,
+75.451
+],
+"qp9q": [
+"C10-questions-petits.mp3",
+76.051,
+79.079
+],
+"qp9a": [
+"C10-questions-petits.mp3",
+79.679,
+83.868
+],
+"qg0q": [
+"C11-questions-grands.mp3",
+0.0,
+2.88
+],
+"qg0a": [
+"C11-questions-grands.mp3",
+3.48,
+15.64
+],
+"qg1q": [
+"C11-questions-grands.mp3",
+16.24,
+18.287
+],
+"qg1a": [
+"C11-questions-grands.mp3",
+18.887,
+28.647
+],
+"qg2q": [
+"C11-questions-grands.mp3",
+29.247,
+32.532
+],
+"qg2a": [
+"C11-questions-grands.mp3",
+33.132,
+40.151
+],
+"qg3q": [
+"C11-questions-grands.mp3",
+40.751,
+42.831
+],
+"qg3a": [
+"C11-questions-grands.mp3",
+43.431,
+46.631
+],
+"qg4q": [
+"C11-questions-grands.mp3",
+47.231,
+54.026
+],
+"qg4a": [
+"C11-questions-grands.mp3",
+54.626,
+58.156
+],
+"qg5q": [
+"C11-questions-grands.mp3",
+58.756,
+61.929
+],
+"qg5a": [
+"C11-questions-grands.mp3",
+62.529,
+68.235
+],
+"qg6q": [
+"C11-questions-grands.mp3",
+68.835,
+71.523
+],
+"qg6a": [
+"C11-questions-grands.mp3",
+72.123,
+74.95
+],
+"qg7q": [
+"C11-questions-grands.mp3",
+75.55,
+78.474
+],
+"qg7a": [
+"C11-questions-grands.mp3",
+79.074,
+94.829
+],
+"qg8q": [
+"C11-questions-grands.mp3",
+95.429,
+100.166
+],
+"qg8a": [
+"C11-questions-grands.mp3",
+100.766,
+110.62
+],
+"qg9q": [
+"C11-questions-grands.mp3",
+111.22,
+114.89
+],
+"qg9a": [
+"C11-questions-grands.mp3",
+115.49,
+122.125
+]
+}
