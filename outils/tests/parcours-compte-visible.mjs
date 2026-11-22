@@ -19,11 +19,17 @@ const fin = () => p.evaluate(() => fetch('/api/session/fin', { method: 'POST', h
 
 console.log('--- 1. nouveau visiteur');
 for (const u of ['/', '/decouvrir/', '/monde/', '/voyage/', '/ablutions/', '/priere/', '/calendrier/', '/tarifs/']) {
-  await p.goto(BASE + u, { waitUntil: 'domcontentloaded' }); await p.waitForSelector('#ldn-compte', { timeout: 8000 }).catch(() => {});
+  await p.goto(BASE + u, { waitUntil: 'domcontentloaded' });
+  if (u === '/monde/' || u === '/voyage/') {      // pages de jeu : plus de gros bouton ; tout est dans Paramètres → Compte
+    await p.waitForSelector('[data-compte-reglages] .ldn-cs-section', { state: 'attached', timeout: 8000 });
+    const sv = await p.evaluate(() => ({ barre: !!document.getElementById('ldn-compte'), txt: document.querySelector('[data-compte-reglages] .ldn-cs-section').innerText }));
+    t(!sv.barre && /Se connecter/.test(sv.txt) && /Créer un compte/.test(sv.txt), `${u} : aucun gros bouton ; Paramètres → Compte propose Se connecter et Créer un compte`); continue;
+  }
+  await p.waitForSelector('#ldn-compte', { timeout: 8000 }).catch(() => {});
   const x = await barre(); t(x.includes('🔑 Se connecter') && x.includes('Créer un compte'), `${u} : boutons de compte visibles (${x.join(' | ')})`);
 }
 console.log('--- 2. inscription depuis le village');
-await p.goto(BASE + '/monde/', { waitUntil: 'domcontentloaded' }); await p.waitForSelector('#ldn-compte'); await p.click('text=Créer un compte');
+await p.goto(BASE + '/monde/', { waitUntil: 'domcontentloaded' }); await p.waitForSelector('[data-compte-reglages] .ldn-cs-section', { state: 'attached' }); await p.evaluate(() => [...document.querySelectorAll('[data-compte-reglages] a')].find(a => /Créer un compte/.test(a.textContent)).click());
 await p.waitForSelector('#f-inscription:not(.cache)'); t(p.url().includes('/compte/'), 'page compte ouverte sur l\'inscription');
 await p.fill('#i-email', 'parent1@test.local'); await p.fill('#i-mdp', 'motdepasse123'); await p.fill('#i-mdp2', 'motdepasse123');
 for (const i of ['#i-parent', '#i-cgu', '#i-conf']) await p.check(i);
@@ -46,11 +52,11 @@ t(await p.evaluate(() => !document.getElementById('ldn-compte')), 'ablutions : a
 await p.goto(BASE + '/compte/', { waitUntil: 'domcontentloaded' }); await p.waitForSelector('#v-enfants:not(.cache)'); t((await p.textContent('#enf-liste')).includes('Yasmine'), 'espace famille : profil Yasmine');
 console.log('--- 4. déconnexion depuis les Paramètres');
 await p.goto(BASE + '/voyage/', { waitUntil: 'domcontentloaded' }); await p.waitForSelector('.ldn-cs-quitter', { state: 'attached' });
-await Promise.all([p.waitForEvent('load'), p.evaluate(() => document.querySelector('.ldn-cs-quitter').click())]); await p.waitForSelector('#ldn-compte');
-x = await barre(); t(x.includes('🔑 Se connecter'), 'déconnecté : « Se connecter » revient'); t((await moi()).connecte === false, '/api/moi : visiteur');
+await Promise.all([p.waitForEvent('load'), p.evaluate(() => document.querySelector('.ldn-cs-quitter').click())]); await p.waitForSelector('.ldn-cs-p1', { state: 'attached' });
+t(await p.evaluate(() => !document.getElementById('ldn-compte')), 'déconnecté : toujours aucun gros bouton à l\'écran'); t(await p.evaluate(() => /Se connecter/.test(document.querySelector('[data-compte-reglages]').innerText)), 'déconnecté : « Se connecter » revient dans Paramètres → Compte'); t((await moi()).connecte === false, '/api/moi : visiteur');
 t(await p.evaluate(() => localStorage.getItem('ldn_profil_actif')) === null, 'profil actif retiré de l\'appareil');
 console.log('--- 5. reconnexion, retour vers le Grand Voyage');
-await p.goto(BASE + '/voyage/', { waitUntil: 'domcontentloaded' }); await p.waitForSelector('#ldn-compte'); await p.click('text=🔑 Se connecter');
+await p.goto(BASE + '/voyage/', { waitUntil: 'domcontentloaded' }); await p.waitForSelector('.ldn-cs-p1', { state: 'attached' }); await p.evaluate(() => document.querySelector('.ldn-cs-p1').click());
 await p.waitForSelector('#f-connexion:not(.cache)'); await p.fill('#c-email', 'parent1@test.local'); await p.fill('#c-mdp', 'motdepasse123'); await p.click('#f-connexion button[type=submit]');
 await p.waitForSelector('#retour-bloc:not(.cache)', { timeout: 8000 }); t(/Grand Voyage/.test(await p.textContent('#retour-lien')), 'bouton « Continuer vers le Grand Voyage »');
 await p.click('#enf-liste button:has-text("Choisir"), #enf-liste button:has-text("Joue ici")'); await p.waitForURL('**/voyage/**', { timeout: 8000 }).catch(() => {});
