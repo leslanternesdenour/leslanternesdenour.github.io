@@ -1,5 +1,6 @@
 <!DOCTYPE html><html lang="fr" data-univers="ablutions"><head><meta charset="utf-8">
 <script src="../monde/socle/sans-visage.js?v=1"></script>
+<script src="../socle/son.js?v=1"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>La mission des petites ablutions · Les Lanternes de Nour</title>
 <meta name="description" content="Jeu éducatif pour apprendre les ablutions (wudû) aux enfants musulmans de 3 à 10 ans, avec Nour la petite goutte d'eau.">
@@ -148,18 +149,13 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
 <script>
 (function(){
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],A=$('#app');
-let sound=true,prog={};try{prog=JSON.parse(localStorage.getItem('ablutions'))||{}}catch(e){}
-try{if(localStorage.getItem('ablutions_son')==='0')sound=false}catch(e){}
+let prog={};try{prog=JSON.parse(localStorage.getItem('ablutions'))||{}}catch(e){}
+const sound=()=>!LDNSon.etat().muet;   // le son se règle pour tout le site (socle/son.js)
 const save=()=>{try{localStorage.setItem('ablutions',JSON.stringify(prog))}catch(e){}};
-let VX=null;try{fetch('voix/voix.json',{cache:'no-cache'}).then(r=>r.ok?r.json():null).then(j=>{VX=j}).catch(()=>{})}catch(e){}
-const AU=new Audio();AU.preload='auto';let AUt=0;
-function stopVoice(){clearTimeout(AUt);try{AU.pause()}catch(e){}try{speechSynthesis.cancel()}catch(e){}}
-function say(t,id){if(!sound)return;stopVoice();const c=id&&VX&&VX[id];
- if(c){const go=()=>{try{AU.currentTime=c[1]}catch(e){}const p=AU.play();if(p&&p.catch)p.catch(()=>tts(t));AUt=setTimeout(()=>AU.pause(),(c[2]-c[1])*1000+120)};
-  if(AU.dataset.f!==c[0]){AU.dataset.f=c[0];AU.src='voix/'+c[0];AU.addEventListener('loadedmetadata',go,{once:true});AU.load()}else go();return}
- tts(t)}
-const ISL=/[âîûÂÎÛ‘ʿʾ]|\b(allah|bismi|ramadan|coran|a[iï]d\b|zak|sourate|f[aâ]tiha|nouh|adam|ibrahim|youss?ouf|younous|mouss?a|ftour|kaaba|qibla|sal[aâ]t|rak|soujou|roukou|takb|tachah|tasl|wudu|mach|inch|assal|soubh|rabb|alhamd|akbar|astagh|jibr|hajj|chah[aâ]da|fajr|dhohr|asr\b|maghrib|icha|sahour|adh[aâ]n)/i;
-function tts(t){if(ISL.test(String(t)))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(String(t).replace(/<[^>]+>/g,'').replace(/[؀-ۿً-ٟ]+/g,''));u.lang='fr-FR';u.rate=.92;u.pitch=1.15;speechSynthesis.speak(u)}catch(e){}}
+const V=LDNSon.bibliotheque('voix/');   // les voix enregistrées de la leçon ; la voix du navigateur n'est qu'un dernier recours (français seulement)
+function stopVoice(){LDNSon.arreter()}
+function say(t,id){return V.dire(id,{texte:t})}
+function tts(t){LDNSon.dire({texte:t})}
 let T=[];const later=(f,ms)=>T.push(setTimeout(f,ms));const stopAll=()=>{T.forEach(clearTimeout);T=[];stopVoice()};
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 
@@ -178,8 +174,8 @@ function nour(m){const mouth=m==='wow'?'<ellipse cx="60" cy="106" rx="9" ry="10"
  <circle cx="34" cy="100" r="6" fill="#ff9fb2" opacity=".7"/><circle cx="86" cy="100" r="6" fill="#ff9fb2" opacity=".7"/>${mouth}</g>
  <path d="M84 34a10 10 0 1 0 0 14a12 12 0 0 1 0-14z" fill="#f5b942"/></svg>`}
 const bubble=(t,c='')=>`<div class="nb">${nour(c==='ok'?'wow':c==='ko'?'oh':'')}<div class="bul ${c}" id="bul">${t}</div></div>`;
-const topbar=(t)=>`<div class="bar"><button class="rb" id="home" aria-label="Accueil">🏠</button><div class="ttl">${t}</div><button class="rb" id="snd" aria-label="Son">${sound?'🔊':'🔇'}</button></div>`;
-function wire(){const h=$('#home');if(h)h.onclick=()=>go('home');const s=$('#snd');if(s)s.onclick=()=>{sound=!sound;try{localStorage.setItem('ablutions_son',sound?'1':'0')}catch(e){}s.textContent=sound?'🔊':'🔇';if(!sound)try{speechSynthesis.cancel()}catch(e){}}}
+const topbar=(t)=>`<div class="bar"><button class="rb" id="home" aria-label="Accueil">🏠</button><div class="ttl">${t}</div><button class="rb" id="snd" aria-label="Son">${sound()?'🔊':'🔇'}</button></div>`;
+function wire(){const h=$('#home');if(h)h.onclick=()=>go('home');const s=$('#snd');if(s)s.onclick=()=>{LDNSon.couper(sound());s.textContent=sound()?'🔊':'🔇'}}
 
 /* ---------- dessins ---------- */
 const SK='#f3c9a4',SKD='#cf916b',HAIR='#3b2a20',SL='#7fd0e3';
@@ -281,7 +277,7 @@ function why(){A.innerHTML=topbar('Pourquoi les ablutions ?')+bubble("Pourquoi o
 
 /* ---------- accueil ---------- */
 function home(){const st=k=>'★'.repeat(prog[k]||0)+'☆'.repeat(3-(prog[k]||0));
- A.innerHTML=`<div class="bar"><span></span><span></span><button class="rb" id="snd" aria-label="Son">${sound?'🔊':'🔇'}</button></div><div class="hero">${nour()}<h1>La mission des <span>petites ablutions</span></h1><p>Apprends à faire tes ablutions (le wudû) avec Nour, la petite goutte d'eau !</p></div>
+ A.innerHTML=`<div class="bar"><span></span><span></span><button class="rb" id="snd" aria-label="Son">${sound()?'🔊':'🔇'}</button></div><div class="hero">${nour()}<h1>La mission des <span>petites ablutions</span></h1><p>Apprends à faire tes ablutions (le wudû) avec Nour, la petite goutte d'eau !</p></div>
  <div class="menu"><button class="big b1" id="m1"><span class="ic">💧</span><span>Apprendre<small>Les 9 étapes avec Nour</small></span></button>
  <a class="big b1" id="m4" href="jeu3d/" style="background:#1d8f9c"><span class="ic">🧒</span><span>Les ablutions en 3D<small>Fais toi-même chaque geste, devant le robinet</small></span></a>
  <button class="big b2" id="m2"><span class="ic">🎮</span><span>Jouer<small>4 petits jeux · ${['g1','g2','g3','g4'].reduce((a,k)=>a+(prog[k]||0),0)} / 12 étoiles</small></span></button>

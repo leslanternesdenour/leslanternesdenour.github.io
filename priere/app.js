@@ -1,28 +1,17 @@
 (function(){
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],A=$('#app');
-let sound=true,prog={};try{prog=JSON.parse(localStorage.getItem('priere'))||{}}catch(e){}
-try{if(localStorage.getItem('ablutions_son')==='0')sound=false}catch(e){}
+let prog={};try{prog=JSON.parse(localStorage.getItem('priere'))||{}}catch(e){}
+const sound=()=>!LDNSon.etat().muet;   // le son se règle pour tout le site (socle/son.js)
 const save=()=>{try{localStorage.setItem('priere',JSON.stringify(prog))}catch(e){}};
 
 /* ---------- voix : clips enregistrés (voix/voix.json), récitation du Coran (vrai récitateur), sinon voix du navigateur ---------- */
-let VX=null;try{fetch('voix/voix.json',{cache:'no-cache'}).then(r=>r.ok?r.json():null).then(j=>{VX=j}).catch(()=>{})}catch(e){}
-const AU=new Audio();AU.preload='auto';let AUt=0,AUn=0;
-function stopVoice(){clearTimeout(AUt);AUn++;try{AU.pause();AU.playbackRate=1}catch(e){}try{speechSynthesis.cancel()}catch(e){}}
-function clip(id,rate,done){const c=VX&&VX[id];if(!c)return false;const n=AUn;rate=rate||1;
- const go=()=>{if(n!==AUn)return;AU.playbackRate=rate;try{AU.preservesPitch=true}catch(e){}try{AU.currentTime=c[1]}catch(e){}const p=AU.play();if(p&&p.catch)p.catch(()=>{});AUt=setTimeout(()=>{AU.pause();if(n===AUn&&done)done()},(c[2]-c[1])*1000/rate+150)};
- if(AU.dataset.f!==c[0]){AU.dataset.f=c[0];AU.src='voix/'+c[0];AU.addEventListener('loadedmetadata',go,{once:true});AU.load()}else go();return true}
-function url(u,rate,done){const n=AUn;AU.dataset.f='';AU.src=u;AU.playbackRate=rate||1;try{AU.preservesPitch=true}catch(e){}AU.onended=()=>{AU.onended=null;if(n===AUn&&done)done()};const p=AU.play();if(p&&p.catch)p.catch(()=>{done&&done()})}
-const ISL=/[âîûÂÎÛ‘ʿʾ]|\b(allah|bismi|ramadan|coran|a[iï]d\b|zak|sourate|f[aâ]tiha|nouh|adam|ibrahim|youss?ouf|younous|mouss?a|ftour|kaaba|qibla|sal[aâ]t|rak|soujou|roukou|takb|tachah|tasl|wudu|mach|inch|assal|soubh|rabb|alhamd|akbar|astagh|jibr|hajj|chah[aâ]da|fajr|dhohr|asr\b|maghrib|icha|sahour|adh[aâ]n)/i;
-function tts(t,done){if(ISL.test(String(t))){done&&done();return}try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(String(t).replace(/<[^>]+>/g,'').replace(/[؀-ۿً-ٟ]+/g,''));u.lang='fr-FR';u.rate=.92;u.pitch=1.1;if(done)u.onend=done;speechSynthesis.speak(u)}catch(e){done&&done()}}
-/* say : texte français + identifiant de clip */
-function say(t,id,done){if(!sound){done&&done();return}stopVoice();if(id&&clip(id,1,done))return;tts(t,done)}
+const V=LDNSon.bibliotheque('voix/');   // les voix enregistrées de la leçon ; la voix du navigateur n'est qu'un dernier recours (français seulement)
+function stopVoice(){LDNSon.arreter()}
+function say(t,id,done){return V.dire(id,{texte:t,fini:done})}
+function url(u,rate,done){LDNSon.url(u,{rate:rate||1,fini:done})}
 /* suite d'étapes audio : [{id,t,rate}|{url,rate}|{wait:ms}] */
-function seq(items,end){if(!sound){end&&end();return}stopVoice();const n=AUn;const q=items.slice();
- const next=()=>{if(n!==AUn)return;const it=q.shift();if(!it){end&&end();return}
-  if(it.wait)return AUt=setTimeout(next,it.wait);
-  if(it.url)return url(it.url,it.rate,()=>setTimeout(next,350));
-  if(it.id&&clip(it.id,it.rate,()=>setTimeout(next,350)))return;
-  if(it.t)return tts(it.t,()=>setTimeout(next,350));next()};next()}
+function seq(items,end){if(!sound()){end&&end();return}
+ V.prete.then(()=>LDNSon.sequence(items.map(it=>it.wait?{attente:it.wait}:it.url?{url:it.url,rate:it.rate}:(it.id&&V.entree(it.id,{rate:it.rate,texte:it.t}))||{texte:it.t}).filter(it=>it.attente||it.fichier||it.url||it.texte),end))}
 let T=[];const later=(f,ms)=>T.push(setTimeout(f,ms));const stopAll=()=>{T.forEach(clearTimeout);T=[];stopVoice()};
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -58,8 +47,8 @@ function sajjadou(m='',cls=''){const u=++SJn;
  <path d="M42 107l3-3.5 3 3.5-3 3.5zM72 107l3-3.5 3 3.5-3 3.5z" fill="#1d8f9c"/>
  <path d="M38 121h44" stroke="#f5b942" stroke-width="2" stroke-dasharray="3 3"/></g></svg>`}
 const bubble=(t,c='',id='',m)=>`<div class="nb">${sajjadou(m!=null?m:c==='ok'?'wow':c==='ko'?'oh':'')}<div class="bul ${c}" id="bul" data-id="${id}">${t}</div></div>`;
-const topbar=t=>`<div class="bar"><button class="rb" id="home" aria-label="Accueil">🏠</button><div class="ttl">${t}</div><button class="rb" id="snd" aria-label="Voix">${sound?'🔊':'🔇'}</button></div>`;
-function wire(){const h=$('#home');if(h)h.onclick=()=>go('home');const s=$('#snd');if(s)s.onclick=()=>{sound=!sound;try{localStorage.setItem('ablutions_son',sound?'1':'0')}catch(e){}s.textContent=sound?'🔊':'🔇';if(!sound)stopVoice()};
+const topbar=t=>`<div class="bar"><button class="rb" id="home" aria-label="Accueil">🏠</button><div class="ttl">${t}</div><button class="rb" id="snd" aria-label="Voix">${sound()?'🔊':'🔇'}</button></div>`;
+function wire(){const h=$('#home');if(h)h.onclick=()=>go('home');const s=$('#snd');if(s)s.onclick=()=>{LDNSon.couper(sound());s.textContent=sound()?'🔊':'🔇'};
  const b=$('#bul');if(b){b.style.cursor='pointer';b.onclick=()=>say(b.textContent,b.dataset.id)}}
 
 /* ---------- l'enfant qui prie (silhouette sans visage, vue de côté, la qibla est à droite) ---------- */
@@ -124,16 +113,16 @@ function dhBlock(id){const d=DH[id];return `<div class="dh"><div class="ar" lang
 function learnSeq(id){const b=$('#bul');const set=(t,c)=>{if(b){b.textContent=t;b.className='bul '+(c||'')}};
  set('Écoute bien…');seq([{id:'d_'+id},{t:'',wait:300},{id:'rep',t:'À toi ! Répète.'},{wait:2600},{id:'slow',t:'Encore une fois, plus lentement.'},{id:'d_'+id,rate:.72},{wait:2200},{id:'sens',t:'Ça veut dire :'},{id:'f_'+id,t:DH[id].fr}],()=>{set('Bravo ! Tu peux réécouter autant de fois que tu veux.','ok');say('','learn_ok')})}
 function wireDh(){$$('[data-play]').forEach(b=>b.onclick=()=>say(DH[b.dataset.play].tr,'d_'+b.dataset.play));
- $$('[data-slow]').forEach(b=>b.onclick=()=>{if(!sound)return;stopVoice();if(!clip('d_'+b.dataset.slow,.72))tts(DH[b.dataset.slow].tr)});
+ $$('[data-slow]').forEach(b=>b.onclick=()=>V.dire('d_'+b.dataset.slow,{rate:.72,texte:DH[b.dataset.slow].tr}));
  $$('[data-learn]').forEach(b=>b.onclick=()=>learnSeq(b.dataset.learn))}
 function surBlock(s){const S=SUR[s];return `<div class="dh"><div class="ttl2">Sourate ${S.n} · récitation de cheikh Al-Housary</div><div id="qv">${S.tr.map((t,i)=>`<div class="ay" data-i="${i}"><div class="ar" lang="ar" dir="rtl" id="qa${i}">…</div><div class="trl">${t}</div><div class="frm">${S.fr[i]}</div>
  <div class="acts2"><button class="mini" data-ay="${i}">▶</button><button class="mini" data-ays="${i}">🐢</button></div></div>`).join('')}</div>
  <div class="acts2"><button class="mini b" id="qall">▶ Toute la sourate</button></div><div class="src">Texte du Coran : édition uthmânî (alquran.cloud) · Voix : Mahmoud Khalil Al-Housary</div></div>`}
 function wireSur(s){loadSur(s).then(t=>{if(t)t.forEach((a,i)=>{const e=$('#qa'+i);if(e)e.textContent=a})});
  const hl=i=>$$('.ay').forEach(e=>e.classList.toggle('on',+e.dataset.i===i));
- $$('[data-ay]').forEach(b=>b.onclick=()=>{if(!sound)return;stopVoice();hl(+b.dataset.ay);url(ayUrl(s,+b.dataset.ay),1,()=>hl(-1))});
- $$('[data-ays]').forEach(b=>b.onclick=()=>{if(!sound)return;stopVoice();hl(+b.dataset.ays);url(ayUrl(s,+b.dataset.ays),.75,()=>hl(-1))});
- $('#qall').onclick=()=>{if(!sound)return;stopVoice();const n=AUn;let i=0;const nx=()=>{if(n!==AUn||i>=SUR[s].ay)return hl(-1);hl(i);url(ayUrl(s,i++),1,()=>setTimeout(nx,400))};nx()}}
+ $$('[data-ay]').forEach(b=>b.onclick=()=>{hl(+b.dataset.ay);url(ayUrl(s,+b.dataset.ay),1,()=>hl(-1))});
+ $$('[data-ays]').forEach(b=>b.onclick=()=>{hl(+b.dataset.ays);url(ayUrl(s,+b.dataset.ays),.75,()=>hl(-1))});
+ $('#qall').onclick=()=>{let i=0;const nx=()=>{if(i>=SUR[s].ay)return hl(-1);hl(i);url(ayUrl(s,i++),1,ok=>{if(ok===false)return hl(-1);setTimeout(nx,400)})};nx()}}
 
 /* ---------- écrans ---------- */
 const GAMES=['g1','g3','g4'];
@@ -141,7 +130,7 @@ const stars=k=>`<span class="stars">${'★'.repeat(prog[k]||0)}${'☆'.repeat(3-
 const lanterns=()=>{const done=[!!prog.learn,...GAMES.map(k=>(prog[k]||0)>0)];return `<div class="lts">${done.map(d=>`<svg viewBox="20 10 60 116" class="lt ${d?'on':''}"><path d="M30 32 38 16h24l8 16z" fill="#f5b942"/><rect x="26" y="32" width="48" height="8" rx="2" fill="#d9952a"/><rect x="28" y="40" width="44" height="60" rx="3" fill="${d?'#fff2c4':'#e8eef1'}" stroke="#d9952a" stroke-width="4"/><rect x="24" y="100" width="52" height="8" rx="2" fill="#d9952a"/>${d?'<circle cx="50" cy="70" r="12" fill="#f5b942" opacity=".8"/>':''}</svg>`).join('')}</div>`};
 const canDip=()=>prog.learn&&GAMES.every(k=>(prog[k]||0)>0);
 function home(){
- A.innerHTML=`<div class="bar"><a class="rb" href="../ablutions/" aria-label="Ablutions" style="text-decoration:none">💧</a><span></span><button class="rb" id="snd" aria-label="Voix">${sound?'🔊':'🔇'}</button></div>
+ A.innerHTML=`<div class="bar"><a class="rb" href="../ablutions/" aria-label="Ablutions" style="text-decoration:none">💧</a><span></span><button class="rb" id="snd" aria-label="Voix">${sound()?'🔊':'🔇'}</button></div>
  <div class="hero">${sajjadou('','accueil')}<h1>J'apprends <span>ma prière</span></h1><p>Avec Sajjadou, ton petit tapis de prière, découvre la salât étape par étape : les gestes, les paroles et leur sens.</p></div>
  ${lanterns()}
  <div class="menu"><button class="big b1" id="m1"><span class="ic">🕌</span><span>Apprendre<small>Les ${ST.length} étapes de la prière${prog.learn?' · ✔':''}</small></span></button>

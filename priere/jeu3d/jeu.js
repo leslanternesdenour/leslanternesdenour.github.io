@@ -51,30 +51,17 @@ const PROFIL = choisirProfil();
 const Q = { faible: { pr: 1, ombres: false, aa: false }, equilibre: { pr: Math.min(devicePixelRatio || 1, 1.5), ombres: 'normale', aa: false }, eleve: { pr: Math.min(devicePixelRatio || 1, 2), ombres: 'haute', aa: true } }[PROFIL];
 
 // ---------- voix : les enregistrements de la leçon, la récitation du Coran, sinon la voix du navigateur ----------
-let son = true; try { son = localStorage.getItem('ablutions_son') !== '0'; } catch (e) {}   // le même réglage que la leçon de la prière
-let VX = null; try { fetch('../voix/voix.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : null).then(j => { VX = j; }).catch(() => {}); } catch (e) {}
-const AU = new Audio(); AU.preload = 'auto'; let AUt = 0, AUn = 0;
-const ISL = /[âîûÂÎÛ‘ʿʾ]|\b(allah|bismi|coran|sal[aâ]t|rak|soujou|roukou|takb|tachah|tasl|wudu|mach|inch|assal|soubh|rabb|alhamd|akbar|f[aâ]tiha|qibla|kaaba|fajr)/i;
-function tts(t, fini) { if (ISL.test(String(t))) { if (fini) fini(); return; } try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(String(t).replace(/<[^>]+>/g, '')); u.lang = 'fr-FR'; u.rate = 0.92; u.pitch = 1.1; if (fini) u.onend = fini; speechSynthesis.speak(u); } catch (e) { if (fini) fini(); } }
-function taire() { clearTimeout(AUt); AUn++; try { AU.pause(); AU.onended = null; } catch (e) {} try { speechSynthesis.cancel(); } catch (e) {} }
-function dire(t, id, fini) {
-  if (!son) { if (fini) fini(); return; } taire();
-  const c = id && VX && VX[id], n = AUn;
-  if (c) {
-    const go = () => { if (n !== AUn) return; try { AU.currentTime = c[1]; } catch (e) {} const p = AU.play(); if (p && p.catch) p.catch(() => tts(t, fini)); AUt = setTimeout(() => { AU.pause(); if (n === AUn && fini) fini(); }, (c[2] - c[1]) * 1000 + 150); };
-    if (AU.dataset.f !== c[0]) { AU.dataset.f = c[0]; AU.src = '../voix/' + c[0]; AU.addEventListener('loadedmetadata', go, { once: true }); AU.load(); } else go();
-    return;
-  }
-  tts(t, fini);
-}
+const V = LDNSon.bibliotheque('../voix/');   // les enregistrements de la leçon ; voix du navigateur seulement en dernier recours (français)
+const sonActif = () => !LDNSon.etat().muet;    // réglage commun à tout le site (socle/son.js)
+function taire() { LDNSon.arreter(); }
+function dire(t, id, fini) { return V.dire(id, { texte: t, fini }); }
 // la récitation d'une sourate, verset par verset (même récitateur que la leçon)
 function reciter(s, surVerset) {
-  if (!son) return; taire(); const n = AUn; let i = 0;
+  taire(); let i = 0;
   const suivant = () => {
-    if (n !== AUn || i >= SUR[s].ay) { if (surVerset) surVerset(-1); return; }
+    if (i >= SUR[s].ay) { if (surVerset) surVerset(-1); return; }
     if (surVerset) surVerset(i);
-    AU.dataset.f = ''; AU.src = ayUrl(s, i++); AU.onended = () => setTimeout(suivant, 350);
-    const p = AU.play(); if (p && p.catch) p.catch(() => { if (surVerset) surVerset(-1); });
+    LDNSon.url(ayUrl(s, i++), { fini: ok => { if (ok === false) { if (surVerset) surVerset(-1); return; } setTimeout(suivant, 350); } });
   };
   suivant();
 }
@@ -318,8 +305,8 @@ function ouvrirMenu() { if (!jeuEnCours) return; $('menu').classList.remove('cac
 $('btn-menu').onclick = ouvrirMenu;
 $('menu-reprendre').onclick = () => $('menu').classList.add('cache');
 $('menu-modes').onclick = () => { $('menu').classList.add('cache'); accueil(); };
-$('btn-son').textContent = son ? '🔊' : '🔇';
-$('btn-son').onclick = () => { son = !son; try { localStorage.setItem('ablutions_son', son ? '1' : '0'); } catch (e) {} $('btn-son').textContent = son ? '🔊' : '🔇'; if (!son) taire(); };
+LDNSon.surEtat(() => { $('btn-son').textContent = sonActif() ? '🔊' : '🔇'; });
+$('btn-son').onclick = () => { LDNSon.couper(sonActif()); };
 for (const b of document.querySelectorAll('.choix-perso')) b.onclick = () => {
   info = { ...info, genre: b.dataset.genre }; sauver(j => { j.genre = b.dataset.genre; }); creerPersonnages();
   for (const x of document.querySelectorAll('.choix-perso')) x.classList.toggle('oui', x === b);

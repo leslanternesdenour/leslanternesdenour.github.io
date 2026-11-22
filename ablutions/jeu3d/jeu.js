@@ -49,22 +49,10 @@ const PROFIL = choisirProfil();
 const Q = { faible: { pr: 1, ombres: false, aa: false }, equilibre: { pr: Math.min(devicePixelRatio || 1, 1.5), ombres: 'normale', aa: false }, eleve: { pr: Math.min(devicePixelRatio || 1, 2), ombres: 'haute', aa: true } }[PROFIL];
 
 // ---------- la voix : les enregistrements de la leçon, sinon la voix du navigateur ----------
-let son = true; try { son = localStorage.getItem('ablutions_son') !== '0'; } catch (e) {}
-let VX = null; try { fetch('../voix/voix.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : null).then(j => { VX = j; }).catch(() => {}); } catch (e) {}
-const AU = new Audio(); AU.preload = 'auto'; let AUt = 0;
-const ISL = /[âîûÂÎÛ‘ʿʾ]|\b(allah|bismi|coran|sal[aâ]t|wudu|mach|inch|assal)/i;
-function tts(t) { if (ISL.test(String(t))) return; try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(String(t).replace(/<[^>]+>/g, '')); u.lang = 'fr-FR'; u.rate = 0.92; u.pitch = 1.15; speechSynthesis.speak(u); } catch (e) {} }
-function taire() { clearTimeout(AUt); try { AU.pause(); } catch (e) {} try { speechSynthesis.cancel(); } catch (e) {} }
-function dire(t, id) {
-  if (!son) return; taire();
-  const c = id && VX && VX[id];
-  if (c) {
-    const go = () => { try { AU.currentTime = c[1]; } catch (e) {} const p = AU.play(); if (p && p.catch) p.catch(() => tts(t)); AUt = setTimeout(() => AU.pause(), (c[2] - c[1]) * 1000 + 120); };
-    if (AU.dataset.f !== c[0]) { AU.dataset.f = c[0]; AU.src = '../voix/' + c[0]; AU.addEventListener('loadedmetadata', go, { once: true }); AU.load(); } else go();
-    return;
-  }
-  tts(t);
-}
+const V = LDNSon.bibliotheque('../voix/');   // les enregistrements de la leçon ; voix du navigateur seulement en dernier recours (français)
+const sonActif = () => !LDNSon.etat().muet;    // réglage commun à tout le site (socle/son.js)
+function taire() { LDNSon.arreter(); }
+function dire(t, id) { return V.dire(id, { texte: t }); }
 
 // ---------- le bruit de l'eau (un souffle doux fabriqué par le navigateur) ----------
 let audio = null;
@@ -461,8 +449,8 @@ function ouvrirMenu() { if (!jeuEnCours) return; $('menu').classList.remove('cac
 $('btn-menu').onclick = ouvrirMenu;
 $('menu-reprendre').onclick = () => $('menu').classList.add('cache');
 $('menu-modes').onclick = () => { $('menu').classList.add('cache'); accueil(); };
-$('btn-son').textContent = son ? '🔊' : '🔇';
-$('btn-son').onclick = () => { son = !son; try { localStorage.setItem('ablutions_son', son ? '1' : '0'); } catch (e) {} $('btn-son').textContent = son ? '🔊' : '🔇'; if (!son) taire(); };
+LDNSon.surEtat(() => { $('btn-son').textContent = sonActif() ? '🔊' : '🔇'; });
+$('btn-son').onclick = () => { LDNSon.couper(sonActif()); };
 for (const b of document.querySelectorAll('.choix-perso')) b.onclick = () => {
   persoInfo = { ...persoInfo, genre: b.dataset.genre }; sauver(j => { j.genre = b.dataset.genre; }); creerPerso();
   for (const x of document.querySelectorAll('.choix-perso')) x.classList.toggle('oui', x === b);
@@ -492,7 +480,7 @@ function image() {
   blob.position.set(perso.racine.position.x, 0.012, perso.racine.position.z + (J.assis ? 0.08 : 0));
   const coule = J.assis && gestes.enCours() && !!gestes.opt.eau;
   lieu.maj(dt, tTotal, { station: J.station, coule, mains: gestes.mainsMonde, pieds: gestes.piedsMonde });
-  if (audio) audio.g.gain.value = lisse(audio.g.gain.value, coule && son ? 0.09 : 0, Math.min(1, dt * 6));
+  if (audio) audio.g.gain.value = lisse(audio.g.gain.value, coule && sonActif() ? 0.09 * LDNSon.etat().volume : 0, Math.min(1, dt * 6));
   for (const c of cercles) { c.material.opacity = 0.55 + Math.sin(tTotal * 3) * 0.25; }
   if (nourSprite) {
     nourSprite.visible = !!(jeuEnCours && J.station && mode === 'apprendre');
