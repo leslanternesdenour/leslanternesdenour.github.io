@@ -1,0 +1,18 @@
+/* JEU 2 — styles propres à la lecture (le reste vient de lettres/ecole.css et commun/decor.css) */
+@font-face{font-family:'AmiriEcole';src:url('../commun/fonts/amiri-arabic-400.woff') format('woff');font-display:swap}
+.ar-texte{font-family:'AmiriEcole','Amiri','Noto Naskh Arabic','Traditional Arabic',serif;direction:rtl;unicode-bidi:isolate;line-height:1.5}
+.ar-texte.ar-geant{font-size:clamp(78px,22vw,130px);color:#2a1a5e}.ar-texte.ar-grand{font-size:clamp(46px,12vw,72px);color:#2a1a5e}.ar-texte.ar-gros{font-size:clamp(46px,11vw,64px);color:#2a1a5e}.ar-texte.ar-moyen{font-size:34px;color:#2a1a5e}
+.cible-syl,.mot-cible{display:block;margin:0 auto;background:var(--ivoire);border:4px solid var(--or);border-radius:26px;padding:6px 26px;min-width:150px}.mot-cible{cursor:pointer;font:inherit}
+.carte-lecture{font-size:clamp(30px,8vw,44px);font-weight:900;color:#3a1d10;letter-spacing:.04em}
+.emoji-grand{font-size:clamp(56px,16vw,92px);line-height:1}
+.tuile-ar,.tuile-signe{min-width:84px;min-height:92px;padding:6px 10px;border-radius:20px;border:4px solid var(--or);background:var(--ivoire);color:#3a1d10;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;font:inherit}
+.tuile-ar small,.tuile-signe small{font-size:15px;font-weight:800}.tuile-ar.choisie,.tuile-signe.choisie{border-color:#1fb5a8;box-shadow:0 0 0 5px #1fb5a899}.tuile-ar.chante{animation:pulse .8s}
+.rang-lettres,.rang-signes{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:8px 0}
+.atelier-lect{text-align:center;background:rgba(56,30,38,.9);border:4px solid var(--or);border-radius:26px;padding:10px}.atelier-lect .resultat{background:var(--ivoire);border-radius:20px;display:inline-block;padding:0 40px;margin-bottom:6px}.lecture-fr{font-size:28px;font-weight:900;margin:0;color:#ffd666}
+.act-choix.atelier-lect-choix,.act-choix.exemples{display:block;text-align:center}.act-choix.exemples{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.presentation{text-align:center;background:rgba(56,30,38,.92);border:4px solid var(--or);border-radius:26px;padding:10px 14px}.presentation p{font-size:clamp(17px,4.4vw,22px);margin:4px 0}.signe-gros{display:inline-block;background:var(--ivoire);border-radius:22px;padding:0 30px}
+.salle-carte.lect-syl,.salle-carte.lect-mots,.salle-carte.lect-phr,.salle-carte.lect-carnet{background:linear-gradient(160deg,#7a4a2a,#3a2030)}.salle-carte .grand-ar{position:absolute;left:0;right:0;top:34%;text-align:center;font-size:clamp(34px,8vw,52px);color:#ffe9a8;text-shadow:0 3px 6px #000}
+.salle-carte.e-parcours .badge{top:30%}
+.carnet-grille{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:12px}.carte-carnet{display:flex;flex-direction:column;align-items:center;min-width:76px;padding:4px 8px;border-radius:14px;background:#ffffff33;border:3px solid #6f63c9;color:#fff;filter:grayscale(.9) brightness(.8)}
+.carte-carnet .ar-texte{background:var(--ivoire);border-radius:10px;padding:0 8px}.carte-carnet em{font-style:normal;font-size:24px}.carte-carnet i{font-style:normal;font-size:13px;color:#ffd666}
+.carte-carnet.st1{filter:grayscale(.5) brightness(.9)}.carte-carnet.st2{filter:none;border-color:#9ad}.carte-carnet.st3{filter:none;border-color:var(--or);box-shadow:0 0 12px var(--or)}.carnet h3{margin:8px 0 4px;text-align:center}

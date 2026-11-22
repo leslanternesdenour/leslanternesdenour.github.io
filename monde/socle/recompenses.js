@@ -14,6 +14,8 @@ import { lire as lireQuiz, etoilesTotal as etoilesQuiz, lanternes as lanternesQu
 
 import { lire as lireEcole, recompenses as recompensesEcole, progressionGlobale as progressionEcole } from '../../ecole-arabe/lettres/moteur/competences.js';
 
+import { lire as lireLecture, recompenses as recompensesLecture, progressionGlobale as progressionLecture } from '../../ecole-arabe/lecture/moteur.js';
+
 const JEUX_ABLUTIONS = ['g1', 'g2', 'g3', 'g4'];
 const JEUX_PRIERE = ['g1', 'g3', 'g4'];
 
@@ -21,13 +23,13 @@ const etoilesDe = (p, jeux) => p ? jeux.reduce((s, k) => s + Math.max(0, Math.mi
 
 // lire(cle) → objet JSON ou null
 export function calculerRecompenses(lire) {
-  const abl = lire('ablutions'), pri = lire('priere'), cal = lire('lanternes2'), voy = lire('monde_voyage'), mots = lire('maison_mots'), av = lireAventureMots(lire('aventure_mots')), my = lireMysteres(lire('aventure_mysteres')), qz = lireQuiz(lire('aventure_quiz')), ecoleEt = lireEcole(lire('ecole_lettres'));
+  const abl = lire('ablutions'), pri = lire('priere'), cal = lire('lanternes2'), voy = lire('monde_voyage'), mots = lire('maison_mots'), av = lireAventureMots(lire('aventure_mots')), my = lireMysteres(lire('aventure_mysteres')), qz = lireQuiz(lire('aventure_quiz')), ecoleEt = lireEcole(lire('ecole_lettres')), lectureEt = lireLecture(lire('ecole_lecture'));
 
   const ablutions = etoilesDe(abl, JEUX_ABLUTIONS);
   const priere = etoilesDe(pri, JEUX_PRIERE);
   const chasse = mots && mots.etoiles ? etoilesDe(mots.etoiles, ['paires', 'bonmot']) : 0;
 
-  const ecole = recompensesEcole(ecoleEt), aventureEtoiles = etoilesMots(av) + etoilesMysteres(my) + etoilesQuiz(qz) + ecole.etoiles, aventureLanternes = lanternesMots(av) + lanternesMysteres(my) + lanternesQuiz(qz) + ecole.lanternes;
+  const ecole = recompensesEcole(ecoleEt), lecture = recompensesLecture(lectureEt), aventureEtoiles = etoilesMots(av) + etoilesMysteres(my) + etoilesQuiz(qz) + ecole.etoiles + lecture.etoiles, aventureLanternes = lanternesMots(av) + lanternesMysteres(my) + lanternesQuiz(qz) + ecole.lanternes + lecture.lanternes;
   let lanternesRamadan = 0;
   const jeuxRamadan = new Set();
   if (cal && Array.isArray(cal.kids)) cal.kids.forEach(k => {
@@ -50,6 +52,7 @@ export function calculerRecompenses(lire) {
       mots: { etoiles: chasse },
       chasse_aux_mots: { etoiles: etoilesMots(av), lanternes: lanternesMots(av), appris: av.trouves.length },
       mysteres_desert: { etoiles: etoilesMysteres(my), lanternes: lanternesMysteres(my), tresors: my.tresors.length },
+      ecole_lecture: { etoiles: lecture.etoiles, lanternes: lecture.lanternes, progression: progressionLecture(lectureEt) },
       ecole_lettres: { etoiles: ecole.etoiles, lanternes: ecole.lanternes, progression: progressionEcole(ecoleEt) },
       quiz_nour: { etoiles: etoilesQuiz(qz), lanternes: lanternesQuiz(qz), diplomes: qz.diplomes.length }
     }

@@ -4,7 +4,7 @@
 // RÈGLE : « fichier » n'est renseigné que par le script de production, quand le fichier existe réellement. Un audio absent n'est jamais annoncé.
 import fs from 'fs'; import path from 'path'; import { fileURLToPath, pathToFileURL } from 'url';
 const RACINE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
-export const JEUX = { 'chasse-aux-mots': 'aventures/chasse-aux-mots/mots.js', 'mysteres-desert': 'aventures/mysteres-desert/contenu.js', 'quiz-nour': 'aventures/quiz-nour/contenu.js', 'ecole-lettres': 'ecole-arabe/lettres/donnees/audio.js' };
+export const JEUX = { 'chasse-aux-mots': 'aventures/chasse-aux-mots/mots.js', 'mysteres-desert': 'aventures/mysteres-desert/contenu.js', 'quiz-nour': 'aventures/quiz-nour/contenu.js', 'ecole-lettres': 'ecole-arabe/lettres/donnees/audio.js', 'ecole-lecture': 'ecole-arabe/lecture/donnees/audio.js' };
 export async function construire(jeu) {
   const m = await import(pathToFileURL(path.join(RACINE, JEUX[jeu])).href);
   const dossier = path.join(RACINE, 'audio/jeux', jeu), fich = path.join(dossier, 'manifeste.json');

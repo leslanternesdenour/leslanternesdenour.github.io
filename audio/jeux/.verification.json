@@ -1,21 +1,23 @@
 {
- "total": 613,
+ "total": 738,
  "parJeu": {
   "chasse-aux-mots": 160,
   "mysteres-desert": 70,
   "quiz-nour": 213,
-  "ecole-lettres": 170
+  "ecole-lettres": 170,
+  "ecole-lecture": 125
  },
  "compte": [
   {
    "id": "hddT377hAwvRoOKqMj0E",
    "role": "narratrice",
-   "n": 167,
+   "n": 267,
    "jeux": {
     "chasse-aux-mots": 40,
     "mysteres-desert": 11,
     "quiz-nour": 4,
-    "ecole-lettres": 112
+    "ecole-lettres": 112,
+    "ecole-lecture": 100
    }
   },
   {
@@ -31,12 +33,13 @@
   {
    "id": "pzZMNBXJh6wfnYfk2wLK",
    "role": "loumi",
-   "n": 117,
+   "n": 120,
    "jeux": {
     "chasse-aux-mots": 4,
     "mysteres-desert": 10,
     "quiz-nour": 99,
-    "ecole-lettres": 4
+    "ecole-lettres": 4,
+    "ecole-lecture": 3
    }
   },
   {
@@ -109,12 +112,13 @@
   {
    "id": "7FhMHxpv3kwYS7eBOJoC",
    "role": "nour",
-   "n": 54,
+   "n": 76,
    "jeux": {
-    "ecole-lettres": 54
+    "ecole-lettres": 54,
+    "ecole-lecture": 22
    }
   }
  ],
  "problemes": [],
- "arabes": 102
+ "arabes": 202
 }

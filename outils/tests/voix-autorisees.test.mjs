@@ -2,7 +2,7 @@
 import test from 'node:test'; import assert from 'node:assert/strict'; import fs from 'node:fs'; import path from 'node:path';
 const RACINE = path.resolve(new URL('../..', import.meta.url).pathname), lire = f => JSON.parse(fs.readFileSync(path.join(RACINE, f), 'utf8'));
 const NOUR = lire('outils/voix/jeux/voix-nour.json'), ROLES = lire('outils/voix/jeux/voix-roles.json'), IDS = new Set(NOUR.voix.map(v => v.id));
-const JEUX = ['chasse-aux-mots', 'mysteres-desert', 'quiz-nour', 'ecole-lettres'].filter(j => fs.existsSync(path.join(RACINE, `audio/jeux/${j}/manifeste.json`)));
+const JEUX = ['chasse-aux-mots', 'mysteres-desert', 'quiz-nour', 'ecole-lettres', 'ecole-lecture'].filter(j => fs.existsSync(path.join(RACINE, `audio/jeux/${j}/manifeste.json`)));
 
 test('exactement 10 voix « Nour » autorisées, toutes nommées « Nour - … », identifiants uniques', () => {
   assert.equal(NOUR.voix.length, 10); assert.equal(IDS.size, 10); for (const v of NOUR.voix) assert.match(v.nom, /^Nour - /);
