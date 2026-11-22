@@ -142,3 +142,17 @@ button{font:inherit;cursor:pointer;touch-action:manipulation}
 
 /* téléphone : sous-titres en haut (ils ne cachent plus les boutons), Maktoub plus discret, scène de recherche plus basse */
 @media(max-width:600px){.sous-titres{bottom:auto;top:72px;max-width:94vw;font-size:15px;padding:6px 12px;background:#000b}.act-choix.scene{height:min(50vh,360px)}.maktoub{--mk:68px}.maktoub.grand{--mk:84px}#ecran{padding-bottom:110px}}
+
+button:focus-visible,a:focus-visible,input:focus-visible{outline:4px solid #fff;outline-offset:3px;box-shadow:0 0 0 7px #e8b53a}
+.lettres-fin{font-size:44px;margin:4px 0;font-family:'Amiri','Noto Naskh Arabic',serif;color:#ffd666;letter-spacing:6px}
+
+/* ===== tracé : les points à toucher (CORRECTION : ces boutons n'avaient aucun style, donc invisibles et impossibles à toucher) ===== */
+.zone-trace .points-tap{position:absolute;inset:0;pointer-events:none;z-index:3}
+.point-tap{position:absolute;width:clamp(60px,17%,92px);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;border:5px solid #fff3c2;background:radial-gradient(circle,#fff6c0cc,#ffd66688 60%,#e8b53a55);box-shadow:0 0 18px #ffd666,0 0 0 4px #00000033;pointer-events:auto;cursor:pointer;padding:0;animation:pointPulse 1.1s ease-in-out infinite;-webkit-tap-highlight-color:transparent}
+.point-tap.pris{background:radial-gradient(circle,#fff,#ffd666);border-color:#fff;animation:none;transform:translate(-50%,-50%) scale(.8);box-shadow:0 0 24px #ffd666}
+@keyframes pointPulse{50%{transform:translate(-50%,-50%) scale(1.12)}}
+.zone-trace.brille{box-shadow:0 0 0 6px #ffe08a,0 0 44px #ffd666}
+.zone-trace.pulse{animation:zonePulse 1s ease-in-out 3}@keyframes zonePulse{50%{box-shadow:0 0 0 8px #1fb5a8,0 0 30px #1fb5a8}}
+.morceau.prise{filter:drop-shadow(0 8px 10px #0008)}
+.point-placement{font-size:15px;opacity:.9;margin:0 0 4px}
+@media(prefers-reduced-motion:reduce){.point-tap,.zone-trace.pulse{animation:none}}
