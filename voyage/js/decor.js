@@ -3,6 +3,7 @@
 import * as THREE from 'three';
 import { piece, fusion, placer, hasard, materiau, temps, M } from './formes.js?v=4';
 import { LIEUX, CHEMINS, PISTES, distanceChemins, lisse, fbm, LIMITE } from './terrain.js?v=3';
+import { LIEUX_SOINS } from './soins.js?v=1';
 
 const deg = d => d * Math.PI / 180;
 const B = () => new THREE.BoxGeometry(1, 1, 1);
@@ -173,19 +174,58 @@ function geoMosquee() {
   return fusion(p);
 }
 
+// Hauteurs de l'eau (au-dessus de la base du puits) : toujours EN DESSOUS du bord, jamais dans le même plan qu'une face de pierre
+export const EAU_PUITS = { y: 0.66, rayon: 1.19 };                    // bord du puits à 0.95, fond à 0.35
+export const EAU_ABREUVOIR = { y: 0.47, x: 0, z: 2.3, l: 2.14, w: 0.54 };   // bords à 0.60, fond à 0.12
 function geoPuits() {
-  // un puits de pierre avec son portique de bois, sa poulie, sa corde et son seau de cuir, et un abreuvoir
+  // un puits de pierre CREUX (margelle, paroi intérieure et fond), son portique de bois, sa poulie, sa corde et son seau de cuir, et un abreuvoir en bassin
   const p = [];
-  p.push(piece(CYL(1.45, 1.6, 0.95, 18), '#c9b48e', { p: [0, 0.47, 0], m: M.pierre }));
-  p.push(piece(new THREE.TorusGeometry(1.45, 0.16, 6, 20), '#b9a27a', { p: [0, 0.96, 0], r: [Math.PI / 2, 0, 0], m: M.pierre }));
-  p.push(piece(CYL(1.2, 1.2, 0.05, 18), '#1d3a44', { p: [0, 0.7, 0] }));
+  // profil tourné : paroi extérieure montante, dessus de la margelle, paroi intérieure descendante, fond (normales vers l'extérieur de la pierre)
+  const profil = [[1.62, 0], [1.45, 0.95], [1.18, 0.95], [1.18, 0.35], [0, 0.35]].map(([r, y]) => new THREE.Vector2(r, y));
+  p.push(piece(new THREE.LatheGeometry(profil, 28), '#c9b48e', { m: M.pierre }));
+  p.push(piece(new THREE.TorusGeometry(1.33, 0.11, 6, 28), '#b9a27a', { p: [0, 0.97, 0], r: [Math.PI / 2, 0, 0], m: M.pierre }));
   for (const sx of [-1, 1]) p.push(piece(CYL(0.11, 0.13, 2.6, 8), '#6b4a30', { p: [sx * 1.35, 1.3, 0], m: M.bois }));
   p.push(piece(CYL(0.09, 0.09, 3.0, 8), '#6b4a30', { p: [0, 2.55, 0], r: [0, 0, Math.PI / 2], m: M.bois }));
   p.push(piece(CYL(0.22, 0.22, 0.12, 12), '#8a6440', { p: [0, 2.42, 0], r: [0, 0, Math.PI / 2], m: M.bois }));
   p.push(piece(CYL(0.015, 0.015, 1.3, 4), '#d9c79e', { p: [0.06, 1.75, 0] }));
   p.push(piece(CYL(0.16, 0.12, 0.26, 10), '#7a5232', { p: [0.06, 1.05, 0], m: M.cuir }));
-  // l'abreuvoir de pierre, pour les bêtes
-  p.push(piece(B(), '#c9b48e', { p: [0, 0.3, 2.3], s: [2.4, 0.6, 0.8], m: M.pierre }), piece(B(), '#4fa9b8', { p: [0, 0.58, 2.3], s: [2.1, 0.04, 0.55] }));
+  // l'abreuvoir de pierre : un vrai bassin (fond + quatre parois), pour les bêtes
+  const az = 2.3, pierre = '#c9b48e';
+  p.push(piece(B(), pierre, { p: [0, 0.06, az], s: [2.4, 0.12, 0.8], m: M.pierre }));
+  for (const sz of [-1, 1]) p.push(piece(B(), pierre, { p: [0, 0.3, az + sz * 0.33], s: [2.4, 0.6, 0.14], m: M.pierre }));
+  for (const sx of [-1, 1]) p.push(piece(B(), pierre, { p: [sx * 1.13, 0.3, az], s: [0.14, 0.6, 0.52], m: M.pierre }));
+  return fusion(p);
+}
+
+// Foin et végétaux pour les montures : une mangeoire de bois de palmier, des bottes de foin, des dattes et des feuilles vertes
+function geoFoin() {
+  const p = [], foin = '#d8b95a', foin2 = '#c9a748';
+  const bois = '#8a6440';
+  // la mangeoire (fond + parois) remplie de foin
+  p.push(piece(B(), bois, { p: [0, 0.28, 0], s: [2.0, 0.08, 0.9], m: M.bois }));
+  for (const sz of [-1, 1]) p.push(piece(B(), bois, { p: [0, 0.5, sz * 0.43], s: [2.0, 0.42, 0.07], m: M.bois }));
+  for (const sx of [-1, 1]) p.push(piece(B(), bois, { p: [sx * 0.97, 0.5, 0], s: [0.07, 0.42, 0.8], m: M.bois }));
+  for (const x of [-0.85, 0.85]) for (const z of [-0.35, 0.35]) p.push(piece(CYL(0.06, 0.07, 0.3, 6), bois, { p: [x, 0.14, z], m: M.bois }));
+  p.push(piece(B(), foin, { p: [0, 0.6, 0], s: [1.82, 0.3, 0.74] }));
+  for (let i = 0; i < 14; i++) p.push(piece(B(), i % 2 ? foin : foin2, { p: [-0.8 + (i % 7) * 0.27, 0.78, (i < 7 ? -0.18 : 0.2)], r: [0, i * 0.7, 0.3], s: [0.34, 0.05, 0.05] }));
+  // feuilles de palmier vertes et dattes posées sur le foin
+  for (let i = 0; i < 4; i++) p.push(piece(new THREE.ConeGeometry(0.1, 0.55, 4), i % 2 ? '#3f8f3a' : '#4fa645', { p: [-0.6 + i * 0.4, 0.86, 0.0], r: [0.2, i, 1.2 - i * 0.2] }));
+  for (let i = 0; i < 6; i++) p.push(piece(SPH(0.07, 6, 4), '#a85a22', { p: [0.1 + (i % 3) * 0.18, 0.79, -0.1 + Math.floor(i / 3) * 0.22] }));
+  // deux bottes de foin liées avec une corde, à côté
+  for (const [x, y, z, r] of [[1.55, 0.27, 0.3, 0.2], [1.55, 0.27, -0.45, -0.1], [1.5, 0.78, -0.08, 0.05]]) {
+    p.push(piece(B(), foin, { p: [x, y, z], r: [0, r, 0], s: [0.9, 0.5, 0.6] }));
+    p.push(piece(B(), '#8a7a52', { p: [x, y, z], r: [0, r, 0], s: [0.92, 0.52, 0.06] }));
+  }
+  return fusion(p);
+}
+
+// La litière de paille : un coin calme, bordé de bois de palmier, pour se reposer ou dormir
+function geoLitiere() {
+  const p = [], paille = '#d9bd6a', paille2 = '#c4a354';
+  p.push(piece(CYL(1.95, 2.0, 0.1, 20), paille, { p: [0, 0.05, 0] }));
+  p.push(piece(CYL(1.55, 1.6, 0.06, 20), paille2, { p: [0, 0.12, 0] }));
+  for (let i = 0; i < 12; i++) { const a = i / 12 * Math.PI * 2; p.push(piece(CYL(0.1, 0.11, 0.3, 6), '#8a6440', { p: [Math.cos(a) * 2.0, 0.15, Math.sin(a) * 2.0], m: M.bois })); }
+  for (let i = 0; i < 30; i++) { const a = i * 2.39, d = 0.3 + (i % 9) * 0.17; p.push(piece(B(), i % 2 ? paille : paille2, { p: [Math.cos(a) * d, 0.17, Math.sin(a) * d], r: [0, a, 0], s: [0.5, 0.03, 0.04] })); }
   return fusion(p);
 }
 
@@ -350,6 +390,18 @@ export function creerDecor(scene, terrain, Q, TX = {}) {
   zone('village', LIEUX.village, g => {
     const R = hasard(7);
     ajouter(g, geoPuits(), matBase, 0, 0, { y: H(0, 0) - 0.05 });
+    { // l'eau du puits et de l'abreuvoir : des surfaces à part (matériau d'eau animé), posées sous le bord de la pierre, sans aucun plan commun
+      const yb = H(0, 0) - 0.05;
+      const eauP = new THREE.Mesh(new THREE.CircleGeometry(EAU_PUITS.rayon, 32), matEau('#2fb2c8', 2));
+      eauP.rotation.x = -Math.PI / 2; eauP.position.set(0, yb + EAU_PUITS.y, 0); eauP.name = 'eau-puits'; g.add(eauP);
+      const eauA = new THREE.Mesh(new THREE.PlaneGeometry(EAU_ABREUVOIR.l, EAU_ABREUVOIR.w), matEau('#4fb3c4', 1));
+      eauA.rotation.x = -Math.PI / 2; eauA.position.set(EAU_ABREUVOIR.x, yb + EAU_ABREUVOIR.y, EAU_ABREUVOIR.z); eauA.name = 'eau-abreuvoir'; g.add(eauA);
+      // foin (mangeoire) et litière de paille pour les soins des montures
+      const F = LIEUX_SOINS.foin.objet, Li = LIEUX_SOINS.litiere.objet;
+      ajouter(g, geoFoin(), matBase, F.x, F.z, { rot: 0, y: H(F.x, F.z) - 0.02 });
+      ajouter(g, geoLitiere(), matBase, Li.x, Li.z, { y: H(Li.x, Li.z) - 0.04 });
+      colliders.push({ x: F.x, z: F.z, r: 1.0 }, { x: F.x + 1.5, z: F.z, r: 0.6 });
+    }
     colliders.push({ x: 0, z: 0, r: 1.9 }, { x: 0, z: 2.3, r: 1.0 }, { x: -0.8, z: 2.3, r: 0.7 }, { x: 0.8, z: 2.3, r: 0.7 });
 
     const murs = ['#f3dcb4', '#f7e6c8', '#efcfa0', '#f6d9c4', '#e9d2b0'];

@@ -258,16 +258,16 @@ export function creerAventure({ scene, terrain, colliders, etat, enregistrer, ui
       A.sac = A.sac.filter(k => !objetsPortes.includes(k));
       avancer('objets', objetsPortes.length); enregistrer(); ui.majSuivi(); sons.sonDecouverte();
       const reste = MISSIONS.objets.total - mission('objets').n;
-      ui.dialogue({ titre: 'Nour', mascotte: 'nour', texte: reste ? `Merci, tu as retrouvé ${objetsPortes.length > 1 ? 'mes affaires' : 'une de mes affaires'} ! Il en manque encore ${reste}.` : 'Mon seau, ma gourde et mon arrosoir ! Merci mille fois. Grâce à toi, je peux arroser les fleurs du village.' });
+      ui.dialogue({ titre: 'Loumi', mascotte: 'nour', texte: reste ? `Merci, tu as retrouvé ${objetsPortes.length > 1 ? 'mes affaires' : 'une de mes affaires'} ! Il en manque encore ${reste}.` : 'Mon seau, ma gourde et mon arrosoir ! Merci mille fois. Grâce à toi, je peux arroser les fleurs du village.' });
       return;
     }
     if (!mo || !ml) {
-      ui.dialogue({ titre: 'Nour', mascotte: 'nour', texte: (texteAccueil ? texteAccueil + ' ' : '') + "J'ai besoin de toi ! Douze petites lanternes se sont cachées dans tout le pays… et j'ai perdu mon seau, ma gourde et mon arrosoir près de l'oasis. Tu veux bien m'aider ?",
+      ui.dialogue({ titre: 'Loumi', mascotte: 'nour', texte: (texteAccueil ? texteAccueil + ' ' : '') + "J'ai besoin de toi ! Douze petites lanternes se sont cachées dans tout le pays… et j'ai perdu mon seau, ma gourde et mon arrosoir près de l'oasis. Tu veux bien m'aider ?",
         boutons: [{ txt: 'Oui, je t\'aide !', fn: () => { commencer('lanternes', true); commencer('objets', true); ui.bandeau('Nouvelles missions', 'Lanternes et objets perdus'); sons.sonDecouverte(); } }, { txt: 'Plus tard', fn: () => {} }] });
       return;
     }
     const enCours = Object.keys(MISSIONS).filter(k => mission(k) && mission(k).etat !== 'finie');
-    ui.dialogue({ titre: 'Nour', mascotte: 'nour', texte: enCours.length ? `Courage ! Regarde ton carnet pour suivre tes missions : ${enCours.map(k => MISSIONS[k].titre.toLowerCase()).join(', ')}.` : 'Tu as réussi toutes les missions ! Tu es un vrai explorateur du pays de Nour.' });
+    ui.dialogue({ titre: 'Loumi', mascotte: 'nour', texte: enCours.length ? `Courage ! Regarde ton carnet pour suivre tes missions : ${enCours.map(k => MISSIONS[k].titre.toLowerCase()).join(', ')}.` : 'Tu as réussi toutes les missions ! Tu es un vrai explorateur du pays de Nour.' });
   }
 
   // ---------- chaque image ----------

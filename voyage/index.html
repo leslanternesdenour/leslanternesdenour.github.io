@@ -71,6 +71,8 @@
   <button id="guidage-voir" aria-label="Montrer ou cacher les lumières du chemin" title="Lumières du chemin">👣</button><button id="guidage-stop" aria-label="Arrêter le guidage" title="Arrêter le guidage">✕</button></div>
 <!-- Suivi de la mission en cours, boussole -->
 <button id="suivi" class="cache" aria-label="Ma mission en cours"></button>
+<div id="soins" class="cache" role="group" aria-label="Les besoins de ma monture"></div>
+<div id="loumi-ui" class="cache"><button id="btn-loumi" aria-label="Parler à Loumi"></button><div id="loumi-bulle" class="cache" role="status" aria-live="polite"></div></div>
 <div id="boussole" class="cache" aria-hidden="true"><div id="boussole-aiguille"></div></div>
 <div id="gain" class="cache" aria-live="polite"></div>
 <div id="outils">
@@ -245,7 +247,7 @@
 <noscript><p style="padding:2em;color:#fff">Active JavaScript pour partir en voyage. <a href="../monde/" style="color:#f5b942">Retour au village</a></p></noscript>
 <script type="module" src="../compte/synchro.js?v=2"></script>
 <script type="module">/* Si la bibliothèque 3D ne se charge pas (pas de connexion, CDN indisponible) : écran de secours au lieu d'un chargement sans fin */import('three').catch(()=>{const c=document.getElementById('chargement'),e=document.getElementById('erreur');if(c)c.classList.add('cache');if(e)e.classList.remove('cache')});</script>
-<script type="module" src="js/main.js?v=12"></script>
+<script type="module" src="js/main.js?v=13"></script>
 <script src="../compte/barre.js?v=1" defer data-pos="haut-droite" data-decalage="72"></script>
 </body>
 </html>
