@@ -85,7 +85,7 @@ ul{margin:0;padding-left:20px;color:#e9e2ff;line-height:1.6}
 
   <section class="carte cache" id="v-payer">
     <h2 id="p-titre"></h2>
-    <div id="p-connexion" class="choix cache"><p>Pour s'abonner, il faut d'abord un compte famille.</p><button onclick="location.href='../compte/#inscription'">Créer mon compte ou me connecter</button></div>
+    <div id="p-connexion" class="choix cache"><p>Pour s'abonner, il faut d'abord un compte famille.</p><button onclick="location.href='../compte/?retour='+encodeURIComponent('/tarifs/')+'#connexion'">Se connecter ou créer mon compte</button></div>
     <p id="p-bloque" class="cache"></p>
     <form id="p-form" class="choix cache" novalidate>
       <label class="case"><input type="checkbox" id="p-cgv"> <span>J'accepte les <a href="../conditions/#vente" target="_blank">conditions de vente</a>. L'abonnement se renouvelle automatiquement et se résilie en 3 gestes depuis l'Espace famille.</span></label>
@@ -126,5 +126,6 @@ $('p-form').onsubmit = async e => { e.preventDefault();
 };
 </script>
 <script src="../univers/univers.js?v=1" defer></script>
+<script src="../compte/barre.js?v=1" defer data-pos="haut-droite"></script>
 </body>
 </html>
