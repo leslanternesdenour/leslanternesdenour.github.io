@@ -51,3 +51,4 @@ Les clips validés peuvent être branchés (après accord). Les refusés sont à
 - **Lot 20 (variantes de calendrier/w_kaaba)** : A (الْكَعْبَة) validée, B (Kaaba) refusée. **Retenue : A**. Cumul validé : 233 phrases. Restent à écouter : lot 15 (1 phrase), priere/e_jalsa (lot 4), calendrier/ms10 (lot 6).
 - **Lot 15 (1 phrase)** : calendrier/diplome validée. Cumul validé : 234 phrases. Restent à écouter : priere/e_jalsa (lot 4) et calendrier/ms10 (lot 6).
 - **Lot 4 (relu)** : priere/e_jalsa validée → les 20 phrases du lot 4 sont validées. Cumul validé : 235 phrases. Reste à écouter : calendrier/ms10 (lot 6).
+- **Lot 6 (relu)** : calendrier/ms10 validée. **TOUT EST VALIDÉ : 237 phrases (68 jeux + 169 calendrier) avec la voix de la narratrice.** Prochaine étape : branchement dans les jeux sur une branche à part, puis essai par le client avant preproduction.
