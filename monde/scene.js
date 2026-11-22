@@ -2,7 +2,6 @@
 // Tout est construit par code (pas de modèle à télécharger) pour rester léger.
 import * as THREE from 'three';
 import { BATIMENTS } from './batiments.js?v=3';
-import { creerIcone3d, creerSablier, vignette as vignetteIcone } from './icones3d.js?v=2';
 
 const R_MAISONS = 20;          // rayon du cercle des maisons
 const R_REMPART = 31;
@@ -105,6 +104,19 @@ function texIcone(emoji, couleur, bientot) {
     g.fillText('⏳', 200, 204);
   }
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 2; return t;
+}
+
+function texNomAncien(texte) {
+  const c = document.createElement('canvas'); c.width = 1024; c.height = 128;
+  const g = c.getContext('2d');
+  g.font = '700 54px Nunito, system-ui, sans-serif';
+  const l = Math.min(1000, g.measureText(texte).width + 60);
+  g.fillStyle = 'rgba(25,19,69,.78)';
+  const x = (1024 - l) / 2;
+  g.beginPath(); g.roundRect ? g.roundRect(x, 22, l, 84, 42) : g.rect(x, 22, l, 84); g.fill();
+  g.fillStyle = '#ffffff'; g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.fillText(texte, 512, 66);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
 }
 
 function texNom(texte, couleur = '#f5b942') {
@@ -301,30 +313,23 @@ export function creerVillage(canvas, opts) {
     cibles.push(mesh);
     lant.forEach(l => lanternes.push({ p: l.p.applyMatrix4(base), c: l.c, halo: l.halo }));
 
-    // l'icône : un vrai objet 3D (livre, lanterne, goutte, dôme, tapis, loupe, tableau, chameau) posé au-dessus du toit
-    const icone = creerIcone3d(b.id, { halo });
-    const hautIcone = hTot + 2.7;   // bien au-dessus du toit : l'icône flotte, elle ne touche plus le bâtiment
-    icone.position.set(pos.x, hautIcone, pos.z);
-    icone.rotation.y = ry + Math.PI;                       // la face du livre / du tableau regarde le centre de la place
-    const baseRot = icone.rotation.y;
-    icone.traverse(o => { if (o.isMesh) { o.userData.b = b; ombre(o); cibles.push(o); } });
-    const zoneTouche = new THREE.Mesh(new THREE.SphereGeometry(2.1, 8, 6), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false }));
-    zoneTouche.position.set(pos.x, hautIcone + 1.4, pos.z); zoneTouche.userData.b = b; scene.add(zoneTouche); cibles.push(zoneTouche);   // zone de toucher confortable (doigt)
+    // icônes et noms : retour au modèle d'origine (pastille ronde avec pictogramme, plaque de nom au-dessus du toit)
+    const icone = new THREE.Sprite(new THREE.SpriteMaterial({ map: texIcone(b.icone, b.couleur, b.etat !== 'ouvert'), depthWrite: false }));
+    icone.scale.set(3.2, 3.2, 1);
+    icone.position.set(pos.x, hTot + 2.4, pos.z);
+    icone.userData.b = b;
+    icone.renderOrder = 5;
     scene.add(icone);
-    const haloIcone = new THREE.Sprite(new THREE.SpriteMaterial({ map: halo, color: b.couleur, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0.35 }));
-    haloIcone.scale.setScalar(6.4); haloIcone.position.set(pos.x, hautIcone + 1.4, pos.z); haloIcone.renderOrder = 4; scene.add(haloIcone);
-    let sablier = null;
-    if (b.etat !== 'ouvert') { sablier = creerSablier(); sablier.scale.setScalar(1.1); sablier.position.set(pos.x + Math.cos(ry) * 2.7, hautIcone + 0.3, pos.z - Math.sin(ry) * 2.7); scene.add(sablier); }
+    cibles.push(icone);
 
-    const nom = new THREE.Sprite(new THREE.SpriteMaterial({ map: texNom(b.nom, b.couleur), depthWrite: false, transparent: true }));
-    nom.scale.set(9.6, 2.4, 1);
-    { const d = Math.hypot(pos.x, pos.z) || 1, k = Math.max(0, d - 6.5) / d;   // la plaque est posée devant le bâtiment, côté place, loin de l'icône
-      nom.position.set(pos.x * k, 1.5, pos.z * k); }
+    const nom = new THREE.Sprite(new THREE.SpriteMaterial({ map: texNomAncien(b.nom), depthWrite: false, transparent: true }));
+    nom.scale.set(8, 1, 1);
+    nom.position.set(pos.x, hTot + 0.55, pos.z);
     nom.renderOrder = 6;
     nom.visible = !!opts.noms;
     scene.add(nom);
 
-    maisons.push({ b, mesh, pos, a, icone, haloIcone, sablier, nom, hTot, hautIcone, baseRot, phase: rnd() * 6 });
+    maisons.push({ b, mesh, pos, a, icone, nom, hTot, phase: rnd() * 6 });
   }
 
   // ---------- porte du village, rempart, lampadaires ----------
@@ -666,17 +671,12 @@ export function creerVillage(canvas, opts) {
 
     uTemps.value = tTotal;
     if (lucioles) { for (let i = 0; i < NL; i++) { pl[i * 3] = luc0[i * 3] + Math.sin(tTotal * 0.5 + phl[i]) * 0.9; pl[i * 3 + 1] = luc0[i * 3 + 1] + Math.sin(tTotal * 0.8 + phl[i] * 2) * 0.5; pl[i * 3 + 2] = luc0[i * 3 + 2] + Math.cos(tTotal * 0.45 + phl[i]) * 0.9; } gL.attributes.position.needsUpdate = true; lucioles.material.opacity = 0.35 + 0.5 * facteurNuit + 0.15 * Math.sin(tTotal * 1.7); }
-    // icônes 3D : flottent, se balancent, brillent plus au survol / à la sélection
+    // icônes qui respirent
     maisons.forEach(m => {
-      const actif = m === choisie, survole = m === survol, f = actif ? 1 : survole ? 0.7 : 0;
-      const ech = m.icone.userData.base * (1 + 0.2 * f + Math.sin(tTotal * (actif ? 3.2 : 1.4) + m.phase) * (actif ? 0.04 : 0.015));
-      m.icone.scale.setScalar(m.icone.scale.x + (ech - m.icone.scale.x) * Math.min(1, dt * 8));
-      m.icone.position.y = m.hautIcone + Math.sin(tTotal * 1.3 + m.phase) * 0.22 + 0.25 * f;
-      m.icone.rotation.y = Math.atan2(camera.position.x - m.pos.x, camera.position.z - m.pos.z) + Math.sin(tTotal * 0.8 + m.phase) * 0.3 + (actif ? Math.sin(tTotal * 2.4) * 0.18 : 0);   // l'icône fait face au regard, avec un léger balancement
-      m.icone.traverse(o => { if (o.userData.tourne) o.rotation.y = tTotal * 1.6 + m.phase; });
-      m.haloIcone.position.y = m.icone.position.y + 1.4;
-      m.haloIcone.material.opacity = 0.28 + 0.18 * facteurNuit + 0.4 * f + Math.sin(tTotal * 2 + m.phase) * 0.05;
-      if (m.sablier) { m.sablier.rotation.y = tTotal * 0.8; m.sablier.position.y = m.hautIcone + 0.3 + Math.sin(tTotal * 1.6 + m.phase) * 0.12; }
+      const actif = m === choisie;
+      const sc = (actif ? 4.6 : 4) + Math.sin(tTotal * (actif ? 4 : 1.6) + m.phase) * (actif ? 0.25 : 0.1);
+      m.icone.scale.set(sc, sc, 1);
+      m.icone.position.y = m.hTot + 2.8 + Math.sin(tTotal * 1.3 + m.phase) * 0.15;
     });
     anneau.material.opacity += ((choisie ? 0.55 + Math.sin(tTotal * 4) * 0.2 : 0) - anneau.material.opacity) * k;
 
@@ -718,7 +718,6 @@ export function creerVillage(canvas, opts) {
       return { x: (v.x + 1) / 2 * innerWidth, y: (1 - v.y) / 2 * innerHeight };
     },
     ecranIcone(id) { const m = maisons.find(x => x.b.id === id); if (!m) return null; const v = m.icone.position.clone().add(new THREE.Vector3(0, 1.4, 0)).project(camera); return { x: (v.x + 1) / 2 * innerWidth, y: (1 - v.y) / 2 * innerHeight }; },
-    vignette(id) { try { return vignetteIcone(renderer, id, 192); } catch (e) { return null; } },
     infos: () => ({ appels: renderer.info.render.calls, triangles: renderer.info.render.triangles, maisons: maisons.length })
   };
 }

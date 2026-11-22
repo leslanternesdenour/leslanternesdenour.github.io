@@ -13,7 +13,6 @@ import { chargerMaisons, TEXTE_RESERVE } from './maisons-premium.js?v=1';
 import { mascotte } from './mascottes.js?v=2';
 import { PEAUX, NOMS_PEAUX, indicePeau, visageSVG } from './socle/peaux.js?v=2';
 
-
 const $ = id => document.getElementById(id);
 const S = sauvegarde.get();
 // Portail d'entrée (socle/portail.js) et profil enfant actif (Espace famille) : voir socle/portail-logique.js
@@ -94,16 +93,16 @@ async function init() {
   const profil = profilEnfant();
   appliquerProfilEnfant(profil);
   let mod;
-  try { mod = await import('./scene.js?v=10'); }
+  try { mod = await import('./scene.js?v=11'); }
   catch (e) { return montrerErreur(e); }
   await portailPret();
 
   try {
     const p = new URLSearchParams(location.search);
-    village = window.__village = mod.creerVillage($('scene'), {
+    village = mod.creerVillage($('scene'), {
       reglages: R,
       heure: p.has('heure') ? parseFloat(p.get('heure')) : null,
-      noms: true,                       // les noms restent sous les icônes pour tous les âges (plaques lisibles)
+      noms: S.age === 'grands',
       surTap,
       surImage: image,
       surAmbiance: majAmbiance
@@ -154,7 +153,7 @@ majPeau();
 function entrerDansLeVillage(age) {
   if (dansLeVillage) return;
   sauvegarde.regler('age', age);
-  village && village.noms(true);
+  village && village.noms(age === 'grands');
   $('accueil').classList.add('cache');
   $('hud').classList.remove('cache');
   $('bulle').classList.remove('cache');
@@ -186,7 +185,7 @@ function ouvrirPanneau(b) {
   if (window.decorerUnivers) window.decorerUnivers(pan, pan.dataset.univers);
   const m = mascotte(b.univers);
   $('pan-icone').classList.toggle('avec-mascotte', !!m);
-  if (m) $('pan-icone').innerHTML = m; else { const v = vignettes.get(b.id) || (village && village.vignette ? village.vignette(b.id) : null); if (v) { vignettes.set(b.id, v); $('pan-icone').innerHTML = `<img alt="" src="${v}">`; } else $('pan-icone').textContent = b.icone; }
+  if (m) $('pan-icone').innerHTML = m; else $('pan-icone').textContent = b.icone;
   $('pan-nom').textContent = b.nom;
   $('pan-texte').textContent = b.texte;
   const n = sauvegarde.jeu(b.id).etoiles || 0;
@@ -228,7 +227,6 @@ const cheminsJeux = () => BATIMENTS.filter(b => b.lien).map(b => new URL(b.lien,
 // maisons du stockage privé : leur état (ouverte, réservée, bientôt) vient du serveur, sans bloquer l'ouverture du village
 chargerMaisons(BATIMENTS).catch(() => null);
 let cadre = null;
-const vignettes = new Map();   // vignettes 2D des icônes 3D (panneau d'information)
 const mediasJeu = new Set();
 
 function ouvrirJeu(b) {
@@ -373,7 +371,7 @@ $('reg-fermer').addEventListener('click', fermerReglages);
 $('reglages').addEventListener('click', e => { if (e.target.id === 'reglages') fermerReglages(); });
 $('reg-sons').addEventListener('click', () => { fermerReglages(); ouvrirPanneauSon(); });
 document.querySelectorAll('#reglages [data-age]').forEach(b => b.addEventListener('click', () => {
-  sauvegarde.regler('age', b.dataset.age); village && village.noms(true); majBascules(); goutte();
+  sauvegarde.regler('age', b.dataset.age); village && village.noms(b.dataset.age === 'grands'); majBascules(); goutte();
 }));
 document.querySelectorAll('#reglages [data-qualite]').forEach(b => b.addEventListener('click', () => {
   if (b.dataset.qualite === qualite) return;
