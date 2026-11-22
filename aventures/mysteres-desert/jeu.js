@@ -79,9 +79,9 @@ function repondre(b) {
     else if (ch.sel) { if (G.paireJuste(e, ch.sel, id)) { ch.pris.add(id); $('enigme-zone').querySelectorAll(`[data-id="${id}"]`).forEach(x => { x.classList.add('pris'); x.classList.remove('sel'); }); ch.sel = null; if (ch.pris.size === e.paires.length) succes(); } else { ch.sel = null; $('enigme-zone').querySelectorAll('.obj').forEach(x => x.classList.remove('sel')); erreur(); } } }
   else if (e.type === 'memoire') { if (ch.attente) return; const k = ch.rep.length; if (e.suite[k] === id) { ch.rep.push(id); b.classList.add('allume'); setTimeout(() => b.classList.remove('allume'), 250); if (ch.rep.length === e.suite.length) succes(); } else { ch.rep = []; erreur('Regarde encore la suite, doucement.', () => setTimeout(jouerSuite, 900)); } }
 }
-function jouerSuite() { const e = ch.enigme, c = ch; if (!c || c.phase !== 'enigme') return; c.attente = true; c.rep = []; const bs = [...$('enigme-zone').querySelectorAll('.choix')]; $('enigme-msg').textContent = '👀 Regarde bien…';
+function jouerSuite() { const e = ch.enigme, c = ch; if (!c || c.phase !== 'enigme') return; c.attente = true; c.rep = []; const bs = [...$('enigme-zone').querySelectorAll('.choix')]; $('enigme-msg').textContent = '👀 Regarde bien…'; parler('memoire_regarde', PHRASES.memoire_regarde.texte, 'Guide');
   e.suite.forEach((id, i) => { setTimeout(() => { if (ch !== c) return; const b = bs.find(x => x.dataset.id === id); b.classList.add('allume'); setTimeout(() => b.classList.remove('allume'), 650); }, 700 + i * 1000); });
-  setTimeout(() => { if (ch === c) { c.attente = false; $('enigme-msg').textContent = '👉 À toi !'; } }, 700 + e.suite.length * 1000); }
+  setTimeout(() => { if (ch === c) { c.attente = false; $('enigme-msg').textContent = '👉 À toi !'; parler('memoire_a_toi', PHRASES.memoire_a_toi.texte, 'Guide'); } }, 700 + e.suite.length * 1000); }
 function aideEnigme() { const e = ch.enigme, z = $('enigme-zone'); parler('aide', PHRASES.aide.texte, 'Loumi');
   if (e.type === 'choisir') { const b = [...z.querySelectorAll('.choix:not(.pris)')].find(x => x.dataset.id !== e.bonne); if (b) { b.classList.add('pris'); b.disabled = true; } }
   else if (e.type === 'ordre') { const prochain = e.ordre[ch.rep.length]; z.querySelector(`.choix[data-id="${prochain}"]`)?.classList.add('indic'); }

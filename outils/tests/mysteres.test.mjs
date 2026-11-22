@@ -47,3 +47,13 @@ test('audio : le manifeste est à jour avec les textes, un fichier n\'est annonc
   assert.deepEqual(man.phrases.map(p => p.id), inv.map(p => p.id));
   for (const p of man.phrases) { assert.equal(p.texte, inv.find(x => x.id === p.id).texte); if (p.fichier) { assert.ok(fs.statSync(path.join(RACINE, 'audio/jeux/mysteres-desert', p.fichier)).size > 2000, p.id); assert.equal(p.voixId, roles[p.role], p.id); } else assert.equal(p.duree, 0); }
 });
+
+test('aucun dialogue silencieux par erreur : tout identifiant demandé par le jeu a son audio, et tout audio est utilisé', () => {
+  const man = JSON.parse(fs.readFileSync(path.join(RACINE, 'audio/jeux/mysteres-desert/manifeste.json'), 'utf8')), ok = new Set(man.phrases.filter(p => p.fichier).map(p => p.id));
+  const src = fs.readFileSync(path.join(RACINE, 'aventures/mysteres-desert/jeu.js'), 'utf8'), demandes = new Set();
+  for (const m of src.matchAll(/PHRASES\.([a-z_0-9]+)/g)) demandes.add(m[1]);
+  for (const k of ['bienvenue', 'age', 'aide', 'indices_finis', 'passage', 'fin_chapitre', 'fin_diplome', 'fin_maitre', 'memoire_regarde', 'memoire_a_toi', ...C.BRAVOS, ...C.ERREURS]) demandes.add(k);
+  for (const [c, d] of Object.entries(C.CHAPITRES)) { demandes.add('intro.' + c); demandes.add('enigme.' + c); demandes.add('pourquoi.' + c); demandes.add('tresor.' + c); d.indices.forEach((_, i) => demandes.add(`indice.${c}.${i + 1}`)); }
+  for (const id of demandes) assert.ok(ok.has(id), 'audio manquant : ' + id);
+  for (const id of ok) assert.ok(demandes.has(id), 'audio jamais utilisé : ' + id);
+});

@@ -75,7 +75,6 @@ export const ORDRE_CHAPITRES = Object.keys(CHAPITRES);
 export const PHRASES = {
   bienvenue: { role: 'narratrice', texte: "Bienvenue dans les Mystères du désert ! Pars à l'aventure, observe, cherche des indices et résous les énigmes." },
   age: { role: 'narratrice', texte: 'Quel âge as-tu ? Choisis ton groupe, pour que les mystères soient à ta taille.' },
-  indice_ok: { role: 'narrateur', texte: 'Tu as trouvé un indice !' },
   indices_finis: { role: 'narrateur', texte: "Tu as tous les indices ! Voici l'énigme." },
   bravo: { role: 'narrateur', texte: 'Bravo, tu as bien réfléchi !' },
   bravo2: { role: 'narrateur', texte: "Magnifique, c'est la bonne réponse !" },

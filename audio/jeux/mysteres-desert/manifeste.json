@@ -1,8 +1,8 @@
 {
  "jeu": "mysteres-desert",
  "genere": "inventaire.mjs",
- "total": 71,
- "enregistrees": 71,
+ "total": 70,
+ "enregistrees": 70,
  "phrases": [
   {
    "id": "bienvenue",
@@ -25,17 +25,6 @@
    "duree": 4.91,
    "prononciationVerifiee": false,
    "voixId": "hddT377hAwvRoOKqMj0E"
-  },
-  {
-   "id": "indice_ok",
-   "role": "narrateur",
-   "langue": "fr",
-   "texte": "Tu as trouvé un indice !",
-   "sousTitre": "Tu as trouvé un indice !",
-   "fichier": "indice_ok.mp3",
-   "duree": 1.57,
-   "prononciationVerifiee": false,
-   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "indices_finis",
