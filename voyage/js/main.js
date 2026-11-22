@@ -35,7 +35,9 @@ import { creerBourse } from './economie.js?v=3';
 import { creerQuotidien } from './quotidien.js?v=3';
 import { reglageGrain, materiau } from './formes.js?v=4';
 import { mascotte } from '../../monde/mascottes.js?v=3';
-import { creerLoumi } from './loumi.js?v=3';
+import { creerLoumi } from './loumi.js?v=4';
+import { creerHabitants } from './habitants.js?v=2';
+import { noeud as noeudLoumi, depart as departLoumi } from './loumi-dialogues.js?v=1';
 import { creerSoins, BESOINS, INFOS, LIEUX_SOINS, DUREES as DUREES_SOINS, poseSoin, PLANCHER, BAS } from './soins.js?v=1';
 
 const $ = id => document.getElementById(id);
@@ -160,48 +162,35 @@ async function demarrer() {
   let monte = !!etat.monte;
   let sequence = null;   // animation pour monter / descendre
 
-  // Loumi, la petite lanterne vivante, accompagne l'enfant (elle remplace la goutte Nour ; mascotte 3D dessinée par-dessus le monde, en haut à gauche)
-  const loumi = creerLoumi();
   let nuitActuelle = false;
   const soins = creerSoins({ A: AV, enregistrer });
 
+  // ============ Les habitants du village : registre commun ============
+  // Un habitant ne parle JAMAIS de lui-même : il apparaît comme action « Parler » quand l'enfant s'approche, et sa conversation se ferme quand l'enfant s'éloigne.
+  const habitants = creerHabitants();
+  // LOUMI, la petite lanterne : habitante FIXE du village, à l'entrée du souk. Elle ne suit pas l'enfant, ne monte pas sur la monture.
+  // Mémoire et dialogues PROPRES (loumi-dialogues.js) : rien n'est partagé avec Nour, les missions ou le carnet.
+  const LOUMI_POS = (() => { const { ux, uz } = marche.axe, px = -uz, pz = ux, d = 51, s = -4.2; return { x: ux * d + px * s, z: uz * d + pz * s }; })();
+  const loumi = creerLoumi({ scene, terrain, ombres: !!Q.ombres, x: LOUMI_POS.x, z: LOUMI_POS.z });
+  decor.colliders.push({ x: LOUMI_POS.x, z: LOUMI_POS.z, r: 0.7 });
+  etat.loumi = Object.assign({ rencontre: false, vus: [] }, etat.loumi || {});
+  function parlerLoumi(id) {
+    const n = noeudLoumi(id || departLoumi(etat.loumi), { tactile: !!ctl.tactile }); if (!n) return;
+    etat.loumi.rencontre = true; if (!etat.loumi.vus.includes(n.id)) etat.loumi.vus.push(n.id); enregistrer();
+    loumi.reagir(n.id === 'accueil' ? 'joie' : 'parle');
+    dialogue({ titre: 'Loumi', mascotte: 'loumi', texte: n.texte, boutons: n.choix.map(c => ({ txt: c.txt, fn: () => { if (c.vers) setTimeout(() => parlerLoumi(c.vers), 60); else habitants.ferme(); } })) });
+    habitants.marquer('loumi');
+  }
+  habitants.ajouter({ id: 'loumi', x: LOUMI_POS.x, z: LOUMI_POS.z, rayon: 3.4, label: 'Parler', icone: '💬', ouvrir: () => parlerLoumi() });
 
-  // ============ Loumi : accueil, indications, félicitations (bulle + réactions 3D) ============
-  const ui_loumi = { bulle: $('loumi-bulle'), zone: $('loumi-ui'), bouton: $('btn-loumi'), timer: null };
-  const vP = new THREE.Vector3();
-  function loumiDit(texte, ms = 4200) {
-    if (!texte) return;
-    const b = ui_loumi.bulle; b.textContent = texte; b.classList.remove('cache'); loumi.reagir('parle');
-    clearTimeout(ui_loumi.timer); ui_loumi.timer = setTimeout(() => b.classList.add('cache'), ms);
-    direTextes([{ t: texte, opt: true }]);   // lue seulement si la phrase fait partie des voix enregistrées et validées
+  // NOUR (la goutte d'eau) : habitant FACULTATIF, désactivé par défaut (réglage `etat.options.nourHabitant`). Il garde son identité et ses anciens dialogues,
+  // mais n'est plus nécessaire à rien : les missions se commencent au carnet et se rendent au panier.
+  let nourSprite = null; const NOUR = { x: -8.4, z: 6.8 };
+  etat.options = Object.assign({ nourHabitant: false }, etat.options || {});
+  if (etat.options.nourHabitant === true) {
+    spriteMascotte(mascotte('ablutions')).then(sp => { if (sp) { sp.scale.set(1.25, 1.55, 1); scene.add(sp); nourSprite = sp; } });
+    habitants.ajouter({ id: 'nour', x: NOUR.x, z: NOUR.z, rayon: 3.6, label: 'Parler', icone: '💬', ouvrir: () => ouvrirLecture('nour') });
   }
-  function loumiReagir(type, texte) { loumi.reagir(type); if (texte) loumiDit(texte, 3200); }
-  function majLoumi(dt) {
-    const montre = !$('hud').classList.contains('cache') && $('perso').classList.contains('cache') && !interface_ouverte;
-    loumi.maj(dt, tTotal, camera, { cache: !montre });
-    ui_loumi.zone.classList.toggle('cache', !montre);
-    if (montre) {                                   // le bouton « Parler à Loumi » suit sa position à l'écran
-      vP.copy(loumi.racine.position).project(camera);
-      ui_loumi.zone.style.left = ((vP.x * 0.5 + 0.5) * innerWidth) + 'px'; ui_loumi.zone.style.top = ((-vP.y * 0.5 + 0.5) * innerHeight) + 'px';
-    }
-    majSoinsHUD(dt);
-  }
-  function menuLoumi() {
-    if (interface_ouverte) return;
-    const obj = ($('suivi').classList.contains('cache') ? '' : $('suivi').textContent.trim());
-    const urgent = soins.urgent(AV.monture);
-    dialogue({ titre: 'Loumi', mascotte: 'loumi',
-      texte: `Je suis Loumi, la petite lanterne du Monde de Nour. Je t'accompagne partout ! ${obj ? 'Ta mission : ' + obj + '.' : 'Qu\'est-ce que tu veux savoir ?'}${urgent ? ' ' + nomMonture() + ' ' + INFOS[urgent].texte + ' : on s\'en occupe ?' : ''}`,
-      boutons: [{ txt: '📜 Mes missions', fn: () => setTimeout(() => ouvrirCarnet('missions'), 60) }, { txt: `${monture(AV.monture).icone} ${nomMonture()}`, fn: () => setTimeout(() => parlerMonture(), 60) }, { txt: 'Merci !', fn: () => {} }] });
-  }
-  function parlerMonture() {
-    const n = soins.niveaux(AV.monture), u = soins.urgent(AV.monture), m = monture(AV.monture);
-    const lieu = { soif: "à l'abreuvoir, près du puits", faim: 'à la mangeoire de foin, près du puits', energie: 'sur la litière de paille', repos: 'sur la litière de paille', bienEtre: 'avec un câlin : touche-' + (m.fem ? 'la' : 'le') };
-    dialogue({ titre: `${m.icone} ${m.nom}`, mascotte: 'loumi',
-      texte: u ? `${m.nom} ${INFOS[u].texte}. Va ${lieu[u]} !` : `${m.nom} va très bien ! ${m.fem ? 'Elle' : 'Il'} est ${m.fem ? 'contente' : 'content'} : continue de prendre soin de ${m.fem ? 'elle' : 'lui'}.`,
-      boutons: [{ txt: 'Compris !', fn: () => {} }] });
-  }
-  ui_loumi.bouton.addEventListener('click', menuLoumi);
 
   // ============ soins de la monture ============
   let soin = null;                   // { type, lieu, phase: 'va' | 'soin', t }
@@ -223,7 +212,7 @@ async function demarrer() {
   function lancerSoin(type, lieu) {
     if (soin || monte || sequence) return;
     soin = { type, lieu, phase: 'va', t: 0 }; C.venir = false; enfant.faire('salut');
-    loumiDit(`${nomMonture()} arrive ! ${type === 'boire' ? 'Regarde-' + (monture(AV.monture).fem ? 'la' : 'le') + ' boire.' : type === 'manger' ? 'Bon appétit !' : type === 'dormir' ? 'Chut… on dort.' : 'Un peu de repos.'}`, 3000);
+    montrerIndice(`${nomMonture()} arrive ! ${type === 'boire' ? 'Regarde-' + (monture(AV.monture).fem ? 'la' : 'le') + ' boire.' : type === 'manger' ? 'Bon appétit !' : type === 'dormir' ? 'Chut… on dort.' : 'Un peu de repos.'}`, 3000);
   }
   function avancerSoin(dt) {
     if (!soin) return;
@@ -266,8 +255,7 @@ async function demarrer() {
   function recompenseSoin(type) {
     const r = soins.appliquer(AV.monture, type, monture(AV.monture).espece); if (!r) return;
     if (r.pieces) aventure.gagner(r.pieces, `Soin : ${nomMonture()}`, `soin:${type}:${date0()}:${Date.now()}`);
-    if (type !== 'calin' || r.pieces) loumi.reagir(type === 'calin' ? 'joie' : 'bravo');
-    if (type !== 'calin' && r.fait) { montrerIndice(`💡 ${r.fait}`, 7500); loumiDit(`Bravo ! ${nomMonture()} va mieux.`, 3500); }
+    if (type !== 'calin' && r.fait) { montrerIndice(`💡 ${r.fait}`, 7500); }
     majSoinsHUD(0, true);
   }
   // ---------- l'interface des besoins : cinq icônes illustrées avec leur jauge ----------
@@ -275,7 +263,7 @@ async function demarrer() {
   hudSoins.innerHTML = BESOINS.map(b => `<button class="besoin" data-b="${b}" aria-label="${INFOS[b].nom}"><span class="ib">${INFOS[b].icone}</span><span class="jauge"><i></i></span></button>`).join('');
   hudSoins.querySelectorAll('.besoin').forEach(btn => btn.onclick = () => {
     const b = btn.dataset.b, n = soins.niveau(AV.monture, b), m = monture(AV.monture);
-    loumiDit(n < BAS ? `${m.nom} ${INFOS[b].texte}. ${b === 'soif' ? "L'abreuvoir est près du puits !" : b === 'faim' ? 'La mangeoire est près du puits !' : b === 'bienEtre' ? 'Fais-lui un câlin !' : 'La litière de paille est à côté du puits.'}` : `${INFOS[b].nom} : ${m.nom} va bien.`, 4500);
+    montrerIndice(n < BAS ? `${m.nom} ${INFOS[b].texte}. ${b === 'soif' ? "L'abreuvoir est près du puits !" : b === 'faim' ? 'La mangeoire est près du puits !' : b === 'bienEtre' ? 'Fais-lui un câlin !' : 'La litière de paille est à côté du puits.'}` : `${INFOS[b].nom} : ${m.nom} va bien.`, 4500);
   });
   function majSoinsHUD(dt, force) {
     derMaj += dt; if (!force && derMaj < 0.4) return; derMaj = 0;
@@ -285,11 +273,9 @@ async function demarrer() {
     hudSoins.querySelectorAll('.besoin').forEach(btn => { const b = btn.dataset.b, v = n[b]; btn.querySelector('i').style.height = Math.round(v) + '%'; btn.classList.toggle('bas', v < BAS); });
     // un signal très doux (jamais plus d'une fois par besoin et par visite) quand un besoin est bas
     const u = soins.urgent(AV.monture);
-    if (u && !dejaIndique[u] && tTotal > 20 && !soin && !interface_ouverte) { dejaIndique[u] = 1; loumiDit(`${nomMonture()} ${INFOS[u].texte}. ${u === 'soif' ? 'Allons à l\'abreuvoir !' : u === 'faim' ? 'Allons à la mangeoire !' : u === 'bienEtre' ? 'Un petit câlin ?' : 'Un peu de repos ?'}`, 5000); }
+    if (u && !dejaIndique[u] && tTotal > 20 && !soin && !interface_ouverte) { dejaIndique[u] = 1; montrerIndice(`${nomMonture()} ${INFOS[u].texte}. ${u === 'soif' ? 'Allons à l\'abreuvoir !' : u === 'faim' ? 'Allons à la mangeoire !' : u === 'bienEtre' ? 'Un petit câlin ?' : 'Un peu de repos ?'}`, 5000); }
     if (!u) dejaIndique = {};
   }
-  // accueil au début de la visite
-  setTimeout(() => { if (!$('hud').classList.contains('cache')) { loumi.reagir('joie'); loumiDit(etat.loumiVue ? 'Re-bonjour ! On repart à l\'aventure ?' : "Bonjour ! Je suis Loumi, la petite lanterne. Je t'accompagne dans le Monde de Nour !", 6000); etat.loumiVue = true; enregistrer(); } }, 6000);
 
   // ---------- commandes ----------
   let interface_ouverte = false;
@@ -456,7 +442,6 @@ async function demarrer() {
   // Pièces de Nour gagnées : petit « +n » qui monte, la bourse bondit
   let timerGain = null;
   function afficherGain(total, n, raison) {
-    try { loumiReagir(n >= 30 ? 'bravo' : 'joie', n >= 30 ? 'Bravo ! Quelle belle réussite !' : ''); } catch (e) {}
     $('nb-pieces').textContent = total;
     const b = $('bourse'); b.classList.remove('bondit'); void b.offsetWidth; b.classList.add('bondit');
     const g = $('gain'); g.classList.add('cache'); void g.offsetWidth;
@@ -488,6 +473,7 @@ async function demarrer() {
   $('suivi').addEventListener('click', () => ouvrirCarnet('missions'));
   $('bourse').addEventListener('click', () => ouvrirCarnet('collection'));
   function fermerLecture() {
+    habitants.ferme();
     $('lecture').classList.add('cache'); interface_ouverte = false; ctl.bloque = false;
     try { speechSynthesis.cancel(); } catch (e) {} arreterVoixVoyage();
   }
@@ -1084,7 +1070,6 @@ async function demarrer() {
     cacheObjets.set(cle, url); return url;
   }
   function decouvrir(d) {
-    try { loumiReagir('surprise', d && d.nouveau ? 'Oh ! Une nouvelle découverte !' : ''); } catch (e) {}
     if (interface_ouverte && !d.forcer) { fileDecouvertes.push(d); return; }   // une autre fenêtre est ouverte : on attend
     interface_ouverte = true; ctl.bloque = true;
     if (d.nouveau) {
@@ -1372,6 +1357,8 @@ async function demarrer() {
 
     // --- soins de la monture : besoins, marche d'approche, poses ---
     soins.tick(AV.monture, dt, { monte, vit: C.vit }); avancerSoin(dt);
+    loumi.maj(dt, tTotal, J); habitants.maj(J, () => fermerLecture());
+    if (nourSprite) nourSprite.position.set(NOUR.x, H(NOUR.x, NOUR.z) + 1.6 + Math.sin(tTotal * 1.8) * 0.12, NOUR.z);
     // --- placer les modèles ---
     chameau.racine.position.set(C.x, H(C.x, C.z), C.z);
     chameau.racine.rotation.y = C.a;
@@ -1481,7 +1468,7 @@ async function demarrer() {
     proche = null;
     let meilleur = Infinity;
     for (const p of decor.points) { const dd = Math.hypot(p.x - J.x, p.z - J.z); if (dd < p.r && dd < meilleur) { meilleur = dd; proche = p; } }
-    procheAv = sequence || soin ? null : (() => { const t = [aventure.interaction(J), quetes.interaction(J), interactionSoins()].filter(Boolean); return t.length ? t.reduce((x, y) => (y.d < x.d ? y : x)) : null; })();
+    procheAv = sequence || soin ? null : (() => { const t = [aventure.interaction(J), quetes.interaction(J), interactionSoins(), habitants.interaction(J)].filter(Boolean); return t.length ? t.reduce((x, y) => (y.d < x.d ? y : x)) : null; })();
     aventure.maj(dt, tTotal, J, monte ? C.vit > 6 : J.vit > 4.2, nuit);
     quetes.maj(dt, tTotal, posGuide(), monte && !sequence);
     marche.maj(dt, tTotal, J); ecurie.animer(dt, tTotal, J); effetDecouverte.maj(dt);
@@ -1522,8 +1509,6 @@ async function demarrer() {
     }
 
     renderer.render(scene, camera);
-    majLoumi(dt);
-    loumi.dessiner(renderer, camera);
     requestAnimationFrame(image);
   }
 
@@ -1588,7 +1573,7 @@ async function demarrer() {
 
   // pour les tests
   window.__voyage = {
-    loumi, soins, faireSoin: (type) => lancerSoin(type, lieuDe(type)), soin: () => soin, pose: () => pose, nuit: () => nuitActuelle, menuLoumi, loumiDit, interactionSoins,
+    loumi, soins, faireSoin: (type) => lancerSoin(type, lieuDe(type)), soin: () => soin, pose: () => pose, nuit: () => nuitActuelle, habitants, parlerLoumi, LOUMI_POS, interactionSoins, reglerOption: (k, v) => { etat.options[k] = v; enregistrer(); },
     etat, J, C, decor, ciel, H, cam, aventure, bourse, action: () => action(),
     teleporter(x, z) { J.x = x; J.z = z; if (monte) { C.x = x; C.z = z; } },
     monte: () => monte, sequence: () => sequence, proche: () => proche, zone: () => zoneActuelle,

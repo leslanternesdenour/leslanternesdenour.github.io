@@ -97,7 +97,7 @@ export function creerMarche({ scene, terrain, colliders, ombres }) {
     points.push({ id: e.id, x: x - px * e.cote * 1.6, z: z - pz * e.cote * 1.6, r: 3, vendeur: v, rot });
   }
   return {
-    centre: { x: ux * 70, z: uz * 70 },
+    centre: { x: ux * 70, z: uz * 70 }, axe: { ux, uz },
     points,
     maj(dt, t, J) { for (const p of points) { p.vendeur.animer(dt, 0, t); const d = Math.hypot(J.x - p.x, J.z - p.z); if (d < 7) p.vendeur.tete.rotation.y = Math.max(-0.8, Math.min(0.8, Math.sin(t * 0.3) * 0.2)); } }
   };
