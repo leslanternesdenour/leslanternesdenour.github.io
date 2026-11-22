@@ -1,3 +1,11 @@
+# ✅ ÉTAT FINAL (22/11/2026) — migration TERMINÉE
+
+- `leslanternesdenour.fr` et `www.leslanternesdenour.fr` sont servis par **Cloudflare Pages** (projet `lanternes-de-nour`, branche `production`, commit déployé `3bd2b68`), HTTPS actif (certificats émis). DNSSEC : désactivé (vérifié par l'API avant la bascule).
+- DNS modifié : supprimés 4 A + 4 AAAA GitHub Pages (apex) et le CNAME `www` → GitHub ; créés CNAME apex et `www` → `lanternes-de-nour.pages.dev` (proxifiés). **MX, TXT (SPF…) et autres enregistrements intacts.** Sauvegarde : `docs/migration/dns-avant-bascule.json`.
+- Sauvegarde Git : branche `sauvegarde-avant-publication-2026-11-22` (= `production` avant publication, qui contient `main` `dc39d93`) et `sauvegarde-production-2026-11-22`.
+- `main` = `production` (fusion avance rapide). Non publié par construction : `outils/personnages/*`. Stripe/R2 non configurés (la page Tarifs affiche « Le paiement n'est pas encore ouvert. »).
+- Retour arrière DNS : `basculer-cloudflare.mjs --restaurer` (voir docs/MIGRATION-REPRISE.md §3).
+
 # Mise en production sur `leslanternesdenour.fr` — mode d'emploi de la bascule
 
 État au 22/11/2026. **Tout ce qui peut se faire depuis le dépôt est fait et testé. Les trois opérations ci-dessous exigent l'accès au compte Cloudflare (tableau de bord ou jeton d'API) et au DNS du domaine : la session de développement n'y a pas accès.** Durée estimée : 20 à 30 minutes. Le retour en arrière est possible à chaque étape.
