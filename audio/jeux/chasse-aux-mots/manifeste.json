@@ -2,7 +2,7 @@
  "jeu": "chasse-aux-mots",
  "genere": "inventaire.mjs",
  "total": 161,
- "enregistrees": 65,
+ "enregistrees": 161,
  "phrases": [
   {
    "id": "bienvenue",
@@ -725,10 +725,10 @@
    "langue": "fr",
    "texte": "Bravo ! Tu as trouvé la rose !",
    "sousTitre": "Bravo ! Tu as trouvé la rose !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "bravo.rose.mp3",
+   "duree": 2.35,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "bravo.etoile",
@@ -736,10 +736,10 @@
    "langue": "fr",
    "texte": "Bravo ! Tu as trouvé l'étoile !",
    "sousTitre": "Bravo ! Tu as trouvé l'étoile !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "bravo.etoile.mp3",
+   "duree": 2.27,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "bravo.lune",
@@ -747,10 +747,10 @@
    "langue": "fr",
    "texte": "Bravo ! Tu as trouvé la lune !",
    "sousTitre": "Bravo ! Tu as trouvé la lune !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "bravo.lune.mp3",
+   "duree": 2.27,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "bravo.tasse",
@@ -758,10 +758,10 @@
    "langue": "fr",
    "texte": "Bravo ! Tu as trouvé la tasse !",
    "sousTitre": "Bravo ! Tu as trouvé la tasse !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "bravo.tasse.mp3",
+   "duree": 2.35,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "bravo.plume",
@@ -769,10 +769,10 @@
    "langue": "fr",
    "texte": "Bravo ! Tu as trouvé la plume !",
    "sousTitre": "Bravo ! Tu as trouvé la plume !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "bravo.plume.mp3",
+   "duree": 2.35,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "bravo.raisin",
@@ -780,10 +780,10 @@
    "langue": "fr",
    "texte": "Bravo ! Tu as trouvé le raisin !",
    "sousTitre": "Bravo ! Tu as trouvé le raisin !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "bravo.raisin.mp3",
+   "duree": 2.35,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "bravo.coussin",
@@ -791,10 +791,10 @@
    "langue": "fr",
    "texte": "Bravo ! Tu as trouvé le coussin !",
    "sousTitre": "Bravo ! Tu as trouvé le coussin !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "bravo.coussin.mp3",
+   "duree": 2.27,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "bravo.poisson",
@@ -802,10 +802,10 @@
    "langue": "fr",
    "texte": "Bravo ! Tu as trouvé le poisson !",
    "sousTitre": "Bravo ! Tu as trouvé le poisson !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "bravo.poisson.mp3",
+   "duree": 2.27,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "bravo.oiseau",
@@ -813,10 +813,10 @@
    "langue": "fr",
    "texte": "Bravo ! Tu as trouvé l'oiseau !",
    "sousTitre": "Bravo ! Tu as trouvé l'oiseau !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "bravo.oiseau.mp3",
+   "duree": 2.12,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "bravo2.lanterne",
@@ -824,10 +824,10 @@
    "langue": "fr",
    "texte": "Super, c'est bien la lanterne !",
    "sousTitre": "Super, c'est bien la lanterne !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "bravo2.lanterne.mp3",
+   "duree": 2.19,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "bravo2.livre",
@@ -835,10 +835,10 @@
    "langue": "fr",
    "texte": "Super, c'est bien le livre !",
    "sousTitre": "Super, c'est bien le livre !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "bravo2.livre.mp3",
+   "duree": 2.04,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "bravo2.datte",
@@ -846,10 +846,10 @@
    "langue": "fr",
    "texte": "Super, c'est bien la datte !",
    "sousTitre": "Super, c'est bien la datte !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "bravo2.datte.mp3",
+   "duree": 2.04,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "bravo2.cruche",
@@ -857,10 +857,10 @@
    "langue": "fr",
    "texte": "Super, c'est bien la cruche !",
    "sousTitre": "Super, c'est bien la cruche !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "bravo2.cruche.mp3",
+   "duree": 2.19,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "bravo2.tapis",
@@ -868,10 +868,10 @@
    "langue": "fr",
    "texte": "Super, c'est bien le tapis !",
    "sousTitre": "Super, c'est bien le tapis !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "bravo2.tapis.mp3",
+   "duree": 2.04,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "bravo2.pomme",
@@ -879,10 +879,10 @@
    "langue": "fr",
    "texte": "Super, c'est bien la pomme !",
    "sousTitre": "Super, c'est bien la pomme !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "bravo2.pomme.mp3",
+   "duree": 2.04,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "bravo2.pain",
@@ -890,10 +890,10 @@
    "langue": "fr",
    "texte": "Super, c'est bien le pain !",
    "sousTitre": "Super, c'est bien le pain !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "bravo2.pain.mp3",
+   "duree": 1.88,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "bravo2.cle",
@@ -901,10 +901,10 @@
    "langue": "fr",
    "texte": "Super, c'est bien la clé !",
    "sousTitre": "Super, c'est bien la clé !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "bravo2.cle.mp3",
+   "duree": 1.88,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "bravo2.panier",
@@ -912,10 +912,10 @@
    "langue": "fr",
    "texte": "Super, c'est bien le panier !",
    "sousTitre": "Super, c'est bien le panier !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "bravo2.panier.mp3",
+   "duree": 2.04,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "bravo2.rose",
@@ -923,10 +923,10 @@
    "langue": "fr",
    "texte": "Super, c'est bien la rose !",
    "sousTitre": "Super, c'est bien la rose !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "bravo2.rose.mp3",
+   "duree": 2.04,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "bravo2.etoile",
@@ -934,10 +934,10 @@
    "langue": "fr",
    "texte": "Super, c'est bien l'étoile !",
    "sousTitre": "Super, c'est bien l'étoile !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "bravo2.etoile.mp3",
+   "duree": 2.12,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "bravo2.lune",
@@ -945,10 +945,10 @@
    "langue": "fr",
    "texte": "Super, c'est bien la lune !",
    "sousTitre": "Super, c'est bien la lune !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "bravo2.lune.mp3",
+   "duree": 2.04,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "bravo2.tasse",
@@ -956,10 +956,10 @@
    "langue": "fr",
    "texte": "Super, c'est bien la tasse !",
    "sousTitre": "Super, c'est bien la tasse !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "bravo2.tasse.mp3",
+   "duree": 2.12,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "bravo2.plume",
@@ -967,10 +967,10 @@
    "langue": "fr",
    "texte": "Super, c'est bien la plume !",
    "sousTitre": "Super, c'est bien la plume !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "bravo2.plume.mp3",
+   "duree": 2.04,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "bravo2.raisin",
@@ -978,10 +978,10 @@
    "langue": "fr",
    "texte": "Super, c'est bien le raisin !",
    "sousTitre": "Super, c'est bien le raisin !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "bravo2.raisin.mp3",
+   "duree": 2.12,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "bravo2.coussin",
@@ -989,10 +989,10 @@
    "langue": "fr",
    "texte": "Super, c'est bien le coussin !",
    "sousTitre": "Super, c'est bien le coussin !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "bravo2.coussin.mp3",
+   "duree": 2.12,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "bravo2.poisson",
@@ -1000,10 +1000,10 @@
    "langue": "fr",
    "texte": "Super, c'est bien le poisson !",
    "sousTitre": "Super, c'est bien le poisson !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "bravo2.poisson.mp3",
+   "duree": 2.12,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "bravo2.oiseau",
@@ -1011,10 +1011,10 @@
    "langue": "fr",
    "texte": "Super, c'est bien l'oiseau !",
    "sousTitre": "Super, c'est bien l'oiseau !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "bravo2.oiseau.mp3",
+   "duree": 2.04,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "bravo3",
@@ -1022,10 +1022,10 @@
    "langue": "fr",
    "texte": "Magnifique, tu as de bons yeux !",
    "sousTitre": "Magnifique, tu as de bons yeux !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "bravo3.mp3",
+   "duree": 2.27,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "erreur",
@@ -1033,10 +1033,10 @@
    "langue": "fr",
    "texte": "Regarde bien les indices. Tu peux réessayer.",
    "sousTitre": "Regarde bien les indices. Tu peux réessayer.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "erreur.mp3",
+   "duree": 3,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "pzZMNBXJh6wfnYfk2wLK"
   },
   {
    "id": "erreur2",
@@ -1044,10 +1044,10 @@
    "langue": "fr",
    "texte": "Ce n'est pas celui-là, mais tu y es presque. Cherche encore !",
    "sousTitre": "Ce n'est pas celui-là, mais tu y es presque. Cherche encore !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "erreur2.mp3",
+   "duree": 3.97,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "pzZMNBXJh6wfnYfk2wLK"
   },
   {
    "id": "aide",
@@ -1055,10 +1055,10 @@
    "langue": "fr",
    "texte": "Regarde, je fais briller un indice pour toi !",
    "sousTitre": "Regarde, je fais briller un indice pour toi !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "aide.mp3",
+   "duree": 2.85,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "pzZMNBXJh6wfnYfk2wLK"
   },
   {
    "id": "fin",
@@ -1066,10 +1066,10 @@
    "langue": "fr",
    "texte": "Félicitations ! Tu as tout retrouvé. Une nouvelle découverte t'attend !",
    "sousTitre": "Félicitations ! Tu as tout retrouvé. Une nouvelle découverte t'attend !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "fin.mp3",
+   "duree": 4.21,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "fin_diplome",
@@ -1077,10 +1077,10 @@
    "langue": "fr",
    "texte": "Félicitations ! Tu as gagné un diplôme d'explorateur !",
    "sousTitre": "Félicitations ! Tu as gagné un diplôme d'explorateur !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "fin_diplome.mp3",
+   "duree": 4.05,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "hddT377hAwvRoOKqMj0E"
   },
   {
    "id": "fin_grand",
@@ -1088,10 +1088,10 @@
    "langue": "fr",
    "texte": "Incroyable ! Tu as exploré tous les lieux. Tu es un grand explorateur des lanternes !",
    "sousTitre": "Incroyable ! Tu as exploré tous les lieux. Tu es un grand explorateur des lanternes !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "fin_grand.mp3",
+   "duree": 6.43,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "hddT377hAwvRoOKqMj0E"
   },
   {
    "id": "mot_nouveau",
@@ -1099,10 +1099,10 @@
    "langue": "fr",
    "texte": "Tu as appris un nouveau mot, en français et en arabe !",
    "sousTitre": "Tu as appris un nouveau mot, en français et en arabe !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "mot_nouveau.mp3",
+   "duree": 3.63,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "pzZMNBXJh6wfnYfk2wLK"
   },
   {
    "id": "rejouer",
@@ -1110,10 +1110,10 @@
    "langue": "fr",
    "texte": "On y retourne ? Il reste encore de belles choses à découvrir.",
    "sousTitre": "On y retourne ? Il reste encore de belles choses à découvrir.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "rejouer.mp3",
+   "duree": 3.32,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "mot.lanterne",
@@ -1121,10 +1121,10 @@
    "langue": "fr",
    "texte": "la lanterne.",
    "sousTitre": "la lanterne.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "mot.lanterne.mp3",
+   "duree": 1.41,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "hddT377hAwvRoOKqMj0E"
   },
   {
    "id": "ar.lanterne",
@@ -1132,10 +1132,10 @@
    "langue": "ar",
    "texte": "فانوس",
    "sousTitre": "فانوس",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "ar.lanterne.mp3",
+   "duree": 1.15,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "hddT377hAwvRoOKqMj0E"
   },
   {
    "id": "enigme.lanterne",
@@ -1143,10 +1143,10 @@
    "langue": "fr",
    "texte": "Je brille dans la nuit et je guide ton chemin. Qui suis-je ?",
    "sousTitre": "Je brille dans la nuit et je guide ton chemin. Qui suis-je ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "enigme.lanterne.mp3",
+   "duree": 4.05,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "mot.livre",
@@ -1154,10 +1154,10 @@
    "langue": "fr",
    "texte": "le livre.",
    "sousTitre": "le livre.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "mot.livre.mp3",
+   "duree": 1.15,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "hddT377hAwvRoOKqMj0E"
   },
   {
    "id": "ar.livre",
@@ -1165,10 +1165,10 @@
    "langue": "ar",
    "texte": "كتاب",
    "sousTitre": "كتاب",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "ar.livre.mp3",
+   "duree": 1.15,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "hddT377hAwvRoOKqMj0E"
   },
   {
    "id": "enigme.livre",
@@ -1176,10 +1176,10 @@
    "langue": "fr",
    "texte": "J'ai des pages et je raconte des histoires. Qui suis-je ?",
    "sousTitre": "J'ai des pages et je raconte des histoires. Qui suis-je ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "enigme.livre.mp3",
+   "duree": 3.63,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "mot.datte",
@@ -1187,10 +1187,10 @@
    "langue": "fr",
    "texte": "la datte.",
    "sousTitre": "la datte.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "mot.datte.mp3",
+   "duree": 1.15,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "hddT377hAwvRoOKqMj0E"
   },
   {
    "id": "ar.datte",
@@ -1198,10 +1198,10 @@
    "langue": "ar",
    "texte": "تمرة",
    "sousTitre": "تمرة",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "ar.datte.mp3",
+   "duree": 0.99,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "hddT377hAwvRoOKqMj0E"
   },
   {
    "id": "enigme.datte",
@@ -1209,10 +1209,10 @@
    "langue": "fr",
    "texte": "Je suis un petit fruit sucré qui pousse sur le palmier. Qui suis-je ?",
    "sousTitre": "Je suis un petit fruit sucré qui pousse sur le palmier. Qui suis-je ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "enigme.datte.mp3",
+   "duree": 4.44,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "mot.cruche",
@@ -1220,10 +1220,10 @@
    "langue": "fr",
    "texte": "la cruche.",
    "sousTitre": "la cruche.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "mot.cruche.mp3",
+   "duree": 1.31,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "hddT377hAwvRoOKqMj0E"
   },
   {
    "id": "ar.cruche",
@@ -1231,10 +1231,10 @@
    "langue": "ar",
    "texte": "جرّة",
    "sousTitre": "جرّة",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "ar.cruche.mp3",
+   "duree": 1.07,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "hddT377hAwvRoOKqMj0E"
   },
   {
    "id": "enigme.cruche",
@@ -1242,10 +1242,10 @@
    "langue": "fr",
    "texte": "On me remplit d'eau pour boire. Qui suis-je ?",
    "sousTitre": "On me remplit d'eau pour boire. Qui suis-je ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "enigme.cruche.mp3",
+   "duree": 3,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "mot.tapis",
@@ -1253,10 +1253,10 @@
    "langue": "fr",
    "texte": "le tapis.",
    "sousTitre": "le tapis.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "mot.tapis.mp3",
+   "duree": 1.23,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "hddT377hAwvRoOKqMj0E"
   },
   {
    "id": "ar.tapis",
@@ -1264,10 +1264,10 @@
    "langue": "ar",
    "texte": "سجّادة",
    "sousTitre": "سجّادة",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "ar.tapis.mp3",
+   "duree": 1.31,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "hddT377hAwvRoOKqMj0E"
   },
   {
    "id": "enigme.tapis",
@@ -1275,10 +1275,10 @@
    "langue": "fr",
    "texte": "On marche sur moi, je suis doux et coloré. Qui suis-je ?",
    "sousTitre": "On marche sur moi, je suis doux et coloré. Qui suis-je ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "enigme.tapis.mp3",
+   "duree": 4.05,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "mot.pomme",
@@ -1286,10 +1286,10 @@
    "langue": "fr",
    "texte": "la pomme.",
    "sousTitre": "la pomme.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "mot.pomme.mp3",
+   "duree": 1.15,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "hddT377hAwvRoOKqMj0E"
   },
   {
    "id": "ar.pomme",
@@ -1297,10 +1297,10 @@
    "langue": "ar",
    "texte": "تفّاحة",
    "sousTitre": "تفّاحة",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "ar.pomme.mp3",
+   "duree": 1.23,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "hddT377hAwvRoOKqMj0E"
   },
   {
    "id": "enigme.pomme",
@@ -1308,10 +1308,10 @@
    "langue": "fr",
    "texte": "Je suis un fruit rond qui pousse sur un arbre. Qui suis-je ?",
    "sousTitre": "Je suis un fruit rond qui pousse sur un arbre. Qui suis-je ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "enigme.pomme.mp3",
+   "duree": 3.97,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "mot.pain",
@@ -1319,10 +1319,10 @@
    "langue": "fr",
    "texte": "le pain.",
    "sousTitre": "le pain.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "mot.pain.mp3",
+   "duree": 1.07,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "hddT377hAwvRoOKqMj0E"
   },
   {
    "id": "ar.pain",
@@ -1330,10 +1330,10 @@
    "langue": "ar",
    "texte": "خبز",
    "sousTitre": "خبز",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "ar.pain.mp3",
+   "duree": 0.91,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "hddT377hAwvRoOKqMj0E"
   },
   {
    "id": "enigme.pain",
@@ -1341,10 +1341,10 @@
    "langue": "fr",
    "texte": "On me mange à table, je sors du four tout chaud. Qui suis-je ?",
    "sousTitre": "On me mange à table, je sors du four tout chaud. Qui suis-je ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "enigme.pain.mp3",
+   "duree": 4.05,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "mot.cle",
@@ -1352,10 +1352,10 @@
    "langue": "fr",
    "texte": "la clé.",
    "sousTitre": "la clé.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "mot.cle.mp3",
+   "duree": 0.99,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "hddT377hAwvRoOKqMj0E"
   },
   {
    "id": "ar.cle",
@@ -1363,10 +1363,10 @@
    "langue": "ar",
    "texte": "مفتاح",
    "sousTitre": "مفتاح",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "ar.cle.mp3",
+   "duree": 1.23,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "hddT377hAwvRoOKqMj0E"
   },
   {
    "id": "enigme.cle",
@@ -1374,10 +1374,10 @@
    "langue": "fr",
    "texte": "J'ouvre et je ferme les portes. Qui suis-je ?",
    "sousTitre": "J'ouvre et je ferme les portes. Qui suis-je ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "enigme.cle.mp3",
+   "duree": 3.16,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "mot.panier",
@@ -1385,10 +1385,10 @@
    "langue": "fr",
    "texte": "le panier.",
    "sousTitre": "le panier.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "mot.panier.mp3",
+   "duree": 1.15,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "hddT377hAwvRoOKqMj0E"
   },
   {
    "id": "ar.panier",
@@ -1396,10 +1396,10 @@
    "langue": "ar",
    "texte": "سلّة",
    "sousTitre": "سلّة",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "ar.panier.mp3",
+   "duree": 0.99,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "hddT377hAwvRoOKqMj0E"
   },
   {
    "id": "enigme.panier",
@@ -1407,10 +1407,10 @@
    "langue": "fr",
    "texte": "On me porte pour transporter les fruits. Qui suis-je ?",
    "sousTitre": "On me porte pour transporter les fruits. Qui suis-je ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "enigme.panier.mp3",
+   "duree": 3.24,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "mot.rose",
@@ -1418,10 +1418,10 @@
    "langue": "fr",
    "texte": "la rose.",
    "sousTitre": "la rose.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "mot.rose.mp3",
+   "duree": 1.31,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "hddT377hAwvRoOKqMj0E"
   },
   {
    "id": "ar.rose",
@@ -1429,10 +1429,10 @@
    "langue": "ar",
    "texte": "وردة",
    "sousTitre": "وردة",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "ar.rose.mp3",
+   "duree": 0.99,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "hddT377hAwvRoOKqMj0E"
   },
   {
    "id": "enigme.rose",
@@ -1440,10 +1440,10 @@
    "langue": "fr",
    "texte": "Je suis une fleur qui sent très bon. Qui suis-je ?",
    "sousTitre": "Je suis une fleur qui sent très bon. Qui suis-je ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "enigme.rose.mp3",
+   "duree": 3.47,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "mot.etoile",
@@ -1451,10 +1451,10 @@
    "langue": "fr",
    "texte": "l'étoile.",
    "sousTitre": "l'étoile.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "mot.etoile.mp3",
+   "duree": 1.23,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "hddT377hAwvRoOKqMj0E"
   },
   {
    "id": "ar.etoile",
@@ -1462,10 +1462,10 @@
    "langue": "ar",
    "texte": "نجمة",
    "sousTitre": "نجمة",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "ar.etoile.mp3",
+   "duree": 1.07,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "hddT377hAwvRoOKqMj0E"
   },
   {
    "id": "enigme.etoile",
@@ -1473,10 +1473,10 @@
    "langue": "fr",
    "texte": "Je brille dans le ciel, la nuit, tout là-haut. Qui suis-je ?",
    "sousTitre": "Je brille dans le ciel, la nuit, tout là-haut. Qui suis-je ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "enigme.etoile.mp3",
+   "duree": 4.21,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "mot.lune",
@@ -1484,10 +1484,10 @@
    "langue": "fr",
    "texte": "la lune.",
    "sousTitre": "la lune.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "mot.lune.mp3",
+   "duree": 1.15,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "hddT377hAwvRoOKqMj0E"
   },
   {
    "id": "ar.lune",
@@ -1495,10 +1495,10 @@
    "langue": "ar",
    "texte": "قمر",
    "sousTitre": "قمر",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "ar.lune.mp3",
+   "duree": 0.91,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "hddT377hAwvRoOKqMj0E"
   },
   {
    "id": "enigme.lune",
@@ -1506,10 +1506,10 @@
    "langue": "fr",
    "texte": "Je suis ronde ou en croissant et j'éclaire la nuit. Qui suis-je ?",
    "sousTitre": "Je suis ronde ou en croissant et j'éclaire la nuit. Qui suis-je ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "enigme.lune.mp3",
+   "duree": 4.6,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "mot.tasse",
@@ -1517,10 +1517,10 @@
    "langue": "fr",
    "texte": "la tasse.",
    "sousTitre": "la tasse.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "mot.tasse.mp3",
+   "duree": 1.23,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "hddT377hAwvRoOKqMj0E"
   },
   {
    "id": "ar.tasse",
@@ -1528,10 +1528,10 @@
    "langue": "ar",
    "texte": "كوب",
    "sousTitre": "كوب",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "ar.tasse.mp3",
+   "duree": 0.91,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "hddT377hAwvRoOKqMj0E"
   },
   {
    "id": "enigme.tasse",
@@ -1539,10 +1539,10 @@
    "langue": "fr",
    "texte": "On me tient dans la main pour boire. Qui suis-je ?",
    "sousTitre": "On me tient dans la main pour boire. Qui suis-je ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "enigme.tasse.mp3",
+   "duree": 2.85,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "mot.plume",
@@ -1550,10 +1550,10 @@
    "langue": "fr",
    "texte": "la plume.",
    "sousTitre": "la plume.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "mot.plume.mp3",
+   "duree": 1.31,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "hddT377hAwvRoOKqMj0E"
   },
   {
    "id": "ar.plume",
@@ -1561,10 +1561,10 @@
    "langue": "ar",
    "texte": "قلم",
    "sousTitre": "قلم",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "ar.plume.mp3",
+   "duree": 0.99,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "hddT377hAwvRoOKqMj0E"
   },
   {
    "id": "enigme.plume",
@@ -1572,10 +1572,10 @@
    "langue": "fr",
    "texte": "On m'utilise pour écrire. Qui suis-je ?",
    "sousTitre": "On m'utilise pour écrire. Qui suis-je ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "enigme.plume.mp3",
+   "duree": 2.69,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "mot.raisin",
@@ -1583,10 +1583,10 @@
    "langue": "fr",
    "texte": "le raisin.",
    "sousTitre": "le raisin.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "mot.raisin.mp3",
+   "duree": 1.15,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "hddT377hAwvRoOKqMj0E"
   },
   {
    "id": "ar.raisin",
@@ -1594,10 +1594,10 @@
    "langue": "ar",
    "texte": "عنب",
    "sousTitre": "عنب",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "ar.raisin.mp3",
+   "duree": 0.99,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "hddT377hAwvRoOKqMj0E"
   },
   {
    "id": "enigme.raisin",
@@ -1605,10 +1605,10 @@
    "langue": "fr",
    "texte": "Je pousse en grappes et je suis sucré. Qui suis-je ?",
    "sousTitre": "Je pousse en grappes et je suis sucré. Qui suis-je ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "enigme.raisin.mp3",
+   "duree": 3.47,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "mot.coussin",
@@ -1616,10 +1616,10 @@
    "langue": "fr",
    "texte": "le coussin.",
    "sousTitre": "le coussin.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "mot.coussin.mp3",
+   "duree": 1.23,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "hddT377hAwvRoOKqMj0E"
   },
   {
    "id": "ar.coussin",
@@ -1627,10 +1627,10 @@
    "langue": "ar",
    "texte": "وسادة",
    "sousTitre": "وسادة",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "ar.coussin.mp3",
+   "duree": 1.23,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "hddT377hAwvRoOKqMj0E"
   },
   {
    "id": "enigme.coussin",
@@ -1638,10 +1638,10 @@
    "langue": "fr",
    "texte": "Je suis tout doux : on s'appuie sur moi pour se reposer. Qui suis-je ?",
    "sousTitre": "Je suis tout doux : on s'appuie sur moi pour se reposer. Qui suis-je ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "enigme.coussin.mp3",
+   "duree": 4.75,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "mot.poisson",
@@ -1649,10 +1649,10 @@
    "langue": "fr",
    "texte": "le poisson.",
    "sousTitre": "le poisson.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "mot.poisson.mp3",
+   "duree": 1.07,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "hddT377hAwvRoOKqMj0E"
   },
   {
    "id": "ar.poisson",
@@ -1660,10 +1660,10 @@
    "langue": "ar",
    "texte": "سمكة",
    "sousTitre": "سمكة",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "ar.poisson.mp3",
+   "duree": 0.99,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "hddT377hAwvRoOKqMj0E"
   },
   {
    "id": "enigme.poisson",
@@ -1671,10 +1671,10 @@
    "langue": "fr",
    "texte": "Je nage dans l'eau. Qui suis-je ?",
    "sousTitre": "Je nage dans l'eau. Qui suis-je ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "enigme.poisson.mp3",
+   "duree": 2.51,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "mot.oiseau",
@@ -1682,10 +1682,10 @@
    "langue": "fr",
    "texte": "l'oiseau.",
    "sousTitre": "l'oiseau.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "mot.oiseau.mp3",
+   "duree": 1.07,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "hddT377hAwvRoOKqMj0E"
   },
   {
    "id": "ar.oiseau",
@@ -1693,10 +1693,10 @@
    "langue": "ar",
    "texte": "عصفور",
    "sousTitre": "عصفور",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "ar.oiseau.mp3",
+   "duree": 1.23,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "hddT377hAwvRoOKqMj0E"
   },
   {
    "id": "enigme.oiseau",
@@ -1704,10 +1704,10 @@
    "langue": "fr",
    "texte": "J'ai des ailes et je chante dans les arbres. Qui suis-je ?",
    "sousTitre": "J'ai des ailes et je chante dans les arbres. Qui suis-je ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "enigme.oiseau.mp3",
+   "duree": 3.71,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "kSNoLVC4Ox0vkBz1IKux"
   },
   {
    "id": "intro.marche",
@@ -1715,10 +1715,10 @@
    "langue": "fr",
    "texte": "Bonjour explorateur ! Au marché, plusieurs objets ont disparu. Peux-tu m'aider à les retrouver ?",
    "sousTitre": "Bonjour explorateur ! Au marché, plusieurs objets ont disparu. Peux-tu m'aider à les retrouver ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "intro.marche.mp3",
+   "duree": 5.96,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "lM87a4ey2IQxE37nDvti"
   },
   {
    "id": "intro.maison",
@@ -1726,10 +1726,10 @@
    "langue": "fr",
    "texte": "Bonjour explorateur ! Dans ma maison, quelques objets se sont cachés. Tu veux bien les chercher avec moi ?",
    "sousTitre": "Bonjour explorateur ! Dans ma maison, quelques objets se sont cachés. Tu veux bien les chercher avec moi ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "intro.maison.mp3",
+   "duree": 5.72,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "HAjl4nFl1aflZ2gaim1o"
   },
   {
    "id": "intro.jardin",
@@ -1737,10 +1737,10 @@
    "langue": "fr",
    "texte": "Bonjour explorateur ! Dans le jardin, des objets se sont cachés parmi les fleurs. Peux-tu les retrouver ?",
    "sousTitre": "Bonjour explorateur ! Dans le jardin, des objets se sont cachés parmi les fleurs. Peux-tu les retrouver ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "intro.jardin.mp3",
+   "duree": 6.27,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
   },
   {
    "id": "intro.bibliotheque",
@@ -1748,10 +1748,10 @@
    "langue": "fr",
    "texte": "Chut… Bonjour explorateur ! Dans la bibliothèque, des objets ont glissé des étagères. Aide-moi à les retrouver !",
    "sousTitre": "Chut… Bonjour explorateur ! Dans la bibliothèque, des objets ont glissé des étagères. Aide-moi à les retrouver !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "intro.bibliotheque.mp3",
+   "duree": 7.71,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "y01lcQwxER91RfOMk2oG"
   },
   {
    "id": "intro.oasis",
@@ -1759,10 +1759,10 @@
    "langue": "fr",
    "texte": "Bonjour explorateur ! À l'oasis, des objets sont tombés près de l'eau. Peux-tu m'aider à les retrouver ?",
    "sousTitre": "Bonjour explorateur ! À l'oasis, des objets sont tombés près de l'eau. Peux-tu m'aider à les retrouver ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "intro.oasis.mp3",
+   "duree": 5.96,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "4sifSi2zIrBX7VkoWfjD"
   },
   {
    "id": "intro.village",
@@ -1770,10 +1770,10 @@
    "langue": "fr",
    "texte": "Bonjour explorateur ! Plusieurs objets ont disparu dans le village. Peux-tu nous aider à les retrouver ?",
    "sousTitre": "Bonjour explorateur ! Plusieurs objets ont disparu dans le village. Peux-tu nous aider à les retrouver ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "intro.village.mp3",
+   "duree": 6.84,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "hbGEl9097evPuRZp5BNY"
   }
  ]
 }
