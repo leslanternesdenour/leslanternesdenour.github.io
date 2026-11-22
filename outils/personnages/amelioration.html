@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<script src="../../monde/socle/sans-visage.js?v=1"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Amélioration des personnages — version de test</title>
+<!-- VERSION DE TEST, séparée des originaux (voyage/js/voyageur.js n'est pas modifié) : « Avant » = le personnage en service, « Après » = outils/personnages/voyageur-v2.js.
+     Préproduction seulement. Rien n'est intégré au site ni aux jeux tant que le client n'a pas validé. -->
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js"}}</script>
+<style>
+  html,body{margin:0;height:100%;background:#cfe8ff;font-family:system-ui,sans-serif;overflow:hidden}
+  canvas{display:block;width:100%;height:100%}
+  #barre{position:fixed;top:6px;left:6px;right:6px;display:flex;gap:5px;flex-wrap:wrap;align-items:center;z-index:5}
+  #barre button,#barre select{font:700 13px system-ui;padding:7px 10px;border:0;border-radius:9px;background:#2a2166;color:#fff;cursor:pointer}
+  #barre button[aria-pressed=true]{background:#f5b942;color:#2a2166}
+  #barre .sep{width:6px}
+  #titres{position:fixed;left:0;right:0;bottom:8px;display:flex;justify-content:space-around;font:800 16px system-ui;color:#2a2166;text-shadow:0 0 5px #fff;z-index:5}
+</style>
+</head>
+<body>
+<div id="barre">
+  <button data-genre="garcon" aria-pressed="true">Garçon</button><button data-genre="fille" aria-pressed="false">Fille</button><span class="sep"></span>
+  <button data-vue="face" aria-pressed="true">Face</button><button data-vue="trois" aria-pressed="false">3/4</button><button data-vue="profil" aria-pressed="false">Profil</button><button data-vue="dos" aria-pressed="false">Dos</button><span class="sep"></span>
+  <button data-cam="corps" aria-pressed="true">Corps</button><button data-cam="tete" aria-pressed="false">Visage</button><span class="sep"></span>
+  <button data-expr="neutre">Neutre</button><button data-expr="joie">Joie</button><button data-expr="surprise">Surprise</button><button data-expr="curiosite">Curiosité</button><button data-expr="tristesse">Tristesse</button><button data-expr="malice">Malice</button><span class="sep"></span>
+  <button data-geste="accueil">Accueil</button><button data-geste="reussite">Réussite</button><button data-geste="recompense">Récompense</button><button data-geste="surprise">Surprise</button><button data-geste="curiosite">Curiosité</button><button data-geste="tristesse">Tristesse</button><button data-geste="maladroit">Maladroit</button><button data-geste="encourager">Encourager</button><span class="sep"></span>
+  <button id="parle" aria-pressed="false">Dialogue</button><button id="sv" aria-pressed="false">Mode sans visage : <b id="sv-etat">DÉSACTIVÉ</b></button>
+</div>
+<div id="titres"><span>AVANT (en service)</span><span>APRÈS (version de test)</span></div>
+<script type="module">
+import * as THREE from 'three';
+import { Voyageur } from '../../voyage/js/voyageur.js?v=9';
+import { VoyageurV2 } from './voyageur-v2.js';
+
+const rendu = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true }); rendu.setPixelRatio(Math.min(devicePixelRatio, 2)); document.body.appendChild(rendu.domElement);
+const scene = new THREE.Scene(); scene.background = new THREE.Color('#cfe8ff');
+scene.add(new THREE.HemisphereLight('#ffffff', '#b09870', 1.6)); const d = new THREE.DirectionalLight('#ffffff', 1.6); d.position.set(2, 4, 6); scene.add(d);
+const sol = new THREE.Mesh(new THREE.PlaneGeometry(40, 20), new THREE.MeshBasicMaterial({ color: '#e3c98f' })); sol.rotation.x = -Math.PI / 2; sol.position.y = -0.01; scene.add(sol);
+const cam = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
+const ANGLE = { face: 0, trois: 0.65, profil: Math.PI / 2, dos: Math.PI };
+const persos = {};
+for (const genre of ['garcon', 'fille']) for (const v2 of [false, true]) { const p = v2 ? new VoyageurV2(false, { genre, tenue: 'ecru', peau: 1 }) : new Voyageur(false, { genre, tenue: 'ecru', peau: 1 }); p.racine.visible = false; scene.add(p.racine); persos[genre + (v2 ? '2' : '1')] = p; }
+const q = new URLSearchParams(location.search);
+let genre = q.get('genre') || 'garcon', vue = q.get('vue') || 'face', camMode = q.get('cam') || 'corps';
+if (q.has('sv')) window.LDN_SV.definir(q.get('sv') === '1');
+const sel = (a, v) => document.querySelectorAll(`[data-${a}]`).forEach(b => b.setAttribute('aria-pressed', b.dataset[a] === v));
+function cadrer() {
+  const tete = camMode === 'tete', sac = camMode === 'sac', demi = innerWidth > 700 && !sac;
+  for (const k of Object.keys(persos)) { const p = persos[k], deux = k.endsWith('2'); p.racine.visible = k.startsWith(genre); p.racine.position.set(demi ? (deux ? 0.62 : -0.62) * (tete ? 0.55 : 1) : (deux ? 0 : 99), 0, 0); p.racine.rotation.y = ANGLE[vue]; }
+  const h = tete ? 0.34 : 1.5, cy = tete ? 1.3 : 0.75, dist = (h / 2) / Math.tan(cam.fov * Math.PI / 360) + (tete ? 0.35 : 1.4);
+  if (sac) { cam.position.set(0.24, 0.66, 0.95); cam.lookAt(0.24, 0.62, 0); }
+  else { cam.position.set(0, cy, tete ? dist : Math.max(dist, 3.2 / cam.aspect * 0.55 + 1.2)); cam.lookAt(0, cy, 0); }
+  sel('genre', genre); sel('vue', vue); sel('cam', camMode);
+}
+function taille() { rendu.setSize(innerWidth, innerHeight); cam.aspect = innerWidth / innerHeight; cam.updateProjectionMatrix(); cadrer(); }
+addEventListener('resize', taille);
+document.querySelectorAll('[data-genre]').forEach(b => b.onclick = () => { genre = b.dataset.genre; cadrer(); });
+document.querySelectorAll('[data-vue]').forEach(b => b.onclick = () => { vue = b.dataset.vue; cadrer(); });
+document.querySelectorAll('[data-cam]').forEach(b => b.onclick = () => { camMode = b.dataset.cam; cadrer(); });
+document.querySelectorAll('[data-expr]').forEach(b => b.onclick = () => persos[genre + '2'].exprimer(b.dataset.expr, b.dataset.expr === 'neutre' ? 0 : 2.4));
+document.querySelectorAll('[data-geste]').forEach(b => b.onclick = () => { persos[genre + '2'].faire(b.dataset.geste); if (['accueil', 'joie', 'salut', 'prendre', 'caresser'].includes(b.dataset.geste)) persos[genre + '1'].faire(b.dataset.geste === 'accueil' ? 'salut' : b.dataset.geste); });
+document.getElementById('parle').onclick = e => { const a = e.currentTarget.getAttribute('aria-pressed') !== 'true'; e.currentTarget.setAttribute('aria-pressed', a); for (const g of ['garcon2', 'fille2']) persos[g].parler(a); };
+document.getElementById('sv').onclick = () => window.LDN_SV.definir(!window.LDN_SV.actif());
+window.LDN_SV.abonner(a => { document.getElementById('sv').setAttribute('aria-pressed', a); document.getElementById('sv-etat').textContent = a ? 'ACTIVÉ' : 'DÉSACTIVÉ'; });
+const horloge = new THREE.Clock(); let fige = false;
+function boucle() { const dt = Math.min(horloge.getDelta(), 0.05), t = horloge.elapsedTime;
+  if (!fige) for (const k of Object.keys(persos)) if (persos[k].racine.visible) persos[k].animer(dt, 0, t);
+  rendu.render(scene, cam); window.__pret = true; requestAnimationFrame(boucle); }
+taille(); boucle();
+
+// ----- (contrôle automatique et planches de présentation) un cadre précis, avec une expression ou un geste à un instant donné -----
+window.__cadre = ({ genre: g = 'garcon', v2 = true, yaw = 0, cam: c = 'corps', expr = null, geste = null, t = 0, parle = false, sv = null, clin = null, blink = null, incl = 1, larg = 420, haut = 560 } = {}) => {
+  fige = true; if (sv !== null) window.LDN_SV.definir(!!sv);
+  genre = g; camMode = c; vue = 'face'; rendu.setSize(larg, haut); cam.aspect = larg / haut; cam.updateProjectionMatrix(); cadrer();
+  for (const p of Object.values(persos)) p.racine.visible = false;
+  const p = persos[g + (v2 ? '2' : '1')]; p.racine.visible = true; p.racine.position.set(0, 0, 0); p.racine.rotation.y = yaw;
+  if (v2) { p.tPerso = p.tPersoLong = p.clign = 1e9; p.tClin = 0; p.geste = null; p.hoche = 0; p.inclinaison = incl; p.parler(parle); p.exprCible = 'neutre'; p.exprReste = 0; Object.assign(p.etat, { ...p.etat }); p.tClinOeil = 0; }
+  p.geste = null; p.repos = 0; p.prochainRegard = 1e9; p.regard = p.regardCible = 0; p.phase = 0; p.balJupe = 0; p.angPrec = null;   // état de départ identique à chaque cadre (le regard aléatoire ne doit pas fausser les comparaisons)
+  let tt = 0; const pas = 1 / 60;
+  const avancer = sec => { for (let i = 0; i < Math.round(sec / pas); i++) { p.animer(pas, 0, tt += pas); } };
+  if (v2 && expr) p.exprimer(expr, 0);
+  if (v2 && clin !== null) p.cligner(clin, 5);
+  avancer(0.9);                                         // même durée pour tous les cadres : les mouvements de respiration restent comparables
+  if (v2 && blink !== null) { p.tClin = blink; p.animer(pas, 0, tt += pas); }       // un instant précis du clignement (0,17 s au total)
+  if (geste) { p.faire(geste); avancer(t); }
+  else if (t) avancer(t);
+  rendu.render(scene, cam); const url = rendu.domElement.toDataURL('image/png'); return url;
+};
+// (contrôle automatique) pièces mobiles du visage : toutes doivent être étiquetées « visage » ; dimensions du personnage avant / après
+window.__structure = g => { const p = persos[g + '2'], noms = { sourcil: p.sourcil, oeil: p.oeil, joue: p.joue, bouche: [p.sourire, p.boucheO] }, r = {};
+  for (const [k, l] of Object.entries(noms)) { let n = 0, v = 0; for (const o of l) o.traverse(m => { const a = m.geometry && m.geometry.attributes.visage; if (a) { n += a.count; for (const x of a.array) if (x > 0.5) v++; } }); r[k] = { sommets: n, visage: v }; } return r; };
+window.__boites = g => { const o = {}; for (const v of ['1', '2']) { const p = persos[g + v]; p.racine.rotation.y = 0; p.racine.position.set(0, 0, 0); p.racine.updateMatrixWorld(true); const b = new THREE.Box3().setFromObject(p.racine); o[v] = { h: +(b.max.y - b.min.y).toFixed(4), l: +(b.max.x - b.min.x).toFixed(4), p: +(b.max.z - b.min.z).toFixed(4) }; } return o; };
+window.__diffUrls = async (a, b) => { const lire = u => new Promise(r => { const i = new Image(); i.onload = () => { const c = document.createElement('canvas'); c.width = i.width; c.height = i.height; const x = c.getContext('2d'); x.drawImage(i, 0, 0); r(x.getImageData(0, 0, i.width, i.height)); }; i.src = u; });
+  const A = await lire(a), B = await lire(b); let n = 0; for (let i = 0; i < A.data.length; i += 4) if (Math.abs(A.data[i] - B.data[i]) + Math.abs(A.data[i + 1] - B.data[i + 1]) + Math.abs(A.data[i + 2] - B.data[i + 2]) > 40) n++; return n; };
+window.__etat = (g = 'garcon') => { const p = persos[g + '2']; return { etat: { ...p.etat }, cible: p.exprCible }; };
+window.__liberer = () => { fige = false; taille(); };
+</script>
+</body>
+</html>
