@@ -19,7 +19,8 @@
   "perso-warda": "Nour - Layla (tisserande), femme calme et douce, qui chuchote bien à la bibliothèque",
   "perso-yacine": "Nour - Hassan (sellier), homme mûr, calme — le jardinier",
   "perso-samir": "Nour - Nabil (écurie), jeune homme énergique — le puisatier",
-  "perso-idriss": "Nour - Salim (voyageur), homme d'une quarantaine d'années, chaleureux — l'explorateur Idriss"
+  "perso-idriss": "Nour - Salim (voyageur), homme d'une quarantaine d'années, chaleureux — l'explorateur Idriss",
+  "nour": "Nour - Nour (mascotte) — la voix de Nour, uniquement pour les paroles du personnage Nour dans SON école des lettres (jamais pour Loumi, le narrateur ou un autre personnage)"
  },
  "reglages": {
   "model_id": "eleven_v4",
@@ -28,5 +29,6 @@
   "style": 0.0,
   "speed": 1.0
  },
- "perso-idriss": "8aQsvxWbavqMpn00DVgR"
+ "perso-idriss": "8aQsvxWbavqMpn00DVgR",
+ "nour": "7FhMHxpv3kwYS7eBOJoC"
 }
