@@ -1,0 +1,16 @@
+# Copie de référence du wrangler.toml de PRÉPRODUCTION (sert aux tests du garde-fou, indépendants de la branche courante). Voir wrangler.toml.
+name = "lanternes-de-nour"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-11-01"
+
+[vars]
+ENVIRONNEMENT = "preproduction"
+# Identifiant PUBLIC du projet Firebase (pas un secret).
+FIREBASE_PROJET = "lanternes-de-nour"
+
+# --- Raccordements (rien n'est activé ici ; voir _documentation/PREPRODUCTION_ACTIONS.md) ---
+# Avec ce fichier, Cloudflare le traite comme référence : les variables NON secrètes (identifiants publics) se déclarent ICI
+# (section [vars], je les ajoute pour vous), les SECRETS se saisissent dans le tableau de bord (type « Secret ») et ne sont jamais dans le dépôt.
+#   Variables publiques à ajouter ici : FIREBASE_PROJET, STRIPE_PRIX_PREMIUM_MENSUEL, STRIPE_PRIX_PREMIUM_ANNUEL, STRIPE_PRIX_FAMILLE_ANNUEL, VERSION_TEXTES
+#   Secrets (tableau de bord) : SESSION_SECRET, FIREBASE_COMPTE_SERVICE, CREATOR_UID, STRIPE_CLE_SECRETE (sk_test_ seulement), STRIPE_SECRET_WEBHOOK
+# Stockage privé Premium : liaison R2 « R2_PREMIUM » à ajouter ([[r2_buckets]]) UNIQUEMENT après votre décision d'activer R2 (moyen de paiement demandé).

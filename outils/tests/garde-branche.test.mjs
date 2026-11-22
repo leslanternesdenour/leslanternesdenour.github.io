@@ -1,6 +1,8 @@
 // Le build Cloudflare refuse toute branche autre que « preproduction » (et « main » tant que la production n'est pas déclarée dans wrangler.toml) et ne produit alors aucun dossier publié.
 import test from 'node:test'; import assert from 'node:assert/strict'; import { spawnSync } from 'node:child_process'; import fs from 'node:fs';
-const lancer = (branche) => spawnSync('node', ['outils/construire.mjs'], { env: { ...process.env, LDN_PREPROD: '1', ...(branche ? { CF_PAGES_BRANCH: branche } : { CF_PAGES_BRANCH: '' }) }, encoding: 'utf8' });
+// Les tests ne dépendent pas de la branche courante : le wrangler.toml de référence est passé explicitement (LDN_WRANGLER).
+const PREPROD_TOML = 'docs/migration/wrangler.preproduction.toml';
+const lancer = (branche) => spawnSync('node', ['outils/construire.mjs'], { env: { ...process.env, LDN_PREPROD: '1', LDN_WRANGLER: PREPROD_TOML, ...(branche ? { CF_PAGES_BRANCH: branche } : { CF_PAGES_BRANCH: '' }) }, encoding: 'utf8' });
 for (const b of ['main', 'master', 'autre', 'Main']) test(`branche « ${b} » : build refusé`, () => { fs.rmSync('dist', { recursive: true, force: true }); const r = lancer(b); assert.equal(r.status, 1); assert.match(r.stderr, /Build refusé/); assert.ok(!fs.existsSync('dist')); });
 test('branche « preproduction » : build accepté, noindex posé', () => { const r = lancer('preproduction'); assert.equal(r.status, 0); assert.match(fs.readFileSync('dist/_headers', 'utf8'), /X-Robots-Tag: noindex/); assert.match(fs.readFileSync('dist/robots.txt', 'utf8'), /Disallow: \//); });
 
@@ -33,7 +35,7 @@ test('CSP : /compte/, /admin/, /apercu/ élargies de apis.google.com + cadre fir
 const PROD = 'docs/migration/wrangler.production.toml';
 const lancerAvec = (branche, wrangler, extra = {}) => spawnSync('node', ['outils/construire.mjs'], { env: { ...process.env, LDN_PREPROD: '', CF_PAGES_BRANCH: branche, LDN_WRANGLER: wrangler, ...extra }, encoding: 'utf8' });
 test('production : « main » avec le wrangler.toml de PRÉPRODUCTION est refusée (production non activée)', () => {
-  fs.rmSync('dist', { recursive: true, force: true }); const r = lancerAvec('main', 'wrangler.toml');
+  fs.rmSync('dist', { recursive: true, force: true }); const r = lancerAvec('main', PREPROD_TOML);
   assert.equal(r.status, 1); assert.match(r.stderr, /exige ENVIRONNEMENT = "production"/); assert.ok(!fs.existsSync('dist/index.html'), 'aucun dossier publié');
 });
 test('production : « preproduction » avec un wrangler.toml de PRODUCTION est refusée (une configuration de production n\'est jamais publiée comme préproduction)', () => {
@@ -57,7 +59,7 @@ test('production : « main » + wrangler.toml de production → dossier de PRODU
 test('production : dossier de production = dossier de préproduction moins les seuls outils internes et le noindex (mêmes jeux, mêmes voix, même portail)', () => {
   const liste = d => { const o = []; (function f(x) { for (const e of fs.readdirSync(x, { withFileTypes: true })) e.isDirectory() ? f(x + '/' + e.name) : o.push((x + '/' + e.name).slice(d.length + 1)); })(d); return o.sort(); };
   lancerAvec('main', PROD); fs.rmSync('/tmp/dist-prod', { recursive: true, force: true }); fs.cpSync('dist', '/tmp/dist-prod', { recursive: true });
-  spawnSync('node', ['outils/construire.mjs'], { env: { ...process.env, CF_PAGES_BRANCH: 'preproduction', LDN_WRANGLER: 'wrangler.toml' }, encoding: 'utf8' });
+  spawnSync('node', ['outils/construire.mjs'], { env: { ...process.env, CF_PAGES_BRANCH: 'preproduction', LDN_WRANGLER: PREPROD_TOML }, encoding: 'utf8' });
   const prod = new Set(liste('/tmp/dist-prod')), pre = new Set(liste('dist'));
   const seulementPre = [...pre].filter(f => !prod.has(f)), seulementProd = [...prod].filter(f => !pre.has(f));
   assert.ok(seulementPre.every(f => f.startsWith('outils/')), 'seuls les outils internes manquent en production : ' + seulementPre.filter(f => !f.startsWith('outils/')).slice(0, 5));
@@ -66,7 +68,14 @@ test('production : dossier de production = dossier de préproduction moins les s
 });
 
 test('production : la branche « production » suit exactement les mêmes règles que « main » (refusée sans déclaration, acceptée avec, mode production)', () => {
-  fs.rmSync('dist', { recursive: true, force: true }); let r = lancerAvec('production', 'wrangler.toml'); assert.equal(r.status, 1); assert.match(r.stderr, /exige ENVIRONNEMENT = "production"/); assert.ok(!fs.existsSync('dist/index.html'));
+  fs.rmSync('dist', { recursive: true, force: true }); let r = lancerAvec('production', PREPROD_TOML); assert.equal(r.status, 1); assert.match(r.stderr, /exige ENVIRONNEMENT = "production"/); assert.ok(!fs.existsSync('dist/index.html'));
   r = lancerAvec('production', PROD); assert.equal(r.status, 0, r.stderr); assert.match(r.stdout, /PRODUCTION/); assert.deepEqual(JSON.parse(fs.readFileSync('dist/version.json', 'utf8')).branche, 'production');
   assert.ok(!/^\/\*[ \t]*\n(?:[ \t]+.*\n)*?[ \t]+X-Robots-Tag: noindex/m.test(fs.readFileSync('dist/_headers', 'utf8')), 'pas de noindex global'); assert.ok(!fs.existsSync('dist/outils'));
+});
+
+// Le wrangler.toml de la branche courante doit correspondre à l'une des deux références (préproduction ou production) : jamais une configuration bricolée.
+const utile = f => fs.readFileSync(f, 'utf8').split('\n').filter(l => l.trim() && !l.trim().startsWith('#')).join('\n');
+test('wrangler.toml courant = exactement la référence de préproduction OU celle de production (même contenu hors commentaires)', () => {
+  const c = utile('wrangler.toml'); assert.ok(c === utile(PREPROD_TOML) || c === utile(PROD), 'wrangler.toml inattendu');
+  assert.notEqual(utile(PREPROD_TOML), utile(PROD)); assert.match(utile(PROD), /ENVIRONNEMENT = "production"/); assert.match(utile(PREPROD_TOML), /ENVIRONNEMENT = "preproduction"/);
 });
