@@ -182,8 +182,7 @@ export class Voyageur {
       const R = f ? 0.188 : 0.192;
       const zJoue = (x, y) => (f ? 0.98 * R : 0.98 * R) * Math.sqrt(Math.max(0.05, 1 - (x / ((f ? 1 : 1.02) * R)) ** 2 - (y / ((f ? 1.03 : 1) * R)) ** 2)) - 0.004;   // hauteur de la peau à cet endroit du visage
       const p = [
-        piece(SPH(R, 24, 18), peau, { s: f ? [1, 1.03, 0.98] : [1.02, 1, 0.98] }),
-        piece(SPH(R * 0.86, 16, 10), peau, { p: [0, -0.06, 0.02], s: [0.92, 0.75, 0.8] }),                          // joues et menton
+        piece(SPH(R, 24, 18), peau, { s: f ? [1, 1.03, 0.98] : [1.02, 1, 0.98] }),   // (la sphère « joues et menton » a été retirée : elle créait une décoloration et une couture sur le bas du visage)
         piece(SPH(0.018, 8, 6), peau, { p: [0, -0.025, R * 0.98], s: [1.1, 0.9, 1] }),                                  // petit nez
         ...[-1, 1].map(sg => piece(SPH(0.036, 14, 10), '#f0948a', { p: [sg * 0.105, -0.055, zJoue(sg * 0.105, -0.055)], r: [0, sg * 0.6, 0], s: [1.15, 0.8, 0.14] })),   // joues : taches roses PLATES posées sur la peau (avant : boules qui dépassaient)
         piece(TOR(0.03, 0.007, Math.PI, 10), '#9a4a3e', { p: [0, -0.075, 0.172], r: [0.2, 0, Math.PI] }),               // sourire
@@ -193,12 +192,12 @@ export class Voyageur {
         // le voile : il encadre le visage, couvre les cheveux, les oreilles et le cou
         const vc = coiffeA ? coiffeA.couleurs : [T.voile, T.bord];
         p.push(piece(SPH(R + 0.024, 24, 14, 0, Math.PI * 2, 0, Math.PI * 0.36), vc[0], { p: [0, 0.006, -0.004], m: M.tissu }),
-          piece(SPH(R + 0.026, 24, 14, Math.PI / 2 + 0.78, Math.PI * 2 - 1.56, Math.PI * 0.2, Math.PI * 0.62), vc[0], { p: [0, 0.0, -0.006], m: M.tissu }),
+          piece(SPH(R + 0.026, 56, 40, Math.PI / 2 + 0.78, Math.PI * 2 - 1.56, Math.PI * 0.2, Math.PI * 0.62), vc[0], { p: [0, 0.0, -0.006], m: M.tissu }),
           piece(CYL(R * 0.74, R * 0.92, 0.2, 22), vc[0], { p: [0, -0.2, -0.02], m: M.tissu }),                           // sous le menton et le cou
           piece(TOR(R * 0.9, 0.018, Math.PI * 1.2, 24), vc[1], { p: [0, -0.005, 0.07], r: [0, 0, -0.1 * Math.PI], s: [0.97, 1.07, 1] }));       // le bord qui encadre le visage
         if (coiffeA && coiffeA.rarete !== 'commun') for (let i = 0; i < 7; i++) { const a = -0.55 + i * 0.18; p.push(piece(SPH(0.012, 6, 5), vc[1], { p: [Math.sin(a) * (R + 0.02), 0.13 + Math.cos(a * 2) * 0.01, Math.cos(a) * (R + 0.01) - 0.03] })); }
       } else {
-        p.push(piece(SPH(R + 0.008, 22, 12, Math.PI / 2 + 0.75, Math.PI * 2 - 1.5, 0, Math.PI * 0.56), '#3a281c', { p: [0, 0.005, -0.012] }),  // cheveux courts (côtés et nuque)
+        p.push(piece(SPH(R + 0.008, 56, 40, Math.PI / 2 + 0.75, Math.PI * 2 - 1.5, 0, Math.PI * 0.56), '#3a281c', { p: [0, 0.005, -0.012] }),  // cheveux courts (côtés et nuque)
           piece(SPH(0.04, 8, 6), peau, { p: [-R, -0.01, -0.01], s: [0.5, 1, 0.8] }), piece(SPH(0.04, 8, 6), peau, { p: [R, -0.01, -0.01], s: [0.5, 1, 0.8] }));
         const forme = coiffeA ? coiffeA.forme : 'calotte', [c1, c2] = coiffeA ? coiffeA.couleurs : ['#f6f0e2', '#e8dcc4'];
         if (forme === 'calotte') p.push(piece(SPH(R + 0.014, 22, 10, 0, Math.PI * 2, 0, Math.PI * 0.3), c1, { p: [0, 0.012, -0.012], m: M.tissu }), piece(TOR((R + 0.01) * Math.sin(Math.PI * 0.3), 0.008), c2, { p: [0, 0.012 + (R + 0.01) * Math.cos(Math.PI * 0.3), -0.012], r: [Math.PI / 2, 0, 0] }));
