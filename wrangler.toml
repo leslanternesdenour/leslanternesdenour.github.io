@@ -1,16 +1,15 @@
-# Configuration Cloudflare Pages (préproduction). Aucun secret ici : les secrets se règlent dans le tableau de bord Cloudflare.
+# Configuration Cloudflare Pages de la PRODUCTION (branche « main »). Aucun secret ici.
+# Ce fichier est la version « production » de wrangler.toml : il remplace wrangler.toml À LA MISE EN PRODUCTION (voir docs/MIGRATION-PRODUCTION.md).
+# Le build refuse « main » tant que ENVIRONNEMENT n'y vaut pas "production" (outils/construire.mjs).
 name = "lanternes-de-nour"
 pages_build_output_dir = "dist"
 compatibility_date = "2026-11-01"
 
 [vars]
-ENVIRONNEMENT = "preproduction"
-# Identifiant PUBLIC du projet Firebase (pas un secret).
+ENVIRONNEMENT = "production"
+# Identifiant PUBLIC du projet Firebase (pas un secret). Même projet que la préproduction : mêmes comptes, mêmes familles.
 FIREBASE_PROJET = "lanternes-de-nour"
 
-# --- Raccordements (rien n'est activé ici ; voir _documentation/PREPRODUCTION_ACTIONS.md) ---
-# Avec ce fichier, Cloudflare le traite comme référence : les variables NON secrètes (identifiants publics) se déclarent ICI
-# (section [vars], je les ajoute pour vous), les SECRETS se saisissent dans le tableau de bord (type « Secret ») et ne sont jamais dans le dépôt.
-#   Variables publiques à ajouter ici : FIREBASE_PROJET, STRIPE_PRIX_PREMIUM_MENSUEL, STRIPE_PRIX_PREMIUM_ANNUEL, STRIPE_PRIX_FAMILLE_ANNUEL, VERSION_TEXTES
-#   Secrets (tableau de bord) : SESSION_SECRET, FIREBASE_COMPTE_SERVICE, CREATOR_UID, STRIPE_CLE_SECRETE (sk_test_ seulement), STRIPE_SECRET_WEBHOOK
-# Stockage privé Premium : liaison R2 « R2_PREMIUM » à ajouter ([[r2_buckets]]) UNIQUEMENT après votre décision d'activer R2 (moyen de paiement demandé).
+# Secrets (tableau de bord Cloudflare, environnement « Production », type « Secret ») : SESSION_SECRET, FIREBASE_COMPTE_SERVICE, CREATOR_UID.
+# Paiement : NE PAS définir STRIPE_* en production tant que l'ouverture des paiements n'est pas décidée (le site affiche alors « Le paiement n'est pas encore ouvert »).
+# Stockage privé Premium (R2_PREMIUM) : non activé.
