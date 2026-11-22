@@ -4,7 +4,7 @@
 // (statut « aValider » dans l'inventaire audio). Rien n'est inventé : noms usuels des lettres et mots courants du vocabulaire de l'enfant.
 // joint : la lettre se lie à la suivante (false pour ا د ذ ر ز و). points : nombre et position des points (0 = aucun). famille : lettres de même squelette (« jumelles »).
 // syllabe : la lettre + fatha, utilisée pour entendre son SON (ex. « بَ » = ba), jamais le nom.
-import { ALPHABET } from '../../commun/langue/alphabet.js?v=1';
+import { ALPHABET } from '../../commun/langue/alphabet.js?v=2';
 // Ordre d'apparition dans le parcours (par familles). Les DONNÉES viennent de la référence unique commun/langue/alphabet.js — jamais retapées ici.
 const ORDRE = ['alif', 'ba', 'ta', 'tha', 'nun', 'ya', 'jim', 'ha', 'kha', 'dal', 'dhal', 'ra', 'zay', 'sin', 'shin', 'sad', 'dad', 'ta2', 'za2', 'ayn', 'ghayn', 'fa', 'qaf', 'kaf', 'lam', 'mim', 'ha2', 'waw'];
 export const LETTRES = ORDRE.map(id => { const a = ALPHABET.find(x => x.id === id); return { id: a.id, num: a.num, ar: a.ar, nom: a.nomAr, nomFr: a.nomFr, translit: a.translit, joint: a.joint, points: a.points, famille: a.famille, syllabe: a.syllabe, son: a.son, sonFr: a.sonFr, mot: a.mot, niveau: a.niveau, chapitre: a.chapitre, audio: a.audio, statut: a.statut }; });

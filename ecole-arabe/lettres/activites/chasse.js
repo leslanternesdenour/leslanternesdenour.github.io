@@ -1,9 +1,9 @@
 // LA CHASSE AUX LETTRES (Jardin des lettres) — une scène de jardin : la lettre demandée est cachée parmi d'autres fleurs-lettres ; l'enfant la retrouve.
 // 3-4 ans : 2 grosses fleurs ; 5-6 ans : 5 ; 7-10 ans : 8, avec les lettres jumelles et des formes différentes (début / milieu / fin) à reconnaître.
-import { svgLettre, tailleCommune } from '../rendu.js?v=1';
-import * as C from '../moteur/competences.js?v=1';
-import { PAR_ID, formesDe } from '../donnees/lettres.js?v=1';
-import { jouerChoix, melanger } from './commun.js?v=1';
+import { svgLettre, tailleCommune } from '../rendu.js?v=2';
+import * as C from '../moteur/competences.js?v=2';
+import { PAR_ID, formesDe } from '../donnees/lettres.js?v=2';
+import { jouerChoix, melanger } from './commun.js?v=2';
 const POSITIONS = [[16, 20], [50, 14], [82, 22], [22, 52], [52, 50], [80, 56], [14, 82], [48, 84], [82, 84]];
 export default async function chasse(ctx, { lettres, tours = 3 }) {
   const g = ctx.groupe(), nb = g === 'g34' ? 2 : g === 'g56' ? 5 : 8, rng = ctx.rng;

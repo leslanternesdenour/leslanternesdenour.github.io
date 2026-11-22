@@ -1,20 +1,20 @@
 // L'ÉCOLE DES LETTRES ARABES — coque du jeu : âge, évaluation initiale, accueil illustré (les 6 espaces), parcours en 8 chapitres, réglages.
 // Les activités sont des modules indépendants (activites/*.js) qui partagent un seul moteur pédagogique (moteur/competences.js) : suivi réel de la maîtrise, adaptation dynamique, révision ciblée.
 // Réutilise : profils enfants (âge/tranche), sauvegarde synchronisée par l'Espace famille (clé « ecole_lettres »), voix du socle, mascottes de l'univers Nour (2D). Aucun chronomètre, aucune punition.
-import { creerVoix, reglerVolume } from '../../aventures/commun/voix-jeu.js?v=1';
-import { mascotte } from '../../monde/mascottes.js?v=1';
-import { contexte, sortie } from '../../monde/socle/audio.js?v=1';
-import { montrerDecor } from '../commun/decor.js?v=1';
-import { chargerGlyphes, svgLettre } from './rendu.js?v=1';
-import { LETTRES, PAR_ID, CHAPITRES, ESPACES, ACTIVITES, GROUPES, groupeDepuisAge } from './donnees/lettres.js?v=1';
-import { PHRASES } from './donnees/audio.js?v=1';
-import * as C from './moteur/competences.js?v=1';
+import { creerVoix, reglerVolume } from '../../aventures/commun/voix-jeu.js?v=2';
+import { mascotte } from '../../monde/mascottes.js?v=2';
+import { contexte, sortie } from '../../monde/socle/audio.js?v=2';
+import { montrerDecor } from '../commun/decor.js?v=2';
+import { chargerGlyphes, svgLettre } from './rendu.js?v=2';
+import { LETTRES, PAR_ID, CHAPITRES, ESPACES, ACTIVITES, GROUPES, groupeDepuisAge } from './donnees/lettres.js?v=2';
+import { PHRASES } from './donnees/audio.js?v=2';
+import * as C from './moteur/competences.js?v=2';
 const $ = id => document.getElementById(id), lsGet = k => { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } }, lsSet = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
 let s = C.lire(lsGet(C.CLE)); const sauver = () => lsSet(C.CLE, s);
 const voix = creerVoix({ dossierAudio: 'audio/jeux/ecole-lettres', racine: '../../', etat: () => s, elSousTitres: () => $('sous-titres') });
 const rng = Math.random, pause = ms => new Promise(r => setTimeout(r, ms));
-const MODULES = { decouvrir: () => import('./activites/decouvrir.js?v=1'), chasse: () => import('./activites/chasse.js?v=1'), formes: () => import('./activites/formes.js?v=1'), trace: () => import('./activites/trace.js?v=1'), puzzle: () => import('./activites/puzzle.js?v=1'),
-  son: () => import('./activites/son.js?v=1'), 'parcours-sons': () => import('./activites/parcours-sons.js?v=1'), jumelles: () => import('./activites/jumelles.js?v=1'), intrus: () => import('./activites/intrus.js?v=1'), defi: () => import('./activites/defi.js?v=1'), collection: () => import('./activites/collection.js?v=1') };
+const MODULES = { decouvrir: () => import('./activites/decouvrir.js?v=2'), chasse: () => import('./activites/chasse.js?v=2'), formes: () => import('./activites/formes.js?v=2'), trace: () => import('./activites/trace.js?v=2'), puzzle: () => import('./activites/puzzle.js?v=2'),
+  son: () => import('./activites/son.js?v=2'), 'parcours-sons': () => import('./activites/parcours-sons.js?v=2'), jumelles: () => import('./activites/jumelles.js?v=2'), intrus: () => import('./activites/intrus.js?v=2'), defi: () => import('./activites/defi.js?v=2'), collection: () => import('./activites/collection.js?v=2') };
 
 // ---------- décor 2D, mascottes, sons ----------
 // ----- décor (6 salles, partagé avec toute l'école) et Maktoub, la mascotte -----

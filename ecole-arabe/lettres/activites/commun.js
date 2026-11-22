@@ -1,7 +1,7 @@
 // Moteur commun des activités « à choix » (chasse, son, jumelles, intruse, formes…) : manches, aide douce, retours immédiats, enregistrement de la compétence — sans punition.
 // Chaque activité décrit seulement SA manche (construire) ; le déroulé, les retours et l'adaptation sont ici : une seule fois.
-import { BRAVOS, ENCORES, PHRASES } from '../donnees/audio.js?v=1';
-import { PAR_ID } from '../donnees/lettres.js?v=1';
+import { BRAVOS, ENCORES, PHRASES } from '../donnees/audio.js?v=2';
+import { PAR_ID } from '../donnees/lettres.js?v=2';
 export const $$ = (el, sel) => [...el.querySelectorAll(sel)];
 export const pause = ms => new Promise(r => setTimeout(r, ms));
 export const melanger = (a, rng = Math.random) => { const p = [...a]; for (let i = p.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); [p[i], p[j]] = [p[j], p[i]]; } return p; };

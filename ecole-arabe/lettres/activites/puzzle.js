@@ -1,8 +1,8 @@
 // LE PUZZLE DES LETTRES (Atelier des formes) — la lettre est découpée en morceaux : son corps et ses POINTS (turquoise), ou deux moitiés pour les lettres sans point.
 // L'enfant glisse chaque morceau à sa place ; un morceau proche s'aimante. Aucune erreur possible, seulement de la manipulation : on comprend de quoi la lettre est faite.
-import { glyphes, boite, COULEURS } from '../rendu.js?v=1';
-import { PAR_ID } from '../donnees/lettres.js?v=1';
-import { enTete, melanger, pause } from './commun.js?v=1';
+import { glyphes, boite, COULEURS } from '../rendu.js?v=2';
+import { PAR_ID } from '../donnees/lettres.js?v=2';
+import { enTete, melanger, pause } from './commun.js?v=2';
 export default async function puzzle(ctx, { lettres, tours = 2 }) {
   const res = { ok: 0, ko: 0, aides: 0, tours: 0 }, rng = ctx.rng;
   for (let i = 0; i < tours && ctx.vivant(); i++) { const id = melanger(lettres, rng)[i % lettres.length]; const ok = await une(ctx, id, rng); res.ok += ok ? 1 : 0; res.tours++; }

@@ -2,10 +2,10 @@
 // Détection APPROXIMATIVE du parcours : on mesure la part de la lettre couverte par la traînée et la part de traînée qui sort de la lettre, avec une tolérance selon l'âge
 // (3-4 ans : très large ; 7-10 ans : plus précise). On n'exige jamais une écriture parfaite ; l'ordre et le sens des traits ne sont pas imposés (limite assumée : pas d'animation de tracé guidé).
 // Les points de la lettre (turquoise) sont ensuite à toucher. Jamais d'échec bloquant : après deux essais trop imprécis, le tracé est accepté avec un coup de pouce.
-import { glyphes, boite } from '../rendu.js?v=1';
-import * as C from '../moteur/competences.js?v=1';
-import { PAR_ID } from '../donnees/lettres.js?v=1';
-import { enTete, pause } from './commun.js?v=1';
+import { glyphes, boite } from '../rendu.js?v=2';
+import * as C from '../moteur/competences.js?v=2';
+import { PAR_ID } from '../donnees/lettres.js?v=2';
+import { enTete, pause } from './commun.js?v=2';
 export default async function trace(ctx, { lettres, tours = 1 }) {
   const res = { ok: 0, ko: 0, aides: 0, tours: 0 }; const liste = lettres.slice(0, tours);
   for (const id of liste) { if (!ctx.vivant()) break; const r = await tracerUne(ctx, id); res.ok += r.ok ? 1 : 0; res.ko += r.ok ? 0 : 1; res.aides += r.aides; res.tours++; }

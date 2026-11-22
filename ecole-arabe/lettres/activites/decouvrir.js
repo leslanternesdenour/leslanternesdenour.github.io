@@ -1,10 +1,10 @@
 // LE JARDIN DES LETTRES — les lettres fleurissent ; l'enfant en touche une pour la DÉCOUVRIR : grande lettre dorée en 3D qu'il peut tourner, son nom, son son, un mot d'exemple illustré,
 // ses formes (début, milieu, fin) et la possibilité de tout réécouter. Une lettre ouverte compte comme « découverte » (premier stade, jamais « maîtrisée »).
-import { svgLettre, svgAlifForme, tailleCommune } from '../rendu.js?v=1';
-import { ALIF } from '../../commun/langue/alphabet.js?v=1';
-import { PAR_ID, formesDe, NOMS_FORMES } from '../donnees/lettres.js?v=1';
-import * as C from '../moteur/competences.js?v=1';
-import { enTete, pause } from './commun.js?v=1';
+import { svgLettre, svgAlifForme, tailleCommune } from '../rendu.js?v=2';
+import { ALIF } from '../../commun/langue/alphabet.js?v=2';
+import { PAR_ID, formesDe, NOMS_FORMES } from '../donnees/lettres.js?v=2';
+import * as C from '../moteur/competences.js?v=2';
+import { enTete, pause } from './commun.js?v=2';
 const POTS = ['🌷', '🌸', '🌼', '🌺', '🪻', '🌻', '🌹', '💐'];
 // La fiche d'une lettre (réutilisée par le Palais). Renvoie une fonction de fermeture.
 export function ouvrirFiche(ctx, id, conteneur, { surFermer } = {}) {
@@ -22,7 +22,7 @@ export function ouvrirFiche(ctx, id, conteneur, { surFermer } = {}) {
   conteneur.querySelectorAll('[data-s]').forEach(b => { b.onclick = () => { const [aid, txt] = dire[b.dataset.s]; b.classList.add('chante'); ctx.parler(aid, txt, 'Maktoub', { sousTitre: false }).then(() => b.classList.remove('chante')); }; });
   const ba = conteneur.querySelector('[data-alif]'); if (ba) ba.onclick = () => { const z = conteneur.querySelector('.alif-formes'); z.classList.toggle('cache'); ba.textContent = z.classList.contains('cache') ? 'Alif et hamza ›' : 'Fermer ‹'; };
   const rang = conteneur.querySelectorAll('.tuile-forme:not(.alif-t)'); rang.forEach((x, k) => setTimeout(() => x.classList.add('pop'), 900 + k * 450));       // les formes apparaissent l'une après l'autre
-  let vue = null; (async () => { try { const { creerVue3d } = await import('../vue3d.js?v=1'); vue = creerVue3d(conteneur.querySelector('.fiche-3d')); vue.definir(id, 'isolee'); } catch (e) { conteneur.querySelector('.fiche-3d').innerHTML = svgLettre(id, { classe: 'grand' }); } })();
+  let vue = null; (async () => { try { const { creerVue3d } = await import('../vue3d.js?v=2'); vue = creerVue3d(conteneur.querySelector('.fiche-3d')); vue.definir(id, 'isolee'); } catch (e) { conteneur.querySelector('.fiche-3d').innerHTML = svgLettre(id, { classe: 'grand' }); } })();
   setTimeout(() => ctx.parler(`nom.${id}`, l.nomFr, 'Maktoub', { sousTitre: false }), 700);
   const fermer = () => { if (vue) vue.fermer(); vue = null; conteneur.innerHTML = ''; if (surFermer) surFermer(); }; conteneur.querySelector('.retour-fiche').onclick = fermer; return fermer;
 }

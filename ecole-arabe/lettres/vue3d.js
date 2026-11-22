@@ -2,7 +2,7 @@
 // rotation lente et manipulation au doigt (limitée pour que la lettre reste toujours lisible). Un seul rendu à la fois (léger sur téléphone) ; libère tout à la fermeture.
 import * as THREE from 'three';
 import { SVGLoader } from 'three/addons/loaders/SVGLoader.js';
-import { glyphes } from './rendu.js?v=1';
+import { glyphes } from './rendu.js?v=2';
 export function creerVue3d(conteneur) {
   const canvas = document.createElement('canvas'); canvas.className = 'vue3d'; canvas.setAttribute('aria-label', 'Lettre en 3D : tourne-la avec ton doigt'); conteneur.appendChild(canvas);
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'low-power' }); renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2)); renderer.setClearColor(0x000000, 0);

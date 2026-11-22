@@ -2,7 +2,7 @@
 // Voix (outils/voix/jeux/voix-roles.json) : « nour » = la voix réservée à la mascotte de l'école (Maktoub s'exprime avec elle ; aucune voix créée), « loumi », « narratrice ». Seulement les 10 voix « Nour » du compte ; aucune voix créée.
 // Les phrases ARABES (noms, sons, mots) sont générées avec la voix de la narratrice en langue arabe : leur prononciation est « À VALIDER » par une personne compétente (jamais considérée comme validée).
 // Un audio absent n'est jamais annoncé : le jeu affiche alors le sous-titre et reste jouable (sauf le « son mystérieux », qui attend son audio).
-import { LETTRES, CHAPITRES } from './lettres.js?v=1';
+import { LETTRES, CHAPITRES } from './lettres.js?v=2';
 export const PHRASES = {
   bienvenue: { role: 'nour', texte: "Bonjour ! Je suis Maktoub, ton livre compagnon. Bienvenue à l'école des lettres arabes !" },
   age: { role: 'nour', texte: 'Quel âge as-tu ? Touche ton âge.' },

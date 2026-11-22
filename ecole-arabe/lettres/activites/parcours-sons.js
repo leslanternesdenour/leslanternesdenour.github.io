@@ -1,9 +1,9 @@
 // LE PARCOURS DES SONS (Galerie des sons) — jeu de MÉMOIRE : on écoute une suite de sons, puis on touche les lettres dans le même ordre. 2 sons (3-4 ans), 3 (5-6 ans), 4 (7-10 ans).
 // On peut réécouter la suite à volonté ; une erreur rejoue la suite doucement, sans rien enlever.
-import { svgLettre, tailleCommune } from '../rendu.js?v=1';
-import * as C from '../moteur/competences.js?v=1';
-import { PAR_ID } from '../donnees/lettres.js?v=1';
-import { enTete, melanger, carteLettre, pause, $$ } from './commun.js?v=1';
+import { svgLettre, tailleCommune } from '../rendu.js?v=2';
+import * as C from '../moteur/competences.js?v=2';
+import { PAR_ID } from '../donnees/lettres.js?v=2';
+import { enTete, melanger, carteLettre, pause, $$ } from './commun.js?v=2';
 export default async function parcoursSons(ctx, { lettres, tours = 2 }) {
   const pool = lettres.filter(id => ctx.a('son.' + id)); if (pool.length < 2) { ctx.zone.innerHTML = `<div class="act"><p class="act-msg">Les sons de ces lettres arrivent bientôt. Essaie une autre activité !</p></div>`; await pause(2200); return { ok: 0, ko: 0, aides: 0, tours: 0 }; }
   const g = ctx.groupe(), L = Math.min(g === 'g34' ? 2 : g === 'g56' ? 3 : 4, pool.length), nb = Math.min(pool.length, L + 2, 6), rng = ctx.rng, ui = enTete(ctx, '🎶 Le parcours des sons', tours), res = { ok: 0, ko: 0, aides: 0, tours: 0 };

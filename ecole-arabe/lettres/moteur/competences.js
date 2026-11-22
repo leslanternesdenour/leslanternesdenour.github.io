@@ -2,7 +2,7 @@
 // Il suit, pour CHAQUE lettre, cinq stades réels : découverte → reconnaissance → son → formes → maîtrise. Une lettre n'est jamais « maîtrisée » après une seule bonne réponse :
 // il faut plusieurs réussites, dans plusieurs activités différentes, et un bon taux de réussite récent. L'âge règle le départ et le confort (nombre de choix, aides) mais ne
 // ferme aucune porte : une évaluation initiale et l'adaptation dynamique tiennent compte des compétences réellement acquises. Aucune punition, aucune perte après une absence.
-import { LETTRES, PAR_ID, IDS, CHAPITRES, groupeDepuisAge, formesDe } from '../donnees/lettres.js?v=1';
+import { LETTRES, PAR_ID, IDS, CHAPITRES, groupeDepuisAge, formesDe } from '../donnees/lettres.js?v=2';
 export const CLE = 'ecole_lettres';
 export const STADES = ['nouvelle', 'decouverte', 'reconnaissance', 'son', 'formes', 'maitrise'];
 export const NOMS_STADES = { nouvelle: 'À découvrir', decouverte: 'Découverte', reconnaissance: 'Reconnue', son: 'Son connu', formes: 'Formes connues', maitrise: 'Maîtrisée' };

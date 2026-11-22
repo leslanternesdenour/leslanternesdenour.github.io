@@ -1,6 +1,6 @@
 // Composition de mots en lettres RÉELLES : choix de la bonne forme (isolée, initiale, médiane, finale) selon la place dans le mot et selon la liaison des lettres voisines.
 // Les lettres qui ne se lient pas à la suivante (ا د ذ ر ز و) coupent la liaison : la lettre suivante recommence en forme initiale. Aucune lettre n'est jamais « différente » : seule sa forme change.
-import { PAR_ID } from '../donnees/lettres.js?v=1';
+import { PAR_ID } from '../donnees/lettres.js?v=2';
 export function formesDuMot(ids) {
   return ids.map((id, i) => { const l = PAR_ID[id], liePrec = i > 0 && PAR_ID[ids[i - 1]].joint, lieSuiv = i < ids.length - 1 && l.joint;
     const forme = liePrec && lieSuiv ? 'mediane' : liePrec ? 'finale' : lieSuiv ? 'initiale' : 'isolee'; return { id, forme, position: i }; });

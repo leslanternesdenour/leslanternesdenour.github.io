@@ -1,9 +1,9 @@
 // LES LETTRES JUMELLES (Salle des défis) — des lettres de même squelette (ب ت ث ن ي ; ج ح خ ; د ذ ; ر ز ; س ش ; ص ض ; ط ظ ; ع غ ; ف ق ; ك ل) : tout se joue sur les POINTS.
 // L'enfant retrouve la bonne lettre, puis l'explication montre la différence.
-import { svgLettre, tailleCommune } from '../rendu.js?v=1';
-import * as C from '../moteur/competences.js?v=1';
-import { PAR_ID } from '../donnees/lettres.js?v=1';
-import { jouerChoix, melanger, carteLettre } from './commun.js?v=1';
+import { svgLettre, tailleCommune } from '../rendu.js?v=2';
+import * as C from '../moteur/competences.js?v=2';
+import { PAR_ID } from '../donnees/lettres.js?v=2';
+import { jouerChoix, melanger, carteLettre } from './commun.js?v=2';
 export const pointsTexte = l => (l.points[0] === 0 ? 'aucun point' : `${l.points[0]} point${l.points[0] > 1 ? 's' : ''} ${l.points[1] === 'dessus' ? 'au-dessus' : 'en dessous'}`);
 export const groupesJumeaux = lettres => { const f = {}; for (const id of lettres) (f[PAR_ID[id].famille] = f[PAR_ID[id].famille] || []).push(id); return Object.values(f).filter(a => a.length >= 2); };
 export default async function jumelles(ctx, { lettres, tours = 4 }) {

@@ -1,7 +1,7 @@
 // Rendu 2D des lettres arabes en SVG, à partir des CONTOURS EXACTS de la police (glyphes.json). Une lettre n'est jamais redessinée ni déformée :
 // seule la mise à l'échelle (identique en largeur et en hauteur) est appliquée. Les points sont colorés à part pour les repérer (pédagogie).
-import { PAR_ID } from './donnees/lettres.js?v=1';
-import { formesDuMot, miseEnPage } from './moteur/mots.js?v=1';
+import { PAR_ID } from './donnees/lettres.js?v=2';
+import { formesDuMot, miseEnPage } from './moteur/mots.js?v=2';
 export const COULEURS = { encre: '#191345', points: '#1d8f9c', or: '#e8b53a', ivoire: '#fff6e0' };
 let G = null;
 export async function chargerGlyphes() { if (!G) G = await (await fetch(new URL('./donnees/glyphes.json', import.meta.url))).json(); return G; }
