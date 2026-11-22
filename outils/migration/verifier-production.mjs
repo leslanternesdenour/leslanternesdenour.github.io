@@ -66,7 +66,7 @@ for (const p of PAGES) { const r = await get(p); const redir = r.status >= 300 &
     for (let i = 0; i < fichiers.length; i += 12) await Promise.all(fichiers.slice(i, i + 12).map(async f => { total++; const x = await fetch(new URL(`/${jeu}/voix/${f}`, BASE), { method: 'HEAD' }).catch(() => ({ status: 0 })); if (x.status !== 200) manquants.push(jeu + ':' + f + ' ' + x.status); }));
   }
   t(`Fichiers audio des trois jeux : ${total} fichiers servis`, manquants.length === 0 && total > 200, manquants.slice(0, 3).join(' | '));
-  for (const f of ['/monde/voix/accueil-portail.mp3', '/monde/voix/accueil-portail.json', '/monde/socle/portail.js']) t(`Portail : ${f}`, (await get(f)).status === 200);
+  for (const f of ['/monde/voix/accueil-portail.json', '/monde/socle/portail.js']) t(`Portail : ${f}`, (await get(f)).status === 200);
   for (const f of ['/personnages3d/modeles/garcon_N1.glb', '/personnages3d/modeles/fille_N1.glb']) { const x = await get(f); t(`Modèle 3D : ${f}`, x.status === 200, `HTTP ${x.status}`); }
 }
 // ----- 6. Navigateur réel (optionnel) -----

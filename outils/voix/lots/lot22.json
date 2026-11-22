@@ -1,0 +1,58 @@
+[
+ {
+  "cle": "monde/accueil-portail-candidat-A",
+  "texte": "مَرْحَبًا ! Bienvenue dans le Monde de Nour !",
+  "texte_voix": "Mot arabe seul « مَرْحَبًا » (tanwin), modèle eleven_v4, langue arabe — puis français : « Bienvenue dans le Monde de Nour ! »",
+  "fichier": "lot22/accueil-A.mp3",
+  "a_tester": "مَرْحَبًا : écoute la prononciation du mot arabe (ح, ر, voyelles) ; le français est celui de la prise 1"
+ },
+ {
+  "cle": "monde/accueil-portail-candidat-B",
+  "texte": "مَرْحَبًا ! Bienvenue dans le Monde de Nour !",
+  "texte_voix": "Mot arabe seul « مَرْحَبَا » (fatha finale), modèle eleven_v4, langue arabe — puis français : « Bienvenue dans le Monde de Nour ! »",
+  "fichier": "lot22/accueil-B.mp3",
+  "a_tester": "مَرْحَبًا : écoute la prononciation du mot arabe (ح, ر, voyelles) ; le français est celui de la prise 1"
+ },
+ {
+  "cle": "monde/accueil-portail-candidat-C",
+  "texte": "مَرْحَبًا ! Bienvenue dans le Monde de Nour !",
+  "texte_voix": "Mot arabe seul « مَرْحَبًا » (tanwin), modèle eleven_v3, langue arabe — puis français : « Bienvenue dans le Monde de Nour ! »",
+  "fichier": "lot22/accueil-C.mp3",
+  "a_tester": "مَرْحَبًا : écoute la prononciation du mot arabe (ح, ر, voyelles) ; le français est celui de la prise 1"
+ },
+ {
+  "cle": "monde/accueil-portail-candidat-D",
+  "texte": "مَرْحَبًا ! Bienvenue dans le Monde de Nour !",
+  "texte_voix": "Mot arabe seul « مَرْحَبَا » (fatha finale), modèle eleven_v3, langue arabe — puis français : « Bienvenue dans le Monde de Nour ! »",
+  "fichier": "lot22/accueil-D.mp3",
+  "a_tester": "مَرْحَبًا : écoute la prononciation du mot arabe (ح, ر, voyelles) ; le français est celui de la prise 1"
+ },
+ {
+  "cle": "monde/accueil-portail-candidat-E",
+  "texte": "مَرْحَبًا ! Bienvenue dans le Monde de Nour !",
+  "texte_voix": "Mot arabe seul « مَرْحَبًا » (tanwin), modèle eleven_multilingual_v2, langue arabe — puis français : « Bienvenue dans le Monde de Nour ! »",
+  "fichier": "lot22/accueil-E.mp3",
+  "a_tester": "مَرْحَبًا : écoute la prononciation du mot arabe (ح, ر, voyelles) ; le français est celui de la prise 1"
+ },
+ {
+  "cle": "monde/accueil-portail-candidat-F",
+  "texte": "مَرْحَبًا ! Bienvenue dans le Monde de Nour !",
+  "texte_voix": "Mot arabe seul « مَرْحَبَا » (fatha finale), modèle eleven_multilingual_v2, langue arabe — puis français : « Bienvenue dans le Monde de Nour ! »",
+  "fichier": "lot22/accueil-F.mp3",
+  "a_tester": "مَرْحَبًا : écoute la prononciation du mot arabe (ح, ر, voyelles) ; le français est celui de la prise 1"
+ },
+ {
+  "cle": "monde/accueil-portail-candidat-G",
+  "texte": "مَرْحَبًا ! Bienvenue dans le Monde de Nour !",
+  "texte_voix": "Mot arabe seul « مرحبا » (sans voyelles), modèle eleven_v4, langue arabe — puis français : « Bienvenue dans le Monde de Nour ! »",
+  "fichier": "lot22/accueil-G.mp3",
+  "a_tester": "مَرْحَبًا : écoute la prononciation du mot arabe (ح, ر, voyelles) ; le français est celui de la prise 1"
+ },
+ {
+  "cle": "monde/accueil-portail-candidat-H",
+  "texte": "مَرْحَبًا ! Bienvenue dans le Monde de Nour !",
+  "texte_voix": "Mot arabe seul « مرحبا » (sans voyelles), modèle eleven_v3, langue arabe — puis français : « Bienvenue dans le Monde de Nour ! »",
+  "fichier": "lot22/accueil-H.mp3",
+  "a_tester": "مَرْحَبًا : écoute la prononciation du mot arabe (ح, ر, voyelles) ; le français est celui de la prise 1"
+ }
+]

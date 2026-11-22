@@ -1,12 +1,15 @@
-// Parcours COMPLET du portail du Monde de Nour dans un vrai navigateur, contre la préproduction locale AVEC ÉMULATEUR :
-// parent → compte familial → profil enfant → portail (voix + portes synchronisées) → entrée directe dans le monde → progression
-// conservée → déconnexion / nouvelle connexion → autre enfant → retour d'un mini-jeu. Ordinateur ET téléphone.
+// Parcours COMPLET du portail du Monde de Nour (ancienne « ouverture magique » aux lanternes, RESTAURÉE) dans un vrai navigateur, contre la
+// préproduction locale AVEC ÉMULATEUR : parent → compte familial → profil enfant → portail (lanternes une à une, porte, voix, bouton) →
+// entrée directe dans le monde → progression conservée → déconnexion / nouvelle connexion → autre enfant → retour d'un mini-jeu.
+// Ordinateur ET téléphone. Aucune voix validée n'est en service : un clip d'ESSAI (la prise rejetée, jamais publiée) est servi uniquement
+// dans le navigateur de test pour vérifier la synchronisation ; le scénario « sans voix » vérifie le comportement réel du site.
 // Démarrer : node outils/construire.mjs && LDN_EMULATEUR=1 LDN_EMUL_MDP_CREATEUR=createur-local-123 node outils/serveur-preprod.mjs 8795
 // Puis : node outils/tests/portail.mjs http://localhost:8795     (script complet : bash outils/tests/portail.sh)
 import { createRequire } from 'module'; import fs from 'node:fs';
 const { chromium } = createRequire(import.meta.url)(process.env.PLAYWRIGHT || 'playwright');
 const BASE = process.argv[2] || 'http://localhost:8795';
 const THREE = ['/home/user/node_modules/three', new URL('../../node_modules/three', import.meta.url).pathname].find(d => fs.existsSync(d));
+const CLIP_ESSAI = new URL('../voix/lots/lot21/monde-accueil-portail-prise1.mp3', import.meta.url).pathname;
 let ok = 0, ko = 0; const res = [];
 const t = (nom, c, d = '') => { c ? ok++ : ko++; res.push(`${c ? '✓' : '✗'} ${nom}${d && !c ? ' — ' + d : ''}`); };
 const lancement = { args: ['--use-gl=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--autoplay-policy=no-user-gesture-required'] };
@@ -14,17 +17,25 @@ if (fs.existsSync('/usr/bin/google-chrome')) lancement.executablePath = '/usr/bi
 let nav = null;      // lancé au premier besoin : le scénario « lecture automatique refusée » tourne AVANT, dans un navigateur à part
 const erreurs = [];
 const BRUIT = /Transition was aborted because of invalid state/;
+const COUPE = 1.12, FIN_VOIX = 3.26;
 
-async function contexte(mobile) {
-  nav = nav || await chromium.launch(lancement);
-  const ctx = await nav.newContext(mobile ? { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, locale: 'fr-FR' } : { viewport: { width: 1180, height: 780 }, locale: 'fr-FR' });
+async function routes(ctx, avecVoix) {
   await ctx.route(/fonts\.(googleapis|gstatic)|ytimg|youtube|islamic\.network|alquran|googleusercontent/, r => r.abort());
   if (THREE) await ctx.route(/cdn\.jsdelivr\.net\/npm\/three@[^/]+\/(.*)/, r => { const f = THREE + '/' + r.request().url().match(/three@[^/]+\/(.*)/)[1]; fs.existsSync(f) ? r.fulfill({ path: f, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' } }) : r.abort(); });
-  // L'introduction du SITE (page d'accueil) est coupée ; le portail, lui, n'est JAMAIS contourné ici. Les lectures audio sont enregistrées.
+  if (avecVoix) {   // clip d'ESSAI, uniquement dans ce navigateur de test (le site réel n'a aucune voix en service)
+    await ctx.route(/voix\/accueil-portail\.json/, r => r.fulfill({ contentType: 'application/json', body: JSON.stringify({ fichier: 'essai-accueil.mp3', coupe: COUPE, finVoix: FIN_VOIX, duree: 3.631 }) }));
+    await ctx.route(/voix\/essai-accueil\.mp3/, r => r.fulfill({ path: CLIP_ESSAI, contentType: 'audio/mpeg' }));
+  }
+}
+async function contexte(mobile, avecVoix = true) {
+  nav = nav || await chromium.launch(lancement);
+  const ctx = await nav.newContext(mobile ? { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, locale: 'fr-FR' } : { viewport: { width: 1180, height: 780 }, locale: 'fr-FR' });
+  await routes(ctx, avecVoix);
+  // L'introduction du SITE (page d'accueil) est coupée ; le portail, lui, n'est JAMAIS contourné ici.
   await ctx.addInitScript(() => {
     try { localStorage.getItem('lanternes_intro') || localStorage.setItem('lanternes_intro', JSON.stringify({ off: 1 })); } catch (e) {}
-    window.__voix = []; const p = HTMLMediaElement.prototype.play;
-    HTMLMediaElement.prototype.play = function () { if (/accueil-portail/.test(this.src)) { window.__voix.push(this); window.__lectures = (window.__lectures || 0) + 1; } return p.apply(this, arguments); };
+    window.__voix = []; window.__lectures = 0; const p = HTMLMediaElement.prototype.play;
+    HTMLMediaElement.prototype.play = function () { if (/essai-accueil|accueil-portail/.test(this.src)) { window.__voix.push(this); window.__lectures++; window.__tPlay = performance.now(); } return p.apply(this, arguments); };
   });
   const page = await ctx.newPage();
   page.on('dialog', d => d.accept());
@@ -33,7 +44,6 @@ async function contexte(mobile) {
 }
 const visible = (p, s) => p.locator(s).isVisible();
 const ls = (p, k) => p.evaluate(k => localStorage.getItem(k), k);
-const etat = p => p.locator('#etat').textContent();
 const attendreEtat = async (p, re, ms = 4000) => { try { await p.waitForFunction(r => new RegExp(r).test(document.getElementById('etat').textContent), re.source, { timeout: ms }); return true; } catch (e) { return false; } };
 const api = (p, chemin) => p.evaluate(async c => { const r = await fetch(c, { credentials: 'same-origin' }); return { s: r.status, j: await r.json().catch(() => null) }; }, chemin);
 
@@ -62,25 +72,29 @@ async function ajouterEnfant(page, surnom, avatar, tranche) {
 }
 const choisir = async (page, surnom) => { await page.locator('#enf-liste .enfant', { hasText: surnom }).locator('button').first().click(); await attendreEtat(page, new RegExp(surnom + ' joue')); };
 
-// ----- le portail dans la page /monde/ -----
-async function etatPortail(page) { return page.evaluate(() => ({ actif: !!(window.__portail && window.__portail.actif), dom: !!document.getElementById('portail'), classes: (document.getElementById('portail') || {}).className || '' })); }
-async function attendrePortailPret(page, ms = 14000) { try { await page.waitForFunction(() => window.__portail && window.__portail.etat === 'pret', null, { timeout: ms }); return true; } catch (e) { return false; } }
+// ----- le portail (ancienne ouverture aux lanternes) dans la page /monde/ -----
+async function etatPortail(page) { return page.evaluate(() => ({ actif: !!(window.__portail && window.__portail.actif), dom: !!document.getElementById('ouverture'), classes: (document.getElementById('ouverture') || {}).className || '' })); }
+async function attendrePortailPret(page, ms = 16000) { try { await page.waitForFunction(() => window.__portail && window.__portail.etat === 'pret', null, { timeout: ms }); return true; } catch (e) { return false; } }
 async function attendreVillage(page, ms = 40000) { try { await page.waitForFunction(() => { const h = document.getElementById('hud'); return h && !h.classList.contains('cache'); }, null, { timeout: ms }); return true; } catch (e) { return false; } }
-// Échantillonne voix et portes ensemble : la porte doit suivre la voix à quelques pour cent près.
-async function mesurerSynchro(page) {
-  return page.evaluate(async () => {
-    const cues = await (await fetch('voix/accueil-portail.json')).json(), L = window.PortailLogique, mesures = [];
-    const a = window.__voix[0]; if (!a) return { mesures: [], cues };
-    const fin = performance.now() + 7000;
-    while (performance.now() < fin && !(a.ended)) {
-      const tt = a.currentTime, p = parseFloat(document.getElementById('portail').style.getPropertyValue('--portes')) || 0;
-      if (tt > 0.05) mesures.push({ t: +tt.toFixed(2), portes: p, attendu: L.etatSynchro(tt, cues).portes, fr: document.getElementById('portail').classList.contains('fr'), ar: document.getElementById('portail').classList.contains('ar') });
-      await new Promise(r => setTimeout(r, 120));
-    }
-    return { mesures, cues };
+// Observe, dans la page, l'ordre et l'instant d'allumage de chaque lanterne, l'ouverture de la porte, le salut et les légendes.
+async function espionner(page) {
+  await page.evaluate(() => {
+    const o = document.getElementById('ouverture'); window.__j = { lanternes: [], ouverte: null, salue: null, joue: null, fr: null, ar: null };
+    o.querySelectorAll('.ouv-l').forEach((e, i) => new MutationObserver(() => { if (e.classList.contains('allumee') && !window.__j.lanternes.some(x => x.i === i)) window.__j.lanternes.push({ i, t: performance.now() }); }).observe(e, { attributes: true }));
+    const maj = () => { const c = o.classList, n = performance.now(); if (c.contains('joue') && !window.__j.joue) window.__j.joue = n; if (c.contains('ouverte') && !window.__j.ouverte) window.__j.ouverte = n; if (c.contains('salue') && !window.__j.salue) window.__j.salue = n; if (c.contains('ar') && !window.__j.ar) window.__j.ar = n; if (c.contains('fr') && !window.__j.fr) window.__j.fr = n; };
+    new MutationObserver(maj).observe(o, { attributes: true, attributeFilter: ['class'] }); maj();
   });
 }
-async function entrerParPortail(page, nom) {            // du clic « Entrer dans le monde » jusqu'au village affiché
+async function verifierSequence(page, D) {
+  const j = await page.evaluate(() => window.__j), ordre = [...j.lanternes].sort((a, b) => a.t - b.t), ecarts = ordre.slice(1).map((x, k) => Math.round(x.t - ordre[k].t));
+  t(`${D} : les 7 lanternes s'allument UNE À UNE, du centre vers les côtés`, JSON.stringify(ordre.map(x => x.i)) === '[3,2,4,1,5,0,6]', JSON.stringify(ordre.map(x => x.i)));
+  t(`${D} : rythme d'origine, une lanterne toutes les 260 ms (écarts ${ecarts.join('/')})`, ecarts.length === 6 && ecarts.every(e => e >= 200 && e <= 340));
+  const dLanterne = j.ouverte - j.lanternes[0].t;
+  t(`${D} : la porte s'ouvre après les lanternes (${Math.round(dLanterne)} ms après la première)`, j.ouverte > ordre[ordre.length - 1].t && dLanterne > 1700 && dLanterne < 2700);
+  t(`${D} : le salut apparaît quand la porte s'ouvre (${Math.round(j.salue - j.ouverte)} ms après)`, j.salue > j.ouverte && j.salue - j.ouverte < 900);
+  return j;
+}
+async function entrerParPortail(page, nom) {            // du portail au village : attend le bouton puis entre
   await page.waitForFunction(() => window.__portail !== undefined, null, { timeout: 8000 });
   const pret = await attendrePortailPret(page);
   t(`${nom} : le portail arrive au bouton « Entrer dans le Monde de Nour »`, pret);
@@ -104,34 +118,34 @@ async function parcours(mobile) {
   const idLina = lina && lina.id;
   const liste1 = await api(page, '/api/enfants');
 
-  // ===== 2. « Entrer dans le monde » : le portail apparaît, voix automatique, portes synchronisées =====
+  // ===== 2. « Entrer dans le monde » : le portail aux lanternes =====
   await page.click('#entrer'); await page.waitForURL(/\/monde\//, { timeout: 8000 });
-  await page.waitForFunction(() => window.__portail, null, { timeout: 8000 });
+  await page.waitForFunction(() => window.__portail && document.getElementById('ouverture'), null, { timeout: 8000 });
+  await espionner(page);
   const e0 = await etatPortail(page);
   t(`${D} : après le choix de l'enfant, le portail s'affiche`, e0.actif && e0.dom);
+  t(`${D} : toutes les lanternes sont éteintes et la porte fermée au début`, await page.evaluate(() => document.querySelectorAll('.ouv-l.allumee').length === 0 && !document.getElementById('ouverture').classList.contains('ouverte')));
+  await page.waitForFunction(() => window.__j && window.__j.salue, null, { timeout: 12000 }).catch(() => {});
+  await verifierSequence(page, D);
   t(`${D} : le portail montre le prénom de l'enfant qui entre`, /Lina/.test(await page.locator('#p-enfant').textContent().catch(() => '')));
-  await page.waitForFunction(() => /arrive/.test((document.getElementById('portail') || {}).className || ''), null, { timeout: 5000 }).catch(() => {});
-  await page.waitForTimeout(500);
-  t(`${D} : portes fermées au début (apparition progressive)`, (parseFloat(await page.evaluate(() => document.getElementById('portail').style.getPropertyValue('--portes'))) || 0) < 0.05);
-  await page.waitForFunction(() => window.__lectures >= 1, null, { timeout: 9000 }).catch(() => {});
-  t(`${D} : la voix se déclenche automatiquement`, (await page.evaluate(() => window.__lectures || 0)) >= 1);
-  const m = await mesurerSynchro(page);
-  const ecarts = m.mesures.map(x => Math.abs(x.portes - x.attendu));
-  t(`${D} : portes synchronisées sur la voix (${m.mesures.length} mesures, écart max ${Math.max(0, ...ecarts).toFixed(3)})`, m.mesures.length >= 8 && Math.max(0, ...ecarts) <= 0.1);
-  t(`${D} : « مَرْحَبًا » s'affiche avec le premier mot, « Bienvenue dans le Monde de Nour » quand la voix passe au français`,
-    m.mesures.some(x => x.ar && !x.fr && x.t < m.cues.coupe) && m.mesures.filter(x => x.t >= m.cues.coupe + 0.1).every(x => x.fr));
-  t(`${D} : la porte s'ouvre progressivement (jamais d'un coup)`, m.mesures.length > 4 && m.mesures.every((x, i) => i === 0 || x.portes >= m.mesures[i - 1].portes - 1e-6) && m.mesures.some(x => x.portes > 0.3 && x.portes < 0.8));
+  await page.waitForFunction(() => window.__lectures >= 1, null, { timeout: 5000 }).catch(() => {});
+  const dPlay = await page.evaluate(() => Math.round(window.__tPlay - window.__j.salue));
+  t(`${D} : la voix se déclenche automatiquement avec la bienvenue (${dPlay} ms d'écart avec le salut)`, await page.evaluate(() => window.__lectures >= 1 && Math.abs(window.__tPlay - window.__j.salue) < 400));
+  t(`${D} : « مَرْحَبًا » apparaît avec la voix`, await page.evaluate(() => !!window.__j.ar && Math.abs(window.__j.ar - window.__tPlay) < 500));
+  await page.waitForFunction(() => window.__j.fr, null, { timeout: 6000 }).catch(() => {});
+  const dFr = await page.evaluate(() => Math.round(window.__j.fr - window.__tPlay));
+  t(`${D} : « Bienvenue dans le Monde de Nour » apparaît quand la voix passe au français (${dFr} ms après le début, attendu ~${Math.round(COUPE * 1000)})`, dFr > COUPE * 1000 - 350 && dFr < COUPE * 1000 + 450);
   const pret = await attendrePortailPret(page); t(`${D} : le bouton « Entrer dans le Monde de Nour » apparaît à la fin de la voix`, pret && (await visible(page, '#p-entrer')));
-  t(`${D} : portes entièrement ouvertes au bouton`, (parseFloat(await page.evaluate(() => document.getElementById('portail').style.getPropertyValue('--portes'))) || 0) > 0.99);
-  const lectures = await page.evaluate(() => window.__lectures);
-  t(`${D} : une seule lecture de la voix (aucune répétition involontaire) : ${lectures}`, lectures === 1);
-  t(`${D} : aucune musique pendant le portail`, await page.evaluate(() => [...document.querySelectorAll('audio')].length === 0 && !/nasheed/.test(performance.getEntriesByType('resource').map(r => r.name).join(' '))));
+  const lect1 = await page.evaluate(() => window.__lectures);
+  t(`${D} : une seule lecture automatique de la voix (aucune répétition involontaire) : ${lect1}`, lect1 === 1);
+  t(`${D} : aucune musique pendant le portail`, await page.evaluate(() => !/nasheed/.test(performance.getEntriesByType('resource').map(r => r.name).join(' '))));
   await page.click('#p-reecouter'); await page.waitForTimeout(500);
-  t(`${D} : « Réécouter l'accueil » relance la voix (2e lecture, demandée)`, (await page.evaluate(() => window.__lectures)) === 2 && (parseFloat(await page.evaluate(() => document.getElementById('portail').style.getPropertyValue('--portes'))) || 0) > 0.99);
+  t(`${D} : « Réécouter l'accueil » relance la voix (2e lecture, demandée)`, (await page.evaluate(() => window.__lectures)) === 2);
   await page.waitForTimeout(3700);
   await page.click('#p-entrer', { force: true });
   await page.waitForTimeout(300);
-  t(`${D} : transition d'entrée en cours (le portail ne bloque plus)`, (await etatPortail(page)).actif === false);
+  const eS = await etatPortail(page);
+  t(`${D} : sortie en cours (fondu et zoom d'origine), le portail ne bloque plus`, eS.actif === false && /fin/.test(eS.classes));
 
   // ===== 3. Entrée directe dans SON village, sans « Qui joue ? » =====
   const village = await attendreVillage(page);
@@ -144,7 +158,6 @@ async function parcours(mobile) {
 
   // ===== 4. Progression : jouer, changer de page, retour d'un mini-jeu (pas de portail) =====
   await page.evaluate(() => localStorage.setItem('ablutions', JSON.stringify({ g1: 3, g2: 3, learned: 1, vu: 1 })));
-  // Grand Voyage : pièces, objets, missions, niveau, zones et mots découverts (la position et le chameau sont volatils, jamais synchronisés)
   await page.evaluate(() => localStorage.setItem('monde_voyage', JSON.stringify({ v: 1, zones: ['camp', 'oasis'], lus: ['m1', 'm2', 'm3'], pieces: 120, objets: ['lanterne', 'tapis'], missions: { m1: true, m2: true }, niveau: 3 })));
   await page.evaluate(() => dispatchEvent(new Event('ldn:fin-activite'))); await page.waitForTimeout(900);
   await page.goto(BASE + '/ablutions/'); await page.waitForTimeout(400);
@@ -194,40 +207,46 @@ async function parcours(mobile) {
   await ctx.close();
 }
 
-async function visiteur(mobile) {
+// Le site RÉEL : aucune voix validée en service → la séquence se déroule en silence, légendes et bouton compris.
+async function visiteurSansVoix(mobile) {
   const D = mobile ? 'Téléphone' : 'Ordinateur';
-  const { ctx, page } = await contexte(mobile);
+  const { ctx, page } = await contexte(mobile, false);
   await page.goto(BASE + '/monde/');
-  t(`${D} (visiteur sans compte) : le portail s'affiche aussi à la première entrée`, await page.waitForFunction(() => window.__portail && window.__portail.actif, null, { timeout: 8000 }).then(() => true).catch(() => false));
-  await entrerParPortail(page, D + ' visiteur');
+  t(`${D} (visiteur sans compte, sans voix en service) : le portail s'affiche aussi à la première entrée`, await page.waitForFunction(() => window.__portail && window.__portail.actif && document.getElementById('ouverture'), null, { timeout: 8000 }).then(() => true).catch(() => false));
+  await espionner(page);
+  await page.waitForFunction(() => window.__j && window.__j.salue, null, { timeout: 12000 }).catch(() => {});
+  await verifierSequence(page, D + ' (sans voix)');
+  t(`${D} (sans voix) : aucune lecture audio, bouton « Réécouter » absent`, (await page.evaluate(() => window.__lectures)) === 0 && !(await visible(page, '#p-reecouter')));
+  t(`${D} (sans voix) : les légendes s'affichent quand même (مَرْحَبًا puis la phrase française)`, await page.waitForFunction(() => document.getElementById('ouverture').classList.contains('fr'), null, { timeout: 8000 }).then(() => true).catch(() => false));
+  await entrerParPortail(page, D + ' (sans voix)');
   await page.waitForFunction(() => { const a = document.getElementById('accueil'); return a && !a.classList.contains('cache'); }, null, { timeout: 40000 }).catch(() => {});
   t(`${D} (visiteur) : après le portail, l'écran « Qui joue ? » s'affiche`, await visible(page, '#accueil'));
   await ctx.close();
 }
 
-// Lecture automatique REFUSÉE par le navigateur (réglage par défaut des navigateurs) : message, premier toucher, une seule lecture.
+// Lecture automatique REFUSÉE par le navigateur : comme dans l'ancienne version, l'enfant TOUCHE LA PORTE ; la séquence et la voix démarrent alors ensemble.
 async function autoplayRefuse() {
   const { executablePath, ...sansChemin } = lancement;      // Chromium fourni : applique la vraie politique de refus de la lecture automatique
   const b2 = await chromium.launch({ ...sansChemin, args: sansChemin.args.filter(a => !/autoplay/.test(a)) });
   const ctx = await b2.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
-  if (THREE) await ctx.route(/cdn\.jsdelivr\.net\/npm\/three@[^/]+\/(.*)/, r => { const f = THREE + '/' + r.request().url().match(/three@[^/]+\/(.*)/)[1]; fs.existsSync(f) ? r.fulfill({ path: f, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' } }) : r.abort(); });
-  await ctx.route(/fonts\.(googleapis|gstatic)/, r => r.abort());
+  await routes(ctx, true);
+  await ctx.addInitScript(() => { window.__lectures = 0; const p = HTMLMediaElement.prototype.play; HTMLMediaElement.prototype.play = function () { if (/essai-accueil/.test(this.src)) window.__lectures++; return p.apply(this, arguments); }; });
   const page = await ctx.newPage();
   await page.goto(BASE + '/monde/');
   await page.waitForTimeout(3000);     // attente PASSIVE : interroger la page pendant le chargement lui donnerait une « interaction utilisateur » (Playwright) et autoriserait la lecture
-  const bloque = await page.evaluate(() => ({ voix: window.__portail.voix, cls: document.getElementById('portail').className, aide: getComputedStyle(document.getElementById('p-aide')).opacity }));
-  t('Autoplay refusé par le navigateur : le portail le détecte et invite à toucher l\'écran', bloque.voix === 'bloquee' && /bloque/.test(bloque.cls) && parseFloat(bloque.aide) > 0.5, JSON.stringify(bloque));
-  t('Autoplay refusé : les portes attendent la voix (fermées)', (parseFloat(await page.evaluate(() => document.getElementById('portail').style.getPropertyValue('--portes'))) || 0) < 0.05);
-  await page.tap('body', { position: { x: 195, y: 420 } }); await page.waitForTimeout(900);
-  t('Autoplay refusé : un premier toucher active la voix', (await page.evaluate(() => window.__portail.voix)) === 'joue');
-  await page.waitForTimeout(3800);
-  t('Autoplay refusé : puis la séquence se termine normalement', (await page.evaluate(() => window.__portail.etat)) === 'pret');
+  const avant = await page.evaluate(() => ({ voix: window.__portail.voix, lanternes: document.querySelectorAll('.ouv-l.allumee').length, cls: document.getElementById('ouverture').className, invite: getComputedStyle(document.getElementById('ouv-invite')).display }));
+  t('Autoplay refusé : l\'invitation « ✨ Touche la porte pour entrer ✨ » de l\'ancienne version est affichée', avant.invite !== 'none' && avant.voix === 'toucher', JSON.stringify(avant));
+  t('Autoplay refusé : rien ne démarre tout seul (lanternes éteintes, aucune voix)', avant.lanternes === 0 && (await page.evaluate(() => window.__lectures)) === 0);
+  await page.tap('#ouv-porte'); await espionner(page);
+  await page.waitForFunction(() => window.__lectures >= 1, null, { timeout: 8000 }).catch(() => {});
+  t('Autoplay refusé : un toucher sur la porte lance la séquence ET la voix (une seule lecture)', (await page.evaluate(() => window.__lectures)) === 1 && (await page.evaluate(() => document.querySelectorAll('.ouv-l.allumee').length)) >= 1);
+  t('Autoplay refusé : puis la séquence se termine normalement (bouton « Entrer »)', await attendrePortailPret(page));
   await ctx.close(); await b2.close();
 }
 
 await autoplayRefuse();
-for (const mobile of [false, true]) { await parcours(mobile); await visiteur(mobile); }
+for (const mobile of [false, true]) { await parcours(mobile); await visiteurSansVoix(mobile); }
 t('Aucune erreur JavaScript pendant tout le parcours', erreurs.length === 0, erreurs.slice(0, 3).join(' | '));
-await nav.close();
+if (nav) await nav.close();
 console.log(res.join('\n')); console.log(`\n${ok} vérifications réussies, ${ko} en échec.`);
 process.exit(ko ? 1 : 0);

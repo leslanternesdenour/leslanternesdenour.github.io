@@ -6,5 +6,12 @@
   "coupe": 1.12,
   "finVoix": 3.26,
   "valide": false,
-  "note": "Prise 1 des 3 générées le 22/11/2026 (lot 21 de /outils/voix/lot?n=21). En attente de l'écoute du client : prononciation de مَرْحَبًا. Pour changer de prise : python3 outils/voix/choisir-accueil.py <1|2|3>."
+  "note": "AUCUN clip n'est en service tant que le client n'a pas validé la prononciation de مَرْحَبًا. Candidats : /outils/voix/lot?n=22. Après validation : python3 outils/voix/choisir-accueil.py 22 <N> --valide",
+  "fichier": null,
+  "rejete": {
+    "prise": 1,
+    "date": "2026-11-22",
+    "raison": "prononciation de مَرْحَبًا refusée par le client",
+    "source": "outils/voix/lots/lot21/monde-accueil-portail-prise1.mp3 (conservée)"
+  }
 }
