@@ -190,14 +190,14 @@ async function demarrer() {
     if (interface_ouverte) return;
     const obj = ($('suivi').classList.contains('cache') ? '' : $('suivi').textContent.trim());
     const urgent = soins.urgent(AV.monture);
-    dialogue({ titre: 'Loumi', mascotte: 'nour',
+    dialogue({ titre: 'Loumi', mascotte: 'loumi',
       texte: `Je suis Loumi, la petite lanterne du Monde de Nour. Je t'accompagne partout ! ${obj ? 'Ta mission : ' + obj + '.' : 'Qu\'est-ce que tu veux savoir ?'}${urgent ? ' ' + nomMonture() + ' ' + INFOS[urgent].texte + ' : on s\'en occupe ?' : ''}`,
-      boutons: [{ txt: '📜 Mes missions', fn: () => setTimeout(() => aventure.parlerNour(''), 60) }, { txt: `${monture(AV.monture).icone} ${nomMonture()}`, fn: () => setTimeout(() => parlerMonture(), 60) }, { txt: 'Merci !', fn: () => {} }] });
+      boutons: [{ txt: '📜 Mes missions', fn: () => setTimeout(() => ouvrirCarnet('missions'), 60) }, { txt: `${monture(AV.monture).icone} ${nomMonture()}`, fn: () => setTimeout(() => parlerMonture(), 60) }, { txt: 'Merci !', fn: () => {} }] });
   }
   function parlerMonture() {
     const n = soins.niveaux(AV.monture), u = soins.urgent(AV.monture), m = monture(AV.monture);
     const lieu = { soif: "à l'abreuvoir, près du puits", faim: 'à la mangeoire de foin, près du puits', energie: 'sur la litière de paille', repos: 'sur la litière de paille', bienEtre: 'avec un câlin : touche-' + (m.fem ? 'la' : 'le') };
-    dialogue({ titre: `${m.icone} ${m.nom}`, mascotte: 'nour',
+    dialogue({ titre: `${m.icone} ${m.nom}`, mascotte: 'loumi',
       texte: u ? `${m.nom} ${INFOS[u].texte}. Va ${lieu[u]} !` : `${m.nom} va très bien ! ${m.fem ? 'Elle' : 'Il'} est ${m.fem ? 'contente' : 'content'} : continue de prendre soin de ${m.fem ? 'elle' : 'lui'}.`,
       boutons: [{ txt: 'Compris !', fn: () => {} }] });
   }
@@ -428,7 +428,7 @@ async function demarrer() {
   function dialogue(p) {
     interface_ouverte = true; ctl.bloque = true;
     $('lecture-titre').textContent = p.titre;
-    $('lecture-mascotte').innerHTML = p.mascotte === 'nour' ? mascotte('loumi') : p.image ? `<img class="fiche-image" src="${p.image}" alt="">` : p.icone ? `<span class="fiche-icone">${p.icone}</span>` : '';
+    $('lecture-mascotte').innerHTML = p.mascotte === 'nour' ? mascotte('ablutions') : p.mascotte === 'loumi' ? mascotte('loumi') : p.image ? `<img class="fiche-image" src="${p.image}" alt="">` : p.icone ? `<span class="fiche-icone">${p.icone}</span>` : '';
     $('lecture').style.setProperty('--r', p.couleur || 'transparent'); $('lecture').classList.toggle('fiche', !!p.couleur);
     $('lecture-arabe').textContent = p.arabe || ''; $('lecture-arabe').classList.toggle('cache', !p.arabe);
     p = { ...p, texte: accord(p.texte) };
@@ -593,6 +593,7 @@ async function demarrer() {
     cc.querySelectorAll('[data-basculer]').forEach(b => b.onclick = () => { const a = article(b.dataset.basculer); equiper(a, !estEquipe(a)); ouvrirCarnet(ongletCarnet); });
     cc.querySelectorAll('[data-fiche]').forEach(b => b.onclick = () => ficheObjet(article(b.dataset.fiche), () => ouvrirCarnet(ongletCarnet)));
     cc.querySelectorAll('[data-perso]').forEach(b => b.onclick = () => { fermerCarnet(); ouvrirPerso(false); });
+    cc.querySelectorAll('[data-commencer-mission]').forEach(b => b.onclick = () => { fermerCarnet(); setTimeout(() => aventure.proposer(b.dataset.commencerMission), 60); });
     cc.querySelectorAll('[data-guider-mission]').forEach(b => b.onclick = () => { fermerCarnet(); guiderMission(b.dataset.guiderMission); });
     cc.querySelectorAll('[data-guider-jour]').forEach(b => b.onclick = () => { fermerCarnet(); guiderJour(b.dataset.guiderJour); });
     cc.querySelectorAll('[data-guider-quete]').forEach(b => b.onclick = () => { fermerCarnet(); guiderQuete(b.dataset.guiderQuete); });
@@ -610,8 +611,8 @@ async function demarrer() {
       // toutes les quêtes, rangées de la même façon
       const toutes = [
         ...Object.keys(MISSIONS).map(k => { const m = AV.missions[k], M = MISSIONS[k], meta = META_MISSIONS[k];
-          return { id: k, sorte: 'mission', titre: M.titre, icone: M.icone, cat: meta.cat, diff: meta.diff, objectif: meta.objectif, desc: m ? M.resume : 'Parle aux habitants et explore pour découvrir cette mission.',
-            n: m ? m.n : 0, total: M.total, recompense: M.recompense, etat: !m ? 'decouvrir' : m.etat === 'finie' ? 'finie' : 'encours', guidable: m && m.etat !== 'finie' && !!aventure.prochaineCible(J, k) }; }),
+          return { id: k, sorte: 'mission', lot: !m && !!M.lot && acces.missionOuverte(k), titre: M.titre, icone: M.icone, cat: meta.cat, diff: meta.diff, objectif: meta.objectif, desc: m || (M.lot && acces.missionOuverte(k)) ? M.resume : 'Parle aux habitants et explore pour découvrir cette mission.',
+            n: m ? m.n : 0, total: M.total, recompense: M.recompense, etat: !m ? (M.lot && acces.missionOuverte(k) ? 'disponible' : 'decouvrir') : m.etat === 'finie' ? 'finie' : 'encours', guidable: m && m.etat !== 'finie' && !!aventure.prochaineCible(J, k) }; }),
         ...Object.entries(QUETES).map(([k, q]) => { const n = Math.min(q.total, quetes.nombre(k)), ferme = q.region && !regions.ouverte(q.region);
           return { id: k, sorte: 'quete', titre: q.titre, icone: q.icone, cat: q.cat, diff: q.diff, objectif: q.objectif, desc: ferme ? '🔒 ' + regions.explication(q.region) : q.desc, n, total: q.total, recompense: q.recompense,
             etat: quetes.fini(k) ? 'finie' : ferme ? 'decouvrir' : n > 0 ? 'encours' : 'disponible', guidable: !ferme && !quetes.fini(k) && !!quetes.destination(k, J) }; }),
@@ -621,7 +622,7 @@ async function demarrer() {
             etat: p.n === p.total ? 'finie' : p.n > 0 ? 'encours' : 'disponible', guidable: p.n < p.total }; })
       ];
       const filtre = filtreQuetes, liste = toutes.filter(q => filtre === 'toutes' || q.cat === filtre);
-      const carte = q => `<div class="carte-mission ${q.etat === 'finie' ? 'finie' : ''}">${q.guidable ? `<button class="me-guider" data-guider-quete="${q.sorte}:${q.id}">🧭 Me guider</button>` : ''}
+      const carte = q => `<div class="carte-mission ${q.etat === 'finie' ? 'finie' : ''}">${q.lot ? `<button class="me-guider" data-commencer-mission="${q.id}">▶ Commencer</button>` : ''}${q.guidable ? `<button class="me-guider" data-guider-quete="${q.sorte}:${q.id}">🧭 Me guider</button>` : ''}
           <h4>${q.icone} ${q.titre}${q.etat === 'finie' ? '<span class="etiquette">Réussie ✓</span>' : q.etat === 'decouvrir' ? '<span class="etiquette">À découvrir</span>' : ''}</h4>
           <p class="puces"><span class="puce">${CATEGORIES_QUETES[q.cat].icone} ${CATEGORIES_QUETES[q.cat].nom}</span>${etoiles(q.diff)}</p>
           <p>${q.desc}</p><p class="objectif">🎯 ${q.objectif}</p>

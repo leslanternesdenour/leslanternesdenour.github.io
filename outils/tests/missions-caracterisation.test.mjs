@@ -27,8 +27,10 @@ function monde(etat = {}) {
   const objets = type => av.objets3d.filter(o => o.type === type && !o.parti);
   return { av, j, J, prendre, objets, etat };
 }
-// Livraison des objets perdus : aujourd'hui en parlant à Nour (parlerNour). L'étape 1 la remplacera par le panier de rendu : seul cet adaptateur changera.
-const livrer = m => m.av.parlerNour('');
+// Livraison des objets perdus : au panier de rendu (un lieu, plus un personnage), exactement comme le fait le joueur : on s'y rend et on utilise l'action « Déposer ».
+const livrer = m => { m.J.x = m.av.PANIER.x; m.J.z = m.av.PANIER.z; const a = m.av.interaction(m.J); assert.ok(a && a.label === 'Déposer', 'action « Déposer » au panier'); return a.faire(); };
+// Proposition / conseils : sans personnage (carnet) ; l'ancien nom parlerNour reste pour un habitant facultatif.
+const proposer = m => m.av.proposer('objets');
 const dernierTexte = m => m.j.dialogues[m.j.dialogues.length - 1].texte;
 
 test('départ : aucune mission commencée, sac vide', () => {
@@ -58,13 +60,13 @@ test('sac plein : un 4e objet est refusé avec un message, rien n\'est perdu ; l
   assert.ok(d[0].parti !== true, 'l\'objet refusé reste au sol');
   livrer(m); assert.equal(m.av.A.sac.length, 0); m.prendre(d[0]); assert.equal(m.av.A.sac.length, 1);
 });
-test('livraison sans mission commencée : la proposition des deux missions démarre lanternes + objets', () => {
-  const m = monde(); livrer(m); const d = m.j.dialogues[0]; assert.ok(d.boutons && d.boutons.length === 2);
+test('proposition (carnet) : le « Oui, je t\'aide ! » démarre lanternes + objets', () => {
+  const m = monde(); proposer(m); const d = m.j.dialogues[0]; assert.ok(d.boutons && d.boutons.length === 2);
   d.boutons[0].fn(); assert.ok(m.av.A.missions.lanternes && m.av.A.missions.objets); assert.equal(m.av.A.missions.objets.n, 0);
 });
 test('récompenses : jamais deux fois (une relecture / un rechargement ne redonne rien)', () => {
   const m = monde(); for (const o of m.objets('objet')) m.prendre(o); livrer(m);
-  const n = m.j.dons.length; livrer(m); livrer(m); assert.equal(m.j.dons.length, n);
+  const n = m.j.dons.length; assert.equal(m.av.rendre(), false); assert.equal(m.av.rendre(), false); assert.equal(m.j.dons.length, n, 'rendre à vide ne redonne rien');
 });
 test('sauvegarde et reprise : la progression, le sac et les objets ramassés survivent', () => {
   const a = monde(); a.prendre(a.objets('lanterne')[0]); a.prendre(a.objets('objet')[0]);
@@ -77,9 +79,8 @@ test('ancienne sauvegarde (sans champs récents) : chargée sans erreur, mission
   const m = monde({ aventure: { pieces: 120, missions: { lanternes: { etat: 'en_cours', n: 3, debut: 1 } }, ramasses: [], sac: ['seau'] } });
   assert.equal(m.av.A.missions.lanternes.n, 3); assert.deepEqual(m.av.A.sac, ['seau']); assert.ok(Array.isArray(m.av.A.animaux));
 });
-// Défaut latent constaté à l'étape 0 : un objet dans le sac SANS mission « objets » (état impossible en jeu normal, possible avec une sauvegarde abîmée)
-// fait planter la livraison actuelle (mission('objets').n). L'étape 1 doit le rendre robuste : la mission est créée et l'objet compté.
-test('robustesse : un objet dans le sac sans mission ne bloque jamais la livraison', { todo: 'défaut actuel (parlerNour) — corrigé à l\'étape 1' }, () => {
+// Défaut latent constaté à l'étape 0 (livraison qui plantait avec un objet dans le sac sans mission « objets ») : corrigé à l'étape 1.
+test('robustesse : un objet dans le sac sans mission ne bloque jamais la livraison', () => {
   const m = monde({ aventure: { pieces: 0, missions: {}, ramasses: [], sac: ['seau'] } });
   livrer(m); assert.deepEqual(m.av.A.sac, []); assert.equal(m.av.A.missions.objets.n, 1);
 });
@@ -104,7 +105,7 @@ test('« où aller ? » : la boussole pointe un objectif existant pour chaque mi
 function textesMissions() {
   const m = monde(), t = new Set();
   const noter = () => { for (const d of m.j.dialogues) { if (d.texte) t.add(d.texte); if (d.sous) t.add(d.sous); } m.j.dialogues.length = 0; };
-  livrer(m); noter();                                            // proposition
+  proposer(m); noter();                                          // proposition
   m.j.dialogues; for (const b of []) b;
   const m2 = monde(); m2.av.parlerNour(POINTS.nour.texte); for (const d of m2.j.dialogues) t.add(d.texte);          // proposition précédée de l'accueil
   const m3 = monde(); m3.prendre(m3.objets('objet')[0]); livrer(m3); noter2(m3, t);                              // il en manque 2
@@ -123,4 +124,30 @@ test('voix : chaque texte de mission garde la voix enregistrée qu\'il a aujourd
   const ref = JSON.parse(fs.readFileSync(GOLDEN, 'utf8'));
   for (const [txt, ids] of Object.entries(ref)) { assert.ok(txt in actuel, 'le texte existe toujours : ' + txt.slice(0, 50) + '…'); assert.deepEqual(actuel[txt], ids, 'même voix : ' + txt.slice(0, 50) + '…'); }
   assert.ok(Object.values(ref).some(v => v.length), 'le golden contient bien des textes avec voix');
+});
+
+// ---------- étape 1 : le système de missions ne dépend d'aucun personnage ----------
+test('le panier n\'agit que si l\'on porte des objets perdus (interface contextuelle)', () => {
+  const m = monde(); m.J.x = m.av.PANIER.x; m.J.z = m.av.PANIER.z; assert.equal(m.av.interaction(m.J), null, 'rien à déposer : aucune action');
+  m.prendre(m.objets('objet')[0]); m.J.x = m.av.PANIER.x; m.J.z = m.av.PANIER.z; const a = m.av.interaction(m.J); assert.equal(a.label, 'Déposer');
+});
+test('proposer / rendre / conseils : sans parler à personne, sans état caché', () => {
+  const m = monde(); assert.equal(m.av.proposer('lanternes'), true); m.j.dialogues[0].boutons[0].fn(); assert.ok(m.av.A.missions.lanternes && m.av.A.missions.objets);
+  m.av.proposer('objets'); assert.match(m.j.dialogues[1].texte, /Courage/, 'déjà commencées : des conseils');
+  assert.equal(m.av.proposer('tresor'), false, 'une mission sans lot ne se « propose » pas : elle se joue');
+});
+test('un habitant facultatif (ancien nom parlerNour) donne exactement les mêmes textes que le carnet', () => {
+  const a = monde(), b = monde(); a.av.parlerNour(''); proposer(b); assert.equal(a.j.dialogues[0].texte, b.j.dialogues[0].texte);
+  assert.equal(a.j.dialogues[0].titre, 'Nour', 'le donneur d\'origine garde son identité (étiquette)'); assert.equal(a.j.dialogues[0].mascotte, 'nour');
+});
+test('aucune dépendance : aventure.js et missions.js ne citent ni Loumi ni un personnage obligatoire', () => {
+  for (const f of ['aventure.js', 'missions.js']) { const src = fs.readFileSync(new URL('../../voyage/js/' + f, import.meta.url), 'utf8'); assert.ok(!/loumi/i.test(src), f + ' ne parle pas de Loumi'); }
+  const src = fs.readFileSync(new URL('../../voyage/js/aventure.js', import.meta.url), 'utf8');
+  assert.ok(!/id === 'nour'|cle === 'nour'/.test(src), 'aucune condition sur un personnage');
+});
+test('voix : mêmes phrases par le carnet ET par l\'ancien nom (aucune voix perdue)', () => {
+  const t1 = new Set(), t2 = new Set();
+  const a = monde(); a.av.parlerNour(''); for (const d of a.j.dialogues) t1.add(d.texte);
+  const b = monde(); proposer(b); for (const d of b.j.dialogues) t2.add(d.texte);
+  assert.deepEqual([...t1], [...t2]); for (const x of t2) assert.ok(idsPour(x).length > 0, 'voix : ' + x.slice(0, 40));
 });

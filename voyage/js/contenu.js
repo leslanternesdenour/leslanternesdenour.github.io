@@ -26,7 +26,7 @@ export const BIENTOT = [
 // leurs textes, versets et voix sont servis par le serveur, après vérification des droits (voir premium.js).
 export const POINTS = {
   nour: {
-    titre: 'Loumi te souhaite la bienvenue',
+    titre: 'Nour te souhaite la bienvenue',
     mascotte: 'nour',
     texte: "As-salâmou ʿalaykoum ! Bienvenue dans mon village. Le chameau Sablo t'attend à la sortie du village, du côté du soleil levant. Monte sur son dos, et partez découvrir l'oasis, le camp des caravanes et le grand désert !",
     decouverte: 'Nour m\'a accueilli au village'
