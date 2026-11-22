@@ -1,7 +1,7 @@
 // LES MYSTÈRES DU DÉSERT — moteur : 7 chapitres (observer → trouver les indices → résoudre l'énigme → ouvrir le passage → découvrir un trésor).
 // Réutilise le socle commun (aventures/commun/base.js : 3D, voix, sous-titres), les décors et objets de la Chasse aux mots, les personnages du Grand Voyage.
 // Aucun chronomètre, aucune sanction : une erreur donne une explication douce ; les étoiles ne dépendent que des aides demandées.
-import { creerBase, $, lsGet, lsSet, THREE, existe, arreterVoix, reglerVolume } from '../commun/base.js?v=1';
+import { creerBase, creerReaction, $, lsGet, lsSet, THREE, existe, arreterVoix, reglerVolume } from '../commun/base.js?v=2';
 import { creerObjet, decor, creerPassage } from './decors.js?v=1';
 import { emplacements } from '../chasse-aux-mots/objets3d.js?v=1';
 import { CHAPITRES, ORDRE_CHAPITRES, GUIDES, NOMS_OBJETS, PHRASES, BRAVOS, ERREURS } from './contenu.js?v=1';
@@ -23,7 +23,8 @@ function dire(etapes, fin) {
 }
 
 // ---------- chapitre ----------
-let ch = null, clues = [], guide = null, passage = null, tresorObj = null, ouv = 0, ouvrant = false, indice = null, inactif = 0;
+let guide = null; const reaction = creerReaction(() => guide);
+let ch = null, clues = [], passage = null, tresorObj = null, ouv = 0, ouvrant = false, indice = null, inactif = 0;
 async function creerGuide(def) {
   try { const { Enfant } = await import('../../voyage/js/personnages.js?v=4'); const e = new Enfant(false, { tunique: def.tunique, pantalon: def.pantalon, cheche: def.cheche, peau: def.peau, sac: false, barbe: def.barbe || null, voile: def.voile || null });
     e.racine.scale.setScalar(1.45); e.racine.position.set(-1.7, 0, 1.6); B.monde.add(e.racine); return e; } catch (er) { return null; }
@@ -47,7 +48,7 @@ B.onTap = e => { if (!ch || ch.phase !== 'indices') return; inactif = 0; const h
 function trouveIndice(c) {
   if (c.trouve) return; c.trouve = true; c.anim = 0.0001; ch.trouves++; indice = null;
   const D = CHAPITRES[ch.id]; ch.carnet.push(c.def); parler(`indice.${ch.id}.${c.i + 1}`, c.def.texte, GUIDES[D.guide].nom); majObjectif();
-  if (guide && guide.faire) guide.faire('salut'); const cible = ch;
+  reaction.jouer('joie'); const cible = ch;
   if (ch.trouves >= clues.length) setTimeout(() => { if (ch === cible) lancerEnigme(); }, existe(`indice.${ch.id}.${c.i + 1}`) ? 4800 : 3600);
 }
 function aideIndices() { const c = clues.find(x => !x.trouve); if (!c) return; indice = { c, t: 0 }; B.versAngle(Math.atan2(c.base.x, c.base.z - 1)); parler('aide', PHRASES.aide.texte, 'Loumi'); inactif = 0; }
@@ -89,7 +90,7 @@ function aideEnigme() { const e = ch.enigme, z = $('enigme-zone'); parler('aide'
   else if (e.type === 'memoire') jouerSuite();
   else if (e.type === 'code') { const i = ch.slots.findIndex((s, k) => e.options[s] !== e.ordre[k]); if (i >= 0) { ch.slots[i] = e.options.indexOf(e.ordre[i]) - 1; cycle(z.querySelectorAll('.slot')[i]); } } }
 function erreur(msg, apres) {
-  ch.erreurs++; const k = ERREURS[(ch.erreurs - 1) % ERREURS.length], D = D_();
+  ch.erreurs++; reaction.jouer('hum'); const k = ERREURS[(ch.erreurs - 1) % ERREURS.length], D = D_();
   if (ch.erreurs >= 2 && ch.erreurs % 2 === 0) { $('enigme-msg').textContent = D.enigme.pourquoi; parler(`pourquoi.${ch.id}`, D.enigme.pourquoi, 'Loumi'); } else { $('enigme-msg').textContent = msg || PHRASES[k].texte; parler(k, PHRASES[k].texte, 'Loumi'); }
   if (apres) apres(); if (ch.erreurs % 3 === 0 && !msg) setTimeout(() => ch && ch.phase === 'enigme' && aideEnigme(), 1500);
 }
@@ -98,7 +99,7 @@ $('enigme-ecouter').onclick = () => parler(`enigme.${ch.id}`, Q().question, GUID
 
 // ---------- succès : le passage s'ouvre, le trésor apparaît ----------
 function succes() {
-  ch.phase = 'fini'; majObjectif(); $('enigme').classList.add('cache'); ouvrant = true; const c = ch, D = D_();
+  ch.phase = 'fini'; reaction.jouer('joie'); majObjectif(); $('enigme').classList.add('cache'); ouvrant = true; const c = ch, D = D_();
   const r = G.terminerChapitre(etat, { chapitre: c.id, niveau: c.niv, aides: c.aides }); sauver();
   tresorObj = creerObjet(D.tresor.objet); tresorObj.scale.setScalar(1.6); tresorObj.position.set(passage.userData.piedestal.x, 0.55, passage.userData.piedestal.z); B.monde.add(tresorObj); B.versAngle(0);
   const k = BRAVOS[c.erreurs % BRAVOS.length];
@@ -155,7 +156,7 @@ B.onFrame = (dt, t) => {
     m.scale.setScalar(s); m.position.y = y; }
   if (ouvrant && passage) { ouv = Math.min(1, ouv + dt * 0.7); passage.userData.ouvrir(ouv); }
   if (tresorObj) { tresorObj.rotation.y += dt * 1.2; tresorObj.position.y = 0.9 + Math.sin(t * 2) * 0.08; }
-  if (guide) { guide.animer(dt, 0, t); guide.racine.lookAt(B.camera.position.x, 0, B.camera.position.z); }
+  if (guide) { guide.animer(dt, 0, t); reaction.maj(dt); guide.racine.lookAt(B.camera.position.x, 0, B.camera.position.z); }
 };
 B.chargerAudio(); afficherAccueil();
 window.__mystere = { etat: () => etat, ch: () => ch, entrer, aide, indices: () => clues.map(c => c.def.objet), tap: o => { const c = clues.find(x => x.def.objet === o && !x.trouve); if (c) trouveIndice(c); }, enigme: () => ch && ch.enigme, voix: () => [...B.dispo], ecran: o => { const c = clues.find(x => x.def.objet === o); return c ? B.ecran(c.base.x, 0.6, c.base.z) : null; }, tourner: a => { B.az = B.azCible = a; } };

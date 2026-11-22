@@ -61,3 +61,17 @@ export function creerBase({ canvas, dossierAudio, brume = '#f3dfb5', rayonCamera
   (function boucle(now) { const dt = Math.min(0.05, (now - der) / 1000); der = now; B.t += dt; requestAnimationFrame(boucle); B.az += (B.azCible - B.az) * Math.min(1, dt * 5); placer(); if (B.onFrame) B.onFrame(dt, B.t); renderer.render(scene, camera); })(der);
   return B;
 }
+
+// Réactions d'un personnage (Enfant) : joie (bras levés, petit saut), hum (réfléchit : tête penchée, main au menton). À appeler après personnage.animer().
+export function creerReaction(getPerso) {
+  const R = { type: null, t: 0 };
+  return {
+    jouer(type) { R.type = type; R.t = 0; },
+    maj(dt) {
+      const g = getPerso(); if (!R.type || !g || !g.bras) return; R.t += dt; const k = Math.min(1, R.t / 1.4), s = Math.sin(k * Math.PI);
+      if (R.type === 'joie') { g.bras.forEach((b, i) => { b.rotation.z = (i ? 1 : -1) * (0.3 + 2.3 * s); b.rotation.x = -0.2 * s; }); g.corps.position.y = Math.abs(Math.sin(k * Math.PI * 3)) * 0.16; }
+      else if (R.type === 'hum') { g.tete.rotation.z = 0.35 * s; g.bras[1].rotation.x = -1.3 * s; }
+      if (k >= 1) { R.type = null; g.corps.position.y = 0; g.tete.rotation.z = 0; }
+    }
+  };
+}
