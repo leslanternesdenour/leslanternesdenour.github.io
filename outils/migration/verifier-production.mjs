@@ -17,7 +17,7 @@ const PAGES = ['/', '/compte/', '/tarifs/', '/conditions/', '/admin/', '/apercu/
   const http = await fetch(BASE.replace(/^https:/, 'http:') + '/', { redirect: 'manual' }).catch(e => ({ status: 0 }));
   if (http.status === 0) console.log('∅ HTTP → HTTPS : non vérifiable depuis ce réseau (connexion en clair bloquée) : à contrôler à la main avec http://' + new URL(BASE).host);
   else t('HTTP → HTTPS : redirection automatique', [301, 302, 307, 308].includes(http.status) && /^https:/.test(http.headers.get ? (http.headers.get('location') || '') : ''), `HTTP ${http.status}`);
-  if (PROD) {
+  if (PROD && /(^|\.)leslanternesdenour\.fr$/.test(new URL(BASE).host)) {      // le contrôle www ne vaut que pour le domaine public
     const www = await fetch(BASE.replace('://', '://www.') + '/', { redirect: 'manual' }).catch(e => ({ status: 0 }));
     t('www : répond ou redirige vers le domaine principal', [200, 301, 302, 307, 308].includes(www.status), `HTTP ${www.status}`);
   }
@@ -28,7 +28,7 @@ const PAGES = ['/', '/compte/', '/tarifs/', '/conditions/', '/admin/', '/apercu/
 {
   const r = await get('/version.json'); let v = null; try { v = await r.json(); } catch (e) {}
   t('version.json : présent', !!v && !!v.commit, `HTTP ${r.status}`);
-  if (v) { t(`Branche déployée : ${PROD ? 'main' : 'preproduction'}`, v.branche === (PROD ? 'main' : 'preproduction'), v.branche); if (COMMIT) t('Commit déployé = commit attendu', v.commit.startsWith(COMMIT), v.commit); }
+  if (v) { t(`Branche déployée : ${PROD ? 'production (ou main)' : 'preproduction'}`, PROD ? ['production', 'main'].includes(v.branche) : v.branche === 'preproduction', v.branche); if (COMMIT) t('Commit déployé = commit attendu', v.commit.startsWith(COMMIT), v.commit); }
 }
 // ----- 3. Pages -----
 for (const p of PAGES) { const r = await get(p); const redir = r.status >= 300 && r.status < 400; let st = r.status; if (redir) { const l = r.headers.get('location') || ''; const r2 = await get(new URL(l, BASE + p).pathname); st = r2.status; }
