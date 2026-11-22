@@ -46,7 +46,7 @@ test('diagnostic (sans --appliquer) : contrôles, SAUVEGARDE complète, plan ; A
   assert.match(s, /DIAGNOSTIC terminé/); assert.match(s, /supprimer A leslanternesdenour\.fr → 185\.199\.108\.153/);
 });
 test('bascule : sauvegarde AVANT la première écriture ; GitHub supprimé ; MX/TXT/autres INTACTS ; CNAME proxifiés ; domaines ajoutés ; attente HTTPS', async () => {
-  const e = etatInitial(), conserves = e.records.filter(r => !/^(A|AAAA)$/.test(r.type) && r.name !== W).map(cle).sort(), { code, s } = await lancer(e, ['--appliquer']);
+  const e = etatInitial(), conserves = e.records.filter(r => !/^(A|AAAA)$/.test(r.type) && r.name !== W).map(cle).sort(), { code, s } = await lancer(e, ['--appliquer', '--dnssec-desactive']);
   assert.equal(code, 0, s); assert.ok(e.journal.length > 0 && e.journal.every(j => j.sauvegardeAvant), 'chaque écriture est postérieure à la sauvegarde');
   assert.ok(!e.records.some(r => /^185\.199\./.test(r.content) || /^2606:50c0/.test(r.content) || /github\.io/.test(r.content)), 'plus aucun enregistrement GitHub');
   for (const c of conserves) assert.ok(e.records.map(cle).includes(c), 'conservé : ' + c);
@@ -55,15 +55,15 @@ test('bascule : sauvegarde AVANT la première écriture ; GitHub supprimé ; MX/
   const ordre = e.journal.map(j => j.m + ' ' + (j.p.includes('/domains') ? 'domaine' : 'dns')); assert.ok(ordre.indexOf('POST domaine') < ordre.indexOf('DELETE dns'), 'domaines déclarés AVANT de toucher au DNS');
 });
 test('un enregistrement INCONNU sur l\'apex ou www : arrêt, rien n\'est modifié ni supprimé', async () => {
-  const e = etatInitial({ supplement: [{ id: 'x1', type: 'A', name: D, content: '203.0.113.7', proxied: false, ttl: 300 }] }), avant = e.records.map(cle).sort(), { code, s } = await lancer(e, ['--appliquer']);
+  const e = etatInitial({ supplement: [{ id: 'x1', type: 'A', name: D, content: '203.0.113.7', proxied: false, ttl: 300 }] }), avant = e.records.map(cle).sort(), { code, s } = await lancer(e, ['--appliquer', '--dnssec-desactive']);
   assert.equal(code, 1); assert.match(s, /enregistrements inattendus/); assert.equal(e.journal.length, 0); assert.deepEqual(e.records.map(cle).sort(), avant);
 });
 test('échec de création du CNAME après suppression : rétablissement AUTOMATIQUE, DNS identique à l\'origine', async () => {
-  const e = etatInitial(); e.echecCreationCname = true; const avant = e.records.map(cle).sort(), { code, s } = await lancer(e, ['--appliquer']);
+  const e = etatInitial(); e.echecCreationCname = true; const avant = e.records.map(cle).sort(), { code, s } = await lancer(e, ['--appliquer', '--dnssec-desactive']);
   assert.equal(code, 1); assert.match(s, /rétablissement automatique/); assert.deepEqual(e.records.map(cle).sort(), avant, 'DNS rétabli tel qu\'avant');
 });
 test('retour en arrière (--restaurer) après une bascule réussie : retour au DNS d\'origine', async () => {
-  const e = etatInitial(), avant = e.records.map(cle).sort(); let r = await lancer(e, ['--appliquer']); assert.equal(r.code, 0, r.s);
+  const e = etatInitial(), avant = e.records.map(cle).sort(); let r = await lancer(e, ['--appliquer', '--dnssec-desactive']); assert.equal(r.code, 0, r.s);
   const sauv = e.chemin; e.chemin = sauv;   // même sauvegarde
   const srv = serveur(e); await new Promise(x => srv.listen(0, '127.0.0.1', x));
   const sortie = await new Promise(x => { const c = spawn('node', ['outils/migration/basculer-cloudflare.mjs', '--compte', 'A', '--zone', 'Z', '--api', `http://127.0.0.1:${srv.address().port}/client/v4`, '--sauvegarde', sauv, '--restaurer']); let s = ''; c.stdout.on('data', d => s += d); c.stderr.on('data', d => s += d); c.on('close', code => x({ code, s })); });
@@ -71,10 +71,21 @@ test('retour en arrière (--restaurer) après une bascule réussie : retour au D
 });
 test('contrôles du projet : mauvaise branche de production, secret manquant ou paiement présent → arrêt AVANT toute écriture', async () => {
   for (const [nom, projet, motif] of [['branche', { production_branch: 'preproduction' }, /branche de production/i], ['secret', { deployment_configs: { production: { env_vars: { SESSION_SECRET: {} }, r2_buckets: {} } } }, /FIREBASE_COMPTE_SERVICE/], ['paiement', { deployment_configs: { production: { env_vars: { SESSION_SECRET: {}, FIREBASE_COMPTE_SERVICE: {}, CREATOR_UID: {}, STRIPE_CLE_SECRETE: {} }, r2_buckets: {} } } }, /STRIPE/]]) {
-    const e = etatInitial({ projet }), { code, s } = await lancer(e, ['--appliquer']); assert.equal(code, 1, nom); assert.match(s, motif, nom); assert.equal(e.journal.length, 0, nom);
+    const e = etatInitial({ projet }), { code, s } = await lancer(e, ['--appliquer', '--dnssec-desactive']); assert.equal(code, 1, nom); assert.match(s, motif, nom); assert.equal(e.journal.length, 0, nom);
   }
 });
 test('le jeton n\'est JAMAIS lu, écrit ni affiché par l\'outil (il est ajouté par le proxy de la session)', () => {
   const src = fs.readFileSync('outils/migration/basculer-cloudflare.mjs', 'utf8').replace(/^\/\/.*$/gm, '');
   assert.ok(!/Authorization|Bearer|process\.env\.(CLOUDFLARE|CF_API|TOKEN)|API_TOKEN|X-Auth/i.test(src), 'aucune lecture de jeton');
+});
+
+test('VERROU DNSSEC : --appliquer sans --dnssec-desactive est refusé AVANT tout appel (aucune sauvegarde, aucune écriture)', async () => {
+  const e = etatInitial(), { code, s } = await lancer(e, ['--appliquer']);
+  assert.equal(code, 1); assert.match(s, /exige --dnssec-desactive/); assert.equal(e.journal.length, 0); assert.ok(!fs.existsSync(e.chemin), 'aucune sauvegarde écrite : l\'outil s\'est arrêté avant tout appel');
+});
+test('messagerie : MX/TXT/SPF/DKIM annoncés comme intouchables ; absence de MX et hôtes de courrier proxifiés signalés sans rien modifier', async () => {
+  const e = etatInitial({ supplement: [{ id: 'p1', type: 'A', name: 'mail.' + D, content: '203.0.113.9', proxied: true, ttl: 1 }, { id: 'p2', type: 'TXT', name: 'default._domainkey.' + D, content: 'v=DKIM1; k=rsa; p=ABC', proxied: false, ttl: 3600 }] });
+  const avant = e.records.map(cle).sort(), { code, s } = await lancer(e);
+  assert.equal(code, 0, s); assert.match(s, /2 MX, 3 TXT/); assert.match(s, /SPF présent/); assert.match(s, /DKIM présent/); assert.match(s, /mail\.leslanternesdenour\.fr \(A\) est PROXIFIÉ/); assert.equal(e.journal.length, 0); assert.deepEqual(e.records.map(cle).sort(), avant);
+  const e2 = etatInitial(); e2.records = e2.records.filter(r => r.type !== 'MX'); const r2 = await lancer(e2); assert.match(r2.s, /AUCUN enregistrement MX/);
 });

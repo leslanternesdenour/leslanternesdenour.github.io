@@ -1,17 +1,17 @@
 {
   "texte": "مَرْحَبًا ! Bienvenue dans le Monde de Nour !",
   "voix": "Nour - Narratrice (maitresse), ElevenLabs eleven_v4, stabilité 0,5 / similarité 0,75",
-  "prise": 1,
-  "duree": 3.631,
-  "coupe": 1.12,
-  "finVoix": 3.26,
-  "valide": false,
+  "duree": 3.736,
+  "coupe": 1.24,
+  "finVoix": 3.35,
+  "valide": true,
   "note": "AUCUN clip n'est en service tant que le client n'a pas validé la prononciation de مَرْحَبًا. Candidats : /outils/voix/lot?n=22. Après validation : python3 outils/voix/choisir-accueil.py 22 <N> --valide",
-  "fichier": null,
+  "fichier": "accueil-portail.mp3",
   "rejete": {
     "prise": 1,
     "date": "2026-11-22",
     "raison": "prononciation de مَرْحَبًا refusée par le client",
     "source": "outils/voix/lots/lot21/monde-accueil-portail-prise1.mp3 (conservée)"
-  }
+  },
+  "source": "lot 22, candidat B"
 }

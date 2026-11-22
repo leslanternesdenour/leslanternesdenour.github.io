@@ -1,6 +1,7 @@
 // BASCULE DU DOMAINE PUBLIC VERS CLOUDFLARE PAGES, par l'API Cloudflare (jeton limité : Pages « Edit » + DNS « Edit » de la zone du domaine).
 //   node outils/migration/basculer-cloudflare.mjs --compte <ACCOUNT_ID> --zone <ZONE_ID>                 DIAGNOSTIC seul : contrôles, SAUVEGARDE DNS, plan ; aucune modification distante
-//   node outils/migration/basculer-cloudflare.mjs --compte … --zone … --appliquer                        exécute la bascule (domaines Pages, DNS, attente HTTPS)
+//   node outils/migration/basculer-cloudflare.mjs --compte … --zone … --appliquer --dnssec-desactive    exécute la bascule (domaines Pages, DNS, attente HTTPS)
+//        --dnssec-desactive = CONFIRMATION du client que DNSSEC est désactivé chez le registrar ET que le DS a disparu des résolveurs publics (sinon le domaine devient injoignable) ; --appliquer la EXIGE.
 //   node outils/migration/basculer-cloudflare.mjs --compte … --zone … --restaurer                        retour en arrière : rétablit les enregistrements sauvegardés
 // Options : --projet lanternes-de-nour  --domaine leslanternesdenour.fr  --api https://api.cloudflare.com/client/v4  --sauvegarde docs/migration/dns-avant-bascule.json
 // Le JETON n'est JAMAIS lu ni écrit ici : le proxy de la session l'ajoute aux requêtes vers api.cloudflare.com (réglages de l'environnement, « Network secrets »).
@@ -16,6 +17,9 @@ const CIBLE = `${PROJET}.pages.dev`, WWW = `www.${DOMAINE}`;
 if (!COMPTE || !ZONE) { console.error('Il faut --compte <ACCOUNT_ID> et --zone <ZONE_ID> (identifiants non secrets visibles dans le tableau de bord).'); process.exit(2); }
 let ok = 0, ko = 0; const t = (nom, c, d = '') => { c ? ok++ : ko++; console.log(`${c ? '✓' : '✗'} ${nom}${d && !c ? ' — ' + d : ''}`); return c; };
 const arret = m => { console.error('\nARRÊT : ' + m); process.exit(1); };
+// VERROU DNSSEC : modifier le DNS (ou changer de serveurs de noms) alors que DNSSEC est actif chez le registrar rend le domaine injoignable pour beaucoup de visiteurs.
+// Aucune écriture sans confirmation explicite du client ; vérifié AVANT tout appel à l'API.
+if (A.includes('--appliquer') && !A.includes('--dnssec-desactive')) arret('--appliquer exige --dnssec-desactive : le client doit avoir confirmé que DNSSEC est désactivé chez le registrar (statut « désactivé », DS absent des résolveurs publics). Aucun appel n\'a été fait.');
 
 // ----- client API (curl : respecte le proxy de la session ; aucun jeton ici) -----
 function api(methode, chemin, corps) {
@@ -68,6 +72,15 @@ fs.writeFileSync(SAUVEGARDE, JSON.stringify({ date: new Date().toISOString(), do
 const relu = JSON.parse(fs.readFileSync(SAUVEGARDE, 'utf8'));
 t(`Sauvegarde écrite ET relue : ${relu.enregistrements.length} enregistrements → ${SAUVEGARDE}`, relu.enregistrements.length === avant.length && avant.length > 0);
 if (ko) arret('sauvegarde invalide : aucune modification.');
+
+// ----- messagerie : ce que l'outil ne touchera JAMAIS, et ce qui pourrait la casser -----
+{
+  const mx = avant.filter(r => r.type === 'MX'), txt = avant.filter(r => r.type === 'TXT');
+  console.log(`   messagerie (jamais modifiée) : ${mx.length} MX, ${txt.length} TXT${txt.some(r => /v=spf1/i.test(r.content)) ? ' (SPF présent)' : ''}${txt.some(r => /v=DMARC1/i.test(r.content)) ? ', DMARC présent' : ''}${avant.some(r => /_domainkey/.test(r.name)) ? ', DKIM présent' : ''}`);
+  if (!mx.length) console.log('   ⚠ AUCUN enregistrement MX dans la zone : si une messagerie existe sur ce domaine, des enregistrements n\'ont pas été importés. Comparer avec l\'ancienne zone (outils/migration/comparer-zones.mjs) AVANT de changer les serveurs de noms.');
+  const courrier = avant.filter(r => ['A', 'AAAA', 'CNAME'].includes(r.type) && r.proxied && /^(mail|smtp|imap|pop3?|webmail|autoconfig|autodiscover|mx\d*|ftp|sftp|ssh|vpn)\./i.test(r.name));
+  for (const r of courrier) console.log(`   ⚠ ${r.name} (${r.type}) est PROXIFIÉ (nuage orange) : un hôte de messagerie/connexion doit être en « DNS seul » (nuage gris), sinon courrier ou connexion cassés. Non modifié par cet outil.`);
+}
 
 // ===== 3. PLAN =====
 console.log(`\n== 3. Plan ==`);

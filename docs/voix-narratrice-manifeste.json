@@ -1567,7 +1567,7 @@
  "monde/accueil-portail": {
   "source": "narratrice",
   "fichier": "monde/voix/accueil-portail.mp3",
-  "valide": false,
-  "note": "Prise 1 sur 3 (lot 21) : prononciation de مَرْحَبًا à valider par le client ; voir monde/voix/accueil-portail.json"
+  "valide": true,
+  "note": "Lot 22, candidat B (mot arabe مَرْحَبَا seul, eleven_v4, mode arabe + français) : candidats B et D validés par le client le 22/11/2026 ; A, C, E, F, G, H refusés."
  }
 }

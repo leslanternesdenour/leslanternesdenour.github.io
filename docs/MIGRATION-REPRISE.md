@@ -14,6 +14,16 @@ Rédigé le 22/11/2026. Le client a demandé : « **reprends la migration** » a
 2. Enregistré ce jeton dans les **réglages de l'environnement** (menu de l'environnement dans la barre de titre → *Edit* → **Network secrets** / API credentials) : hôte `api.cloudflare.com`, en-tête `Authorization`, valeur `Bearer <jeton>`. Le formulaire sécurisé de la session précédente était inutilisable (session trop longue) : **ne jamais demander le jeton dans le chat**.
 3. Relevé deux identifiants NON secrets : **Account ID** et **Zone ID** de `leslanternesdenour.fr` (page *Overview* de la zone). Si la zone n'est pas dans son compte Cloudflare (DNS chez le registrar), la bascule DNS est impossible par jeton : il faut d'abord ajouter le site à Cloudflare (forfait gratuit) et changer les serveurs de noms chez le registrar (action du client) → s'arrêter et lui expliquer précisément.
 
+## 2 bis. PRÉREQUIS DNS (OVH → Cloudflare) — à valider AVANT toute modification
+Contexte : domaine chez **OVH**, zone ajoutée à Cloudflare (forfait gratuit) ; **DNSSEC** en cours de désactivation chez OVH ; **serveurs de noms pas encore changés** (au moment de la rédaction). Ordre impératif :
+1. **DNSSEC OFF** : statut OVH « désactivé », ET le DS a disparu des résolveurs publics. Vérification (Windows, sans Node) :
+   `nslookup -type=DS leslanternesdenour.fr 1.1.1.1` puis la même avec `8.8.8.8` → ne doit renvoyer **aucun** enregistrement DS (aussi : https://dnsviz.net/d/leslanternesdenour.fr/dnssec/). Marge de prudence recommandée : **1 heure de plus** (le DS peut rester en cache chez des résolveurs). Tant que ce n'est pas le cas : **ne pas changer les serveurs de noms**.
+2. **Comparer les zones** (messagerie !) : copier la zone OVH (Manager → le domaine → *Zone DNS* → *Modifier en mode textuel*) et l'export Cloudflare (DNS → Enregistrements → *Exporter*) dans deux fichiers, puis
+   `node outils/migration/comparer-zones.mjs ovh.txt cloudflare.txt` → doit afficher « Aucun enregistrement … ne manque ». S'il en manque (surtout MX / SPF / DKIM / DMARC / autoconfig) : les ajouter dans Cloudflare **avant** l'étape 3 ; les hôtes de messagerie (`mail`, `smtp`, `imap`, `autoconfig`…) en **DNS seul (nuage gris)**.
+3. **Changer les serveurs de noms chez OVH** (Noms de domaine → le domaine → *Serveurs DNS* → *Modifier*) : mettre les **deux serveurs Cloudflare** affichés dans Cloudflare pour la zone (`xxx.ns.cloudflare.com`). Les libellés OVH peuvent évoluer. Le site continue de fonctionner (les enregistrements GitHub importés sont identiques) ; propagation : de quelques minutes à quelques heures.
+4. Attendre que la zone soit **« Active »** dans Cloudflare (e-mail de Cloudflare, ou bouton *Vérifier les serveurs de noms*), puis seulement : jeton, nouvelle session, bascule.
+**Verrou de l'outil** : `basculer-cloudflare.mjs --appliquer` **refuse de s'exécuter** sans `--dnssec-desactive`, drapeau à ne passer qu'après la confirmation écrite du client que DNSSEC est OFF (testé). Le diagnostic (sans `--appliquer`) reste possible à tout moment : il ne modifie rien et écrit la sauvegarde DNS.
+
 ## 3. Déroulé (outil prêt et testé : `outils/migration/basculer-cloudflare.mjs`, 7 tests contre une fausse API)
 ```bash
 # 0. contrôle d'accès (lecture) — doit répondre success:true
@@ -21,11 +31,12 @@ curl -s https://api.cloudflare.com/client/v4/accounts/<ACCOUNT_ID>/pages/project
 # 1. DIAGNOSTIC : contrôles du projet, SAUVEGARDE DNS (docs/migration/dns-avant-bascule.json), plan. AUCUNE modification distante.
 node outils/migration/basculer-cloudflare.mjs --compte <ACCOUNT_ID> --zone <ZONE_ID>
 # 2. Si le plan est conforme (seuls les enregistrements GitHub sont supprimés ; MX/TXT intacts ; aucun enregistrement inconnu) :
-node outils/migration/basculer-cloudflare.mjs --compte <ACCOUNT_ID> --zone <ZONE_ID> --appliquer
+node outils/migration/basculer-cloudflare.mjs --compte <ACCOUNT_ID> --zone <ZONE_ID> --appliquer --dnssec-desactive   # seulement si le client a confirmé DNSSEC OFF
 # 3. VÉRIFICATION COMPLÈTE du domaine public
 NODE_USE_ENV_PROXY=1 NODE_EXTRA_CA_CERTS=/root/.ccr/ca-bundle.crt node outils/migration/verifier-production.mjs https://leslanternesdenour.fr --mode production --navigateur
 ```
 - **Committer la sauvegarde DNS** (`docs/migration/dns-avant-bascule.json`, enregistrements publics, aucun secret) sur `preproduction`, puis `bash outils/migration/promouvoir.sh --pousser` pour garder `production` synchronisée.
+- Le diagnostic affiche aussi la **messagerie** (nombre de MX/TXT, SPF/DKIM/DMARC) et signale tout hôte de courrier **proxifié** ; **MX/TXT ne sont jamais modifiés**.
 - **Arrêts obligatoires** (ne rien forcer) : enregistrement inattendu sur l'apex/`www` ; contrôle du projet en échec (branche ≠ `production`, secret manquant, variable STRIPE présente) ; zone absente.
 - **Retour en arrière** : `node outils/migration/basculer-cloudflare.mjs --compte … --zone … --restaurer` (supprime nos CNAME, recrée les enregistrements GitHub sauvegardés). Attention : si `main` a été modifiée entre-temps, GitHub Pages servirait le NOUVEAU `main` brut (sans fonctions serveur) : avant un retour DNS, restaurer d'abord `main` : `git push origin sauvegarde-production-2026-11-22:main --force-with-lease`.
 - HTTP→HTTPS ne se contrôle pas depuis le réseau de la session (connexion en clair bloquée) : le demander au client (`http://leslanternesdenour.fr` doit rediriger vers `https://`).
@@ -38,7 +49,7 @@ NODE_USE_ENV_PROXY=1 NODE_EXTRA_CA_CERTS=/root/.ccr/ca-bundle.crt node outils/mi
 4. Mettre à jour `docs/MIGRATION-PRODUCTION.md` (état final) et le rapport demandé : transféré, opérationnel, fichiers/branches, commits, modifications DNS, tests, erreurs, restes, adresse publique définitive.
 
 ## 5. Points encore OUVERTS indépendants de la migration (à rappeler au client)
-- **Voix du portail** : la prononciation de « مَرْحَبًا » a été rejetée ; **aucune voix n'est en service**. Candidats à écouter : `https://preproduction.lanternes-de-nour.pages.dev/outils/voix/lot?n=22` ; après validation : `python3 outils/voix/choisir-accueil.py 22 <A..H> --valide` (puis `promouvoir.sh --pousser`). Sans candidat correct : enregistrement humain.
+- **Voix du portail** : validée par le client le 22/11 (lot 22, candidats B et D) ; **B en service** (D disponible via `choisir-accueil.py 22 D --valide`). Question ouverte : la légende affichée « مَرْحَبًا » (tanwin) diffère du son validé « مَرْحَبَا ».
 - **Portail** : ancienne animation aux lanternes restaurée, **en attente de validation explicite du client**.
 - Aucun paiement réel (Stripe non configuré en production), stockage Premium non activé, 5 maisons Premium et 13 voix arabes humaines à venir, connexion Apple reportée.
 - Voix du Grand Voyage : branche `voix-reparation` jamais déployée (à écouter avant décision).
