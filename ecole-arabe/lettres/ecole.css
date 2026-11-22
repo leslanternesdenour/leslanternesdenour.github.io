@@ -12,7 +12,7 @@ button{font:inherit;cursor:pointer;touch-action:manipulation}
 #ecran{position:relative;z-index:5;min-height:100vh;padding:86px 14px 150px;max-width:980px;margin:0 auto}
 #guide{position:fixed;left:0;bottom:0;z-index:6;pointer-events:none}
 #guide .loumi{position:fixed;left:122px;bottom:14px;width:54px;pointer-events:none}
-.panneau-mk{display:block;width:min(78vw,340px);margin:0 auto 4px;filter:drop-shadow(0 6px 10px #0009);border-radius:22px}
+.panneau-mk{display:block;width:min(78vw,340px);margin:0 auto 12px;filter:drop-shadow(0 6px 10px #0009);border-radius:22px}
 @keyframes saut{50%{transform:translateY(-16px)}}@keyframes hoche{25%{transform:rotate(-6deg)}75%{transform:rotate(6deg)}}
 .sous-titres{position:fixed;left:50%;transform:translateX(-50%);bottom:14px;max-width:min(92vw,640px);margin:0;padding:10px 16px;background:#000c;border-radius:16px;font-size:clamp(15px,3.8vw,20px);z-index:30;text-align:center;pointer-events:none}
 .sous-titres b{color:var(--or)}
