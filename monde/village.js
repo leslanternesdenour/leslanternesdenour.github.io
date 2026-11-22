@@ -194,6 +194,7 @@ function ouvrirPanneau(b) {
   $('pan-entrer').classList.toggle('cache', !ouvert);
   $('pan-bientot').classList.toggle('cache', ouvert);
   $('pan-bientot').lastElementChild.textContent = b.etat === 'reserve' ? TEXTE_RESERVE : 'Bientôt ! Cette maison se prépare.';
+  $('pan-compte').classList.toggle('cache', b.etat !== 'reserve');   // maison Premium : les parents sont orientés vers la connexion / les formules
   $('pan-entrer').lastElementChild.textContent = b.apercu ? 'Entrer (aperçu Créateur)' : 'Entrer';
   if (ouvert) $('pan-entrer').href = b.lien;
   $('panneau').classList.remove('cache');

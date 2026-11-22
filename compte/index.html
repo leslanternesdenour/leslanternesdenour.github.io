@@ -119,6 +119,10 @@ input[type=text],select{width:100%;border-radius:14px;border:2px solid #3a2a7d;b
     <h2>Bonjour ! <span class="badge" id="e-statut"></span></h2>
     <p>Connecté avec <b id="e-email"></b>.</p>
     <p class="petit" id="e-offre"></p>
+    <div id="retour-bloc" class="choix cache">
+      <p id="retour-texte"></p>
+      <a class="gros" id="retour-lien" href="../">▶ Continuer</a>
+    </div>
     <div id="e-createur" class="choix cache">
       <p><b>Ce compte est désigné comme Créateur.</b> Touchez le bouton une seule fois pour activer l'espace Créateur (administration et aperçu).</p>
       <button id="createur-activer">Activer l'espace Créateur</button>
@@ -199,6 +203,33 @@ const params = new URLSearchParams(location.search);
 // le code d'invitation ne reste pas dans l'adresse (ni dans l'historique) : il est gardé le temps de la session
 if (params.get('invite')) { sessionStorage.setItem('ldn_invite', params.get('invite')); params.delete('invite'); history.replaceState(null, '', location.pathname + (params.toString() ? '?' + params : '')); }
 const invitation = () => sessionStorage.getItem('ldn_invite');
+// ---------- retour : la page que le visiteur voulait ouvrir avant de se connecter ----------
+// Seules les pages du site sont acceptées (jamais une adresse extérieure, jamais /compte/ lui-même : pas de boucle).
+const PAGES_RETOUR = { '': "l'accueil", monde: 'le village', voyage: 'le Grand Voyage', ablutions: 'les ablutions', priere: 'la prière', calendrier: 'le calendrier du Ramadan', tarifs: 'les formules', decouvrir: 'la page Découvrir', admin: "l'administration", apercu: "l'aperçu Créateur" };
+function retourValide(r) {
+  try {
+    if (!r || r[0] !== '/' || r[1] === '/' || r.indexOf('\\') >= 0) return null;
+    const u = new URL(r, location.origin); if (u.origin !== location.origin) return null;
+    const seg = u.pathname.split('/')[1] || ''; if (!(seg in PAGES_RETOUR)) return null;
+    return u.pathname + u.search + u.hash;
+  } catch (e) { return null; }
+}
+if (params.get('retour')) {
+  const r = retourValide(params.get('retour')); if (r) sessionStorage.setItem('ldn_retour', r); else sessionStorage.removeItem('ldn_retour');
+  params.delete('retour'); history.replaceState(null, '', location.pathname + (params.toString() ? '?' + params : '') + location.hash);
+}
+const retour = () => retourValide(sessionStorage.getItem('ldn_retour'));
+const nomRetour = r => PAGES_RETOUR[(new URL(r, location.origin).pathname.split('/')[1]) || ''] || 'la page demandée';
+// Connecté : si un enfant joue déjà, on repart tout de suite vers la page voulue ; sinon on propose de créer / choisir un profil, puis de continuer.
+function continuer(auto) {
+  const r = retour(), b = $('retour-bloc'); if (!b) return;
+  if (!r) { b.classList.add('cache'); return; }
+  if (auto && C.profilActif()) { sessionStorage.removeItem('ldn_retour'); location.replace(r); return; }
+  $('retour-lien').href = r; $('retour-lien').textContent = '▶ Continuer vers ' + nomRetour(r);
+  $('retour-texte').textContent = C.profilActif() ? 'Tout est prêt. Vous pouvez reprendre là où vous étiez.' : (total ? 'Choisissez d\'abord qui joue (plus bas), puis continuez.' : 'Créez d\'abord le profil de votre enfant (plus bas), puis continuez.');
+  $('retour-lien').onclick = () => sessionStorage.removeItem('ldn_retour');
+  b.classList.remove('cache');
+}
 let D = null, enfants = [], suite = null, total = 0, jetonEnAttente = null;
 
 
@@ -230,7 +261,7 @@ async function demarrer() {
   await reglagesFamille();
   if (!D.connecte || D.fournisseur === 'google.com') C.prechargerAuth();   // fenêtre Google ouverte immédiatement au clic (Safari / iPhone)
   $('v-invitation').classList.toggle('cache', !invitation());
-  if (!D.connecte) { voir('v-acces'); if (location.hash === '#inscription' || invitation()) onglet('inscription'); return; }
+  if (!D.connecte) { voir('v-acces'); onglet(location.hash === '#inscription' || invitation() ? 'inscription' : 'connexion'); if (retour()) etat('Connectez-vous (ou créez un compte) pour continuer vers ' + nomRetour(retour()) + '.'); return; }
   if (params.get('paiement') === 'ok') etat('Merci ! Le paiement (mode test) est confirmé. La formule s\'affiche dès que la banque l\'a validé.');
   $('e-email').textContent = D.email + (D.fournisseur === 'google.com' ? ' (compte Google)' : '');
   const google = D.fournisseur === 'google.com'; $('s-mdp-label').classList.toggle('cache', google); $('s-google-info').classList.toggle('cache', !google); $('e-statut').textContent = C.NOMS_STATUT[D.statut] + (D.niveau !== 'gratuit' && D.statut !== 'creator' ? ' · ' + C.NOMS_NIVEAU[D.niveau] : '');
@@ -244,6 +275,7 @@ async function demarrer() {
   voir('v-espace', 'v-enfants', 'v-offre', 'v-securite');
   afficherOffre();
   await chargerEnfants(true);
+  continuer(true);
 }
 
 // ---------- connexion / inscription ----------
@@ -314,7 +346,7 @@ async function chargerEnfants(depuisDebut) {
     const s = document.createElement('small'); s.textContent = (x.tranche === '3-5' ? '3 à 5 ans' : '6 à 10 ans'); d.querySelector('.nom').appendChild(s);
     if (x.gele) { const b = document.createElement('span'); b.className = 'badge froid'; b.textContent = '❄️ en pause'; b.title = 'Profil en trop pour la formule actuelle : il est gardé, rien n\'est effacé.'; d.appendChild(b); }
     const jouer = document.createElement('button'); jouer.textContent = x.id === actif ? 'Joue ici' : 'Choisir'; jouer.className = x.id === actif ? 'doux' : '';
-    jouer.onclick = () => occupe(jouer, async () => { await C.choisirEnfant(x.id, D); D.profilActif = x.id; await chargerEnfants(true); etat(x.surnom + ' joue sur cet appareil.'); });
+    jouer.onclick = () => occupe(jouer, async () => { await C.choisirEnfant(x.id, D); D.profilActif = x.id; await chargerEnfants(true); etat(x.surnom + ' joue sur cet appareil.'); continuer(true); });
     const suppr = document.createElement('button'); suppr.className = 'danger'; suppr.textContent = '✕'; suppr.title = 'Supprimer ce profil'; suppr.setAttribute('aria-label', 'Supprimer le profil ' + x.surnom);
     suppr.onclick = () => occupe(suppr, async () => { if (!confirm('Supprimer le profil « ' + x.surnom + ' » et ses progrès enregistrés ?')) return;
       await C.api('/api/enfants/' + x.id, { methode: 'DELETE' }); if ((C.profilActif() || {}).id === x.id) localStorage.removeItem('ldn_profil_actif'); await chargerEnfants(true); });
@@ -331,7 +363,7 @@ $('enf-ajouter').onclick = () => { $('f-enfant').classList.remove('cache'); $('e
 $('f-enfant').onsubmit = e => { e.preventDefault(); occupe(e.submitter, async () => {
   const r = await C.api('/api/enfants', { methode: 'POST', corps: { surnom: $('enf-surnom').value.trim(), tranche: $('enf-tranche').value, avatar: $('enf-avatar').value } });
   if (!C.profilActif()) await C.choisirEnfant(r.id, D);
-  $('enf-surnom').value = ''; $('f-enfant').classList.add('cache'); await chargerEnfants(true); etat('Profil ajouté.');
+  $('enf-surnom').value = ''; $('f-enfant').classList.add('cache'); await chargerEnfants(true); etat('Profil ajouté.'); continuer(true);
 }); };
 $('entrer').onclick = () => { if (!C.profilActif() && total) return etat('Choisissez d\'abord qui joue.', true); location.href = '../monde/?ouverture=1'; };
 
