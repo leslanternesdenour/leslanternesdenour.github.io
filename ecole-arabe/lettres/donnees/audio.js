@@ -1,10 +1,10 @@
 // L'ÉCOLE DES LETTRES ARABES — inventaire AUDIO centralisé (source unique des phrases dites). Chaque phrase : identifiant unique, texte, rôle vocal, langue.
-// Voix (outils/voix/jeux/voix-roles.json) : « nour » = la voix de Nour (la mascotte, c'est SON école), « loumi », « narratrice ». Seulement les 10 voix « Nour » du compte ; aucune voix créée.
+// Voix (outils/voix/jeux/voix-roles.json) : « nour » = la voix réservée à la mascotte de l'école (Maktoub s'exprime avec elle ; aucune voix créée), « loumi », « narratrice ». Seulement les 10 voix « Nour » du compte ; aucune voix créée.
 // Les phrases ARABES (noms, sons, mots) sont générées avec la voix de la narratrice en langue arabe : leur prononciation est « À VALIDER » par une personne compétente (jamais considérée comme validée).
 // Un audio absent n'est jamais annoncé : le jeu affiche alors le sous-titre et reste jouable (sauf le « son mystérieux », qui attend son audio).
 import { LETTRES, CHAPITRES } from './lettres.js?v=1';
 export const PHRASES = {
-  bienvenue: { role: 'nour', texte: "Bonjour ! Je suis Nour. Bienvenue à l'école des lettres arabes !" },
+  bienvenue: { role: 'nour', texte: "Bonjour ! Je suis Maktoub, ton livre compagnon. Bienvenue à l'école des lettres arabes !" },
   age: { role: 'nour', texte: 'Quel âge as-tu ? Touche ton âge.' },
   placement: { role: 'nour', texte: 'Faisons un petit jeu pour voir les lettres que tu connais déjà. Ce n\'est pas une épreuve !' },
   placement_q: { role: 'nour', texte: 'Quelle est cette lettre ?' },
@@ -20,7 +20,7 @@ export const PHRASES = {
   parcours_sons: { role: 'nour', texte: 'Écoute la suite de sons, puis touche les lettres dans le même ordre.' },
   jumelles: { role: 'nour', texte: 'Ces lettres se ressemblent. Regarde bien leurs points !' },
   intrus: { role: 'nour', texte: "Trouve la lettre qui n'est pas pareille." },
-  defi: { role: 'nour', texte: 'Voici le défi de Nour : un petit peu de tout ce que tu sais !' },
+  defi: { role: 'nour', texte: 'Voici le défi de Maktoub : un petit peu de tout ce que tu sais !' },
   bravo: { role: 'nour', texte: 'Bravo !' }, bravo2: { role: 'nour', texte: 'Très bien, tu as de bons yeux !' }, bravo3: { role: 'nour', texte: 'Magnifique, tu as réussi !' },
   encore: { role: 'loumi', texte: 'Essaie encore, tu peux le faire !' }, encore2: { role: 'loumi', texte: 'Regarde bien, tu y es presque.' },
   aide: { role: 'loumi', texte: 'Je te donne un petit coup de pouce.' },

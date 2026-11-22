@@ -11,7 +11,7 @@ export default async function jumelles(ctx, { lettres, tours = 4 }) {
   const rng = ctx.rng;
   return jouerChoix(ctx, { titre: '👯 Les lettres jumelles', tours, construire(i) {
     const grp = groupes[Math.floor(rng() * groupes.length)], cible = C.choisirCible(ctx.s, rng, grp), ids = melanger(grp.slice(0, ctx.groupe() === 'g34' ? 2 : 4).includes(cible) ? grp.slice(0, ctx.groupe() === 'g34' ? 2 : 4) : [cible, ...grp.filter(x => x !== cible).slice(0, 2)], rng), echelle = tailleCommune(ids), l = PAR_ID[cible];
-    return { mode: 'grille', consigne: { id: 'jumelles', texte: 'Ces lettres se ressemblent. Regarde bien leurs points !' }, son: { id: 'nom.' + cible, texte: l.nomFr, qui: 'Nour' }, rejouer: () => ctx.parler('nom.' + cible, l.nomFr, 'Nour'),
+    return { mode: 'grille', consigne: { id: 'jumelles', texte: 'Ces lettres se ressemblent. Regarde bien leurs points !' }, son: { id: 'nom.' + cible, texte: l.nomFr, qui: 'Maktoub' }, rejouer: () => ctx.parler('nom.' + cible, l.nomFr, 'Maktoub'),
       cible: `<div class="cible-texte"><b>Où est ${l.nomFr} ?</b><small>${ctx.groupe() === 'g710' ? '' : pointsTexte(l)}</small></div>`,
       items: ids.map(id => ({ lettre: id, bonne: id === cible, aria: 'une lettre', html: carteLettre(svgLettre(id, { taille: echelle })) })),
       apres: () => `${l.nomFr} a ${pointsTexte(l)}.`, enregistrer: (it, ok) => ({ lettre: cible, competence: 'reco', contexte: 'jumelles', ok: ok === true, confusion: ok === true ? undefined : it.lettre }) };

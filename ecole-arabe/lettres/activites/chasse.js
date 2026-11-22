@@ -14,8 +14,8 @@ export default async function chasse(ctx, { lettres, tours = 3 }) {
     const items = melanger(ids, rng).map((id, k) => { const formes = formesDe(PAR_ID[id]), forme = g === 'g710' && formes.length > 1 ? formes[Math.floor(rng() * formes.length)] : 'isolee'; const p = place ? place[k] : pos[k % pos.length];
       return { lettre: id, bonne: id === cible, x: p[0], y: p[1], rot: Math.round((rng() - 0.5) * 20), sc: place ? 1.5 : 0.9 + rng() * 0.3, aria: 'une fleur-lettre', html: `<span class="fleur">${svgLettre(id, { forme, taille: g === 'g710' ? tailleCommune(ids, 'isolee') : echelle })}</span>` }; });
     const l = PAR_ID[cible];
-    return { mode: 'scene', consigne: { id: 'chasse', texte: `Trouve la lettre ${l.nomFr}.` }, son: { id: 'nom.' + cible, texte: `${l.nomFr}`, qui: 'Nour' },
-      rejouer: () => ctx.parler('nom.' + cible, l.nomFr, 'Nour'),
+    return { mode: 'scene', consigne: { id: 'chasse', texte: `Trouve la lettre ${l.nomFr}.` }, son: { id: 'nom.' + cible, texte: `${l.nomFr}`, qui: 'Maktoub' },
+      rejouer: () => ctx.parler('nom.' + cible, l.nomFr, 'Maktoub'),
       cible: `<div class="cible-lettre">${svgLettre(cible, { classe: 'grand' })}<div><b>${l.nomFr}</b><small>${l.sonFr}</small></div></div>`,
       items, enregistrer: (it, ok) => ({ lettre: cible, competence: 'reco', contexte: 'chasse', ok: ok === true, confusion: ok === true ? undefined : it.lettre }) };
   } });

@@ -55,7 +55,7 @@ function accueil() {
     <button id="continuer" class="continuer">${prochain ? (C.decouvertes(s).length ? '▶ Continuer : ' : '▶ Commencer : ') + prochain.icone + ' ' + prochain.nom : '🏆 Rejouer un chapitre'}</button></div>
     <div class="espaces">${Object.entries(ESPACES).map(([id, e]) => `<button class="espace e-${id}" data-e="${id}"><span class="ic" aria-hidden="true">${e.icone}</span><b>${e.nom}</b><small>${e.texte}</small></button>`).join('')}</div></section>`);
   $('continuer').onclick = () => parcours(prochain ? prochain.id : null); document.querySelectorAll('.espace').forEach(b => { b.onclick = () => espace(b.dataset.e); });
-  if (!accueil.dit) { accueil.dit = true; voix.parler('bienvenue', PHRASES.bienvenue.texte, 'Nour'); }
+  if (!accueil.dit) { accueil.dit = true; voix.parler('bienvenue', PHRASES.bienvenue.texte, 'Maktoub'); }
 }
 function espace(id) {
   const e = ESPACES[id]; if (id === 'parcours') return parcours(null, true); if (id === 'palais') return lancer('collection', {}, { retour: accueil, titre: e.nom });
@@ -81,7 +81,7 @@ function bilan(nom, opts, res, retour) {
   ecran(`<section class="bilan-act"><h2>${e === 3 ? 'Magnifique !' : e === 2 ? 'Très bien !' : 'Bravo, tu as continué !'}</h2><p class="etoiles" aria-hidden="true">${'⭐'.repeat(e)}${'☆'.repeat(3 - e)}</p><p>${res.ok} bonne${res.ok > 1 ? 's' : ''} réponse${res.ok > 1 ? 's' : ''} du premier coup sur ${res.tours}. Chaque essai t'aide à apprendre !</p>
     <div class="actions"><button id="b-encore" class="principal">Encore ›</button><button id="b-retour" class="secondaire">Retour</button></div></section>`);
   $('b-encore').onclick = () => lancer(nom, opts, { retour }); $('b-retour').onclick = () => retour();
-  voix.parler('bravo', e === 3 ? 'Magnifique !' : 'Très bien !', 'Nour');
+  voix.parler('bravo', e === 3 ? 'Magnifique !' : 'Très bien !', 'Maktoub');
 }
 
 // ---------- parcours en 8 chapitres ----------
@@ -102,28 +102,28 @@ async function chapitre(id) {
   const idx = C.chapitreIdx(id), c = CHAPITRES[idx], etapes = SCENARIOS[id], retour = () => parcours(null, true); nav(); salle('lettres'); const tok = chapTok = {}, enCours = () => chapTok === tok; titre(`${c.icone} ${c.nom}`); boutonRetour(retour);
   const pool = (() => { let d = C.disponibles(s, idx); return d.length ? d : c.lettres; })(); let aides = 0, erreurs = 0, ok = 0;
   ecran(`<section class="chap-intro"><div class="chap-ic">${c.icone}</div><h2>${c.nom}</h2><p class="chap-lettres">${c.lettres.map(l => `<span>${svgLettre(l, { classe: 'mini' })}</span>`).join('')}</p><p>${c.intro}</p></section>`);
-  const fin = voix.parler(`chap.${id}`, c.intro, 'Nour'); await fin; await pause(600); if (!enCours()) return;   for (const [nom, o] of etapes) { if (!enCours()) return; const opts = { ...o }; if (nom === 'decouvrir') opts.lettres = c.lettres; else if (nom === 'trace') { opts.lettres = c.lettres; opts.tours = c.lettres.length; } else opts.lettres = pool;
+  const fin = voix.parler(`chap.${id}`, c.intro, 'Maktoub'); await fin; await pause(600); if (!enCours()) return;   for (const [nom, o] of etapes) { if (!enCours()) return; const opts = { ...o }; if (nom === 'decouvrir') opts.lettres = c.lettres; else if (nom === 'trace') { opts.lettres = c.lettres; opts.tours = c.lettres.length; } else opts.lettres = pool;
     const r = await lancer(nom, opts, { retour, titre: `${c.icone} ${c.nom}`, sansBilan: true }); if (!enCours()) return; if (r) { aides += r.aides || 0; erreurs += r.ko || 0; ok += r.ok || 0; } }
   if (!enCours()) return; const res = C.terminerChapitre(s, id, { aides, erreurs }); sauver(); const suite = C.prochainChapitre(s), r = C.recompenses(s); son('fin'); reagir('joie');
   const dip = r.diplomes.includes('maitre') ? 'diplome_maitre' : r.diplomes.includes('explorateur') ? 'diplome_explorateur' : null;
   ecran(`<section class="bilan-act chap-fin"><h2>🏮 Chapitre terminé !</h2><p class="etoiles" aria-hidden="true">${'⭐'.repeat(res.etoiles)}${'☆'.repeat(3 - res.etoiles)}</p><p>${c.nom} : ${c.lettres.map(l => PAR_ID[l].ar).join(' ')}</p>${res.premiere ? '<p class="gain">🏮 Une nouvelle lanterne s\'allume !</p>' : ''}${dip ? `<p class="gain">${dip === 'diplome_maitre' ? '🏆 Maître des lettres' : '🎓 Explorateur des lettres'} !</p>` : ''}
     <div class="actions">${suite ? `<button id="suite" class="principal">${suite.icone} ${suite.nom} ›</button>` : ''}<button id="palais" class="secondaire">📚 Ma bibliothèque</button><button id="acc" class="secondaire">Accueil</button></div></section>`);
   if (suite) $('suite').onclick = () => chapitre(suite.id); $('palais').onclick = () => lancer('collection', {}, { retour: accueil, titre: 'La bibliothèque de Nour' }); $('acc').onclick = accueil;
-  voix.parler(dip || 'fin_chapitre', dip ? PHRASES[dip].texte : PHRASES.fin_chapitre.texte, 'Nour');
+  voix.parler(dip || 'fin_chapitre', dip ? PHRASES[dip].texte : PHRASES.fin_chapitre.texte, 'Maktoub');
 }
 
 // ---------- âge et évaluation initiale ----------
 function ecranAge(retour = null) {
   nav(); salle('cour'); titre('Quel âge as-tu ?'); boutonRetour(retour); const p = lsGet('ldn_profil_actif'), suggere = p && p.tranche === '3-5' ? [3, 4, 5] : p && p.tranche === '6-10' ? [6, 7, 8, 9, 10] : [];
   ecran(`<section class="age"><h2>Quel âge as-tu ?</h2><p>Touche ton âge. Tu pourras changer quand tu veux, et tu pourras toujours jouer à ton niveau.</p><div class="grille-age">${[3, 4, 5, 6, 7, 8, 9, 10].map(n => `<button class="btn-age${suggere.includes(n) ? ' sugg' : ''}" data-n="${n}"><b>${n}</b><span>ans</span></button>`).join('')}</div></section>`);
-  voix.parler('age', PHRASES.age.texte, 'Nour'); document.querySelectorAll('.btn-age').forEach(b => { b.onclick = () => { C.reglerAge(s, b.dataset.n); sauver(); if (s.groupe !== 'g34' && !s.placement) placement(); else accueil(); }; });
+  voix.parler('age', PHRASES.age.texte, 'Maktoub'); document.querySelectorAll('.btn-age').forEach(b => { b.onclick = () => { C.reglerAge(s, b.dataset.n); sauver(); if (s.groupe !== 'g34' && !s.placement) placement(); else accueil(); }; });
 }
 async function placement() {
   nav(); salle('lettres'); titre('Un petit jeu pour commencer'); boutonRetour(null); const reps = []; const qs = C.QUESTIONS_PLACEMENT; let i = 0;
-  await voix.parler('placement', PHRASES.placement.texte, 'Nour');
-  const poser = () => { if (i >= qs.length) { C.resultatPlacement(s, reps); sauver(); voix.parler('placement_fin', PHRASES.placement_fin.texte, 'Nour'); return accueil(); } const id = qs[i], autres = LETTRES.filter(l => l.id !== id && l.famille !== PAR_ID[id].famille).sort(() => rng() - 0.5).slice(0, 2).map(l => l.id), ids = [id, ...autres].sort(() => rng() - 0.5);
+  await voix.parler('placement', PHRASES.placement.texte, 'Maktoub');
+  const poser = () => { if (i >= qs.length) { C.resultatPlacement(s, reps); sauver(); voix.parler('placement_fin', PHRASES.placement_fin.texte, 'Maktoub'); return accueil(); } const id = qs[i], autres = LETTRES.filter(l => l.id !== id && l.famille !== PAR_ID[id].famille).sort(() => rng() - 0.5).slice(0, 2).map(l => l.id), ids = [id, ...autres].sort(() => rng() - 0.5);
     ecran(`<section class="placement"><p class="point-placement">Question ${i + 1} sur ${qs.length}</p><div class="grande-lettre">${svgLettre(id, { classe: 'grand' })}</div><h2>Quelle est cette lettre ?</h2><div class="noms">${ids.map(x => `<button class="nom-btn" data-id="${x}">${PAR_ID[x].nomFr}</button>`).join('')}<button class="nom-btn peut-etre" data-id="?">Je ne sais pas encore</button></div><button id="passer" class="secondaire">Passer le petit jeu ›</button></section>`);
-    voix.parler('placement_q', PHRASES.placement_q.texte, 'Nour'); document.querySelectorAll('.nom-btn').forEach(b => { b.onclick = () => { reps.push({ lettre: id, ok: b.dataset.id === id }); i++; poser(); }; }); $('passer').onclick = () => { for (; i < qs.length; i++) reps.push({ lettre: qs[i], ok: false }); poser(); }; };
+    voix.parler('placement_q', PHRASES.placement_q.texte, 'Maktoub'); document.querySelectorAll('.nom-btn').forEach(b => { b.onclick = () => { reps.push({ lettre: id, ok: b.dataset.id === id }); i++; poser(); }; }); $('passer').onclick = () => { for (; i < qs.length; i++) reps.push({ lettre: qs[i], ok: false }); poser(); }; };
   poser();
 }
 

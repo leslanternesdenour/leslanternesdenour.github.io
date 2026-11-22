@@ -18,12 +18,12 @@ export async function jouerChoix(ctx, { titre, tours, construire }) {
     ui.choix.innerHTML = m.items.map((it, k) => `<button class="choix-btn${m.mode === 'scene' ? ' scene-item' : ''}" data-k="${k}" style="${m.mode === 'scene' ? `left:${it.x}%;top:${it.y}%;--rot:${it.rot || 0}deg;--sc:${it.sc || 1}` : ''}" aria-label="${it.aria || 'choix ' + (k + 1)}">${it.html}</button>`).join('');
     if (m.surRendu) m.surRendu(ui);
     const btns = $$(ui.choix, '.choix-btn'); let erreurs = 0, fini = false, premier = true; const bonne = m.items.findIndex(x => x.bonne);
-    const dire = () => ctx.parler(m.consigne.id, m.consigne.texte, 'Nour'); ui.consigne.onclick = () => { if (m.rejouer) m.rejouer(); else dire(); };
+    const dire = () => ctx.parler(m.consigne.id, m.consigne.texte, 'Maktoub'); ui.consigne.onclick = () => { if (m.rejouer) m.rejouer(); else dire(); };
     const aide = compte => { if (fini) return; const faux = btns.filter((b, k) => k !== bonne && !b.disabled); if (compte) { res.aides++; ctx.parler('aide', PHRASES.aide.texte, 'Loumi'); }
       if (m.mode === 'scene' || faux.length < 1) btns[bonne].classList.add('indice'); else { faux[0].disabled = true; faux[0].classList.add('faux'); } };
     ui.aide.onclick = () => aide(true);
     const relancer = () => { clearTimeout(aideTimer); if (ctx.aideAutoMs) aideTimer = setTimeout(() => { if (!fini && ctx.vivant()) btns[bonne].classList.add('indice'); }, ctx.aideAutoMs); }; relancer();
-    if (m.son) await ctx.parler(m.son.id, m.son.texte, m.son.qui || 'Nour', { sousTitre: false }); else if (m.consigne) ctx.parler(m.consigne.id, m.consigne.texte, 'Nour');
+    if (m.son) await ctx.parler(m.son.id, m.son.texte, m.son.qui || 'Maktoub', { sousTitre: false }); else if (m.consigne) ctx.parler(m.consigne.id, m.consigne.texte, 'Maktoub');
     await new Promise(fin => {
       btns.forEach((b, k) => {
         b.onclick = async () => {
@@ -31,7 +31,7 @@ export async function jouerChoix(ctx, { titre, tours, construire }) {
           if (it.bonne) {
             fini = true; clearTimeout(aideTimer); b.classList.add('juste'); btns.forEach(x => { if (x !== b) x.disabled = true; }); ctx.reagir('joie'); ctx.son('juste');
             if (premier) { res.ok++; ctx.enregistrer(m.enregistrer(it, true)); } if (ui.points[i]) ui.points[i].classList.add(premier ? 'ok' : 'ko');
-            const br = BRAVOS[i % BRAVOS.length]; if (m.apres) ui.msg.innerHTML = m.apres(it); ctx.parler(br, PHRASES[br].texte, 'Nour'); res.tours++; await pause(m.apres ? 1900 : 1150); fin();
+            const br = BRAVOS[i % BRAVOS.length]; if (m.apres) ui.msg.innerHTML = m.apres(it); ctx.parler(br, PHRASES[br].texte, 'Maktoub'); res.tours++; await pause(m.apres ? 1900 : 1150); fin();
           } else {
             erreurs++; b.classList.add('faux'); b.disabled = true; ctx.reagir('hum'); ctx.son('faux'); if (premier) { premier = false; res.ko++; ctx.enregistrer(m.enregistrer(it, false)); }
             const k2 = ENCORES[(erreurs - 1) % ENCORES.length]; ui.msg.textContent = PHRASES[k2].texte; ctx.parler(k2, PHRASES[k2].texte, 'Loumi'); if (erreurs >= 2) aide(false);

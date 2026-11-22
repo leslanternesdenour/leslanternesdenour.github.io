@@ -32,12 +32,12 @@ export const ESPACES = {
   galerie: { nom: 'La Galerie des sons', icone: '🎧', texte: 'Écoute les sons et retrouve les lettres.', activites: ['son', 'parcours-sons'] },
   palais: { nom: 'La bibliothèque de Nour', icone: '📚', texte: 'Ta collection de lettres, rangée comme des livres précieux, qui brille de plus en plus.', activites: ['collection'] },
   parcours: { nom: 'Le Parcours des découvertes', icone: '🗺️', texte: 'Un chemin en huit chapitres, à ton rythme.', activites: ['chapitre'] },
-  defis: { nom: 'La Salle des défis', icone: '🏆', texte: 'Lettres jumelles, intruse et défi de Nour.', activites: ['jumelles', 'intrus', 'defi'] }
+  defis: { nom: 'La Salle des défis', icone: '🏆', texte: 'Lettres jumelles, intruse et défi de Maktoub.', activites: ['jumelles', 'intrus', 'defi'] }
 };
 export const ACTIVITES = {
   decouvrir: { nom: 'Découvrir une lettre', icone: '🌸' }, chasse: { nom: 'La chasse aux lettres', icone: '🔎' }, formes: { nom: 'Les formes de la lettre', icone: '🔄' }, trace: { nom: 'Le tracé magique', icone: '✨' },
   puzzle: { nom: 'Le puzzle des lettres', icone: '🧩' }, son: { nom: 'Le son mystérieux', icone: '🔔' }, 'parcours-sons': { nom: 'Le parcours des sons', icone: '🎶' }, jumelles: { nom: 'Les lettres jumelles', icone: '👯' },
-  intrus: { nom: 'La lettre intruse', icone: '🕵️' }, defi: { nom: 'Le défi de Nour', icone: '🌟' }, collection: { nom: 'La collection', icone: '💎' }, chapitre: { nom: 'Le parcours', icone: '🗺️' }
+  intrus: { nom: 'La lettre intruse', icone: '🕵️' }, defi: { nom: 'Le défi de Maktoub', icone: '🌟' }, collection: { nom: 'La collection', icone: '💎' }, chapitre: { nom: 'Le parcours', icone: '🗺️' }
 };
 // Les trois groupes d'âge (l'âge ne ferme aucune porte : voir competences.js)
 export const GROUPES = { 'g34': { nom: '3 – 4 ans', ages: [3, 4] }, 'g56': { nom: '5 – 6 ans', ages: [5, 6] }, 'g710': { nom: '7 – 10 ans', ages: [7, 8, 9, 10] } };

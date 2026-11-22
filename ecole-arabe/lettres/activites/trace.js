@@ -42,7 +42,7 @@ async function tracerUne(ctx, id) {
       if (r.dehors > tol.dehors && essais < 2) { essais++; ui.msg.textContent = 'Reste bien sur la lettre. On recommence ?'; ctx.parler('encore2', 'Regarde bien, tu y es presque.', 'Loumi'); ctx.reagir('hum'); await pause(1100); ex.clearRect(0, 0, W, W); jauge.style.width = '0%'; return; }
       corpsFini = true; ctx.son('juste'); zone.classList.add('brille'); ctx.reagir('joie');
       if (!points.length) return fin(true);
-      ui.msg.textContent = '✨ Maintenant, touche les points !'; ctx.parler('trace_points', 'Maintenant, touche les points.', 'Nour'); const vus = new Set();
+      ui.msg.textContent = '✨ Maintenant, touche les points !'; ctx.parler('trace_points', 'Maintenant, touche les points.', 'Maktoub'); const vus = new Set();
       points.forEach((p, k) => { const cx = ((p.bb[0] + p.bb[2]) / 2 - b.x) / b.t * 100, cy = ((p.bb[1] + p.bb[3]) / 2 - b.y) / b.t * 100, d = document.createElement('button'); d.className = 'point-tap'; d.style.cssText = `left:${cx}%;top:${cy}%`; d.setAttribute('aria-label', 'un point'); d.onclick = () => { d.classList.add('pris'); vus.add(k); ctx.son('juste'); if (vus.size === points.length) fin(true); }; pts.appendChild(d); });
     }
     function fin(ok) { if (fini) return; fini = true; resolve(ok); }
@@ -53,7 +53,7 @@ async function tracerUne(ctx, id) {
     ui.aide.onclick = () => { aides++; zone.classList.add('pulse'); setTimeout(() => zone.classList.remove('pulse'), 3500); ctx.parler('aide', 'Je te donne un petit coup de pouce.', 'Loumi'); };
     const passer = document.createElement('button'); passer.className = 'secondaire'; passer.textContent = 'Passer ›'; passer.onclick = () => fin(false); ui.aide.parentNode.appendChild(passer);
     if (ctx.aideAutoMs) setTimeout(() => { if (!corpsFini && !fini && ctx.vivant()) zone.classList.add('pulse'); }, ctx.aideAutoMs + 4000); ctx.surArret(() => fin(false));
-    ctx.parler('trace', 'Passe ton doigt sur la lettre pour la faire briller.', 'Nour'); if (essais >= 2) terminerCorps();
+    ctx.parler('trace', 'Passe ton doigt sur la lettre pour la faire briller.', 'Maktoub'); if (essais >= 2) terminerCorps();
   });
   const ok = await attendreFin; if (ok) { ctx.enregistrer({ lettre: id, competence: 'trace', contexte: 'trace', ok: true }); ui.msg.textContent = '🌟 Bravo, quelle belle lettre !'; await pause(1300); }
   return { ok, aides };

@@ -7,7 +7,7 @@ export default async function defi(ctx, { lettres }) {
   const g = ctx.groupe(), rng = ctx.rng; const manches = [['chasse', chasse]]; if (disponible(ctx, lettres)) manches.push(['son', son]); if (groupesJumeaux(lettres).length) manches.push(['jumelles', jumelles]);
   manches.push(['intrus', intrus]); if (g !== 'g34' && lettres.some(id => PAR_ID[id].joint)) manches.push(['formes', formes]); manches.push(['puzzle', puzzle]);
   const suite = melanger(manches, rng).slice(0, g === 'g34' ? 4 : 5); const res = { ok: 0, ko: 0, aides: 0, tours: 0 };
-  await ctx.parler('defi', 'Voici le défi de Nour : un petit peu de tout ce que tu sais !', 'Nour');
+  await ctx.parler('defi', 'Voici le défi de Maktoub : un petit peu de tout ce que tu sais !', 'Maktoub');
   for (const [nom, act] of suite) { if (!ctx.vivant()) break; const r = await act(ctx, { lettres, tours: 1 }); res.ok += r.ok || 0; res.ko += r.ko || 0; res.aides += r.aides || 0; res.tours += r.tours || 0; await pause(250); }
   ctx.s.defis++; return res;
 }

@@ -19,15 +19,15 @@ export function ouvrirFiche(ctx, id, conteneur, { surFermer } = {}) {
       ${petit ? '' : `<div class="formes-rang"><p>${l.joint ? 'Sa forme change dans le mot :' : 'Cette lettre ne s\'attache pas à la suivante :'}</p><div class="tuiles">${formes.map(f => `<span class="tuile-forme" data-f="${f}">${svgLettre(id, { forme: f, taille: tailleF })}<small>${NOMS_FORMES[f]}</small></span>`).join('')}</div></div>`}
     </div></div>`;
   const dire = { nom: [`nom.${id}`, l.nomFr], son: [`son.${id}`, l.syllabe], mot: [`mot.${id}`, l.mot.ar] };
-  conteneur.querySelectorAll('[data-s]').forEach(b => { b.onclick = () => { const [aid, txt] = dire[b.dataset.s]; b.classList.add('chante'); ctx.parler(aid, txt, 'Nour', { sousTitre: false }).then(() => b.classList.remove('chante')); }; });
+  conteneur.querySelectorAll('[data-s]').forEach(b => { b.onclick = () => { const [aid, txt] = dire[b.dataset.s]; b.classList.add('chante'); ctx.parler(aid, txt, 'Maktoub', { sousTitre: false }).then(() => b.classList.remove('chante')); }; });
   const ba = conteneur.querySelector('[data-alif]'); if (ba) ba.onclick = () => { const z = conteneur.querySelector('.alif-formes'); z.classList.toggle('cache'); ba.textContent = z.classList.contains('cache') ? 'Alif et hamza ›' : 'Fermer ‹'; };
   const rang = conteneur.querySelectorAll('.tuile-forme:not(.alif-t)'); rang.forEach((x, k) => setTimeout(() => x.classList.add('pop'), 900 + k * 450));       // les formes apparaissent l'une après l'autre
   let vue = null; (async () => { try { const { creerVue3d } = await import('../vue3d.js?v=1'); vue = creerVue3d(conteneur.querySelector('.fiche-3d')); vue.definir(id, 'isolee'); } catch (e) { conteneur.querySelector('.fiche-3d').innerHTML = svgLettre(id, { classe: 'grand' }); } })();
-  setTimeout(() => ctx.parler(`nom.${id}`, l.nomFr, 'Nour', { sousTitre: false }), 700);
+  setTimeout(() => ctx.parler(`nom.${id}`, l.nomFr, 'Maktoub', { sousTitre: false }), 700);
   const fermer = () => { if (vue) vue.fermer(); vue = null; conteneur.innerHTML = ''; if (surFermer) surFermer(); }; conteneur.querySelector('.retour-fiche').onclick = fermer; return fermer;
 }
 export default async function decouvrir(ctx, { lettres, tout = false }) {
-  const ui = enTete(ctx, '🌷 Le jardin des lettres', lettres.length); ui.cible.innerHTML = `<div class="cible-texte"><b>Touche une fleur pour découvrir sa lettre</b></div>`; ui.aide.classList.add('cache'); ui.consigne.onclick = () => ctx.parler('decouvrir', 'Touche une lettre pour la découvrir.', 'Nour'); ctx.parler('decouvrir', 'Touche une lettre pour la découvrir.', 'Nour');
+  const ui = enTete(ctx, '🌷 Le jardin des lettres', lettres.length); ui.cible.innerHTML = `<div class="cible-texte"><b>Touche une fleur pour découvrir sa lettre</b></div>`; ui.aide.classList.add('cache'); ui.consigne.onclick = () => ctx.parler('decouvrir', 'Touche une lettre pour la découvrir.', 'Maktoub'); ctx.parler('decouvrir', 'Touche une lettre pour la découvrir.', 'Maktoub');
   const ouvertes = new Set(); const echelle = tailleCommune(lettres);
   ui.choix.className = 'act-choix jardin'; const rendre = () => { ui.choix.innerHTML = lettres.map((id, k) => `<button class="fleur-btn${ouvertes.has(id) ? ' vue' : ''}" data-id="${id}" aria-label="Découvrir ${PAR_ID[id].nomFr}"><span class="pot">${POTS[k % POTS.length]}</span><span class="fleur">${svgLettre(id, { taille: echelle })}</span><small>${ouvertes.has(id) ? PAR_ID[id].nomFr : ''}</small></button>`).join('') + (ouvertes.size >= (tout ? lettres.length : 1) ? `<button class="principal fini">${ouvertes.size >= lettres.length ? 'Continuer ›' : 'J\'ai fini ›'}</button>` : ''); };
   rendre(); ui.points.forEach(p => p.classList.remove('ok'));

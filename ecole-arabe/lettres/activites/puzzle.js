@@ -26,7 +26,7 @@ async function une(ctx, id, rng) {
     ${pieces.map((p, k) => { const d = decalages.find(x => x.k === k); return `<g class="morceau" data-k="${k}" data-dx="${d.dx.toFixed(1)}" data-dy="${d.dy.toFixed(1)}" transform="translate(${d.dx.toFixed(1)} ${d.dy.toFixed(1)})"><g ${p.clip ? `clip-path="url(#c-${p.id})"` : ''}><path d="${p.d}" fill="${coul(p)}" stroke="#fff6e0" stroke-width="8"/></g><circle cx="${p0(p).cx}" cy="${p0(p).cy}" r="${T * 0.14}" fill="transparent"/></g>`; }).join('')}</svg>`;
   const svg = ui.choix.querySelector('svg'), morceaux = [...svg.querySelectorAll('.morceau')]; let posees = 0, aides = 0, fini = false;
   const vers = e => { const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY; return pt.matrixTransform(svg.getScreenCTM().inverse()); };
-  ctx.parler('puzzle', 'Remets les morceaux de la lettre à leur place.', 'Nour');
+  ctx.parler('puzzle', 'Remets les morceaux de la lettre à leur place.', 'Maktoub');
   await new Promise(resolve => {
     morceaux.forEach(m => { let prise = null; const dx0 = +m.dataset.dx, dy0 = +m.dataset.dy; m.dataset.x = dx0; m.dataset.y = dy0; m.style.cursor = 'grab'; m.style.touchAction = 'none';
       m.addEventListener('pointerdown', e => { if (m.classList.contains('pose') || fini) return; e.preventDefault(); m.setPointerCapture?.(e.pointerId); const p = vers(e); prise = { ox: p.x - +m.dataset.x, oy: p.y - +m.dataset.y }; m.classList.add('prise'); m.parentNode.appendChild(m); });
@@ -34,6 +34,6 @@ async function une(ctx, id, rng) {
       const lacher = () => { if (!prise) return; prise = null; m.classList.remove('prise'); const x = +m.dataset.x, y = +m.dataset.y; if (Math.hypot(x, y) < T * (g === 'g34' ? 0.3 : g === 'g56' ? 0.22 : 0.16)) { m.setAttribute('transform', 'translate(0 0)'); m.dataset.x = 0; m.dataset.y = 0; m.classList.add('pose'); m.style.cursor = 'default'; ctx.son('juste'); posees++; if (posees === morceaux.length && !fini) { fini = true; resolve(); } } };
       m.addEventListener('pointerup', lacher); m.addEventListener('pointercancel', lacher); });
     ui.aide.onclick = () => { aides++; const m = morceaux.find(x => !x.classList.contains('pose')); if (m) { m.classList.add('indice'); setTimeout(() => m.classList.remove('indice'), 2500); } ctx.parler('aide', 'Je te donne un petit coup de pouce.', 'Loumi'); }; ctx.surArret(resolve); });
-  if (fini) { ctx.enregistrer({ lettre: id, competence: 'reco', contexte: 'puzzle', ok: aides === 0 }); ctx.reagir('joie'); ui.msg.textContent = `🌟 ${l.nomFr} est reconstituée !`; ctx.parler('bravo', 'Bravo !', 'Nour'); await pause(1300); }
+  if (fini) { ctx.enregistrer({ lettre: id, competence: 'reco', contexte: 'puzzle', ok: aides === 0 }); ctx.reagir('joie'); ui.msg.textContent = `🌟 ${l.nomFr} est reconstituée !`; ctx.parler('bravo', 'Bravo !', 'Maktoub'); await pause(1300); }
   return fini;
 }
