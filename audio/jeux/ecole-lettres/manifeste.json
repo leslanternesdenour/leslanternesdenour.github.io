@@ -1,8 +1,8 @@
 {
  "jeu": "ecole-lettres",
  "genere": "inventaire.mjs",
- "total": 154,
- "enregistrees": 154,
+ "total": 170,
+ "enregistrees": 170,
  "phrases": [
   {
    "id": "bienvenue",
@@ -133,6 +133,116 @@
    "sousTitre": "Choisis ta prochaine étape.",
    "fichier": "salle_parcours.mp3",
    "duree": 2.04,
+   "prononciationVerifiee": false,
+   "voixId": "7FhMHxpv3kwYS7eBOJoC"
+  },
+  {
+   "id": "forme_isolee",
+   "role": "nour",
+   "langue": "fr",
+   "texte": "Isolée : la lettre toute seule, comme dans l'alphabet.",
+   "sousTitre": "Isolée : la lettre toute seule, comme dans l'alphabet.",
+   "fichier": "forme_isolee.mp3",
+   "duree": 3.87,
+   "prononciationVerifiee": false,
+   "voixId": "7FhMHxpv3kwYS7eBOJoC"
+  },
+  {
+   "id": "forme_initiale",
+   "role": "nour",
+   "langue": "fr",
+   "texte": "Au début d'un mot : elle s'attache à la lettre qui vient après elle.",
+   "sousTitre": "Au début d'un mot : elle s'attache à la lettre qui vient après elle.",
+   "fichier": "forme_initiale.mp3",
+   "duree": 4.6,
+   "prononciationVerifiee": false,
+   "voixId": "7FhMHxpv3kwYS7eBOJoC"
+  },
+  {
+   "id": "forme_mediane",
+   "role": "nour",
+   "langue": "fr",
+   "texte": "Au milieu d'un mot : elle s'attache à la lettre d'avant et à la lettre d'après.",
+   "sousTitre": "Au milieu d'un mot : elle s'attache à la lettre d'avant et à la lettre d'après.",
+   "fichier": "forme_mediane.mp3",
+   "duree": 4.91,
+   "prononciationVerifiee": false,
+   "voixId": "7FhMHxpv3kwYS7eBOJoC"
+  },
+  {
+   "id": "forme_finale",
+   "role": "nour",
+   "langue": "fr",
+   "texte": "À la fin d'un mot : elle s'attache à la lettre d'avant.",
+   "sousTitre": "À la fin d'un mot : elle s'attache à la lettre d'avant.",
+   "fichier": "forme_finale.mp3",
+   "duree": 3.71,
+   "prononciationVerifiee": false,
+   "voixId": "7FhMHxpv3kwYS7eBOJoC"
+  },
+  {
+   "id": "forme_finale_seule",
+   "role": "nour",
+   "langue": "fr",
+   "texte": "À la fin d'un mot : elle se colle à la lettre d'avant, mais elle ne s'attache jamais à la lettre qui suit.",
+   "sousTitre": "À la fin d'un mot : elle se colle à la lettre d'avant, mais elle ne s'attache jamais à la lettre qui suit.",
+   "fichier": "forme_finale_seule.mp3",
+   "duree": 6.43,
+   "prononciationVerifiee": false,
+   "voixId": "7FhMHxpv3kwYS7eBOJoC"
+  },
+  {
+   "id": "pts_1_dessus",
+   "role": "nour",
+   "langue": "fr",
+   "texte": "Elle garde son point au-dessus.",
+   "sousTitre": "Elle garde son point au-dessus.",
+   "fichier": "pts_1_dessus.mp3",
+   "duree": 2.12,
+   "prononciationVerifiee": false,
+   "voixId": "7FhMHxpv3kwYS7eBOJoC"
+  },
+  {
+   "id": "pts_1_dessous",
+   "role": "nour",
+   "langue": "fr",
+   "texte": "Elle garde son point au-dessous.",
+   "sousTitre": "Elle garde son point au-dessous.",
+   "fichier": "pts_1_dessous.mp3",
+   "duree": 2.19,
+   "prononciationVerifiee": false,
+   "voixId": "7FhMHxpv3kwYS7eBOJoC"
+  },
+  {
+   "id": "pts_2_dessus",
+   "role": "nour",
+   "langue": "fr",
+   "texte": "Elle garde ses deux points au-dessus.",
+   "sousTitre": "Elle garde ses deux points au-dessus.",
+   "fichier": "pts_2_dessus.mp3",
+   "duree": 2.43,
+   "prononciationVerifiee": false,
+   "voixId": "7FhMHxpv3kwYS7eBOJoC"
+  },
+  {
+   "id": "pts_2_dessous",
+   "role": "nour",
+   "langue": "fr",
+   "texte": "Elle garde ses deux points au-dessous.",
+   "sousTitre": "Elle garde ses deux points au-dessous.",
+   "fichier": "pts_2_dessous.mp3",
+   "duree": 2.35,
+   "prononciationVerifiee": false,
+   "voixId": "7FhMHxpv3kwYS7eBOJoC"
+  },
+  {
+   "id": "pts_3_dessus",
+   "role": "nour",
+   "langue": "fr",
+   "texte": "Elle garde ses trois points au-dessus.",
+   "sousTitre": "Elle garde ses trois points au-dessus.",
+   "fichier": "pts_3_dessus.mp3",
+   "duree": 2.35,
    "prononciationVerifiee": false,
    "voixId": "7FhMHxpv3kwYS7eBOJoC"
   },
@@ -379,13 +489,79 @@
    "voixId": "7FhMHxpv3kwYS7eBOJoC"
   },
   {
+   "id": "alif.simple",
+   "role": "nour",
+   "langue": "fr",
+   "texte": "Alif seul : il allonge un son « â » (comme dans « Baa »). Il ne se lie pas à la lettre qui suit.",
+   "sousTitre": "Alif seul : il allonge un son « â » (comme dans « Baa »). Il ne se lie pas à la lettre qui suit.",
+   "fichier": "alif.simple.mp3",
+   "duree": 7.24,
+   "prononciationVerifiee": false,
+   "voixId": "7FhMHxpv3kwYS7eBOJoC"
+  },
+  {
+   "id": "alif.hamza_dessus",
+   "role": "nour",
+   "langue": "fr",
+   "texte": "Alif avec une hamza au-dessus : on entend une petite coupure de la voix, puis « a » (أَ) ou « ou » (أُ).",
+   "sousTitre": "Alif avec une hamza au-dessus : on entend une petite coupure de la voix, puis « a » (أَ) ou « ou » (أُ).",
+   "fichier": "alif.hamza_dessus.mp3",
+   "duree": 8.91,
+   "prononciationVerifiee": false,
+   "voixId": "7FhMHxpv3kwYS7eBOJoC"
+  },
+  {
+   "id": "alif.hamza_dessous",
+   "role": "nour",
+   "langue": "fr",
+   "texte": "Alif avec une hamza au-dessous : une petite coupure de la voix, puis « i » (إِ).",
+   "sousTitre": "Alif avec une hamza au-dessous : une petite coupure de la voix, puis « i » (إِ).",
+   "fichier": "alif.hamza_dessous.mp3",
+   "duree": 6.27,
+   "prononciationVerifiee": false,
+   "voixId": "7FhMHxpv3kwYS7eBOJoC"
+  },
+  {
+   "id": "alif.madda",
+   "role": "nour",
+   "langue": "fr",
+   "texte": "Alif madda : une petite coupure de la voix, puis un « â » long (comme آمِن).",
+   "sousTitre": "Alif madda : une petite coupure de la voix, puis un « â » long (comme آمِن).",
+   "fichier": "alif.madda.mp3",
+   "duree": 7.47,
+   "prononciationVerifiee": false,
+   "voixId": "7FhMHxpv3kwYS7eBOJoC"
+  },
+  {
+   "id": "alif.wasla",
+   "role": "nour",
+   "langue": "fr",
+   "texte": "Alif wasla : on le lit seulement au début d'une phrase ; au milieu, il s'efface et on enchaîne.",
+   "sousTitre": "Alif wasla : on le lit seulement au début d'une phrase ; au milieu, il s'efface et on enchaîne.",
+   "fichier": "alif.wasla.mp3",
+   "duree": 6.92,
+   "prononciationVerifiee": false,
+   "voixId": "7FhMHxpv3kwYS7eBOJoC"
+  },
+  {
+   "id": "alif.hamza",
+   "role": "nour",
+   "langue": "fr",
+   "texte": "La hamza est une petite coupure dans la gorge. Elle peut se poser sur un alif, mais l'alif et la hamza ne sont pas la même chose.",
+   "sousTitre": "La hamza est une petite coupure dans la gorge. Elle peut se poser sur un alif, mais l'alif et la hamza ne sont pas la même chose.",
+   "fichier": "alif.hamza.mp3",
+   "duree": 8.36,
+   "prononciationVerifiee": false,
+   "voixId": "7FhMHxpv3kwYS7eBOJoC"
+  },
+  {
    "id": "chap.c1",
    "role": "nour",
    "langue": "fr",
-   "texte": "Bienvenue à l'école de Nour ! Nous allons découvrir les premières lettres : l'alif, le baa, le taa et le thaa. Regarde bien leurs points !",
-   "sousTitre": "Bienvenue à l'école de Nour ! Nous allons découvrir les premières lettres : l'alif, le baa, le taa et le thaa. Regarde bien leurs points !",
+   "texte": "Bienvenue à l'école de Maktoub ! Nous allons découvrir les premières lettres : l'alif, le baa, le taa et le thaa. Regarde bien leurs points !",
+   "sousTitre": "Bienvenue à l'école de Maktoub ! Nous allons découvrir les premières lettres : l'alif, le baa, le taa et le thaa. Regarde bien leurs points !",
    "fichier": "chap.c1.mp3",
-   "duree": 10.76,
+   "duree": 10.92,
    "prononciationVerifiee": false,
    "voixId": "7FhMHxpv3kwYS7eBOJoC"
   },

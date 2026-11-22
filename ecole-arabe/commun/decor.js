@@ -98,7 +98,7 @@ function scene(nom, W, H) {
   return s;
 }
 export const SALLES = ['cour', 'lettres', 'formes', 'sons', 'defis', 'biblio'];
-export const NOMS_SALLES = { cour: "La cour de l'école", lettres: 'La salle des 28 lettres', formes: "L'atelier des formes", sons: 'La galerie des sons', defis: 'La salle des défis', biblio: 'La bibliothèque de Nour' };
+export const NOMS_SALLES = { cour: "La cour de l'école", lettres: 'La salle des 28 lettres', formes: "L'atelier des formes", sons: 'La galerie des sons', defis: 'La salle des défis', biblio: 'La bibliothèque de Maktoub' };
 export function svgSalle(nom, W, H) { if (!PAL[nom]) nom = 'cour'; return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid slice" width="100%" height="100%" aria-hidden="true">${scene(nom, W, H)}</svg>`; }
 
 // ----- affichage : un conteneur, fondu enchaîné entre deux salles, redessiné si l'écran change de forme -----

@@ -1,4 +1,4 @@
-/* Décor et mascotte de l'École arabe de Nour — partagés par toutes les pages de l'école */
+/* Décor et mascotte de l'École arabe de Maktoub — partagés par toutes les pages de l'école */
 .decor{position:fixed;inset:0;z-index:0;background:#3a2030;overflow:hidden}
 .decor .calque{position:absolute;inset:0;transition:opacity .7s ease}
 .decor svg{display:block}

@@ -1,21 +1,21 @@
 // L'ÉCOLE DES LETTRES ARABES — coque du jeu : âge, évaluation initiale, accueil illustré (les 6 espaces), parcours en 8 chapitres, réglages.
 // Les activités sont des modules indépendants (activites/*.js) qui partagent un seul moteur pédagogique (moteur/competences.js) : suivi réel de la maîtrise, adaptation dynamique, révision ciblée.
 // Réutilise : profils enfants (âge/tranche), sauvegarde synchronisée par l'Espace famille (clé « ecole_lettres »), voix du socle, mascottes de l'univers Nour (2D). Aucun chronomètre, aucune punition.
-import { creerVoix, reglerVolume } from '../../aventures/commun/voix-jeu.js?v=2';
+import { creerVoix, reglerVolume } from '../../aventures/commun/voix-jeu.js?v=3';
 import { mascotte } from '../../monde/mascottes.js?v=1';
 import { contexte, sortie } from '../../monde/socle/audio.js?v=1';
-import { montrerDecor } from '../commun/decor.js?v=2';
-import { chargerGlyphes, svgLettre } from './rendu.js?v=2';
-import { svgPorte, COURT, NOMS_COURTS, vignette, lanternes } from './accueil-ui.js?v=2';
-import { LETTRES, PAR_ID, IDS, CHAPITRES, ESPACES, ACTIVITES, GROUPES, groupeDepuisAge } from './donnees/lettres.js?v=2';
-import { PHRASES } from './donnees/audio.js?v=2';
-import * as C from './moteur/competences.js?v=2';
+import { montrerDecor } from '../commun/decor.js?v=3';
+import { chargerGlyphes, svgLettre } from './rendu.js?v=3';
+import { svgPorte, COURT, NOMS_COURTS, vignette, lanternes } from './accueil-ui.js?v=3';
+import { LETTRES, PAR_ID, IDS, CHAPITRES, ESPACES, ACTIVITES, GROUPES, groupeDepuisAge } from './donnees/lettres.js?v=3';
+import { PHRASES } from './donnees/audio.js?v=3';
+import * as C from './moteur/competences.js?v=3';
 const $ = id => document.getElementById(id), lsGet = k => { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } }, lsSet = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
 let s = C.lire(lsGet(C.CLE)); const sauver = () => lsSet(C.CLE, s);
 const voix = creerVoix({ dossierAudio: 'audio/jeux/ecole-lettres', racine: '../../', etat: () => s, elSousTitres: () => $('sous-titres') });
 const rng = Math.random, pause = ms => new Promise(r => setTimeout(r, ms));
-const MODULES = { decouvrir: () => import('./activites/decouvrir.js?v=2'), chasse: () => import('./activites/chasse.js?v=2'), formes: () => import('./activites/formes.js?v=2'), trace: () => import('./activites/trace.js?v=2'), puzzle: () => import('./activites/puzzle.js?v=2'),
-  son: () => import('./activites/son.js?v=2'), 'parcours-sons': () => import('./activites/parcours-sons.js?v=2'), jumelles: () => import('./activites/jumelles.js?v=2'), intrus: () => import('./activites/intrus.js?v=2'), defi: () => import('./activites/defi.js?v=2'), collection: () => import('./activites/collection.js?v=2') };
+const MODULES = { decouvrir: () => import('./activites/decouvrir.js?v=3'), chasse: () => import('./activites/chasse.js?v=3'), formes: () => import('./activites/formes.js?v=3'), trace: () => import('./activites/trace.js?v=3'), puzzle: () => import('./activites/puzzle.js?v=3'),
+  son: () => import('./activites/son.js?v=3'), 'parcours-sons': () => import('./activites/parcours-sons.js?v=3'), jumelles: () => import('./activites/jumelles.js?v=3'), intrus: () => import('./activites/intrus.js?v=3'), defi: () => import('./activites/defi.js?v=3'), collection: () => import('./activites/collection.js?v=3') };
 
 // ---------- décor 2D, mascottes, sons ----------
 // ----- décor (6 salles, partagé avec toute l'école) et Maktoub, la mascotte -----
@@ -113,7 +113,7 @@ async function chapitre(id) {
   const dip = r.diplomes.includes('maitre') ? 'diplome_maitre' : r.diplomes.includes('explorateur') ? 'diplome_explorateur' : null;
   ecran(`<section class="bilan-act chap-fin"><h2>🏮 Chapitre terminé !</h2><p class="etoiles" aria-hidden="true">${'⭐'.repeat(res.etoiles)}${'☆'.repeat(3 - res.etoiles)}</p><p class="lettres-fin" lang="ar" dir="rtl">${c.lettres.map(l => PAR_ID[l].ar).join(' ')}</p>${res.premiere ? '<p class="gain">🏮 Une nouvelle lanterne s\'allume !</p>' : ''}${dip ? `<p class="gain">${dip === 'diplome_maitre' ? '🏆 Maître des lettres' : '🎓 Explorateur des lettres'} !</p>` : ''}
     <div class="actions">${suite ? `<button id="suite" class="principal gros-b">${suite.icone} ${suite.nom} ▶</button>` : ''}<button id="palais" class="secondaire gros-b">📚 Ma bibliothèque</button><button id="acc" class="secondaire gros-b">🏠 Accueil</button></div></section>`);
-  if (suite) $('suite').onclick = () => chapitre(suite.id); $('palais').onclick = () => lancer('collection', {}, { retour: accueil, titre: 'La bibliothèque de Nour' }); $('acc').onclick = accueil;
+  if (suite) $('suite').onclick = () => chapitre(suite.id); $('palais').onclick = () => lancer('collection', {}, { retour: accueil, titre: 'La bibliothèque de Maktoub' }); $('acc').onclick = accueil;
   voix.parler(dip || 'fin_chapitre', dip ? PHRASES[dip].texte : PHRASES.fin_chapitre.texte, 'Maktoub');
 }
 

@@ -1,10 +1,10 @@
 // LA LETTRE INTRUSE (Salle des défis) — trois lettres vont ensemble, une seule n'est pas pareille. Trois variantes qui apportent chacune une idée différente :
 //  « pareilles » (petits) : trois fois la même lettre et une autre ; « formes » : trois FORMES de la même lettre (début, milieu, fin) et une autre lettre : c'est la preuve que la forme change mais que la lettre reste la même ;
 //  « points » (grands) : trois lettres avec le même nombre de points, une qui en a un autre.
-import { svgLettre, tailleCommune } from '../rendu.js?v=2';
-import * as C from '../moteur/competences.js?v=2';
-import { PAR_ID, formesDe } from '../donnees/lettres.js?v=2';
-import { jouerChoix, melanger, carteLettre } from './commun.js?v=2';
+import { svgLettre, tailleCommune } from '../rendu.js?v=3';
+import * as C from '../moteur/competences.js?v=3';
+import { PAR_ID, formesDe } from '../donnees/lettres.js?v=3';
+import { jouerChoix, melanger, carteLettre } from './commun.js?v=3';
 export default async function intrus(ctx, { lettres, tours = 3 }) {
   const g = ctx.groupe(), rng = ctx.rng, liees = lettres.filter(id => PAR_ID[id].joint);
   return jouerChoix(ctx, { titre: '🕵️ La lettre intruse', tours, construire(i) {

@@ -1,6 +1,6 @@
 // ACCUEIL ILLUSTRÉ DE L'ÉCOLE DES LETTRES — la grande porte (bouton principal), les salles en vignettes, la progression en lanternes.
 // Conçu pour un enfant de 3 ans : peu de texte, de grandes images, une seule action évidente (toucher la porte).
-import { svgSalle } from '../commun/decor.js?v=2';
+import { svgSalle } from '../commun/decor.js?v=3';
 const OR = '#e8b53a', OR2 = '#b9822a';
 // La grande porte de l'école : bois sculpté, cadre doré, deux lanternes, marches, lumière chaude qui s'échappe.
 export function svgPorte() {

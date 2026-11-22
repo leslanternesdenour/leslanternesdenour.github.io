@@ -1,8 +1,8 @@
 // LE SON MYSTÉRIEUX (Galerie des sons) — une lanterne fait entendre un son ; l'enfant touche la lettre qui le fait. Sans l'audio du son, l'activité n'est pas proposée (jamais de faux son).
-import { svgLettre, tailleCommune } from '../rendu.js?v=2';
-import * as C from '../moteur/competences.js?v=2';
-import { PAR_ID } from '../donnees/lettres.js?v=2';
-import { jouerChoix, melanger, carteLettre } from './commun.js?v=2';
+import { svgLettre, tailleCommune } from '../rendu.js?v=3';
+import * as C from '../moteur/competences.js?v=3';
+import { PAR_ID } from '../donnees/lettres.js?v=3';
+import { jouerChoix, melanger, carteLettre } from './commun.js?v=3';
 export const disponible = (ctx, lettres) => lettres.some(id => ctx.a('son.' + id));
 export default async function son(ctx, { lettres, tours = 4 }) {
   const pool = lettres.filter(id => ctx.a('son.' + id)); if (!pool.length) { ctx.zone.innerHTML = `<div class="act"><p class="act-msg">${ctx.s.muet ? '🔇 Le son est coupé. Touche 🔊 en haut pour jouer à ce jeu.' : 'Les sons de ces lettres arrivent bientôt. Essaie une autre activité !'}</p></div>`; await new Promise(r => setTimeout(r, 2200)); return { ok: 0, ko: 0, aides: 0, tours: 0 }; }

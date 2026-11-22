@@ -1,10 +1,10 @@
 // L'ATELIER DES FORMES — on RELIE des lettres pour former un mot et on voit chaque lettre changer de forme (début, milieu, fin), puis on choisit la forme qui va dans la case.
 // Les lettres ا د ذ ر ز و ne s'attachent pas à la suivante : la lettre d'après recommence en forme « début ». Ce sont toujours les mêmes lettres, seule la forme change.
-import { svgMot, svgLettre, tailleCommune } from '../rendu.js?v=2';
-import * as C from '../moteur/competences.js?v=2';
-import { PAR_ID, formesDe, NOMS_FORMES } from '../donnees/lettres.js?v=2';
-import { MOTS_ATELIER, formesDuMot } from '../moteur/mots.js?v=2';
-import { jouerChoix, melanger, carteLettre, pause } from './commun.js?v=2';
+import { svgMot, svgLettre, tailleCommune } from '../rendu.js?v=3';
+import * as C from '../moteur/competences.js?v=3';
+import { PAR_ID, formesDe, NOMS_FORMES } from '../donnees/lettres.js?v=3';
+import { MOTS_ATELIER, formesDuMot } from '../moteur/mots.js?v=3';
+import { jouerChoix, melanger, carteLettre, pause } from './commun.js?v=3';
 const motsPour = (lettres, cible) => { const tous = MOTS_ATELIER.filter(m => m.lettres.includes(cible)); const bons = tous.filter(m => m.lettres.every(id => lettres.includes(id))); return bons.length ? bons : tous; };
 export const mots = (lettres) => MOTS_ATELIER.filter(m => m.lettres.some(id => lettres.includes(id)));
 export default async function formes(ctx, { lettres, tours = 3 }) {

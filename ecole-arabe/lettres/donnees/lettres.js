@@ -4,7 +4,7 @@
 // (statut « aValider » dans l'inventaire audio). Rien n'est inventé : noms usuels des lettres et mots courants du vocabulaire de l'enfant.
 // joint : la lettre se lie à la suivante (false pour ا د ذ ر ز و). points : nombre et position des points (0 = aucun). famille : lettres de même squelette (« jumelles »).
 // syllabe : la lettre + fatha, utilisée pour entendre son SON (ex. « بَ » = ba), jamais le nom.
-import { ALPHABET } from '../../commun/langue/alphabet.js?v=2';
+import { ALPHABET } from '../../commun/langue/alphabet.js?v=3';
 // Ordre d'apparition dans le parcours (par familles). Les DONNÉES viennent de la référence unique commun/langue/alphabet.js — jamais retapées ici.
 const ORDRE = ['alif', 'ba', 'ta', 'tha', 'nun', 'ya', 'jim', 'ha', 'kha', 'dal', 'dhal', 'ra', 'zay', 'sin', 'shin', 'sad', 'dad', 'ta2', 'za2', 'ayn', 'ghayn', 'fa', 'qaf', 'kaf', 'lam', 'mim', 'ha2', 'waw'];
 export const LETTRES = ORDRE.map(id => { const a = ALPHABET.find(x => x.id === id); return { id: a.id, num: a.num, ar: a.ar, nom: a.nomAr, nomFr: a.nomFr, translit: a.translit, joint: a.joint, points: a.points, famille: a.famille, syllabe: a.syllabe, syllabeAudio: a.syllabeAudio || a.syllabe, son: a.son, sonFr: a.sonFr, mot: a.mot, niveau: a.niveau, chapitre: a.chapitre, audio: a.audio, statut: a.statut }; });
@@ -16,7 +16,7 @@ export const NOMS_FORMES = { isolee: 'Isolée', initiale: 'Au début', mediane: 
 
 // Les 8 chapitres du Parcours des découvertes : on avance par FAMILLES de lettres (les jumelles se découvrent ensemble : ب ت ث ن ي, ج ح خ…)
 export const CHAPITRES = [
-  { id: 'c1', nom: 'Les premières lumières', icone: '🏮', lettres: ['alif', 'ba', 'ta', 'tha'], intro: "Bienvenue à l'école de Nour ! Nous allons découvrir les premières lettres : l'alif, le baa, le taa et le thaa. Regarde bien leurs points !" },
+  { id: 'c1', nom: 'Les premières lumières', icone: '🏮', lettres: ['alif', 'ba', 'ta', 'tha'], intro: "Bienvenue à l'école de Maktoub ! Nous allons découvrir les premières lettres : l'alif, le baa, le taa et le thaa. Regarde bien leurs points !" },
   { id: 'c2', nom: 'Les lettres du puits', icone: '🪣', lettres: ['nun', 'ya'], intro: "Voici deux nouvelles lettres : le noun et le yaa. Elles ressemblent à leurs grandes sœurs du baa. Sauras-tu les reconnaître ?" },
   { id: 'c3', nom: 'Les lettres de la dune', icone: '🏜️', lettres: ['jim', 'ha', 'kha'], intro: "Dans le désert, trois lettres se ressemblent : le jim, le haa et le khaa. Elles ont presque la même forme, mais pas les mêmes points !" },
   { id: 'c4', nom: 'Les lettres du jardin', icone: '🌿', lettres: ['dal', 'dhal', 'ra', 'zay'], intro: "Dans le jardin, quatre lettres qui ne s'attachent pas à la suivante : le daal, le dhaal, le raa et le zaay." },
@@ -30,7 +30,7 @@ export const ESPACES = {
   jardin: { nom: 'La salle des 28 lettres', icone: '🌷', texte: 'Découvre les lettres qui fleurissent dans le jardin des lettres et retrouve-les cachées.', activites: ['decouvrir', 'chasse'] },
   atelier: { nom: "L'Atelier des formes", icone: '🛠️', texte: 'Fais changer de forme les lettres, trace-les et reconstitue-les.', activites: ['formes', 'trace', 'puzzle'] },
   galerie: { nom: 'La Galerie des sons', icone: '🎧', texte: 'Écoute les sons et retrouve les lettres.', activites: ['son', 'parcours-sons'] },
-  palais: { nom: 'La bibliothèque de Nour', icone: '📚', texte: 'Ta collection de lettres, rangée comme des livres précieux, qui brille de plus en plus.', activites: ['collection'] },
+  palais: { nom: 'La bibliothèque de Maktoub', icone: '📚', texte: 'Ta collection de lettres, rangée comme des livres précieux, qui brille de plus en plus.', activites: ['collection'] },
   parcours: { nom: 'Le Parcours des découvertes', icone: '🗺️', texte: 'Un chemin en huit chapitres, à ton rythme.', activites: ['chapitre'] },
   defis: { nom: 'La Salle des défis', icone: '🏆', texte: 'Lettres jumelles, intruse et défi de Maktoub.', activites: ['jumelles', 'intrus', 'defi'] }
 };

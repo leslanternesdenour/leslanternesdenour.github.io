@@ -9,7 +9,7 @@ export function creerVoix({ dossierAudio, racine = '../../', etat, elSousTitres 
   const V = {
     dispo,
     async charger() { try { await chargerVoix('voix/'); const r = await fetch(racine + dossierAudio + '/manifeste.json', { cache: 'no-cache' }); if (!r.ok) return; const m = await r.json(), e = {};
-      for (const p of m.phrases || []) if (p.fichier && p.duree > 0) { e[p.id] = ['/' + dossierAudio + '/' + p.fichier + '?v=2-' + p.duree, 0, p.duree]; dispo.add(p.id); } ajouterVoix(e); } catch (er) {} },
+      for (const p of m.phrases || []) if (p.fichier && p.duree > 0) { e[p.id] = ['/' + dossierAudio + '/' + p.fichier + '?v=3-' + p.duree, 0, p.duree]; dispo.add(p.id); } ajouterVoix(e); } catch (er) {} },
     a: id => dispo.has(id) && !etat().muet,
     arreter() { arreterVoix(); },
     sousTitre(texte, qui, ms = 4200) { clearTimeout(st); const el = elSousTitres(); if (!el) return; if (!texte) { el.classList.add('cache'); return; } el.innerHTML = (qui ? `<b>${qui}</b> ` : '') + texte; el.classList.remove('cache'); st = setTimeout(() => el.classList.add('cache'), ms); },
