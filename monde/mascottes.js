@@ -32,8 +32,27 @@ function sajjadou(m='',cls=''){const u=++SJn;
  <path d="M42 107l3-3.5 3 3.5-3 3.5zM72 107l3-3.5 3 3.5-3 3.5z" fill="#1d8f9c"/>
  <path d="M38 121h44" stroke="#f5b942" stroke-width="2" stroke-dasharray="3 3"/></g></svg>`}
 
+
+// Loumi, la petite lanterne vivante du Monde de Nour (version dessinée : fenêtres de dialogue et bouton du Grand Voyage ; le Grand Voyage la montre aussi en 3D).
+function loumi(){
+ return `<svg class="masc-loumi" viewBox="0 0 120 150" role="img" aria-label="Loumi, la petite lanterne"><defs>
+ <radialGradient id="lmg" cx="50%" cy="45%" r="60%"><stop offset="0" stop-color="#8ff3e8"/><stop offset="1" stop-color="#1fb8aa"/></radialGradient>
+ <radialGradient id="lmh" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#ffe9a6" stop-opacity=".9"/><stop offset="1" stop-color="#ffc85a" stop-opacity="0"/></radialGradient></defs>
+ <circle cx="60" cy="82" r="56" fill="url(#lmh)"/>
+ <path d="M44 24a16 16 0 0 1 32 0" fill="none" stroke="#e8b53a" stroke-width="4.5" stroke-linecap="round"/>
+ <path d="M42 36q18-16 36 0l4 8H38z" fill="#e8b53a" stroke="#b9822a" stroke-width="2"/><circle cx="60" cy="25" r="3.5" fill="#f5c85a"/>
+ <path d="M38 44h44c10 10 14 22 12 40-2 18-14 32-34 36-20-4-32-18-34-36-2-18 2-30 12-40z" fill="url(#lmg)" stroke="#e8b53a" stroke-width="3.5"/>
+ <path d="M60 44v76M46 46c-6 14-8 44 6 72M74 46c6 14 8 44-6 72" fill="none" stroke="#e8b53a" stroke-width="2.4"/>
+ <path d="M37 52h46M32 98h56" stroke="#e8b53a" stroke-width="3.5" stroke-linecap="round"/>
+ <path d="M44 125h32l-4 10H48z" fill="#e8b53a" stroke="#b9822a" stroke-width="2"/><circle cx="60" cy="140" r="3.5" fill="#b9822a"/>
+ <g class="sv-visage"><ellipse cx="48" cy="80" rx="8" ry="10" fill="#fff"/><ellipse cx="72" cy="80" rx="8" ry="10" fill="#fff"/>
+ <ellipse cx="49" cy="82" rx="5" ry="6.5" fill="#2a1810"/><ellipse cx="73" cy="82" rx="5" ry="6.5" fill="#2a1810"/><circle cx="51" cy="79" r="2" fill="#fff"/><circle cx="75" cy="79" r="2" fill="#fff"/>
+ <circle cx="38" cy="94" r="4.5" fill="#ff9fb2" opacity=".75"/><circle cx="82" cy="94" r="4.5" fill="#ff9fb2" opacity=".75"/>
+ <path d="M52 96q8 9 16 0" fill="none" stroke="#2a1810" stroke-width="2.6" stroke-linecap="round"/></g></svg>`}
+
 export function mascotte(univers) {
   if (univers === 'ablutions') return nour('').replace('class="nour"', 'class="masc-nour"');
   if (univers === 'priere') return sajjadou('', 'accueil');
+  if (univers === 'loumi') return loumi();
   return null;
 }

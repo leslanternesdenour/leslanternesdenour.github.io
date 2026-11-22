@@ -2,7 +2,7 @@
 // Ce fichier relie tout : terrain, décors, ciel, personnages, commandes, sons, découvertes et carnet.
 import * as THREE from 'three';
 import { Terrain, LIEUX, LIMITE, lisse } from './terrain.js?v=3';
-import { creerDecor } from './decor.js?v=3';
+import { creerDecor } from './decor.js?v=4';
 import { Ciel } from './ciel.js?v=3';
 import { Enfant, Chameau } from './personnages.js?v=4';
 import { Controles, ACTIONS, nomTouche } from './controles.js?v=3';
@@ -34,7 +34,9 @@ import { creerCarte, CATEGORIES } from './carte.js?v=3';
 import { creerBourse } from './economie.js?v=3';
 import { creerQuotidien } from './quotidien.js?v=3';
 import { reglageGrain, materiau } from './formes.js?v=4';
-import { mascotte } from '../../monde/mascottes.js?v=2';
+import { mascotte } from '../../monde/mascottes.js?v=3';
+import { creerLoumi } from './loumi.js?v=3';
+import { creerSoins, BESOINS, INFOS, LIEUX_SOINS, DUREES as DUREES_SOINS, poseSoin, PLANCHER, BAS } from './soins.js?v=1';
 
 const $ = id => document.getElementById(id);
 const attendre = () => new Promise(r => requestAnimationFrame(() => setTimeout(r, 0)));
@@ -158,11 +160,136 @@ async function demarrer() {
   let monte = !!etat.monte;
   let sequence = null;   // animation pour monter / descendre
 
-  // Nour flotte près de la fontaine pour accueillir l'enfant
-  const nour = await spriteMascotte(mascotte('ablutions'));
-  const NOUR = { x: -5.5, z: 5 };
-  if (nour) { nour.scale.set(1.25, 1.55, 1); scene.add(nour); }
-  decor.points.push({ id: 'nour', x: NOUR.x, z: NOUR.z, r: 3.6 });
+  // Loumi, la petite lanterne vivante, accompagne l'enfant (elle remplace la goutte Nour ; mascotte 3D dessinée par-dessus le monde, en haut à gauche)
+  const loumi = creerLoumi();
+  let nuitActuelle = false;
+  const soins = creerSoins({ A: AV, enregistrer });
+
+
+  // ============ Loumi : accueil, indications, félicitations (bulle + réactions 3D) ============
+  const ui_loumi = { bulle: $('loumi-bulle'), zone: $('loumi-ui'), bouton: $('btn-loumi'), timer: null };
+  const vP = new THREE.Vector3();
+  function loumiDit(texte, ms = 4200) {
+    if (!texte) return;
+    const b = ui_loumi.bulle; b.textContent = texte; b.classList.remove('cache'); loumi.reagir('parle');
+    clearTimeout(ui_loumi.timer); ui_loumi.timer = setTimeout(() => b.classList.add('cache'), ms);
+    direTextes([{ t: texte, opt: true }]);   // lue seulement si la phrase fait partie des voix enregistrées et validées
+  }
+  function loumiReagir(type, texte) { loumi.reagir(type); if (texte) loumiDit(texte, 3200); }
+  function majLoumi(dt) {
+    const montre = !$('hud').classList.contains('cache') && $('perso').classList.contains('cache') && !interface_ouverte;
+    loumi.maj(dt, tTotal, camera, { cache: !montre });
+    ui_loumi.zone.classList.toggle('cache', !montre);
+    if (montre) {                                   // le bouton « Parler à Loumi » suit sa position à l'écran
+      vP.copy(loumi.racine.position).project(camera);
+      ui_loumi.zone.style.left = ((vP.x * 0.5 + 0.5) * innerWidth) + 'px'; ui_loumi.zone.style.top = ((-vP.y * 0.5 + 0.5) * innerHeight) + 'px';
+    }
+    majSoinsHUD(dt);
+  }
+  function menuLoumi() {
+    if (interface_ouverte) return;
+    const obj = ($('suivi').classList.contains('cache') ? '' : $('suivi').textContent.trim());
+    const urgent = soins.urgent(AV.monture);
+    dialogue({ titre: 'Loumi', mascotte: 'nour',
+      texte: `Je suis Loumi, la petite lanterne du Monde de Nour. Je t'accompagne partout ! ${obj ? 'Ta mission : ' + obj + '.' : 'Qu\'est-ce que tu veux savoir ?'}${urgent ? ' ' + nomMonture() + ' ' + INFOS[urgent].texte + ' : on s\'en occupe ?' : ''}`,
+      boutons: [{ txt: '📜 Mes missions', fn: () => setTimeout(() => aventure.parlerNour(''), 60) }, { txt: `${monture(AV.monture).icone} ${nomMonture()}`, fn: () => setTimeout(() => parlerMonture(), 60) }, { txt: 'Merci !', fn: () => {} }] });
+  }
+  function parlerMonture() {
+    const n = soins.niveaux(AV.monture), u = soins.urgent(AV.monture), m = monture(AV.monture);
+    const lieu = { soif: "à l'abreuvoir, près du puits", faim: 'à la mangeoire de foin, près du puits', energie: 'sur la litière de paille', repos: 'sur la litière de paille', bienEtre: 'avec un câlin : touche-' + (m.fem ? 'la' : 'le') };
+    dialogue({ titre: `${m.icone} ${m.nom}`, mascotte: 'nour',
+      texte: u ? `${m.nom} ${INFOS[u].texte}. Va ${lieu[u]} !` : `${m.nom} va très bien ! ${m.fem ? 'Elle' : 'Il'} est ${m.fem ? 'contente' : 'content'} : continue de prendre soin de ${m.fem ? 'elle' : 'lui'}.`,
+      boutons: [{ txt: 'Compris !', fn: () => {} }] });
+  }
+  ui_loumi.bouton.addEventListener('click', menuLoumi);
+
+  // ============ soins de la monture ============
+  let soin = null;                   // { type, lieu, phase: 'va' | 'soin', t }
+  let pose = { type: null, k: 0 };   // pose 3D en cours (0 = debout)
+  const date0 = () => new Date().toISOString().slice(0, 10);
+  const lieuDe = type => type === 'boire' ? 'eau' : type === 'manger' ? 'foin' : 'litiere';
+  const actionsLieu = { eau: 'boire', foin: 'manger' };
+  function interactionSoins() {
+    if (monte || sequence || interface_ouverte) return null;
+    let best = null;
+    for (const [id, l] of Object.entries(LIEUX_SOINS)) {
+      const d = Math.hypot(l.objet.x - J.x, l.objet.z - J.z); if (d > l.rayon || (best && best.d <= d)) continue;
+      const type = id === 'litiere' ? (nuitActuelle ? 'dormir' : 'repos') : actionsLieu[id];
+      const label = type === 'boire' ? 'Faire boire' : type === 'manger' ? 'Donner à manger' : type === 'dormir' ? 'Faire dormir' : 'Faire reposer';
+      best = { label, icone: l.icone, d, faire: () => lancerSoin(type, id) };
+    }
+    return best;
+  }
+  function lancerSoin(type, lieu) {
+    if (soin || monte || sequence) return;
+    soin = { type, lieu, phase: 'va', t: 0 }; C.venir = false; enfant.faire('salut');
+    loumiDit(`${nomMonture()} arrive ! ${type === 'boire' ? 'Regarde-' + (monture(AV.monture).fem ? 'la' : 'le') + ' boire.' : type === 'manger' ? 'Bon appétit !' : type === 'dormir' ? 'Chut… on dort.' : 'Un peu de repos.'}`, 3000);
+  }
+  function avancerSoin(dt) {
+    if (!soin) return;
+    if (monte || sequence) { soin = null; return; }
+    const l = LIEUX_SOINS[soin.lieu];
+    if (soin.phase === 'va') {
+      const ex = l.stand.x - C.x, ez = l.stand.z - C.z, dist = Math.hypot(ex, ez);
+      if (dist > 0.3) {
+        const ecart = angleVers(C.a, Math.atan2(ex, ez)); C.a += Math.sign(ecart) * Math.min(Math.abs(ecart), dt * 3.2);
+        const v = dist > 25 ? 11 : 5; C.vit += (v - C.vit) * Math.min(1, dt * 3);
+        const pas = Math.min(dist, C.vit * dt); C.x += ex / dist * pas; C.z += ez / dist * pas;
+        soin.t += dt; if (soin.t > 25) { C.x = l.stand.x; C.z = l.stand.z; }       // jamais bloquée
+      } else {
+        C.vit *= Math.max(0, 1 - dt * 6);
+        const ecart = angleVers(C.a, l.a); C.a += Math.sign(ecart) * Math.min(Math.abs(ecart), dt * 3.2);
+        if (Math.abs(ecart) < 0.06 && C.vit < 0.2) { soin.phase = 'soin'; soin.t = 0; C.vit = 0; }
+      }
+      return;
+    }
+    C.vit = 0; soin.t += dt;
+    if (soin.t >= DUREES_SOINS[soin.type]) { const type = soin.type; soin = null; recompenseSoin(type); }
+  }
+  // la pose 3D : monte pendant la première seconde, redescend pendant la dernière, puis la monture reprend sa vie normale
+  function appliquerPoseSoin(dt) {
+    let cible = 0;
+    if (soin && soin.phase === 'soin') { const D = DUREES_SOINS[soin.type]; cible = Math.min(1, soin.t / 1.1, Math.max(0, (D - soin.t) / 1.1)); pose.type = soin.type; }
+    pose.k += (cible - pose.k) * Math.min(1, dt * 6);
+    if (cible === 0 && pose.k < 0.01) pose.k = 0;
+    if (pose.k > 0) { chameau.agenouille = 0; poseSoin(chameau, pose.type, pose.k, tTotal); }
+    zzz.visible = pose.type === 'dormir' && pose.k > 0.4;
+    if (zzz.visible) { chameau.tete.getWorldPosition(zzz.position); zzz.position.y += 0.9 + Math.sin(tTotal * 1.5) * 0.1; zzz.material.opacity = 0.6 + Math.sin(tTotal * 2) * 0.3; }
+  }
+  const zzz = (() => {
+    const c = document.createElement('canvas'); c.width = 128; c.height = 64; const g = c.getContext('2d');
+    g.fillStyle = '#ffffff'; g.strokeStyle = '#3a4a78'; g.lineWidth = 5; g.font = 'bold 44px Arial'; g.strokeText('Z z', 18, 48); g.fillText('Z z', 18, 48);
+    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, transparent: true, depthWrite: false })); sp.scale.set(1.2, 0.6, 1); sp.visible = false; scene.add(sp); return sp;
+  })();
+  // récompense pédagogique : petites pièces (3 par jour et par soin au maximum) + un petit fait à apprendre
+  function recompenseSoin(type) {
+    const r = soins.appliquer(AV.monture, type, monture(AV.monture).espece); if (!r) return;
+    if (r.pieces) aventure.gagner(r.pieces, `Soin : ${nomMonture()}`, `soin:${type}:${date0()}:${Date.now()}`);
+    if (type !== 'calin' || r.pieces) loumi.reagir(type === 'calin' ? 'joie' : 'bravo');
+    if (type !== 'calin' && r.fait) { montrerIndice(`💡 ${r.fait}`, 7500); loumiDit(`Bravo ! ${nomMonture()} va mieux.`, 3500); }
+    majSoinsHUD(0, true);
+  }
+  // ---------- l'interface des besoins : cinq icônes illustrées avec leur jauge ----------
+  const hudSoins = $('soins'); let derMaj = 0, dejaIndique = {};
+  hudSoins.innerHTML = BESOINS.map(b => `<button class="besoin" data-b="${b}" aria-label="${INFOS[b].nom}"><span class="ib">${INFOS[b].icone}</span><span class="jauge"><i></i></span></button>`).join('');
+  hudSoins.querySelectorAll('.besoin').forEach(btn => btn.onclick = () => {
+    const b = btn.dataset.b, n = soins.niveau(AV.monture, b), m = monture(AV.monture);
+    loumiDit(n < BAS ? `${m.nom} ${INFOS[b].texte}. ${b === 'soif' ? "L'abreuvoir est près du puits !" : b === 'faim' ? 'La mangeoire est près du puits !' : b === 'bienEtre' ? 'Fais-lui un câlin !' : 'La litière de paille est à côté du puits.'}` : `${INFOS[b].nom} : ${m.nom} va bien.`, 4500);
+  });
+  function majSoinsHUD(dt, force) {
+    derMaj += dt; if (!force && derMaj < 0.4) return; derMaj = 0;
+    const montre = !$('hud').classList.contains('cache') && $('perso').classList.contains('cache') && !interface_ouverte;
+    hudSoins.classList.toggle('cache', !montre); if (!montre) return;
+    const n = soins.niveaux(AV.monture);
+    hudSoins.querySelectorAll('.besoin').forEach(btn => { const b = btn.dataset.b, v = n[b]; btn.querySelector('i').style.height = Math.round(v) + '%'; btn.classList.toggle('bas', v < BAS); });
+    // un signal très doux (jamais plus d'une fois par besoin et par visite) quand un besoin est bas
+    const u = soins.urgent(AV.monture);
+    if (u && !dejaIndique[u] && tTotal > 20 && !soin && !interface_ouverte) { dejaIndique[u] = 1; loumiDit(`${nomMonture()} ${INFOS[u].texte}. ${u === 'soif' ? 'Allons à l\'abreuvoir !' : u === 'faim' ? 'Allons à la mangeoire !' : u === 'bienEtre' ? 'Un petit câlin ?' : 'Un peu de repos ?'}`, 5000); }
+    if (!u) dejaIndique = {};
+  }
+  // accueil au début de la visite
+  setTimeout(() => { if (!$('hud').classList.contains('cache')) { loumi.reagir('joie'); loumiDit(etat.loumiVue ? 'Re-bonjour ! On repart à l\'aventure ?' : "Bonjour ! Je suis Loumi, la petite lanterne. Je t'accompagne dans le Monde de Nour !", 6000); etat.loumiVue = true; enregistrer(); } }, 6000);
 
   // ---------- commandes ----------
   let interface_ouverte = false;
@@ -263,7 +390,7 @@ async function demarrer() {
 
   // Un câlin à Sablo : il baisse la tête, ronronne à sa façon ; la première fois, on apprend à prendre soin de lui
   function caresser() {
-    chameau.caresse = 2.5; sonMonture(); quotidien.evenement('calin'); enfant.faire('caresser');
+    chameau.caresse = 2.5; sonMonture(); quotidien.evenement('calin'); enfant.faire('caresser'); recompenseSoin('calin');
     J.a += angleVers(J.a, Math.atan2(C.x - J.x, C.z - J.z));
     if (!etat.lus.includes('soins')) setTimeout(() => ouvrirLecture('soins'), 1600);
     else montrerIndice(`💛 ${nomMonture()} est ${monture(AV.monture).fem ? 'contente' : 'content'} !`, 2000);
@@ -301,7 +428,7 @@ async function demarrer() {
   function dialogue(p) {
     interface_ouverte = true; ctl.bloque = true;
     $('lecture-titre').textContent = p.titre;
-    $('lecture-mascotte').innerHTML = p.mascotte === 'nour' ? mascotte('ablutions') : p.image ? `<img class="fiche-image" src="${p.image}" alt="">` : p.icone ? `<span class="fiche-icone">${p.icone}</span>` : '';
+    $('lecture-mascotte').innerHTML = p.mascotte === 'nour' ? mascotte('loumi') : p.image ? `<img class="fiche-image" src="${p.image}" alt="">` : p.icone ? `<span class="fiche-icone">${p.icone}</span>` : '';
     $('lecture').style.setProperty('--r', p.couleur || 'transparent'); $('lecture').classList.toggle('fiche', !!p.couleur);
     $('lecture-arabe').textContent = p.arabe || ''; $('lecture-arabe').classList.toggle('cache', !p.arabe);
     p = { ...p, texte: accord(p.texte) };
@@ -329,6 +456,7 @@ async function demarrer() {
   // Pièces de Nour gagnées : petit « +n » qui monte, la bourse bondit
   let timerGain = null;
   function afficherGain(total, n, raison) {
+    try { loumiReagir(n >= 30 ? 'bravo' : 'joie', n >= 30 ? 'Bravo ! Quelle belle réussite !' : ''); } catch (e) {}
     $('nb-pieces').textContent = total;
     const b = $('bourse'); b.classList.remove('bondit'); void b.offsetWidth; b.classList.add('bondit');
     const g = $('gain'); g.classList.add('cache'); void g.offsetWidth;
@@ -955,6 +1083,7 @@ async function demarrer() {
     cacheObjets.set(cle, url); return url;
   }
   function decouvrir(d) {
+    try { loumiReagir('surprise', d && d.nouveau ? 'Oh ! Une nouvelle découverte !' : ''); } catch (e) {}
     if (interface_ouverte && !d.forcer) { fileDecouvertes.push(d); return; }   // une autre fenêtre est ouverte : on attend
     interface_ouverte = true; ctl.bloque = true;
     if (d.nouveau) {
@@ -1057,7 +1186,6 @@ async function demarrer() {
     L.push({ id: 'abreuvoir', nom: 'L\'abreuvoir de l\'enclos', cat: 'eau', x: 36.5, z: -12.5, connu: true, rayon: 4 });
     L.push({ id: 'ecurie', nom: 'L\'écurie de Nabil', cat: 'ecurie', x: ecurie.point.x, z: ecurie.point.z, connu: true, rayon: 4, texte: 'Pour choisir ou adopter une monture.' });
     L.push({ id: 'cour', nom: 'Ma cour', cat: 'maison', x: cour.centre.x, z: cour.centre.z, connu: true, rayon: 4.5, texte: 'Ta maison, où tu exposes tes objets.' });
-    L.push({ id: 'nour', nom: 'Nour', cat: 'personne', icone: '💧', x: NOUR.x, z: NOUR.z, connu: true, rayon: 4 });
     const s = decor.points.find(p => p.id === 'sage'); if (s) L.push({ id: 'hakim', nom: 'Hakim, l\'ancien', cat: 'personne', icone: '🧓', x: s.x, z: s.z, connu: true, rayon: 3.5, texte: 'Il pose trois questions chaque jour.' });
     for (const p of decor.points) { const d = POINTS[p.id]; if (!d || !d.decouverte) continue;
       L.push({ id: 'pierre:' + p.id, nom: d.titre, cat: 'pierre', x: p.x, z: p.z, connu: true, fait: etat.lus.includes(p.id), rayon: 3.5 }); }
@@ -1241,12 +1369,15 @@ async function demarrer() {
       } else C.vit *= Math.max(0, 1 - dt * 4);
     }
 
+    // --- soins de la monture : besoins, marche d'approche, poses ---
+    soins.tick(AV.monture, dt, { monte, vit: C.vit }); avancerSoin(dt);
     // --- placer les modèles ---
     chameau.racine.position.set(C.x, H(C.x, C.z), C.z);
     chameau.racine.rotation.y = C.a;
     { const dEnf = Math.hypot(J.x - C.x, J.z - C.z);
       chameau.regard = !monte && !sequence && dEnf < 7 && dEnf > 0.5 ? angleVers(C.a, Math.atan2(J.x - C.x, J.z - C.z)) : null; }
     chameau.animer(dt, sequence ? 0 : C.vit, tTotal);
+    appliquerPoseSoin(dt);
     { const e = chameau.espece === 'elephant' ? [3.2, 4.4] : chameau.espece === 'cheval' ? [1.0, 2.4] : [1.3, 2.9];
       blobs[1].position.set(C.x, H(C.x, C.z) + 0.05, C.z); blobs[1].rotation.y = C.a; blobs[1].scale.set(e[0], 1, e[1]);
       if (!monte) { const r = enfant.racine.position; blobs[0].visible = true; blobs[0].position.set(r.x, H(r.x, r.z) + 0.05, r.z); blobs[0].scale.set(0.75, 1, 0.75); } else blobs[0].visible = false; }
@@ -1338,19 +1469,18 @@ async function demarrer() {
     }
 
     // --- monde vivant ---
-    const nuit = ciel.maj(dt, cam.cible, etat.cycle !== false);
+    const nuit = ciel.maj(dt, cam.cible, etat.cycle !== false); nuitActuelle = !!nuit;
     decor.maj({ x: J.x, z: J.z }, tTotal, nuit);
     oiseaux.maj(dt, tTotal, nuit);
     faucon.maj(dt, tTotal, { x: enfant.racine.position.x, y: enfant.racine.position.y, z: enfant.racine.position.z });
     { const sol = terrain.matiere(J.x, J.z), village = Math.hypot(J.x, J.z) < 60;
       effets.maj(dt, { x: J.x, z: J.z }, village ? 0 : (1 - sol.herbe) * (1 - nuit * 0.6) * (0.5 + 0.5 * Math.sin(tTotal * 0.15) ** 2), tTotal); }
-    if (nour) nour.position.set(NOUR.x, H(NOUR.x, NOUR.z) + 1.6 + Math.sin(tTotal * 1.8) * 0.12, NOUR.z);
 
     // --- ce qu'on peut faire ici ---
     proche = null;
     let meilleur = Infinity;
     for (const p of decor.points) { const dd = Math.hypot(p.x - J.x, p.z - J.z); if (dd < p.r && dd < meilleur) { meilleur = dd; proche = p; } }
-    procheAv = sequence ? null : (() => { const a = aventure.interaction(J), b = quetes.interaction(J); return !a ? b : !b ? a : (b.d < a.d ? b : a); })();
+    procheAv = sequence || soin ? null : (() => { const t = [aventure.interaction(J), quetes.interaction(J), interactionSoins()].filter(Boolean); return t.length ? t.reduce((x, y) => (y.d < x.d ? y : x)) : null; })();
     aventure.maj(dt, tTotal, J, monte ? C.vit > 6 : J.vit > 4.2, nuit);
     quetes.maj(dt, tTotal, posGuide(), monte && !sequence);
     marche.maj(dt, tTotal, J); ecurie.animer(dt, tTotal, J); effetDecouverte.maj(dt);
@@ -1391,6 +1521,8 @@ async function demarrer() {
     }
 
     renderer.render(scene, camera);
+    majLoumi(dt);
+    loumi.dessiner(renderer, camera);
     requestAnimationFrame(image);
   }
 
@@ -1455,6 +1587,7 @@ async function demarrer() {
 
   // pour les tests
   window.__voyage = {
+    loumi, soins, faireSoin: (type) => lancerSoin(type, lieuDe(type)), soin: () => soin, pose: () => pose, nuit: () => nuitActuelle, menuLoumi, loumiDit, interactionSoins,
     etat, J, C, decor, ciel, H, cam, aventure, bourse, action: () => action(),
     teleporter(x, z) { J.x = x; J.z = z; if (monte) { C.x = x; C.z = z; } },
     monte: () => monte, sequence: () => sequence, proche: () => proche, zone: () => zoneActuelle,
