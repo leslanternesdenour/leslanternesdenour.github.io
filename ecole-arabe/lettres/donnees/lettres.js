@@ -7,7 +7,7 @@
 import { ALPHABET } from '../../commun/langue/alphabet.js?v=2';
 // Ordre d'apparition dans le parcours (par familles). Les DONNÉES viennent de la référence unique commun/langue/alphabet.js — jamais retapées ici.
 const ORDRE = ['alif', 'ba', 'ta', 'tha', 'nun', 'ya', 'jim', 'ha', 'kha', 'dal', 'dhal', 'ra', 'zay', 'sin', 'shin', 'sad', 'dad', 'ta2', 'za2', 'ayn', 'ghayn', 'fa', 'qaf', 'kaf', 'lam', 'mim', 'ha2', 'waw'];
-export const LETTRES = ORDRE.map(id => { const a = ALPHABET.find(x => x.id === id); return { id: a.id, num: a.num, ar: a.ar, nom: a.nomAr, nomFr: a.nomFr, translit: a.translit, joint: a.joint, points: a.points, famille: a.famille, syllabe: a.syllabe, son: a.son, sonFr: a.sonFr, mot: a.mot, niveau: a.niveau, chapitre: a.chapitre, audio: a.audio, statut: a.statut }; });
+export const LETTRES = ORDRE.map(id => { const a = ALPHABET.find(x => x.id === id); return { id: a.id, num: a.num, ar: a.ar, nom: a.nomAr, nomFr: a.nomFr, translit: a.translit, joint: a.joint, points: a.points, famille: a.famille, syllabe: a.syllabe, syllabeAudio: a.syllabeAudio || a.syllabe, son: a.son, sonFr: a.sonFr, mot: a.mot, niveau: a.niveau, chapitre: a.chapitre, audio: a.audio, statut: a.statut }; });
 export const PAR_ID = Object.fromEntries(LETTRES.map(l => [l.id, l]));
 export const IDS = LETTRES.map(l => l.id);
 // Formes de présentation d'une lettre dans glyphes.json : isolee, finale, initiale, mediane (les lettres qui ne se lient pas n'ont que isolee et finale)

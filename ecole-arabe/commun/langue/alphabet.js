@@ -8,6 +8,7 @@
 //
 // Noms et transcriptions : liste de référence fournie par le fondateur. Statut « a_valider » : aucune prononciation n'est considérée comme correcte tant qu'une personne maîtrisant l'arabe ne l'a pas validée
 // (un MP3 qui se lit ne prouve RIEN). Pour valider : mettre statut.<nom|son|mot> à « valide » ET renseigner valideePar / valideeLe.
+// syllabeAudio (alif seulement) : texte envoyé à la synthèse vocale pour le SON. « أَ » est lu « Ostev » par la synthèse (erreur constatée) ; « ءَ » (hamza + fatha) donne « a ». À valider par une personne maîtrisant l'arabe.
 // Les contours graphiques (formes isolée, initiale, médiane, finale) viennent de la police Amiri (glyphes.json) : aucune forme inventée.
 export const ALPHABET = [
  {
@@ -24,6 +25,7 @@ export const ALPHABET = [
   ],
   "famille": "alif",
   "syllabe": "أَ",
+  "syllabeAudio": "ءَ",
   "son": "a",
   "sonFr": "Alif est surtout un « â » long (comme dans « Baa »). Avec une petite coupure de voix (la hamza), il porte une voyelle : أَ se lit « a ».",
   "mot": {

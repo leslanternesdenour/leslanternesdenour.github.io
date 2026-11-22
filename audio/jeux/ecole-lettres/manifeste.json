@@ -1,8 +1,8 @@
 {
  "jeu": "ecole-lettres",
  "genere": "inventaire.mjs",
- "total": 147,
- "enregistrees": 147,
+ "total": 154,
+ "enregistrees": 154,
  "phrases": [
   {
    "id": "bienvenue",
@@ -56,6 +56,83 @@
    "sousTitre": "Merci ! Maintenant je sais par où commencer. C'est parti !",
    "fichier": "placement_fin.mp3",
    "duree": 4.36,
+   "prononciationVerifiee": false,
+   "voixId": "7FhMHxpv3kwYS7eBOJoC"
+  },
+  {
+   "id": "accueil_porte",
+   "role": "nour",
+   "langue": "fr",
+   "texte": "Touche la grande porte pour commencer à apprendre !",
+   "sousTitre": "Touche la grande porte pour commencer à apprendre !",
+   "fichier": "accueil_porte.mp3",
+   "duree": 3.16,
+   "prononciationVerifiee": false,
+   "voixId": "7FhMHxpv3kwYS7eBOJoC"
+  },
+  {
+   "id": "salle_jardin",
+   "role": "nour",
+   "langue": "fr",
+   "texte": "Voici la salle des vingt-huit lettres !",
+   "sousTitre": "Voici la salle des vingt-huit lettres !",
+   "fichier": "salle_jardin.mp3",
+   "duree": 2.69,
+   "prononciationVerifiee": false,
+   "voixId": "7FhMHxpv3kwYS7eBOJoC"
+  },
+  {
+   "id": "salle_atelier",
+   "role": "nour",
+   "langue": "fr",
+   "texte": "Voici l'atelier des formes !",
+   "sousTitre": "Voici l'atelier des formes !",
+   "fichier": "salle_atelier.mp3",
+   "duree": 2.12,
+   "prononciationVerifiee": false,
+   "voixId": "7FhMHxpv3kwYS7eBOJoC"
+  },
+  {
+   "id": "salle_galerie",
+   "role": "nour",
+   "langue": "fr",
+   "texte": "Voici la galerie des sons !",
+   "sousTitre": "Voici la galerie des sons !",
+   "fichier": "salle_galerie.mp3",
+   "duree": 2.12,
+   "prononciationVerifiee": false,
+   "voixId": "7FhMHxpv3kwYS7eBOJoC"
+  },
+  {
+   "id": "salle_defis",
+   "role": "nour",
+   "langue": "fr",
+   "texte": "Voici la salle des défis !",
+   "sousTitre": "Voici la salle des défis !",
+   "fichier": "salle_defis.mp3",
+   "duree": 2.12,
+   "prononciationVerifiee": false,
+   "voixId": "7FhMHxpv3kwYS7eBOJoC"
+  },
+  {
+   "id": "salle_palais",
+   "role": "nour",
+   "langue": "fr",
+   "texte": "Voici ma bibliothèque !",
+   "sousTitre": "Voici ma bibliothèque !",
+   "fichier": "salle_palais.mp3",
+   "duree": 2.12,
+   "prononciationVerifiee": false,
+   "voixId": "7FhMHxpv3kwYS7eBOJoC"
+  },
+  {
+   "id": "salle_parcours",
+   "role": "nour",
+   "langue": "fr",
+   "texte": "Choisis ta prochaine étape.",
+   "sousTitre": "Choisis ta prochaine étape.",
+   "fichier": "salle_parcours.mp3",
+   "duree": 2.04,
    "prononciationVerifiee": false,
    "voixId": "7FhMHxpv3kwYS7eBOJoC"
   },
@@ -406,10 +483,10 @@
    "lettre": "alif",
    "role": "narratrice",
    "langue": "ar",
-   "texte": "أَ",
-   "sousTitre": "أَ",
+   "texte": "ءَ",
+   "sousTitre": "ءَ",
    "fichier": "son.alif.mp3",
-   "duree": 1.15,
+   "duree": 0.84,
    "prononciationVerifiee": false,
    "voixId": "hddT377hAwvRoOKqMj0E"
   },
@@ -1381,7 +1458,7 @@
    "texte": "غَيْمَة",
    "sousTitre": "غَيْمَة",
    "fichier": "mot.ghayn.mp3",
-   "duree": 1.15,
+   "duree": 1.07,
    "prononciationVerifiee": false,
    "voixId": "hddT377hAwvRoOKqMj0E"
   },
@@ -1669,7 +1746,7 @@
    "texte": "هَاتِف",
    "sousTitre": "هَاتِف",
    "fichier": "mot.ha2.mp3",
-   "duree": 0.99,
+   "duree": 1.23,
    "prononciationVerifiee": false,
    "voixId": "hddT377hAwvRoOKqMj0E"
   },

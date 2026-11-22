@@ -1,10 +1,10 @@
 {
- "total": 590,
+ "total": 597,
  "parJeu": {
   "chasse-aux-mots": 160,
   "mysteres-desert": 70,
   "quiz-nour": 213,
-  "ecole-lettres": 147
+  "ecole-lettres": 154
  },
  "compte": [
   {
@@ -109,9 +109,9 @@
   {
    "id": "7FhMHxpv3kwYS7eBOJoC",
    "role": "nour",
-   "n": 31,
+   "n": 38,
    "jeux": {
-    "ecole-lettres": 31
+    "ecole-lettres": 38
    }
   }
  ],

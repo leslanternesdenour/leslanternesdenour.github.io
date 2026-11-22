@@ -13,7 +13,7 @@ export default async function trace(ctx, { lettres, tours = 1 }) {
 }
 async function tracerUne(ctx, id) {
   const l = PAR_ID[id], g = ctx.groupe(), tol = C.toleranceTrace(ctx.s), f = glyphes().lettres[id].isolee, b = boite(id, 'isolee', 0.12);
-  const ui = enTete(ctx, '✨ Le tracé magique', 1); ui.consigne.classList.add('cache'); ui.cible.innerHTML = `<div class="cible-texte"><b>Trace ${l.nomFr}</b><small>${l.sonFr}</small></div>`;
+  const ui = enTete(ctx, '✨ Le tracé magique', 1); ui.consigne.classList.add('cache'); ui.cible.innerHTML = `<div class="cible-texte"><b>Trace ${l.nomFr}</b>${g === 'g710' ? `<small>${l.sonFr}</small>` : ''}</div>`;
   const S = Math.max(240, Math.min(420, Math.floor((ctx.zone.clientWidth || 360) - 24), Math.floor(innerHeight * 0.5))), dpr = Math.min(devicePixelRatio || 1, 2), W = Math.round(S * dpr);
   ui.choix.className = 'act-choix trace'; ui.choix.innerHTML = `<div class="zone-trace" style="width:${S}px;height:${S}px"><canvas class="guide"></canvas><canvas class="encre"></canvas><div class="points-tap"></div></div><div class="jauge" aria-label="Avancement du tracé"><i style="width:0%"></i></div>`;
   const zone = ui.choix.querySelector('.zone-trace'), cg = zone.querySelector('.guide'), ce = zone.querySelector('.encre'), pts = zone.querySelector('.points-tap'), jauge = ui.choix.querySelector('.jauge i');

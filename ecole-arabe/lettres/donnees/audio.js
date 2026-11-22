@@ -9,6 +9,9 @@ export const PHRASES = {
   placement: { role: 'nour', texte: 'Faisons un petit jeu pour voir les lettres que tu connais déjà. Ce n\'est pas une épreuve !' },
   placement_q: { role: 'nour', texte: 'Quelle est cette lettre ?' },
   placement_fin: { role: 'nour', texte: "Merci ! Maintenant je sais par où commencer. C'est parti !" },
+  accueil_porte: { role: 'nour', texte: 'Touche la grande porte pour commencer à apprendre !' },
+  salle_jardin: { role: 'nour', texte: 'Voici la salle des vingt-huit lettres !' }, salle_atelier: { role: 'nour', texte: "Voici l'atelier des formes !" }, salle_galerie: { role: 'nour', texte: 'Voici la galerie des sons !' },
+  salle_defis: { role: 'nour', texte: 'Voici la salle des défis !' }, salle_palais: { role: 'nour', texte: 'Voici ma bibliothèque !' }, salle_parcours: { role: 'nour', texte: 'Choisis ta prochaine étape.' },
   decouvrir: { role: 'nour', texte: 'Touche une lettre pour la découvrir.' },
   chasse: { role: 'nour', texte: 'Trouve la lettre cachée dans le jardin.' },
   formes: { role: 'nour', texte: 'Regarde : la lettre change de forme dans le mot, mais c\'est toujours la même lettre.' },
@@ -34,6 +37,6 @@ export function inventaire() {
   const L = []; const add = (id, role, langue, texte, extra = {}) => L.push({ id, role, langue, texte, ...extra });
   for (const [id, p] of Object.entries(PHRASES)) add(id, p.role, 'fr', p.texte);
   for (const c of CHAPITRES) add(`chap.${c.id}`, 'nour', 'fr', c.intro, { chapitre: c.id });
-  for (const l of LETTRES) { add(`nom.${l.id}`, 'narratrice', 'ar', l.nom, { lettre: l.id }); add(`son.${l.id}`, 'narratrice', 'ar', l.syllabe, { lettre: l.id }); add(`mot.${l.id}`, 'narratrice', 'ar', l.mot.ar, { lettre: l.id }); add(`motfr.${l.id}`, 'narratrice', 'fr', `${l.mot.fr.charAt(0).toUpperCase()}${l.mot.fr.slice(1)}.`, { lettre: l.id }); }
+  for (const l of LETTRES) { add(`nom.${l.id}`, 'narratrice', 'ar', l.nom, { lettre: l.id }); add(`son.${l.id}`, 'narratrice', 'ar', l.syllabeAudio || l.syllabe, { lettre: l.id }); add(`mot.${l.id}`, 'narratrice', 'ar', l.mot.ar, { lettre: l.id }); add(`motfr.${l.id}`, 'narratrice', 'fr', `${l.mot.fr.charAt(0).toUpperCase()}${l.mot.fr.slice(1)}.`, { lettre: l.id }); }
   return L;
 }

@@ -16,7 +16,7 @@ export default async function chasse(ctx, { lettres, tours = 3 }) {
     const l = PAR_ID[cible];
     return { mode: 'scene', consigne: { id: 'chasse', texte: `Trouve la lettre ${l.nomFr}.` }, son: { id: 'nom.' + cible, texte: `${l.nomFr}`, qui: 'Maktoub' },
       rejouer: () => ctx.parler('nom.' + cible, l.nomFr, 'Maktoub'),
-      cible: `<div class="cible-lettre">${svgLettre(cible, { classe: 'grand' })}<div><b>${l.nomFr}</b><small>${l.sonFr}</small></div></div>`,
+      cible: `<div class="cible-lettre">${svgLettre(cible, { classe: 'grand' })}<div><b>${l.nomFr}</b>${ctx.groupe() === 'g710' ? `<small>${l.sonFr}</small>` : ''}</div></div>`,
       items, enregistrer: (it, ok) => ({ lettre: cible, competence: 'reco', contexte: 'chasse', ok: ok === true, confusion: ok === true ? undefined : it.lettre }) };
   } });
 }

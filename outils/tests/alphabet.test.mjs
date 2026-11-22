@@ -13,7 +13,7 @@ test('28 lettres : caractère, nom arabe vocalisé et transcription conformes à
 test('Alif : « أَلِف » / « Alif », jamais un autre mot ; formes أ إ آ ٱ présentées séparément ; hamza distincte', () => {
   const a = ALPHABET[0]; assert.equal(a.nomAr, 'أَلِف'); assert.equal(a.translit, 'Alif'); assert.deepEqual(ALIF.formes.map(f => f.ar), ['أ', 'إ', 'آ', 'ٱ']); assert.equal(ALIF.hamza.ar, 'ء');
   for (const k of ['hamza_dessus', 'hamza_dessous', 'madda', 'wasla']) assert.ok(glyphes.alifFormes[k].d.length > 50, 'contour ' + k);
-  const nom = man.phrases.find(p => p.id === 'nom.alif'); assert.equal(nom.texte, 'أَلِف'); assert.ok(!/oustev/i.test(JSON.stringify(man.phrases.filter(p => p.id.endsWith('.alif')))));
+  const nom = man.phrases.find(p => p.id === 'nom.alif'); assert.equal(nom.texte, 'أَلِف'); assert.ok(!/oustev/i.test(JSON.stringify(man.phrases.filter(p => p.id.endsWith('.alif'))))); assert.equal(man.phrases.find(p => p.id === 'son.alif').texte, 'ءَ', 'son d\'alif : « أَ » est lu « Ostev » par la synthèse');
 });
 test('Liaison : seuls ا د ذ ر ز و ne se lient pas (données, formes graphiques et référence cohérentes)', () => {
   assert.deepEqual([...NON_LIEES].sort(), ['alif', 'dal', 'dhal', 'ra', 'waw', 'zay']);
@@ -35,7 +35,7 @@ test('Noms vocalisés (une voyelle courte au moins) et sons distincts des noms :
 });
 test('Audios : chaque audio est rattaché EXPLICITEMENT à sa lettre (identifiant), texte = référence, fichier présent, voix autorisée, jamais « vérifié » sans validation humaine', () => {
   const par = Object.fromEntries(man.phrases.map(p => [p.id, p]));
-  for (const a of ALPHABET) for (const [k, texte] of [['nom', a.nomAr], ['son', a.syllabe], ['mot', a.mot.ar]]) {
+  for (const a of ALPHABET) for (const [k, texte] of [['nom', a.nomAr], ['son', a.syllabeAudio || a.syllabe], ['mot', a.mot.ar]]) {
     const p = par[a.audio[k]]; assert.ok(p, a.id + ' ' + k); assert.equal(p.id, `${k}.${a.id}`); assert.equal(p.texte, texte, `${p.id} : texte audio = référence`); assert.equal(p.langue, 'ar'); assert.equal(p.role, 'narratrice'); assert.equal(p.voixId, roles.narratrice);
     assert.ok(p.fichier && fs.existsSync(path.join(R, 'audio/jeux/ecole-lettres', p.fichier)), 'fichier ' + p.id); assert.ok(p.duree > 0.3 && p.duree < 4, 'durée ' + p.id); assert.equal(p.prononciationVerifiee, a.statut[k] === 'valide', 'statut ' + p.id);
   }
