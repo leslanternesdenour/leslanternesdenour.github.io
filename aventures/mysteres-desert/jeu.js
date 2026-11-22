@@ -14,12 +14,16 @@ const B = creerBase({ canvas: $('scene'), dossierAudio: 'audio/jeux/mysteres-des
 const icone = id => B.icone(creerObjet, id);
 const parler = (id, texte, qui, fini) => B.parler(id, texte, qui, fini);
 // enchaîne des phrases : avec la voix, on attend sa fin ; sans voix (audio absent), on laisse le temps de lire le sous-titre
-function dire(etapes, fin) { const [id, texte, qui] = etapes[0]; const reste = etapes.slice(1); const suivant = () => { if (reste.length) dire(reste, fin); else if (fin) fin(); };
-  const v = parler(id, texte, qui, suivant); if (!v) setTimeout(suivant, Math.max(2200, texte.length * 55)); }
+function dire(etapes, fin) {
+  const [id, texte, qui] = etapes[0], reste = etapes.slice(1); let fait = false;
+  const suivant = () => { if (fait) return; fait = true; if (reste.length) dire(reste, fin); else if (fin) fin(); };
+  const v = parler(id, texte, qui, suivant);
+  // filet de sécurité : si la voix est interrompue (nouvelle phrase demandée par l'enfant) ou tarde, l'histoire continue quand même
+  setTimeout(suivant, v ? Math.max(5000, texte.length * 110 + 1500) : Math.max(2200, texte.length * 55));
+}
 
 // ---------- chapitre ----------
 let ch = null, clues = [], guide = null, passage = null, tresorObj = null, ouv = 0, ouvrant = false, indice = null, inactif = 0;
-const idsEtapes = () => ch;
 async function creerGuide(def) {
   try { const { Enfant } = await import('../../voyage/js/personnages.js?v=4'); const e = new Enfant(false, { tunique: def.tunique, pantalon: def.pantalon, cheche: def.cheche, peau: def.peau, sac: false, barbe: def.barbe || null, voile: def.voile || null });
     e.racine.scale.setScalar(1.45); e.racine.position.set(-1.7, 0, 1.6); B.monde.add(e.racine); return e; } catch (er) { return null; }
