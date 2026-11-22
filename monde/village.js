@@ -14,6 +14,26 @@ import { mascotte } from './mascottes.js?v=1';
 
 const $ = id => document.getElementById(id);
 const S = sauvegarde.get();
+// Portail d'entrée (socle/portail.js) et profil enfant actif (Espace famille) : voir socle/portail-logique.js
+const PL = window.PortailLogique;
+const profilEnfant = () => { try { return JSON.parse(localStorage.getItem('ldn_profil_actif') || 'null'); } catch (e) { return null; } };
+const portailJoue = !!(window.__portail && window.__portail.actif);
+// Le travail lourd (création de la scène 3D) attend que le portail soit prêt : l'animation du portail et la voix restent fluides,
+// même sur un vieux téléphone ; le village se prépare pendant que l'enfant lit le bouton « Entrer dans le Monde de Nour ».
+const portailPret = () => new Promise(r => {
+  const pret = () => !(window.__portail && window.__portail.actif) || window.__portail.etat === 'pret';
+  if (pret()) return r();
+  const f = () => { if (pret()) { removeEventListener('ldn:portail-pret', f); removeEventListener('ldn:portail-fin', f); r(); } };
+  addEventListener('ldn:portail-pret', f); addEventListener('ldn:portail-fin', f);
+});
+const apresPortail = f => (window.__portail && window.__portail.actif) ? addEventListener('ldn:portail-fin', f, { once: true }) : f();
+// Le profil enfant fournit l'âge et le personnage SEULEMENT s'ils ne sont pas déjà enregistrés : aucune donnée n'est jamais écrasée.
+function appliquerProfilEnfant(profil) {
+  if (!PL || !profil) return;
+  const r = PL.reglagesDepuisProfil(profil, sauvegarde.get());
+  if (r.age) sauvegarde.regler('age', r.age);
+  if (r.genre) sauvegarde.regler('personnage', { ...(sauvegarde.get().personnage || { tenue: 'ecru', peau: 1 }), genre: r.genre, choisi: Date.now() });
+}
 const qualite = S.qualite || qualiteAuto();
 const R = reglages(qualite);
 let village = null;
@@ -69,9 +89,12 @@ async function init() {
   if (!webglOK()) return montrerErreur();
   try { await Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 2500))]); } catch (e) {}
 
+  const profil = profilEnfant();
+  appliquerProfilEnfant(profil);
   let mod;
   try { mod = await import('./scene.js?v=7'); }
   catch (e) { return montrerErreur(e); }
+  await portailPret();
 
   try {
     const p = new URLSearchParams(location.search);
@@ -88,7 +111,9 @@ async function init() {
 
   $('chargement').classList.add('cache');
   document.querySelectorAll('#accueil [data-age]').forEach(b => b.classList.toggle('dernier', b.dataset.age === S.age));
-  $('accueil').classList.remove('cache');
+  // Un enfant dont le profil est connu entre directement dans son village (jamais de « Qui joue ? » à chaque connexion).
+  const direct = !!(PL && PL.entreeDirecte(profil, sauvegarde.get()));
+  apresPortail(() => { if (direct) entrerDansLeVillage(sauvegarde.get().age); else $('accueil').classList.remove('cache'); });
 
   // Préchargement discret de la musique, une fois le village affiché (seulement si elle est active)
   const plusTard = window.requestIdleCallback || (f => setTimeout(f, 1200));
@@ -109,9 +134,10 @@ document.querySelectorAll('#accueil [data-genre]').forEach(btn => btn.addEventLi
 majChoixPerso();
 
 // ---------- accueil : qui joue ? (ce toucher débloque aussi le son) ----------
-document.querySelectorAll('#accueil [data-age]').forEach(btn => btn.addEventListener('click', () => {
-  sauvegarde.regler('age', btn.dataset.age);
-  village && village.noms(btn.dataset.age === 'grands');
+function entrerDansLeVillage(age) {
+  if (dansLeVillage) return;
+  sauvegarde.regler('age', age);
+  village && village.noms(age === 'grands');
   $('accueil').classList.add('cache');
   $('hud').classList.remove('cache');
   $('bulle').classList.remove('cache');
@@ -119,9 +145,11 @@ document.querySelectorAll('#accueil [data-age]').forEach(btn => btn.addEventList
   reveiller();
   demarrerAmbiance();
   if (sons().musiqueActive) jouerMusique().then(majPanneauSon);
-  chargerVoix('voix/').then(() => dire('NOUR-VOIX-ACC-002', ok => { if (ok && dansLeVillage && !choisi) dire('NOUR-VOIX-VIL-001'); }));
+  // Après le portail, la maîtresse a déjà souhaité la bienvenue : on ne répète pas l'accueil, on explique seulement le village.
+  chargerVoix('voix/').then(() => portailJoue ? dire('NOUR-VOIX-VIL-001') : dire('NOUR-VOIX-ACC-002', ok => { if (ok && dansLeVillage && !choisi) dire('NOUR-VOIX-VIL-001'); }));
   goutte();
-}));
+}
+document.querySelectorAll('#accueil [data-age]').forEach(btn => btn.addEventListener('click', () => entrerDansLeVillage(btn.dataset.age)));
 
 // ---------- panneau d'un bâtiment ----------
 function surTap(b) {

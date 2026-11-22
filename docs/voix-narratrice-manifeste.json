@@ -1563,5 +1563,11 @@
   "source": "narratrice",
   "fichier": "audio/narratrice/calendrier/qg9a.mp3",
   "valide": true
+ },
+ "monde/accueil-portail": {
+  "source": "narratrice",
+  "fichier": "monde/voix/accueil-portail.mp3",
+  "valide": false,
+  "note": "Prise 1 sur 3 (lot 21) : prononciation de مَرْحَبًا à valider par le client ; voir monde/voix/accueil-portail.json"
  }
 }

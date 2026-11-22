@@ -11,7 +11,7 @@ pages.sort(); const trouvailles = [], liensVus = new Set(), liensKO = new Map();
 const nav = await chromium.launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
 for (const [vue, vp, mob] of [['ordinateur', { width: 1280, height: 800 }, false], ['mobile', { width: 390, height: 780 }, true]]) for (const url of pages) {
   const ctx = await nav.newContext({ viewport: vp, isMobile: mob, hasTouch: mob, locale: 'fr-FR' });
-  await ctx.addInitScript(() => { try { localStorage.setItem('lanternes_intro', JSON.stringify({ off: 1 })); localStorage.setItem('ldn_ouverture_vue', '1'); } catch (e) {} });
+  await ctx.addInitScript(() => { try { localStorage.setItem('lanternes_intro', JSON.stringify({ off: 1 })); localStorage.setItem('ldn_ouverture_vue', '1'); sessionStorage.setItem('ldn_portail', '*'); } catch (e) {} });
   await ctx.route(/cdn\.jsdelivr\.net\/npm\/three@0\.170\.0\//, r => { const f = THREE + r.request().url().split('three@0.170.0/')[1]; fs.existsSync(f) ? r.fulfill({ path: f, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' } }) : r.abort(); });
   await ctx.route(EXTERNE, r => r.abort());
   const p = await ctx.newPage(), T = (type, detail) => trouvailles.push({ vue, url, type, detail });

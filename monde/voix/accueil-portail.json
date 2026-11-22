@@ -1,0 +1,10 @@
+{
+  "texte": "مَرْحَبًا ! Bienvenue dans le Monde de Nour !",
+  "voix": "Nour - Narratrice (maitresse), ElevenLabs eleven_v4, stabilité 0,5 / similarité 0,75",
+  "prise": 1,
+  "duree": 3.631,
+  "coupe": 1.12,
+  "finVoix": 3.26,
+  "valide": false,
+  "note": "Prise 1 des 3 générées le 22/11/2026 (lot 21 de /outils/voix/lot?n=21). En attente de l'écoute du client : prononciation de مَرْحَبًا. Pour changer de prise : python3 outils/voix/choisir-accueil.py <1|2|3>."
+}

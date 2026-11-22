@@ -12,7 +12,7 @@ const erreurs = [], reseau = [], BRUIT = /Transition was aborted/;
 async function contexte(mobile) {
   const ctx = await nav.newContext(mobile ? { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, locale: 'fr-FR' } : { viewport: { width: 1280, height: 800 }, locale: 'fr-FR' });
   await ctx.route(EXTERNE, r => r.abort());
-  await ctx.addInitScript(() => { try { localStorage.setItem('lanternes_intro', JSON.stringify({ off: 1 })); localStorage.setItem('ldn_ouverture_vue', '1'); } catch (e) {} });
+  await ctx.addInitScript(() => { try { localStorage.setItem('lanternes_intro', JSON.stringify({ off: 1 })); localStorage.setItem('ldn_ouverture_vue', '1'); sessionStorage.setItem('ldn_portail', '*'); } catch (e) {} });
   const page = await ctx.newPage(); page.on('dialog', d => d.accept());
   page.on('pageerror', x => BRUIT.test(x.message) || erreurs.push(page.url().replace(BASE, '') + ' : ' + x.message));
   page.on('response', r => { if (r.status() >= 400) reseau.push(r.status() + ' ' + r.url().replace(BASE, '')); });

@@ -120,8 +120,13 @@ export async function deconnexion() {
   try { await api('/api/session/fin', { methode: 'POST' }); } catch (e) {}
   await auth.quitter();
   lsSet(CLE_PROFIL, null); lsSet(CLE_EMPREINTE, null);
+  oublierPortail();                                  // nouvelle connexion = nouvelle session de jeu : le portail reviendra
   await purgerCaches();
 }
+
+// Le portail d'entrée du Monde de Nour s'affiche une fois par session de jeu (voir monde/socle/portail-logique.js) :
+// se déconnecter ou choisir un enfant ouvre une nouvelle session.
+const oublierPortail = () => { try { sessionStorage.removeItem('ldn_portail'); } catch (e) {} };
 
 // ---------- profil enfant actif (un seul sur l'appareil) ----------
 export function profilActif() { try { return JSON.parse(lsGet(CLE_PROFIL) || 'null'); } catch (e) { return null; } }
@@ -165,6 +170,7 @@ export async function choisirEnfant(id, droits) {
     else lsSet(k, JSON.stringify(v));
   }
   lsSet(CLE_PROFIL, JSON.stringify({ id, surnom: e.surnom, tranche: e.tranche, avatar: e.avatar, gele: !!e.gele, synchro }));
+  oublierPortail();                                  // un enfant est choisi : nouvelle session de jeu, le portail s'affichera à l'entrée dans le monde
   lsSet(CLE_EMPREINTE, synchro ? id + '|' + empreinte(progressionLocale()) : null);
   return profilActif();
 }

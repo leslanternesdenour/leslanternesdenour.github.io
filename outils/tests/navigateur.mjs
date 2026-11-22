@@ -11,7 +11,7 @@ const ECRANS = { mobile: { width: 390, height: 844, isMobile: true, hasTouch: tr
 const PAGES = ['/', '/decouvrir/', '/ablutions/', '/priere/', '/calendrier/', '/compte/', '/transfert/', '/monde/', '/voyage/', '/ablutions/jeu3d/', '/priere/jeu3d/'];
 for (const [nomE, e] of Object.entries(ECRANS)) {
   const ctx = await nav.newContext({ viewport: { width: e.width, height: e.height }, isMobile: !!e.isMobile, hasTouch: !!e.hasTouch, locale: 'fr-FR' });
-  await ctx.addInitScript(() => { try { localStorage.setItem('lanternes_intro', JSON.stringify({ off: 1 })); localStorage.setItem('ldn_ouverture_vue', '1'); } catch (e) {} });
+  await ctx.addInitScript(() => { try { localStorage.setItem('lanternes_intro', JSON.stringify({ off: 1 })); localStorage.setItem('ldn_ouverture_vue', '1'); sessionStorage.setItem('ldn_portail', '*'); } catch (e) {} });
   for (const p of PAGES) {
     const page = await ctx.newPage(); const errs = [], manquants = [], csp = [];
     page.on('pageerror', x => errs.push(x.message));

@@ -28,5 +28,9 @@ for jeu in ('ablutions','priere','calendrier'):
         else: new[k]=v;n_anc+=1;manifeste[cle]={'source':'ancienne','fichier':os.path.normpath(os.path.join(jeu,'voix',v[0])),'valide':False}
     json.dump(new,open(vj,'w'),ensure_ascii=False,indent=1)
     rapport[jeu]={'clés':len(ancien),'narratrice':n_nv,'catalogue validé':n_cat,'ancienne conservée':n_anc}
+try:   # conserver les entrées hors des 3 jeux (ex. monde/accueil-portail)
+    for k,v in json.load(open('docs/voix-narratrice-manifeste.json')).items():
+        if k.startswith('monde/'): manifeste[k]=v
+except Exception: pass
 json.dump(manifeste,open('docs/voix-narratrice-manifeste.json','w'),ensure_ascii=False,indent=1)
 print(json.dumps(rapport,ensure_ascii=False,indent=1))

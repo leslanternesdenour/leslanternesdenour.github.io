@@ -10,7 +10,7 @@ const nav = await chromium.launch({ executablePath: '/usr/bin/google-chrome' });
 async function contexte(mobile = false) {
   const ctx = await nav.newContext(mobile ? { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, locale: 'fr-FR' } : { locale: 'fr-FR' });
   await ctx.route(EXTERNE, r => r.abort());
-  await ctx.addInitScript(() => { try { localStorage.setItem('lanternes_intro', JSON.stringify({ off: 1 })); localStorage.setItem('ldn_ouverture_vue', '1'); } catch (e) {} });
+  await ctx.addInitScript(() => { try { localStorage.setItem('lanternes_intro', JSON.stringify({ off: 1 })); localStorage.setItem('ldn_ouverture_vue', '1'); sessionStorage.setItem('ldn_portail', '*'); } catch (e) {} });
   const page = await ctx.newPage(); const g = { prochain: 'parent.google@local.test', fenetres: 0 };
   page.on('dialog', d => { g.fenetres++; d.accept(g.prochain); });            // « fenêtre Google » simulée : on y saisit l'adresse du compte Google fictif
   page.on('pageerror', x => /Transition was aborted/.test(x.message) || erreurs.push(page.url().replace(BASE, '') + ' : ' + x.message));
