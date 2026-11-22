@@ -4,7 +4,7 @@
   function lire(k) { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } }
   var JEUX = [
     { id: 'mots', lien: 'chasse-aux-mots/', icone: '🔎', fond: '#cfe3ff', c: '#4a90e2', titre: 'La Chasse aux mots', texte: "Explore le marché, le jardin, l'oasis… Retrouve les objets cachés et apprends leurs noms en français et en arabe.", recomp: '⭐ étoiles · 🏮 lanternes · 🎓 diplômes · 📖 mots', cle: 'aventure_mots', total: 90 },
-    { id: 'mysteres', icone: '🏜️', fond: '#f6d9a0', c: '#c8664a', titre: 'Les Mystères du désert', texte: 'Observe, cherche des indices et résous des énigmes dans le désert, les ruines et la bibliothèque.' },
+    { id: 'mysteres', lien: 'mysteres-desert/', icone: '🏜️', fond: '#f6d9a0', c: '#c8664a', titre: 'Les Mystères du désert', texte: 'Observe, cherche des indices et résous des énigmes dans le désert, les ruines et la bibliothèque pour rallumer la grande lanterne.', recomp: '⭐ étoiles · 🏮 lanternes · 💎 trésors · 🎓 diplômes', cle: 'aventure_mysteres', total: 63 },
     { id: 'quiz', icone: '❓', fond: '#e4daf5', c: '#7a5ac0', titre: 'Les Quiz et défis de Nour', texte: 'Des questions avec des personnages, des réponses illustrées et des explications douces.' },
     { id: 'oasis', icone: '🌴', fond: '#cdeef5', c: '#2f9aa8', titre: "Les Bâtisseurs de l'oasis", texte: 'Plante des palmiers, trouve de l\'eau et fais grandir ton oasis à ton rythme.' },
     { id: 'tresor', icone: '📜', fond: '#f2e4c8', c: '#8a6a3a', titre: 'Le Trésor des sourates et des mots', texte: "Découvre l'alphabet arabe, des mots et des passages adaptés à ton âge." },
@@ -15,7 +15,8 @@
   var el = document.getElementById('cartes');
   JEUX.forEach(function (j) {
     var s = j.cle ? lire(j.cle) : null, prog = '';
-    if (j.id === 'mots' && s) { var e = s.etoiles || {}, n = 0, l = 0; Object.keys(e).forEach(function (k) { (e[k] || []).forEach(function (v) { n += v || 0; if (v > 0) l++; }); }); etoiles += n; lanternes += l; mots = (s.trouves || []).length; prog = '⭐ ' + n + ' / ' + j.total + ' · 📖 ' + mots + ' mots'; }
+    if (s && s.etoiles) { var e = s.etoiles, n = 0, l = 0; Object.keys(e).forEach(function (k) { (e[k] || []).forEach(function (v) { n += v || 0; if (v > 0) l++; }); }); etoiles += n; lanternes += l;
+      if (j.id === 'mots') { mots = (s.trouves || []).length; prog = '⭐ ' + n + ' / ' + j.total + ' · 📖 ' + mots + ' mots'; } else prog = '⭐ ' + n + ' / ' + j.total + ' · 💎 ' + (s.tresors || []).length + ' / 7 trésors'; }
     else if (j.lien) prog = 'Pas encore commencé';
     var a = document.createElement('article'); a.className = 'carte' + (j.lien ? '' : ' bientot'); a.style.setProperty('--c', j.c); a.style.setProperty('--fond', j.fond);
     a.innerHTML = '<div class="vignette" aria-hidden="true">' + j.icone + '</div><h2>' + j.titre + '</h2><p>' + j.texte + '</p>' + (j.lien ? '<p class="prog">' + prog + '</p><p class="recomp">' + j.recomp + '</p>' : '') +

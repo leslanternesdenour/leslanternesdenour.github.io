@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Les Mystères du désert – Les Lanternes de Nour</title>
+<meta name="description" content="Explore le désert, l'oasis, le village, la bibliothèque, les ruines, la montagne et les jardins : cherche des indices, résous les énigmes et rallume la grande lanterne.">
+<meta name="theme-color" content="#191345">
+<link rel="icon" href="../../intro/favicon-48.png">
+<script src="../../monde/socle/sans-visage.js?v=1"></script>
+<link rel="stylesheet" href="jeu.css?v=1">
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js" } }
+</script>
+</head>
+<body>
+<canvas id="scene" aria-label="Scène 3D des Mystères du désert : touche les indices"></canvas>
+
+<main id="accueil" aria-labelledby="titre-jeu">
+  <header><a class="retour-aventures" href="../">‹ Les Aventures</a><h1 id="titre-jeu">🏜️ Les Mystères du désert</h1>
+    <div class="outils"><button id="btn-tresors" class="rond" aria-label="Mes trésors" title="Mes trésors">💎</button><button id="btn-reglages" class="rond" aria-label="Réglages" title="Réglages">⚙️</button></div></header>
+  <p id="bilan" class="bilan" aria-live="polite"></p>
+  <section id="age-bloc" class="cache"><h2>Quel âge as-tu ?</h2>
+    <div class="ages"><button data-age="petits"><b>3 – 5 ans</b><span>grandes images, indices qui brillent</span></button><button data-age="moyens"><b>6 – 8 ans</b><span>indices et petites énigmes</span></button><button data-age="grands"><b>9 – 10 ans</b><span>énigmes plus difficiles</span></button></div></section>
+  <section id="carte-bloc" class="cache"><button id="continuer" class="continuer"></button><h2>Les 7 lumières à retrouver</h2><div id="chapitres" class="chapitres"></div>
+    <p class="niveau-ligne">Difficulté : <span id="niveau-nom"></span> <button id="changer-niveau" class="lien">changer</button></p></section>
+</main>
+
+<div id="hud" class="cache">
+  <div class="haut"><button id="retour" class="rond" aria-label="Retour à la carte">‹</button><span id="titre-chapitre"></span>
+    <div class="outils"><button id="carnet-btn" class="rond" aria-label="Mon carnet d'indices" title="Mes indices">📓</button><button id="reecouter" class="rond" aria-label="Réécouter" title="Réécouter">🔊</button><button id="aide" class="rond" aria-label="Un petit indice" title="Indice">💡</button></div></div>
+  <p id="objectif" class="objectif" aria-live="polite"></p>
+  <button id="gauche" class="nav g" aria-label="Tourner à gauche">‹</button><button id="droite" class="nav d" aria-label="Tourner à droite">›</button>
+</div>
+<p id="sous-titres" class="sous-titres cache" role="status" aria-live="polite"></p>
+
+<section id="enigme" class="carte cache" role="dialog" aria-labelledby="enigme-titre"><h2 id="enigme-titre">❓ L'énigme</h2><p id="enigme-question"></p><div id="enigme-zone" class="zone"></div><p id="enigme-msg" class="msg" aria-live="polite"></p>
+  <div class="actions"><button id="enigme-aide">💡 Un indice</button><button id="enigme-ecouter">🔊 Réécouter</button><button id="enigme-valider" class="principal cache">Ouvrir</button></div></section>
+<section id="tresor" class="carte cache" role="dialog" aria-labelledby="tresor-titre"><h2 id="tresor-titre">💎 Une découverte !</h2><div id="tresor-img" class="tresor-img"></div><h3 id="tresor-nom"></h3><p id="tresor-fait"></p><div id="tresor-recompenses" class="recompenses"></div>
+  <div class="actions"><button id="tresor-suite" class="principal"></button><button id="tresor-carte">La carte</button></div></section>
+<section id="carnet" class="carte petit cache" role="dialog" aria-labelledby="carnet-titre"><h2 id="carnet-titre">📓 Mes indices</h2><ul id="carnet-liste" class="indices"></ul><div class="actions"><button id="carnet-fermer" class="principal">Fermer</button></div></section>
+<section id="tresors" class="carte cache" role="dialog" aria-labelledby="tresors-titre"><h2 id="tresors-titre">💎 Mes trésors</h2><div id="tresors-dip" class="recompenses"></div><ul id="tresors-liste" class="mots grille"></ul><div class="actions"><button id="tresors-fermer" class="principal">Fermer</button></div></section>
+<section id="reglages" class="carte petit cache" role="dialog" aria-labelledby="reglages-titre"><h2 id="reglages-titre">Réglages</h2>
+  <label class="ligne"><input type="checkbox" id="st-case" checked> Sous-titres</label>
+  <label class="ligne">Volume de la voix <input type="range" id="volume" min="0" max="1" step="0.05" value="1" aria-label="Volume de la voix"></label>
+  <button id="changer-age">Changer mon groupe d'âge</button><div class="actions"><button id="reglages-fermer" class="principal">Fermer</button></div></section>
+
+<script type="module" src="jeu.js?v=1"></script>
+<script src="../../compte/barre.js?v=3" defer data-menu="1" data-pos="bas-droite"></script>
+</body>
+</html>

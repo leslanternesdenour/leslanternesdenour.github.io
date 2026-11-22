@@ -18,7 +18,15 @@
   "perso-salma": "Nour - Samira (potière), femme d'une trentaine d'années, posée et chaleureuse",
   "perso-warda": "Nour - Layla (tisserande), femme calme et douce, qui chuchote bien à la bibliothèque",
   "perso-yacine": "Nour - Hassan (sellier), homme mûr, calme — le jardinier",
-  "perso-samir": "Nour - Nabil (écurie), jeune homme énergique — le puisatier"
+  "perso-samir": "Nour - Nabil (écurie), jeune homme énergique — le puisatier",
+  "perso-idriss": "Nour - Salim (voyageur), homme d'une quarantaine d'années, chaleureux — l'explorateur Idriss"
  },
- "reglages": { "model_id": "eleven_v4", "stability": 0.5, "similarity_boost": 0.75, "style": 0.0, "speed": 1.0 }
+ "reglages": {
+  "model_id": "eleven_v4",
+  "stability": 0.5,
+  "similarity_boost": 0.75,
+  "style": 0.0,
+  "speed": 1.0
+ },
+ "perso-idriss": "8aQsvxWbavqMpn00DVgR"
 }
