@@ -73,7 +73,7 @@ button{font:inherit;cursor:pointer;touch-action:manipulation}
 .zone-trace{position:relative;background:#33268a;border:4px solid var(--or);border-radius:24px;touch-action:none;max-width:100%}.zone-trace canvas{position:absolute;inset:0;width:100%;height:100%}.zone-trace .points-tap{position:absolute;inset:0;pointer-events:none}
 .jauge{height:16px;width:min(86vw,340px);background:#ffffff33;border-radius:999px;overflow:hidden;border:2px solid var(--or);margin:10px auto}.jauge i{display:block;height:100%;background:var(--or);transition:width .3s}.jauge.grand{height:22px;width:100%}
 /* puzzle */
-.puzzle-svg{height:min(62vh,600px);width:auto;max-width:94vw;background:#5b4ec0;border-radius:24px;border:4px solid var(--or);touch-action:none}.morceau.indice path{stroke:var(--turq)!important;stroke-width:16}.morceau.pose{opacity:1}
+.puzzle-svg{height:min(66vh,640px);width:auto;max-width:94vw;background:#5b4ec0;border-radius:24px;border:4px solid var(--or);touch-action:none}.morceau.indice path{stroke:var(--turq)!important;stroke-width:16}.morceau.pose{opacity:1}
 /* jardin & fiche */
 .act-choix.jardin{grid-template-columns:repeat(auto-fit,minmax(110px,150px));gap:14px}
 .fleur-btn{min-height:130px;border-radius:50% 50% 24px 24px;border:4px solid #7ed07a;background:rgba(255,246,224,.95);color:var(--nuit);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px}.fleur-btn.vue{border-color:var(--or)}.fleur-btn .pot{font-size:28px}.fleur-btn .fleur{width:70%}.fleur-btn small{font-weight:800}
@@ -153,6 +153,6 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:4px solid #fff;
 @keyframes pointPulse{50%{transform:translate(-50%,-50%) scale(1.12)}}
 .zone-trace.brille{box-shadow:0 0 0 6px #ffe08a,0 0 44px #ffd666}
 .zone-trace.pulse{animation:zonePulse 1s ease-in-out 3}@keyframes zonePulse{50%{box-shadow:0 0 0 8px #1fb5a8,0 0 30px #1fb5a8}}
-.morceau.prise{filter:drop-shadow(0 8px 10px #0008)}
+
 .point-placement{font-size:15px;opacity:.9;margin:0 0 4px}
 @media(prefers-reduced-motion:reduce){.point-tap,.zone-trace.pulse{animation:none}}

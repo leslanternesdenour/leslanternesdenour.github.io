@@ -16,7 +16,7 @@ async function une(ctx, id, rng) {
   if (pieces.length === 1 || (pieces.length === 2 && pieces[1].bb[2] - pieces[1].bb[0] < 40)) { const hauteur = b.h > b.w * 1.15; const cx = b.cx, cy = b.cy, [x1, y1, x2, y2] = pieces[0].bb;
     pieces = hauteur ? [{ ...pieces[0], clip: [x1 - 5, y1 - 5, x2 + 5, cy], id: 'h1' }, { ...pieces[0], clip: [x1 - 5, cy, x2 + 5, y2 + 5], id: 'h2' }] : [{ ...pieces[0], clip: [cx, y1 - 5, x2 + 5, y2 + 5], id: 'h1' }, { ...pieces[0], clip: [x1 - 5, y1 - 5, cx, y2 + 5], id: 'h2' }, ...pieces.slice(1)]; }
   if (g === 'g34' && pieces.length > 3) pieces = pieces.slice(0, 3);
-  const VB = { x: b.x - T * 0.15, y: b.y, w: T * 1.3, h: T * 1.75 }, zonePieces = T * 1.25;           // la lettre en haut, le plateau des morceaux en bas
+  const VB = { x: b.x - T * 0.15, y: b.y - T * 0.02, w: T * 1.3, h: T * 2.08 }, zonePieces = T * 1.2;                     // plateau assez bas ET assez haut pour contenir les morceaux les plus hauts (alif, lam…)           // la lettre en haut, le plateau des morceaux en bas
   const coul = p => (p.type === 'corps' ? COULEURS.encre : COULEURS.points), dest = [];
   const slots = pieces.map((p, k) => [b.x + T * (0.12 + (k / Math.max(1, pieces.length - 1)) * 0.76), zonePieces + b.y + T * 0.3 - (pieces.length === 1 ? 0 : 0)]);
   const decalages = melanger(pieces.map((_, k) => k), rng).map((k, i) => ({ k, dx: slots[i][0] - (p0(pieces[k]).cx), dy: slots[i][1] - (p0(pieces[k]).cy) })); function p0(p) { const c = p.clip || p.bb; return { cx: (c[0] + c[2]) / 2, cy: (c[1] + c[3]) / 2 }; }
@@ -29,7 +29,7 @@ async function une(ctx, id, rng) {
   ctx.parler('puzzle', 'Remets les morceaux de la lettre à leur place.', 'Maktoub');
   await new Promise(resolve => {
     morceaux.forEach(m => { let prise = null; const dx0 = +m.dataset.dx, dy0 = +m.dataset.dy; m.dataset.x = dx0; m.dataset.y = dy0; m.style.cursor = 'grab'; m.style.touchAction = 'none';
-      m.addEventListener('pointerdown', e => { if (m.classList.contains('pose') || fini) return; e.preventDefault(); m.setPointerCapture?.(e.pointerId); const p = vers(e); prise = { ox: p.x - +m.dataset.x, oy: p.y - +m.dataset.y }; m.classList.add('prise'); m.parentNode.appendChild(m); });
+      m.addEventListener('pointerdown', e => { if (m.classList.contains('pose') || fini) return; e.preventDefault(); if (m.parentNode.lastElementChild !== m) m.parentNode.appendChild(m); m.setPointerCapture?.(e.pointerId); const p = vers(e); prise = { ox: p.x - +m.dataset.x, oy: p.y - +m.dataset.y }; m.classList.add('prise'); });   // le morceau passe au premier plan AVANT la capture (déplacer un élément capturé coupe le glissement)
       m.addEventListener('pointermove', e => { if (!prise) return; const p = vers(e); m.dataset.x = p.x - prise.ox; m.dataset.y = p.y - prise.oy; m.setAttribute('transform', `translate(${m.dataset.x} ${m.dataset.y})`); });
       const lacher = () => { if (!prise) return; prise = null; m.classList.remove('prise'); const x = +m.dataset.x, y = +m.dataset.y; if (Math.hypot(x, y) < T * (g === 'g34' ? 0.3 : g === 'g56' ? 0.22 : 0.16)) { m.setAttribute('transform', 'translate(0 0)'); m.dataset.x = 0; m.dataset.y = 0; m.classList.add('pose'); m.style.cursor = 'default'; ctx.son('juste'); posees++; if (posees === morceaux.length && !fini) { fini = true; resolve(); } } };
       m.addEventListener('pointerup', lacher); m.addEventListener('pointercancel', lacher); });
