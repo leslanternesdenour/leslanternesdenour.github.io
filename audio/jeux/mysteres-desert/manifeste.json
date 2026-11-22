@@ -2,7 +2,7 @@
  "jeu": "mysteres-desert",
  "genere": "inventaire.mjs",
  "total": 70,
- "enregistrees": 28,
+ "enregistrees": 70,
  "phrases": [
   {
    "id": "bienvenue",
@@ -32,10 +32,10 @@
    "langue": "fr",
    "texte": "Tu as tous les indices ! Voici l'énigme.",
    "sousTitre": "Tu as tous les indices ! Voici l'énigme.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "indices_finis.mp3",
+   "duree": 2.85,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "bravo",
@@ -43,10 +43,10 @@
    "langue": "fr",
    "texte": "Bravo, tu as bien réfléchi !",
    "sousTitre": "Bravo, tu as bien réfléchi !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "bravo.mp3",
+   "duree": 2.27,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "bravo2",
@@ -54,10 +54,10 @@
    "langue": "fr",
    "texte": "Magnifique, c'est la bonne réponse !",
    "sousTitre": "Magnifique, c'est la bonne réponse !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "bravo2.mp3",
+   "duree": 2.85,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "passage",
@@ -65,10 +65,10 @@
    "langue": "fr",
    "texte": "Le passage secret est ouvert ! Une nouvelle découverte t'attend.",
    "sousTitre": "Le passage secret est ouvert ! Une nouvelle découverte t'attend.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "passage.mp3",
+   "duree": 3.87,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "erreur",
@@ -109,10 +109,10 @@
    "langue": "fr",
    "texte": "Regarde bien les lumières.",
    "sousTitre": "Regarde bien les lumières.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "memoire_regarde.mp3",
+   "duree": 1.65,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "memoire_a_toi",
@@ -120,10 +120,10 @@
    "langue": "fr",
    "texte": "À toi ! Refais la même suite.",
    "sousTitre": "À toi ! Refais la même suite.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "memoire_a_toi.mp3",
+   "duree": 2.12,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "fin_chapitre",
@@ -131,10 +131,10 @@
    "langue": "fr",
    "texte": "Une nouvelle lumière brille ! Le prochain chapitre t'attend.",
    "sousTitre": "Une nouvelle lumière brille ! Le prochain chapitre t'attend.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "fin_chapitre.mp3",
+   "duree": 3.79,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "fin_diplome",
@@ -175,10 +175,10 @@
    "langue": "fr",
    "texte": "Une étoile ! Elle brille quand la nuit tombe.",
    "sousTitre": "Une étoile ! Elle brille quand la nuit tombe.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "indice.desert.1.mp3",
+   "duree": 2.93,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "indice.desert.2",
@@ -186,10 +186,10 @@
    "langue": "fr",
    "texte": "La lune éclaire le sable pendant la nuit.",
    "sousTitre": "La lune éclaire le sable pendant la nuit.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "indice.desert.2.mp3",
+   "duree": 2.43,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "indice.desert.3",
@@ -197,10 +197,10 @@
    "langue": "fr",
    "texte": "Une lanterne : elle guide les voyageurs dans le noir.",
    "sousTitre": "Une lanterne : elle guide les voyageurs dans le noir.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "indice.desert.3.mp3",
+   "duree": 3.47,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "indice.desert.4",
@@ -208,10 +208,10 @@
    "langue": "fr",
    "texte": "Une cruche d'eau. Dans le désert, l'eau est précieuse.",
    "sousTitre": "Une cruche d'eau. Dans le désert, l'eau est précieuse.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "indice.desert.4.mp3",
+   "duree": 3.87,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "enigme.desert",
@@ -219,10 +219,10 @@
    "langue": "fr",
    "texte": "Dans le désert, les voyageurs marchent souvent la nuit, quand il fait moins chaud. Qu'est-ce qui les aide à trouver leur chemin dans le ciel ?",
    "sousTitre": "Dans le désert, les voyageurs marchent souvent la nuit, quand il fait moins chaud. Qu'est-ce qui les aide à trouver leur chemin dans le ciel ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "enigme.desert.mp3",
+   "duree": 7.39,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "pourquoi.desert",
@@ -263,10 +263,10 @@
    "langue": "fr",
    "texte": "On puise l'eau avec une cruche.",
    "sousTitre": "On puise l'eau avec une cruche.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "indice.oasis.1.mp3",
+   "duree": 2.12,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "indice.oasis.2",
@@ -274,10 +274,10 @@
    "langue": "fr",
    "texte": "On verse l'eau dans une tasse pour boire.",
    "sousTitre": "On verse l'eau dans une tasse pour boire.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "indice.oasis.2.mp3",
+   "duree": 2.35,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "indice.oasis.3",
@@ -285,10 +285,10 @@
    "langue": "fr",
    "texte": "Les dattes poussent sur les palmiers de l'oasis.",
    "sousTitre": "Les dattes poussent sur les palmiers de l'oasis.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "indice.oasis.3.mp3",
+   "duree": 2.59,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "indice.oasis.4",
@@ -296,10 +296,10 @@
    "langue": "fr",
    "texte": "Un poisson ! L'eau est claire et propre ici.",
    "sousTitre": "Un poisson ! L'eau est claire et propre ici.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "indice.oasis.4.mp3",
+   "duree": 3.08,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "enigme.oasis",
@@ -307,10 +307,10 @@
    "langue": "fr",
    "texte": "Remets les images dans l'ordre : d'abord on puise l'eau, ensuite on la verse pour boire, puis on mange un fruit, et enfin on se repose.",
    "sousTitre": "Remets les images dans l'ordre : d'abord on puise l'eau, ensuite on la verse pour boire, puis on mange un fruit, et enfin on se repose.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "enigme.oasis.mp3",
+   "duree": 9.25,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "pourquoi.oasis",
@@ -351,10 +351,10 @@
    "langue": "fr",
    "texte": "Une clé : elle ouvre une porte.",
    "sousTitre": "Une clé : elle ouvre une porte.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "indice.village.1.mp3",
+   "duree": 2.35,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "indice.village.2",
@@ -362,10 +362,10 @@
    "langue": "fr",
    "texte": "Du pain encore chaud : quelqu'un habite ici.",
    "sousTitre": "Du pain encore chaud : quelqu'un habite ici.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "indice.village.2.mp3",
+   "duree": 3.16,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "indice.village.3",
@@ -373,10 +373,10 @@
    "langue": "fr",
    "texte": "Une tasse encore tiède sur le rebord.",
    "sousTitre": "Une tasse encore tiède sur le rebord.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "indice.village.3.mp3",
+   "duree": 2.12,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "indice.village.4",
@@ -384,10 +384,10 @@
    "langue": "fr",
    "texte": "Un coussin pour s'asseoir et discuter.",
    "sousTitre": "Un coussin pour s'asseoir et discuter.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "indice.village.4.mp3",
+   "duree": 2.27,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "enigme.village",
@@ -395,10 +395,10 @@
    "langue": "fr",
    "texte": "Associe chaque objet à son ombre. Touche un objet, puis touche son ombre.",
    "sousTitre": "Associe chaque objet à son ombre. Touche un objet, puis touche son ombre.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "enigme.village.mp3",
+   "duree": 5.07,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "pourquoi.village",
@@ -439,10 +439,10 @@
    "langue": "fr",
    "texte": "Un livre : il contient des histoires.",
    "sousTitre": "Un livre : il contient des histoires.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "indice.bibliotheque.1.mp3",
+   "duree": 2.59,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "indice.bibliotheque.2",
@@ -450,10 +450,10 @@
    "langue": "fr",
    "texte": "Une plume pour écrire.",
    "sousTitre": "Une plume pour écrire.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "indice.bibliotheque.2.mp3",
+   "duree": 1.65,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "indice.bibliotheque.3",
@@ -461,10 +461,10 @@
    "langue": "fr",
    "texte": "Une lanterne pour lire le soir.",
    "sousTitre": "Une lanterne pour lire le soir.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "indice.bibliotheque.3.mp3",
+   "duree": 2.12,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "indice.bibliotheque.4",
@@ -472,10 +472,10 @@
    "langue": "fr",
    "texte": "Une étoile dessinée sur une page.",
    "sousTitre": "Une étoile dessinée sur une page.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "indice.bibliotheque.4.mp3",
+   "duree": 2.19,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "enigme.bibliotheque",
@@ -483,10 +483,10 @@
    "langue": "fr",
    "texte": "Écoute la devinette. Je ne suis pas vivant, mais j'ai des pages. On m'ouvre pour apprendre et pour rêver. Qui suis-je ?",
    "sousTitre": "Écoute la devinette. Je ne suis pas vivant, mais j'ai des pages. On m'ouvre pour apprendre et pour rêver. Qui suis-je ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "enigme.bibliotheque.mp3",
+   "duree": 7.55,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "pourquoi.bibliotheque",
@@ -527,10 +527,10 @@
    "langue": "fr",
    "texte": "Un vieux tapis, presque effacé par le sable.",
    "sousTitre": "Un vieux tapis, presque effacé par le sable.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "indice.ruines.1.mp3",
+   "duree": 3.08,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "indice.ruines.2",
@@ -538,10 +538,10 @@
    "langue": "fr",
    "texte": "Une clé rouillée, tombée près d'une colonne.",
    "sousTitre": "Une clé rouillée, tombée près d'une colonne.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "indice.ruines.2.mp3",
+   "duree": 2.59,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "indice.ruines.3",
@@ -549,10 +549,10 @@
    "langue": "fr",
    "texte": "Une lune gravée sur une pierre.",
    "sousTitre": "Une lune gravée sur une pierre.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "indice.ruines.3.mp3",
+   "duree": 2.12,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "indice.ruines.4",
@@ -560,10 +560,10 @@
    "langue": "fr",
    "texte": "Une lanterne éteinte, posée sur une marche.",
    "sousTitre": "Une lanterne éteinte, posée sur une marche.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "indice.ruines.4.mp3",
+   "duree": 2.85,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "enigme.ruines",
@@ -571,10 +571,10 @@
    "langue": "fr",
    "texte": "Regarde bien les lumières qui s'allument. Puis refais la même suite, dans le même ordre.",
    "sousTitre": "Regarde bien les lumières qui s'allument. Puis refais la même suite, dans le même ordre.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "enigme.ruines.mp3",
+   "duree": 5.15,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "pourquoi.ruines",
@@ -615,10 +615,10 @@
    "langue": "fr",
    "texte": "Un oiseau vole très haut au-dessus de la montagne.",
    "sousTitre": "Un oiseau vole très haut au-dessus de la montagne.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "indice.montagne.1.mp3",
+   "duree": 3,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "indice.montagne.2",
@@ -626,10 +626,10 @@
    "langue": "fr",
    "texte": "Un panier : un voyageur est passé par ici.",
    "sousTitre": "Un panier : un voyageur est passé par ici.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "indice.montagne.2.mp3",
+   "duree": 3.08,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "indice.montagne.3",
@@ -637,10 +637,10 @@
    "langue": "fr",
    "texte": "Des miettes de pain sur le chemin.",
    "sousTitre": "Des miettes de pain sur le chemin.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "indice.montagne.3.mp3",
+   "duree": 2.04,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "indice.montagne.4",
@@ -648,10 +648,10 @@
    "langue": "fr",
    "texte": "Une cruche vide, abandonnée au bord du sentier.",
    "sousTitre": "Une cruche vide, abandonnée au bord du sentier.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "indice.montagne.4.mp3",
+   "duree": 3.08,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "enigme.montagne",
@@ -659,10 +659,10 @@
    "langue": "fr",
    "texte": "Prépare ton voyage dans l'ordre : on remplit d'abord la cruche d'eau, on met du pain dans le panier, on allume la lanterne, et enfin on se met en route.",
    "sousTitre": "Prépare ton voyage dans l'ordre : on remplit d'abord la cruche d'eau, on met du pain dans le panier, on allume la lanterne, et enfin on se met en route.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "enigme.montagne.mp3",
+   "duree": 8.75,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "pourquoi.montagne",
@@ -703,10 +703,10 @@
    "langue": "fr",
    "texte": "Une rose : elle est la première de la rangée.",
    "sousTitre": "Une rose : elle est la première de la rangée.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "indice.jardins.1.mp3",
+   "duree": 3,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "indice.jardins.2",
@@ -714,10 +714,10 @@
    "langue": "fr",
    "texte": "Une grappe de raisin : elle est juste après la rose.",
    "sousTitre": "Une grappe de raisin : elle est juste après la rose.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "indice.jardins.2.mp3",
+   "duree": 3.08,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "indice.jardins.3",
@@ -725,10 +725,10 @@
    "langue": "fr",
    "texte": "Une pomme : elle est la dernière.",
    "sousTitre": "Une pomme : elle est la dernière.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "indice.jardins.3.mp3",
+   "duree": 2.27,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "indice.jardins.4",
@@ -736,10 +736,10 @@
    "langue": "fr",
    "texte": "Un oiseau chante dans le jardin.",
    "sousTitre": "Un oiseau chante dans le jardin.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "indice.jardins.4.mp3",
+   "duree": 2.04,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "enigme.jardins",
@@ -747,10 +747,10 @@
    "langue": "fr",
    "texte": "Voici le verrou de la grande lanterne. Utilise tes indices : la rose est la première, le raisin vient juste après la rose, et la pomme est la dernière. Remets les trois images dans le bon ordre.",
    "sousTitre": "Voici le verrou de la grande lanterne. Utilise tes indices : la rose est la première, le raisin vient juste après la rose, et la pomme est la dernière. Remets les trois images dans le bon ordre.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "enigme.jardins.mp3",
+   "duree": 11.81,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "pourquoi.jardins",

@@ -2,7 +2,7 @@
  "jeu": "quiz-nour",
  "genere": "inventaire.mjs",
  "total": 213,
- "enregistrees": 111,
+ "enregistrees": 213,
  "phrases": [
   {
    "id": "bienvenue",
@@ -32,10 +32,10 @@
    "langue": "fr",
    "texte": "Bravo, bonne réponse !",
    "sousTitre": "Bravo, bonne réponse !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "bravo.mp3",
+   "duree": 2.12,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "bravo2",
@@ -43,10 +43,10 @@
    "langue": "fr",
    "texte": "C'est exact, bien joué !",
    "sousTitre": "C'est exact, bien joué !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "bravo2.mp3",
+   "duree": 2.04,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "bravo3",
@@ -54,10 +54,10 @@
    "langue": "fr",
    "texte": "Excellent, tu connais bien !",
    "sousTitre": "Excellent, tu connais bien !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "bravo3.mp3",
+   "duree": 2.04,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "erreur",
@@ -98,10 +98,10 @@
    "langue": "fr",
    "texte": "Quel champion ! Tu as tout trouvé du premier coup. Une nouvelle étoile brille pour toi !",
    "sousTitre": "Quel champion ! Tu as tout trouvé du premier coup. Une nouvelle étoile brille pour toi !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "fin3.mp3",
+   "duree": 5.64,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "fin2",
@@ -109,10 +109,10 @@
    "langue": "fr",
    "texte": "Très bien ! Tu as appris plein de choses. Une belle étoile pour toi !",
    "sousTitre": "Très bien ! Tu as appris plein de choses. Une belle étoile pour toi !",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "fin2.mp3",
+   "duree": 4.44,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "fin1",
@@ -120,10 +120,10 @@
    "langue": "fr",
    "texte": "Bravo d'avoir été jusqu'au bout ! Tu en sais un peu plus qu'avant. On recommence quand tu veux.",
    "sousTitre": "Bravo d'avoir été jusqu'au bout ! Tu en sais un peu plus qu'avant. On recommence quand tu veux.",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "fin1.mp3",
+   "duree": 5.15,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "fin_savant",
@@ -164,10 +164,10 @@
    "langue": "fr",
    "texte": "Comment s'appelle le lieu où les musulmans prient ensemble ?",
    "sousTitre": "Comment s'appelle le lieu où les musulmans prient ensemble ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.culture.f1.mp3",
+   "duree": 3.16,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.culture.f1",
@@ -186,10 +186,10 @@
    "langue": "fr",
    "texte": "Combien de fois les musulmans prient-ils chaque jour ?",
    "sousTitre": "Combien de fois les musulmans prient-ils chaque jour ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.culture.f2.mp3",
+   "duree": 2.77,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.culture.f2",
@@ -208,10 +208,10 @@
    "langue": "fr",
    "texte": "Comment s'appelle le livre sacré des musulmans ?",
    "sousTitre": "Comment s'appelle le livre sacré des musulmans ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.culture.f3.mp3",
+   "duree": 2.59,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.culture.f3",
@@ -230,10 +230,10 @@
    "langue": "fr",
    "texte": "Quand on dit « As-salamu alaykum », on souhaite…",
    "sousTitre": "Quand on dit « As-salamu alaykum », on souhaite…",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.culture.f4.mp3",
+   "duree": 3.24,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.culture.f4",
@@ -252,10 +252,10 @@
    "langue": "fr",
    "texte": "Pendant quel mois les musulmans jeûnent-ils chaque jour, du lever au coucher du soleil ?",
    "sousTitre": "Pendant quel mois les musulmans jeûnent-ils chaque jour, du lever au coucher du soleil ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.culture.m1.mp3",
+   "duree": 4.75,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.culture.m1",
@@ -274,10 +274,10 @@
    "langue": "fr",
    "texte": "Vers quelle direction les musulmans se tournent-ils pour prier ?",
    "sousTitre": "Vers quelle direction les musulmans se tournent-ils pour prier ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.culture.m2.mp3",
+   "duree": 3.47,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.culture.m2",
@@ -296,10 +296,10 @@
    "langue": "fr",
    "texte": "Comment s'appelle la prière faite à l'aube, la première de la journée ?",
    "sousTitre": "Comment s'appelle la prière faite à l'aube, la première de la journée ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.culture.m3.mp3",
+   "duree": 3.63,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.culture.m3",
@@ -318,10 +318,10 @@
    "langue": "fr",
    "texte": "Avant de prier, que fait-on pour se purifier avec de l'eau ?",
    "sousTitre": "Avant de prier, que fait-on pour se purifier avec de l'eau ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.culture.m4.mp3",
+   "duree": 3.47,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.culture.m4",
@@ -340,10 +340,10 @@
    "langue": "fr",
    "texte": "Combien y a-t-il de piliers dans l'islam ?",
    "sousTitre": "Combien y a-t-il de piliers dans l'islam ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.culture.a1.mp3",
+   "duree": 2.43,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.culture.a1",
@@ -362,10 +362,10 @@
    "langue": "fr",
    "texte": "Comment s'appelle la fête qui marque la fin du mois de Ramadan ?",
    "sousTitre": "Comment s'appelle la fête qui marque la fin du mois de Ramadan ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.culture.a2.mp3",
+   "duree": 3.47,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.culture.a2",
@@ -384,10 +384,10 @@
    "langue": "fr",
    "texte": "Combien de sourates compte le Coran ?",
    "sousTitre": "Combien de sourates compte le Coran ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.culture.a3.mp3",
+   "duree": 2.12,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.culture.a3",
@@ -406,10 +406,10 @@
    "langue": "fr",
    "texte": "Comment s'appelle la première sourate du Coran ?",
    "sousTitre": "Comment s'appelle la première sourate du Coran ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.culture.a4.mp3",
+   "duree": 2.59,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.culture.a4",
@@ -439,10 +439,10 @@
    "langue": "fr",
    "texte": "Dans la fable « Le Lièvre et la Tortue », qui gagne la course ?",
    "sousTitre": "Dans la fable « Le Lièvre et la Tortue », qui gagne la course ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.histoires.f1.mp3",
+   "duree": 3.79,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.histoires.f1",
@@ -461,10 +461,10 @@
    "langue": "fr",
    "texte": "Dans « Les Trois Petits Cochons », la maison qui résiste au loup est faite de…",
    "sousTitre": "Dans « Les Trois Petits Cochons », la maison qui résiste au loup est faite de…",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.histoires.f2.mp3",
+   "duree": 4.44,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.histoires.f2",
@@ -483,10 +483,10 @@
    "langue": "fr",
    "texte": "Dans « Le Petit Chaperon rouge », de quelle couleur est le chaperon ?",
    "sousTitre": "Dans « Le Petit Chaperon rouge », de quelle couleur est le chaperon ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.histoires.f3.mp3",
+   "duree": 3.97,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.histoires.f3",
@@ -505,10 +505,10 @@
    "langue": "fr",
    "texte": "Dans « Cendrillon », que perd-elle en partant du bal ?",
    "sousTitre": "Dans « Cendrillon », que perd-elle en partant du bal ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.histoires.f4.mp3",
+   "duree": 3.08,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.histoires.f4",
@@ -527,10 +527,10 @@
    "langue": "fr",
    "texte": "Quel prophète, paix sur lui, a construit une grande arche pour sauver les croyants et les animaux ?",
    "sousTitre": "Quel prophète, paix sur lui, a construit une grande arche pour sauver les croyants et les animaux ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.histoires.m1.mp3",
+   "duree": 5.64,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.histoires.m1",
@@ -549,10 +549,10 @@
    "langue": "fr",
    "texte": "Quel prophète, paix sur lui, a été avalé par un grand poisson ?",
    "sousTitre": "Quel prophète, paix sur lui, a été avalé par un grand poisson ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.histoires.m2.mp3",
+   "duree": 4.36,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.histoires.m2",
@@ -571,10 +571,10 @@
    "langue": "fr",
    "texte": "Quel prophète, paix sur lui, a vu en rêve onze étoiles, le soleil et la lune ?",
    "sousTitre": "Quel prophète, paix sur lui, a vu en rêve onze étoiles, le soleil et la lune ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.histoires.m3.mp3",
+   "duree": 5.41,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.histoires.m3",
@@ -593,10 +593,10 @@
    "langue": "fr",
    "texte": "Quel livre a été révélé au prophète Muhammad, paix sur lui ?",
    "sousTitre": "Quel livre a été révélé au prophète Muhammad, paix sur lui ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.histoires.m4.mp3",
+   "duree": 3.63,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.histoires.m4",
@@ -615,10 +615,10 @@
    "langue": "fr",
    "texte": "Dans « Les Mille et Une Nuits », comment s'appelle la conteuse qui raconte une histoire chaque nuit ?",
    "sousTitre": "Dans « Les Mille et Une Nuits », comment s'appelle la conteuse qui raconte une histoire chaque nuit ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.histoires.a1.mp3",
+   "duree": 4.99,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.histoires.a1",
@@ -637,10 +637,10 @@
    "langue": "fr",
    "texte": "Dans « Les Mille et Une Nuits », quel héros fait de grands voyages en mer ?",
    "sousTitre": "Dans « Les Mille et Une Nuits », quel héros fait de grands voyages en mer ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.histoires.a2.mp3",
+   "duree": 4.13,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.histoires.a2",
@@ -659,10 +659,10 @@
    "langue": "fr",
    "texte": "Quel prophète, paix sur lui, a construit la Kaaba avec son fils Ismaïl ?",
    "sousTitre": "Quel prophète, paix sur lui, a construit la Kaaba avec son fils Ismaïl ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.histoires.a3.mp3",
+   "duree": 4.91,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.histoires.a3",
@@ -681,10 +681,10 @@
    "langue": "fr",
    "texte": "Quel prophète, paix sur lui, comprenait le langage des oiseaux et des fourmis ?",
    "sousTitre": "Quel prophète, paix sur lui, comprenait le langage des oiseaux et des fourmis ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.histoires.a4.mp3",
+   "duree": 4.68,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.histoires.a4",
@@ -714,10 +714,10 @@
    "langue": "fr",
    "texte": "Quel animal a une grosse bosse sur le dos ?",
    "sousTitre": "Quel animal a une grosse bosse sur le dos ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.animaux.f1.mp3",
+   "duree": 2.77,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.animaux.f1",
@@ -736,10 +736,10 @@
    "langue": "fr",
    "texte": "Quel animal fait « miaou » ?",
    "sousTitre": "Quel animal fait « miaou » ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.animaux.f2.mp3",
+   "duree": 2.12,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.animaux.f2",
@@ -758,10 +758,10 @@
    "langue": "fr",
    "texte": "Quel petit animal fabrique le miel ?",
    "sousTitre": "Quel petit animal fabrique le miel ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.animaux.f3.mp3",
+   "duree": 2.27,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.animaux.f3",
@@ -780,10 +780,10 @@
    "langue": "fr",
    "texte": "Quel animal a une très longue trompe ?",
    "sousTitre": "Quel animal a une très longue trompe ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.animaux.f4.mp3",
+   "duree": 2.69,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.animaux.f4",
@@ -802,10 +802,10 @@
    "langue": "fr",
    "texte": "Combien de pattes a une araignée ?",
    "sousTitre": "Combien de pattes a une araignée ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.animaux.m1.mp3",
+   "duree": 2.04,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.animaux.m1",
@@ -824,10 +824,10 @@
    "langue": "fr",
    "texte": "Comment s'appelle le petit de la vache ?",
    "sousTitre": "Comment s'appelle le petit de la vache ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.animaux.m2.mp3",
+   "duree": 2.19,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.animaux.m2",
@@ -846,10 +846,10 @@
    "langue": "fr",
    "texte": "Quel animal du désert peut rester longtemps sans boire ?",
    "sousTitre": "Quel animal du désert peut rester longtemps sans boire ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.animaux.m3.mp3",
+   "duree": 3,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.animaux.m3",
@@ -868,10 +868,10 @@
    "langue": "fr",
    "texte": "Quel animal est un mammifère qui sait voler ?",
    "sousTitre": "Quel animal est un mammifère qui sait voler ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.animaux.m4.mp3",
+   "duree": 2.85,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.animaux.m4",
@@ -890,10 +890,10 @@
    "langue": "fr",
    "texte": "Quel est le plus grand animal du monde ?",
    "sousTitre": "Quel est le plus grand animal du monde ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.animaux.a1.mp3",
+   "duree": 2.35,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.animaux.a1",
@@ -912,10 +912,10 @@
    "langue": "fr",
    "texte": "Dans sa bosse, le dromadaire garde surtout…",
    "sousTitre": "Dans sa bosse, le dromadaire garde surtout…",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.animaux.a2.mp3",
+   "duree": 2.93,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.animaux.a2",
@@ -934,10 +934,10 @@
    "langue": "fr",
    "texte": "Avec quoi un poisson respire-t-il dans l'eau ?",
    "sousTitre": "Avec quoi un poisson respire-t-il dans l'eau ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.animaux.a3.mp3",
+   "duree": 2.59,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.animaux.a3",
@@ -956,10 +956,10 @@
    "langue": "fr",
    "texte": "Quel animal est le plus rapide à la course sur terre ?",
    "sousTitre": "Quel animal est le plus rapide à la course sur terre ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.animaux.a4.mp3",
+   "duree": 2.93,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.animaux.a4",
@@ -989,10 +989,10 @@
    "langue": "fr",
    "texte": "De quoi une plante a-t-elle besoin pour grandir ?",
    "sousTitre": "De quoi une plante a-t-elle besoin pour grandir ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.nature.f1.mp3",
+   "duree": 2.69,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.nature.f1",
@@ -1011,10 +1011,10 @@
    "langue": "fr",
    "texte": "Quelle étoile nous éclaire pendant la journée ?",
    "sousTitre": "Quelle étoile nous éclaire pendant la journée ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.nature.f2.mp3",
+   "duree": 2.35,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.nature.f2",
@@ -1033,10 +1033,10 @@
    "langue": "fr",
    "texte": "Quel arbre donne des dattes ?",
    "sousTitre": "Quel arbre donne des dattes ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.nature.f3.mp3",
+   "duree": 1.72,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.nature.f3",
@@ -1055,10 +1055,10 @@
    "langue": "fr",
    "texte": "Que voit-on dans le ciel quand la nuit tombe ?",
    "sousTitre": "Que voit-on dans le ciel quand la nuit tombe ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.nature.f4.mp3",
+   "duree": 2.43,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.nature.f4",
@@ -1077,10 +1077,10 @@
    "langue": "fr",
    "texte": "Combien y a-t-il de saisons dans une année ?",
    "sousTitre": "Combien y a-t-il de saisons dans une année ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.nature.m1.mp3",
+   "duree": 2.43,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.nature.m1",
@@ -1099,10 +1099,10 @@
    "langue": "fr",
    "texte": "Qu'est-ce qui tourne autour de la Terre ?",
    "sousTitre": "Qu'est-ce qui tourne autour de la Terre ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.nature.m2.mp3",
+   "duree": 1.96,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.nature.m2",
@@ -1121,10 +1121,10 @@
    "langue": "fr",
    "texte": "Que boivent les racines d'un arbre ?",
    "sousTitre": "Que boivent les racines d'un arbre ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.nature.m3.mp3",
+   "duree": 2.12,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.nature.m3",
@@ -1143,10 +1143,10 @@
    "langue": "fr",
    "texte": "Quand il pleut et qu'il y a du soleil, on peut voir…",
    "sousTitre": "Quand il pleut et qu'il y a du soleil, on peut voir…",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.nature.m4.mp3",
+   "duree": 3.08,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.nature.m4",
@@ -1165,10 +1165,10 @@
    "langue": "fr",
    "texte": "À quelle température l'eau se transforme-t-elle en glace ?",
    "sousTitre": "À quelle température l'eau se transforme-t-elle en glace ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.nature.a1.mp3",
+   "duree": 3.4,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.nature.a1",
@@ -1187,10 +1187,10 @@
    "langue": "fr",
    "texte": "Pourquoi y a-t-il le jour et la nuit ?",
    "sousTitre": "Pourquoi y a-t-il le jour et la nuit ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.nature.a2.mp3",
+   "duree": 2.04,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.nature.a2",
@@ -1209,10 +1209,10 @@
    "langue": "fr",
    "texte": "Quel gaz, que nous respirons, les plantes produisent-elles ?",
    "sousTitre": "Quel gaz, que nous respirons, les plantes produisent-elles ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.nature.a3.mp3",
+   "duree": 3.63,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.nature.a3",
@@ -1231,10 +1231,10 @@
    "langue": "fr",
    "texte": "Qu'est-ce qu'une oasis ?",
    "sousTitre": "Qu'est-ce qu'une oasis ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.nature.a4.mp3",
+   "duree": 1.41,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.nature.a4",
@@ -1264,10 +1264,10 @@
    "langue": "fr",
    "texte": "Comment dit-on « eau » en arabe ? Le mot se dit « maa ».",
    "sousTitre": "Comment dit-on « eau » en arabe ? Le mot se dit « maa ».",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.vocabulaire.f1.mp3",
+   "duree": 4.68,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.vocabulaire.f1",
@@ -1286,10 +1286,10 @@
    "langue": "fr",
    "texte": "Que veut dire le mot arabe « kitab » (كتاب) ?",
    "sousTitre": "Que veut dire le mot arabe « kitab » (كتاب) ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.vocabulaire.f2.mp3",
+   "duree": 2.69,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.vocabulaire.f2",
@@ -1308,10 +1308,10 @@
    "langue": "fr",
    "texte": "Quel mot arabe veut dire « lune » ? Il se dit « qamar ».",
    "sousTitre": "Quel mot arabe veut dire « lune » ? Il se dit « qamar ».",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.vocabulaire.f3.mp3",
+   "duree": 4.44,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.vocabulaire.f3",
@@ -1330,10 +1330,10 @@
    "langue": "fr",
    "texte": "Que veut dire « shukran » (شكرا) ?",
    "sousTitre": "Que veut dire « shukran » (شكرا) ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.vocabulaire.f4.mp3",
+   "duree": 2.77,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.vocabulaire.f4",
@@ -1352,10 +1352,10 @@
    "langue": "fr",
    "texte": "« Salam » (سلام) veut dire…",
    "sousTitre": "« Salam » (سلام) veut dire…",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.vocabulaire.m1.mp3",
+   "duree": 3,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.vocabulaire.m1",
@@ -1374,10 +1374,10 @@
    "langue": "fr",
    "texte": "Quel mot arabe veut dire « pain » ? Il se dit « khobz ».",
    "sousTitre": "Quel mot arabe veut dire « pain » ? Il se dit « khobz ».",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.vocabulaire.m2.mp3",
+   "duree": 4.44,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.vocabulaire.m2",
@@ -1396,10 +1396,10 @@
    "langue": "fr",
    "texte": "Le mot arabe « tamr » (تمر) désigne…",
    "sousTitre": "Le mot arabe « tamr » (تمر) désigne…",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.vocabulaire.m3.mp3",
+   "duree": 3.55,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.vocabulaire.m3",
@@ -1418,10 +1418,10 @@
    "langue": "fr",
    "texte": "Le mot arabe « bayt » (بيت) veut dire…",
    "sousTitre": "Le mot arabe « bayt » (بيت) veut dire…",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.vocabulaire.m4.mp3",
+   "duree": 3.71,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.vocabulaire.m4",
@@ -1440,10 +1440,10 @@
    "langue": "fr",
    "texte": "Dans quel sens lit-on et écrit-on l'arabe ?",
    "sousTitre": "Dans quel sens lit-on et écrit-on l'arabe ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.vocabulaire.a1.mp3",
+   "duree": 3,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.vocabulaire.a1",
@@ -1462,10 +1462,10 @@
    "langue": "fr",
    "texte": "Combien de lettres compte l'alphabet arabe ?",
    "sousTitre": "Combien de lettres compte l'alphabet arabe ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.vocabulaire.a2.mp3",
+   "duree": 2.43,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.vocabulaire.a2",
@@ -1484,10 +1484,10 @@
    "langue": "fr",
    "texte": "Le mot français « algèbre » vient d'un mot…",
    "sousTitre": "Le mot français « algèbre » vient d'un mot…",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.vocabulaire.a3.mp3",
+   "duree": 2.93,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.vocabulaire.a3",
@@ -1506,10 +1506,10 @@
    "langue": "fr",
    "texte": "Que veut dire « qalam » (قلم) ?",
    "sousTitre": "Que veut dire « qalam » (قلم) ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.vocabulaire.a4.mp3",
+   "duree": 2.35,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.vocabulaire.a4",
@@ -1539,10 +1539,10 @@
    "langue": "fr",
    "texte": "Dans quel pays se trouve la ville de La Mecque ?",
    "sousTitre": "Dans quel pays se trouve la ville de La Mecque ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.geographie.f1.mp3",
+   "duree": 2.59,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.geographie.f1",
@@ -1561,10 +1561,10 @@
    "langue": "fr",
    "texte": "Le Sahara est…",
    "sousTitre": "Le Sahara est…",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.geographie.f2.mp3",
+   "duree": 1.88,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.geographie.f2",
@@ -1583,10 +1583,10 @@
    "langue": "fr",
    "texte": "Où trouve-t-on beaucoup d'eau salée ?",
    "sousTitre": "Où trouve-t-on beaucoup d'eau salée ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.geographie.f3.mp3",
+   "duree": 2.12,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.geographie.f3",
@@ -1605,10 +1605,10 @@
    "langue": "fr",
    "texte": "Que voit-on souvent au sommet des très hautes montagnes ?",
    "sousTitre": "Que voit-on souvent au sommet des très hautes montagnes ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.geographie.f4.mp3",
+   "duree": 3.08,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.geographie.f4",
@@ -1627,10 +1627,10 @@
    "langue": "fr",
    "texte": "Quel grand fleuve traverse l'Égypte ?",
    "sousTitre": "Quel grand fleuve traverse l'Égypte ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.geographie.m1.mp3",
+   "duree": 2.27,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.geographie.m1",
@@ -1649,10 +1649,10 @@
    "langue": "fr",
    "texte": "Quelle est la capitale de la France ?",
    "sousTitre": "Quelle est la capitale de la France ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.geographie.m2.mp3",
+   "duree": 1.88,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.geographie.m2",
@@ -1671,10 +1671,10 @@
    "langue": "fr",
    "texte": "Sur quel continent se trouve le Maroc ?",
    "sousTitre": "Sur quel continent se trouve le Maroc ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.geographie.m3.mp3",
+   "duree": 2.51,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.geographie.m3",
@@ -1693,10 +1693,10 @@
    "langue": "fr",
    "texte": "Comment s'appelle la plus haute montagne du monde ?",
    "sousTitre": "Comment s'appelle la plus haute montagne du monde ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.geographie.m4.mp3",
+   "duree": 2.93,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.geographie.m4",
@@ -1715,10 +1715,10 @@
    "langue": "fr",
    "texte": "Quel est le plus grand désert chaud du monde ?",
    "sousTitre": "Quel est le plus grand désert chaud du monde ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.geographie.a1.mp3",
+   "duree": 2.35,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.geographie.a1",
@@ -1737,10 +1737,10 @@
    "langue": "fr",
    "texte": "Quelle est la capitale de l'Égypte ?",
    "sousTitre": "Quelle est la capitale de l'Égypte ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.geographie.a2.mp3",
+   "duree": 1.96,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.geographie.a2",
@@ -1759,10 +1759,10 @@
    "langue": "fr",
    "texte": "Quelle mer se trouve entre l'Afrique et la péninsule arabique ?",
    "sousTitre": "Quelle mer se trouve entre l'Afrique et la péninsule arabique ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.geographie.a3.mp3",
+   "duree": 3.47,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.geographie.a3",
@@ -1781,10 +1781,10 @@
    "langue": "fr",
    "texte": "Quel océan borde l'ouest du Maroc ?",
    "sousTitre": "Quel océan borde l'ouest du Maroc ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.geographie.a4.mp3",
+   "duree": 2.69,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.geographie.a4",
@@ -1814,10 +1814,10 @@
    "langue": "fr",
    "texte": "Combien de jours y a-t-il dans une semaine ?",
    "sousTitre": "Combien de jours y a-t-il dans une semaine ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.connaissances.f1.mp3",
+   "duree": 2.19,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.connaissances.f1",
@@ -1836,10 +1836,10 @@
    "langue": "fr",
    "texte": "Quelle forme a un ballon ?",
    "sousTitre": "Quelle forme a un ballon ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.connaissances.f2.mp3",
+   "duree": 1.65,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.connaissances.f2",
@@ -1858,10 +1858,10 @@
    "langue": "fr",
    "texte": "Combien de côtés a un triangle ?",
    "sousTitre": "Combien de côtés a un triangle ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.connaissances.f3.mp3",
+   "duree": 2.19,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.connaissances.f3",
@@ -1880,10 +1880,10 @@
    "langue": "fr",
    "texte": "De quelle couleur est une banane mûre ?",
    "sousTitre": "De quelle couleur est une banane mûre ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.connaissances.f4.mp3",
+   "duree": 2.51,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.connaissances.f4",
@@ -1902,10 +1902,10 @@
    "langue": "fr",
    "texte": "Combien y a-t-il de mois dans une année ?",
    "sousTitre": "Combien y a-t-il de mois dans une année ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.connaissances.m1.mp3",
+   "duree": 2.27,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.connaissances.m1",
@@ -1924,10 +1924,10 @@
    "langue": "fr",
    "texte": "Combien de minutes y a-t-il dans une heure ?",
    "sousTitre": "Combien de minutes y a-t-il dans une heure ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.connaissances.m2.mp3",
+   "duree": 2.12,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.connaissances.m2",
@@ -1946,10 +1946,10 @@
    "langue": "fr",
    "texte": "Quel outil sert à mesurer une longueur ?",
    "sousTitre": "Quel outil sert à mesurer une longueur ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.connaissances.m3.mp3",
+   "duree": 2.59,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.connaissances.m3",
@@ -1968,10 +1968,10 @@
    "langue": "fr",
    "texte": "Combien font cinq plus quatre ?",
    "sousTitre": "Combien font cinq plus quatre ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.connaissances.m4.mp3",
+   "duree": 2.27,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.connaissances.m4",
@@ -1990,10 +1990,10 @@
    "langue": "fr",
    "texte": "Combien de jours y a-t-il dans une année ordinaire ?",
    "sousTitre": "Combien de jours y a-t-il dans une année ordinaire ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.connaissances.a1.mp3",
+   "duree": 2.77,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.connaissances.a1",
@@ -2012,10 +2012,10 @@
    "langue": "fr",
    "texte": "Combien font six fois sept ?",
    "sousTitre": "Combien font six fois sept ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.connaissances.a2.mp3",
+   "duree": 1.88,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.connaissances.a2",
@@ -2034,10 +2034,10 @@
    "langue": "fr",
    "texte": "Quelle est la moitié de cinquante ?",
    "sousTitre": "Quelle est la moitié de cinquante ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.connaissances.a3.mp3",
+   "duree": 1.96,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.connaissances.a3",
@@ -2056,10 +2056,10 @@
    "langue": "fr",
    "texte": "Combien de côtés a un hexagone ?",
    "sousTitre": "Combien de côtés a un hexagone ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.connaissances.a4.mp3",
+   "duree": 2.51,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.connaissances.a4",
@@ -2089,10 +2089,10 @@
    "langue": "fr",
    "texte": "Qui fabrique le pain ?",
    "sousTitre": "Qui fabrique le pain ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.decouverte.f1.mp3",
+   "duree": 1.49,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.decouverte.f1",
@@ -2111,10 +2111,10 @@
    "langue": "fr",
    "texte": "Qui soigne les malades ?",
    "sousTitre": "Qui soigne les malades ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.decouverte.f2.mp3",
+   "duree": 1.57,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.decouverte.f2",
@@ -2133,10 +2133,10 @@
    "langue": "fr",
    "texte": "À quoi sert une lanterne ?",
    "sousTitre": "À quoi sert une lanterne ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.decouverte.f3.mp3",
+   "duree": 1.72,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.decouverte.f3",
@@ -2155,10 +2155,10 @@
    "langue": "fr",
    "texte": "Que met-on aux pieds pour marcher dehors ?",
    "sousTitre": "Que met-on aux pieds pour marcher dehors ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.decouverte.f4.mp3",
+   "duree": 2.19,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.decouverte.f4",
@@ -2177,10 +2177,10 @@
    "langue": "fr",
    "texte": "Que fait un puisatier ?",
    "sousTitre": "Que fait un puisatier ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.decouverte.m1.mp3",
+   "duree": 1.65,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.decouverte.m1",
@@ -2199,10 +2199,10 @@
    "langue": "fr",
    "texte": "À quoi sert une boussole ?",
    "sousTitre": "À quoi sert une boussole ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.decouverte.m2.mp3",
+   "duree": 1.65,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.decouverte.m2",
@@ -2221,10 +2221,10 @@
    "langue": "fr",
    "texte": "Que fabrique un potier ?",
    "sousTitre": "Que fabrique un potier ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.decouverte.m3.mp3",
+   "duree": 1.65,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.decouverte.m3",
@@ -2243,10 +2243,10 @@
    "langue": "fr",
    "texte": "Au marché, on peut…",
    "sousTitre": "Au marché, on peut…",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.decouverte.m4.mp3",
+   "duree": 1.96,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.decouverte.m4",
@@ -2265,10 +2265,10 @@
    "langue": "fr",
    "texte": "Que fait un caravanier ?",
    "sousTitre": "Que fait un caravanier ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.decouverte.a1.mp3",
+   "duree": 1.65,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.decouverte.a1",
@@ -2287,10 +2287,10 @@
    "langue": "fr",
    "texte": "Comment appelle-t-on la personne qui tisse des tapis ?",
    "sousTitre": "Comment appelle-t-on la personne qui tisse des tapis ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.decouverte.a2.mp3",
+   "duree": 2.93,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.decouverte.a2",
@@ -2309,10 +2309,10 @@
    "langue": "fr",
    "texte": "Quel instrument aidait les voyageurs à se repérer grâce aux étoiles ?",
    "sousTitre": "Quel instrument aidait les voyageurs à se repérer grâce aux étoiles ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.decouverte.a3.mp3",
+   "duree": 3.87,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.decouverte.a3",
@@ -2331,10 +2331,10 @@
    "langue": "fr",
    "texte": "Pourquoi les voyageurs du désert se couvrent-ils la tête avec un tissu ?",
    "sousTitre": "Pourquoi les voyageurs du désert se couvrent-ils la tête avec un tissu ?",
-   "fichier": null,
-   "duree": 0,
+   "fichier": "q.decouverte.a4.mp3",
+   "duree": 4.05,
    "prononciationVerifiee": false,
-   "voixId": null
+   "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
    "id": "exp.decouverte.a4",

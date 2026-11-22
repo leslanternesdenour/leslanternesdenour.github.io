@@ -7,6 +7,7 @@ import { OBJETS, LIEUX, GUIDES, PHRASES, BRAVOS, ERREURS, dire as remplir } from
 import * as G from './logique.js?v=1';
 import { chargerVoix, ajouterVoix, existe, dire as direVoix, arreterVoix } from '../../monde/socle/voix.js?v=1';
 import { reveiller, reglerVolume } from '../../monde/socle/audio.js?v=1';
+import { creerReaction } from '../commun/base.js?v=2';
 
 const $ = id => document.getElementById(id);
 const lsGet = k => { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } };
@@ -14,7 +15,7 @@ const lsSet = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } ca
 let etat = G.lire(lsGet(G.CLE));
 const sauver = () => lsSet(G.CLE, etat);
 const profil = () => lsGet('ldn_profil_actif');
-if (!etat.age) { const p = profil(); if (p && G.groupeAge(p.age || p.ageGroupe)) { etat.age = G.groupeAge(p.age || p.ageGroupe); sauver(); } }
+if (!etat.age) { const p = profil(); if (p && (p.tranche === '3-5' ? 'petits' : p.tranche === '6-10' ? 'moyens' : null)) { etat.age = (p.tranche === '3-5' ? 'petits' : p.tranche === '6-10' ? 'moyens' : null); sauver(); } }
 
 // ---------- 3D ----------
 const canvas = $('scene');
@@ -63,7 +64,7 @@ function parler(id, texte, qui, fini) {
 }
 
 // ---------- guide ----------
-let guide = null, guideDef = null;
+let guide = null, guideDef = null; const reaction = creerReaction(() => guide);
 async function creerGuide(def) {
   try { const { Enfant } = await import('../../voyage/js/personnages.js?v=4'); const e = new Enfant(false, { tunique: def.tunique, pantalon: def.pantalon, cheche: def.cheche, peau: def.peau, sac: false, barbe: def.barbe || null, voile: def.voile || null });
     e.racine.scale.setScalar(1.45); e.racine.position.set(-1.6, 0, 1.4); monde.add(e.racine); return e; } catch (er) { return null; }
@@ -117,12 +118,12 @@ function touche(clic) {
 }
 function trouve(o) {
   o.trouve = true; o.anim = 0.0001; const id = o.id; const k = BRAVOS[manche.i % BRAVOS.length]; manche.i++; indice = null;
-  const phrase = k === 'bravo3' ? k : `${k}.${id}`; parler(phrase, remplir(PHRASES[k].texte, id), guideDef.nom); if (guide) guide.faire?.('salut');
+  const phrase = k === 'bravo3' ? k : `${k}.${id}`; parler(phrase, remplir(PHRASES[k].texte, id), guideDef.nom); reaction.jouer('joie');
   $('cible').classList.add('ok'); setTimeout(() => $('cible').classList.remove('ok'), 900);
   const m0 = manche; if (manche.i >= manche.cibles.length) setTimeout(() => { if (manche === m0) finir(); }, 1700); else setTimeout(() => { if (manche === m0) consigne(); }, 1900);
 }
 function erreur(o) {
-  manche.erreurs++; o.secoue = 0.0001; const k = ERREURS[(manche.erreurs - 1) % ERREURS.length]; parler(k, PHRASES[k].texte, 'Loumi');
+  manche.erreurs++; reaction.jouer('hum'); o.secoue = 0.0001; const k = ERREURS[(manche.erreurs - 1) % ERREURS.length]; parler(k, PHRASES[k].texte, 'Loumi');
   const m1 = manche; if (manche.erreurs % 3 === 0) setTimeout(() => { if (manche === m1) aide(false); }, 1200);          // un petit indice gratuit après quelques essais : jamais de blocage
 }
 function finir() {
@@ -198,7 +199,7 @@ function boucle(now) {
       m.scale.setScalar(s); m.position.y = y;
     }
   }
-  if (guide) { guide.animer(dt, 0, t); guide.racine.lookAt(camera.position.x, 0, camera.position.z); }
+  if (guide) { guide.animer(dt, 0, t); reaction.maj(dt); guide.racine.lookAt(camera.position.x, 0, camera.position.z); }
   renderer.render(scene, camera);
 }
 requestAnimationFrame(boucle);

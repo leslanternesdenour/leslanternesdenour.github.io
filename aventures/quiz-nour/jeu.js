@@ -6,7 +6,7 @@ import { CATEGORIES, ORDRE_CATEGORIES, GUIDES, PHRASES, BRAVOS, ERREURS } from '
 import * as G from './logique.js?v=1';
 
 let etat = G.lire(lsGet(G.CLE)); const sauver = () => lsSet(G.CLE, etat);
-if (!etat.age) { const p = lsGet('ldn_profil_actif'); if (p && G.groupeAge(p.age || p.ageGroupe)) { etat.age = G.groupeAge(p.age || p.ageGroupe); sauver(); } }
+if (!etat.age) { const p = lsGet('ldn_profil_actif'); if (p && (p.tranche === '3-5' ? 'petits' : p.tranche === '6-10' ? 'moyens' : null)) { etat.age = (p.tranche === '3-5' ? 'petits' : p.tranche === '6-10' ? 'moyens' : null); sauver(); } }
 const niveau = () => etat.niveau || G.niveauParDefaut(etat.age);
 const B = creerBase({ canvas: $('scene'), dossierAudio: 'audio/jeux/quiz-nour', sousTitresActifs: () => etat.sousTitres, hauteur: 5.2, rayonCamera: [10, 11] });
 const parler = (id, texte, qui, fini) => B.parler(id, texte, qui, fini);

@@ -1,0 +1,109 @@
+{
+ "total": 443,
+ "parJeu": {
+  "chasse-aux-mots": 160,
+  "mysteres-desert": 70,
+  "quiz-nour": 213
+ },
+ "compte": [
+  {
+   "id": "hddT377hAwvRoOKqMj0E",
+   "role": "narratrice",
+   "n": 55,
+   "jeux": {
+    "chasse-aux-mots": 40,
+    "mysteres-desert": 11,
+    "quiz-nour": 4
+   }
+  },
+  {
+   "id": "8aQsvxWbavqMpn00DVgR",
+   "role": "narrateur",
+   "n": 254,
+   "jeux": {
+    "chasse-aux-mots": 110,
+    "mysteres-desert": 42,
+    "quiz-nour": 102
+   }
+  },
+  {
+   "id": "pzZMNBXJh6wfnYfk2wLK",
+   "role": "loumi",
+   "n": 113,
+   "jeux": {
+    "chasse-aux-mots": 4,
+    "mysteres-desert": 10,
+    "quiz-nour": 99
+   }
+  },
+  {
+   "id": "lM87a4ey2IQxE37nDvti",
+   "role": "perso-karim",
+   "n": 2,
+   "jeux": {
+    "chasse-aux-mots": 1,
+    "quiz-nour": 1
+   }
+  },
+  {
+   "id": "HAjl4nFl1aflZ2gaim1o",
+   "role": "perso-salma",
+   "n": 2,
+   "jeux": {
+    "chasse-aux-mots": 1,
+    "quiz-nour": 1
+   }
+  },
+  {
+   "id": "IbnTg9TZjxSEt8tJQteX",
+   "role": "perso-yacine",
+   "n": 3,
+   "jeux": {
+    "chasse-aux-mots": 1,
+    "mysteres-desert": 1,
+    "quiz-nour": 1
+   }
+  },
+  {
+   "id": "y01lcQwxER91RfOMk2oG",
+   "role": "perso-warda",
+   "n": 3,
+   "jeux": {
+    "chasse-aux-mots": 1,
+    "mysteres-desert": 1,
+    "quiz-nour": 1
+   }
+  },
+  {
+   "id": "4sifSi2zIrBX7VkoWfjD",
+   "role": "perso-samir",
+   "n": 3,
+   "jeux": {
+    "chasse-aux-mots": 1,
+    "mysteres-desert": 1,
+    "quiz-nour": 1
+   }
+  },
+  {
+   "id": "hbGEl9097evPuRZp5BNY",
+   "role": "perso-hakim",
+   "n": 3,
+   "jeux": {
+    "chasse-aux-mots": 1,
+    "mysteres-desert": 1,
+    "quiz-nour": 1
+   }
+  },
+  {
+   "id": "8aQsvxWbavqMpn00DVgR",
+   "role": "perso-idriss",
+   "n": 5,
+   "jeux": {
+    "mysteres-desert": 3,
+    "quiz-nour": 2
+   }
+  }
+ ],
+ "problemes": [],
+ "arabes": 18
+}
