@@ -29,6 +29,6 @@ export async function creerPersonnage({ genre, peau = 1, ombres = false, creerAn
   const decision = decisionSecours({ parametre, interrupteur, webgl });
   return creerAvecSecours({
     // import dynamique : si three/addons (CDN) est indisponible, l'échec est attrapé ici et le secours prend le relais (un import statique casserait tout le jeu)
-    charger: async () => { const { PersonnageGLB } = await import('./personnage-glb.js'); return new PersonnageGLB(await chargerModele(genre, options), { genre, peau, ombres }); },
+    charger: async () => { const { PersonnageGLB } = await import('./personnage-glb.js?v=2'); return new PersonnageGLB(await chargerModele(genre, options), { genre, peau, ombres }); },
     creerAncien, delaiMs, forcer: decision === 'ancien' ? 'ancien' : undefined });
 }

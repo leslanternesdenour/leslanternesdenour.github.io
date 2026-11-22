@@ -1,7 +1,7 @@
 // Les décors du monde, construits zone par zone quand l'enfant s'en approche (chargement progressif).
 // Tout est dessiné avec des formes simples fusionnées : léger, net, et facile à faire évoluer.
 import * as THREE from 'three';
-import { piece, fusion, placer, hasard, materiau, temps, M } from './formes.js?v=3';
+import { piece, fusion, placer, hasard, materiau, temps, M } from './formes.js?v=4';
 import { LIEUX, CHEMINS, PISTES, distanceChemins, lisse, fbm, LIMITE } from './terrain.js?v=3';
 
 const deg = d => d * Math.PI / 180;

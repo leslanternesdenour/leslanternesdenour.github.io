@@ -1,7 +1,7 @@
 // Les personnages : le petit explorateur (l'enfant qui joue) et Sablo, le chameau.
 // Modèles en formes simples, articulés pour les animations (marche, course, monture, agenouillement).
 import * as THREE from 'three';
-import { piece, fusion, materiau, M } from './formes.js?v=3';
+import { piece, fusion, materiau, M } from './formes.js?v=4';
 
 const mat = materiau();
 const B = () => new THREE.BoxGeometry(1, 1, 1);
@@ -51,10 +51,10 @@ export class Enfant {
       piece(new THREE.SphereGeometry(0.205, 14, 10, 0, Math.PI * 2, 0, Math.PI * 0.55), cheche, { p: [0, 0.02, -0.01] }),
       piece(new THREE.TorusGeometry(0.19, 0.035, 6, 16), '#f0dcb4', { p: [0, 0.06, 0], r: [Math.PI / 2 - 0.25, 0, 0] }),
       piece(B(), cheche, { p: [0, -0.06, -0.2], r: [0.35, 0, 0], s: [0.16, 0.26, 0.04] })]),
-      piece(SPH(0.027, 6, 5), '#2a2440', { p: [-0.065, 0.0, 0.17] }),
-      piece(SPH(0.027, 6, 5), '#2a2440', { p: [0.065, 0.0, 0.17] }),
-      piece(SPH(0.03, 6, 5), '#f19a8a', { p: [-0.11, -0.05, 0.14] }),
-      piece(SPH(0.03, 6, 5), '#f19a8a', { p: [0.11, -0.05, 0.14] }),
+      piece(SPH(0.027, 6, 5), '#2a2440', { v: 1, p: [-0.065, 0.0, 0.17] }),
+      piece(SPH(0.027, 6, 5), '#2a2440', { v: 1, p: [0.065, 0.0, 0.17] }),
+      piece(SPH(0.03, 6, 5), '#f19a8a', { v: 1, p: [-0.11, -0.05, 0.14] }),
+      piece(SPH(0.03, 6, 5), '#f19a8a', { v: 1, p: [0.11, -0.05, 0.14] }),
       ...(barbe ? [piece(SPH(0.15, 10, 8), barbe, { p: [0, -0.13, 0.08], s: [1, 1.25, 0.8] }), piece(B(), barbe, { p: [0, -0.04, 0.17], s: [0.14, 0.025, 0.03] })] : [])
     ]), ombres));
     this.phase = 0;
@@ -133,8 +133,8 @@ export class Chameau {
     this.tete.add(maille(fusion([
       piece(SPH(1, 14, 10), poil, { s: [0.22, 0.24, 0.42], p: [0, 0.05, 0.18] }),
       piece(SPH(1, 12, 8), '#e2bb85', { s: [0.17, 0.16, 0.2], p: [0, -0.03, 0.52] }),
-      piece(SPH(0.03, 6, 4), '#5a3a22', { p: [-0.07, 0.0, 0.69] }), piece(SPH(0.03, 6, 4), '#5a3a22', { p: [0.07, 0.0, 0.69] }),
-      piece(B(), '#3a2a1a', { p: [-0.17, 0.2, 0.26], r: [0, 0, 0.3], s: [0.1, 0.02, 0.04] }), piece(B(), '#3a2a1a', { p: [0.17, 0.2, 0.26], r: [0, 0, -0.3], s: [0.1, 0.02, 0.04] }),
+      piece(SPH(0.03, 6, 4), '#5a3a22', { v: 1, p: [-0.07, 0.0, 0.69] }), piece(SPH(0.03, 6, 4), '#5a3a22', { v: 1, p: [0.07, 0.0, 0.69] }),
+      piece(B(), '#3a2a1a', { v: 1, p: [-0.17, 0.2, 0.26], r: [0, 0, 0.3], s: [0.1, 0.02, 0.04] }), piece(B(), '#3a2a1a', { v: 1, p: [0.17, 0.2, 0.26], r: [0, 0, -0.3], s: [0.1, 0.02, 0.04] }),
       piece(new THREE.ConeGeometry(0.06, 0.16, 6), poil2, { p: [-0.15, 0.3, 0.05], r: [0, 0, 0.5] }),
       piece(new THREE.ConeGeometry(0.06, 0.16, 6), poil2, { p: [0.15, 0.3, 0.05], r: [0, 0, -0.5] }),
       piece(new THREE.TorusGeometry(0.2, 0.025, 5, 14), '#c94f3c', { p: [0, 0.02, 0.38], r: [0, 0, 0], s: [1, 1, 1] }),
@@ -143,9 +143,9 @@ export class Chameau {
     // les yeux à part, pour pouvoir cligner ; de longs cils doux
     this.yeux = new THREE.Group(); this.yeux.position.set(0, 0.14, 0.26); this.tete.add(this.yeux);
     this.yeux.add(maille(fusion([
-      piece(SPH(0.058, 10, 8), '#2a2440', { p: [-0.17, 0, 0] }), piece(SPH(0.058, 10, 8), '#2a2440', { p: [0.17, 0, 0] }),
-      piece(SPH(0.022, 6, 5), '#ffffff', { p: [-0.19, 0.025, 0.045] }), piece(SPH(0.022, 6, 5), '#ffffff', { p: [0.19, 0.025, 0.045] }),
-      ...[-1, 1].flatMap(sx => [0, 1, 2].map(i => piece(B(), '#2a1c12', { p: [sx * (0.17 + (i - 1) * 0.025), 0.055, 0.03], r: [0.5, 0, sx * (i - 1) * 0.4], s: [0.008, 0.05, 0.008] })))
+      piece(SPH(0.058, 10, 8), '#2a2440', { v: 1, p: [-0.17, 0, 0] }), piece(SPH(0.058, 10, 8), '#2a2440', { v: 1, p: [0.17, 0, 0] }),
+      piece(SPH(0.022, 6, 5), '#ffffff', { v: 1, p: [-0.19, 0.025, 0.045] }), piece(SPH(0.022, 6, 5), '#ffffff', { v: 1, p: [0.19, 0.025, 0.045] }),
+      ...[-1, 1].flatMap(sx => [0, 1, 2].map(i => piece(B(), '#2a1c12', { v: 1, p: [sx * (0.17 + (i - 1) * 0.025), 0.055, 0.03], r: [0.5, 0, sx * (i - 1) * 0.4], s: [0.008, 0.05, 0.008] })))
     ]), false));
     this.clignement = 3;
     this.regard = null;       // tourner la tête vers quelque chose (angle relatif), null = il regarde autour

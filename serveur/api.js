@@ -12,6 +12,8 @@ const FORMULE_PRIX = { premium_mensuel: 'STRIPE_PRIX_PREMIUM_MENSUEL', premium_a
 // ---------- réponses ----------
 const json = (data, statut = 200, entetes = {}) => new Response(JSON.stringify(data), { status: statut, headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', ...entetes } });
 const erreur = (statut, raison) => json({ erreur: raison }, statut);
+// Préférences de la famille : seules les clés connues, avec leur type, sont renvoyées (rien d'autre n'est jamais lu ni écrit)
+export const preferencesFamille = f => { const p = f && f.preferences || {}; return typeof p.sansVisage === 'boolean' ? { sansVisage: p.sansVisage } : {}; };
 
 // ---------- en-têtes des fichiers Premium ----------
 // Jamais gardés en cache (navigateur, service worker, intermédiaires). Les pages HTML reçoivent la même politique de
@@ -170,7 +172,7 @@ export async function traiter(req, ctx) {
       if (!session) return json({ connecte: false, statut: 'visiteur' });
       const d = await droitsDe(ctx, session); const f = await ctx.base.lire('familles', session.uid);
       return json({ connecte: true, uid: session.uid, email: session.email, emailVerifie: session.emailVerifie, fournisseur: session.fournisseur, ...d, vue: vueDemandee(req, ctx, session),
-        profilsMax: d.profilsMax === Infinity ? null : d.profilsMax, illimite: d.profilsMax === Infinity, profilActif: f && f.profilActif || null,
+        profilsMax: d.profilsMax === Infinity ? null : d.profilsMax, illimite: d.profilsMax === Infinity, profilActif: f && f.profilActif || null, preferences: preferencesFamille(f),
         activationCreateur: d.statut !== 'creator' && session.emailVerifie && !!String(ctx.env.CREATOR_UID || '').trim() && session.uid === String(ctx.env.CREATOR_UID).trim() });
     }
 
@@ -201,6 +203,15 @@ export async function traiter(req, ctx) {
     // ===== tout ce qui suit exige d'être connecté =====
     if (chemin.startsWith('/api/') && !session) return erreur(401, 'connexion-requise');
     const d = await droitsDe(ctx, session);
+
+    // ----- préférences de la famille (identiques pour tous les profils enfants) : mode sans visage -----
+    if (chemin === '/api/famille/preferences' && m === 'PATCH') {
+      const c = await corpsJson(req, 500);
+      if (typeof c.sansVisage !== 'boolean') return erreur(400, 'sansVisage-booleen-requis');
+      const f = await ctx.base.lire('familles', session.uid) || {};
+      await ctx.base.maj('familles', session.uid, { preferences: { ...preferencesFamille(f), sansVisage: c.sansVisage } });
+      return json({ ok: true, preferences: { sansVisage: c.sansVisage } });
+    }
 
     // ----- profils enfants -----
     if (chemin === '/api/enfants' && m === 'GET') {

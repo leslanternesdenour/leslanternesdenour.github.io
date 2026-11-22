@@ -3,7 +3,7 @@
 // Chaque quête a une catégorie, une difficulté (★ à ★★★), un objectif, une récompense et, si besoin, une destination.
 // Les mots arabes sont écrits en écriture arabe, avec leur prononciation et leur sens ; ils ont été vérifiés.
 import * as THREE from 'three';
-import { piece, fusion, materiau, M } from './formes.js?v=3';
+import { piece, fusion, materiau, M } from './formes.js?v=4';
 import { texRonde } from './decouverte.js?v=3';
 
 const mat = materiau({ finesse: 2 });

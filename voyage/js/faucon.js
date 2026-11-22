@@ -2,7 +2,7 @@
 // plane ailes déployées, s'incline dans les virages, puis revient. La caméra le suit de derrière.
 // Faucon sacre (connu en Arabie, la fauconnerie y était pratiquée) : dos brun, ventre crème tacheté, « moustache » sombre.
 import * as THREE from 'three';
-import { piece, fusion, materiau } from './formes.js?v=3';
+import { piece, fusion, materiau } from './formes.js?v=4';
 
 const mat = materiau({ finesse: 2 });
 const matAile = mat.clone(); matAile.side = THREE.DoubleSide;
@@ -22,7 +22,7 @@ function modele(ombres) {
   // la tête : œil sombre, « moustache », bec crochu jaune à pointe noire
   pc.push(piece(S(0.068, 12, 10), BRUN, { p: [0, 0.045, 0.2] }), piece(S(0.06, 10, 8), CREME, { p: [0, 0.02, 0.215], s: [0.9, 0.8, 0.9] }));
   for (const s of [-1, 1]) {
-    pc.push(piece(S(0.014, 8, 6), NOIR, { p: [s * 0.045, 0.06, 0.245] }), piece(S(0.017, 8, 6), JAUNE, { p: [s * 0.045, 0.06, 0.24], s: [1.1, 1.1, 0.6] }));
+    pc.push(piece(S(0.014, 8, 6), NOIR, { v: 1, p: [s * 0.045, 0.06, 0.245] }), piece(S(0.017, 8, 6), JAUNE, { v: 1, p: [s * 0.045, 0.06, 0.24], s: [1.1, 1.1, 0.6] }));   // œil
     pc.push(piece(B(), BRUN2, { p: [s * 0.05, 0.02, 0.235], r: [0.3, 0, 0], s: [0.012, 0.05, 0.02] }));       // la moustache du faucon
   }
   pc.push(piece(new THREE.ConeGeometry(0.022, 0.06, 8), JAUNE, { p: [0, 0.028, 0.285], r: [Math.PI / 2 + 0.35, 0, 0] }),

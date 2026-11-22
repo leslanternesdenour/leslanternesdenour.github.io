@@ -181,3 +181,7 @@
 
 /* Zones tactiles confortables (≥ 40 px) sur écran tactile */
 @media (pointer: coarse) { .reglage-intro { min-height: 40px; } }
+
+/* Mode sans visage : le village (sans personnage) remplace la bannière des deux enfants, recadré dans la même place */
+.haut-scene .banniere-sans { aspect-ratio: 2172 / 724; object-fit: cover; object-position: 50% 62%; }
+@media (max-width: 560px) { .haut-scene .banniere-sans { aspect-ratio: 1122 / 1402; object-position: 50% 55%; } }

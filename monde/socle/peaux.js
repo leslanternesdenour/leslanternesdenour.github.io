@@ -8,10 +8,10 @@ export const indicePeau = p => Number.isInteger(p) && p >= 0 && p < PEAUX.length
 // Visage d'enfant dessiné (jamais d'émoji jaune) : la peau prend la couleur choisie (variable CSS --peau).
 // Fille : voile écru qui encadre le visage. Garçon : cheveux courts et petite calotte écrue.
 export function visageSVG(genre) {
-  const yeux = '<ellipse cx="26.500" cy="35" rx="1.900" ry="2.300" fill="#2b180c"/><ellipse cx="37.500" cy="35" rx="1.900" ry="2.300" fill="#2b180c"/>' +
+  const yeux = '<g class="sv-visage"><ellipse cx="26.500" cy="35" rx="1.900" ry="2.300" fill="#2b180c"/><ellipse cx="37.500" cy="35" rx="1.900" ry="2.300" fill="#2b180c"/>' +
     '<circle cx="27.200" cy="34.200" r=".6" fill="#fff"/><circle cx="38.200" cy="34.200" r=".6" fill="#fff"/>' +
     '<path d="M27.500 42.500q4.500 4 9 0" fill="none" stroke="#7a3b22" stroke-width="1.700" stroke-linecap="round"/>' +
-    '<ellipse cx="22.500" cy="40" rx="2.800" ry="1.800" fill="#e0707a" opacity=".32"/><ellipse cx="41.500" cy="40" rx="2.800" ry="1.800" fill="#e0707a" opacity=".32"/>';
+    '<ellipse cx="22.500" cy="40" rx="2.800" ry="1.800" fill="#e0707a" opacity=".32"/><ellipse cx="41.500" cy="40" rx="2.800" ry="1.800" fill="#e0707a" opacity=".32"/></g>';
   if (genre === 'garcon') {
     return '<svg viewBox="0 0 64 64" aria-hidden="true" focusable="false">' +
       '<path d="M16 62c0-9 7-13 16-13s16 4 16 13z" fill="#cfae7a" stroke="#a88a55" stroke-width="1.500"/>' +

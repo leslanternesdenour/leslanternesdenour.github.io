@@ -2,11 +2,11 @@
 // Trois modes : Apprendre (Nour montre, puis l'enfant fait), S'entraîner (l'enfant trouve l'ordre), Libre.
 // Les textes, les sources et les voix sont ceux de la leçon /ablutions/ (rien n'est inventé ici).
 import * as THREE from 'three';
-import { Voyageur } from '../../voyage/js/voyageur.js?v=4';
-import { mascotte } from '../../monde/mascottes.js?v=1';
+import { Voyageur } from '../../voyage/js/voyageur.js?v=5';
+import { mascotte } from '../../monde/mascottes.js?v=2';
 import { creerLieu, STATIONS } from './lieu.js?v=2';
 import { Gestes, SEQUENCES, POSTURES } from './gestes.js?v=2';
-import { creerPersonnage as creerNouveau } from '../../personnages3d/fabrique.js?v=1';
+import { creerPersonnage as creerNouveau } from '../../personnages3d/fabrique.js?v=2';
 import { ST, HINT } from './etapes.js?v=1';
 
 const $ = id => document.getElementById(id);

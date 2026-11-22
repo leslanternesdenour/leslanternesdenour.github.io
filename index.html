@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
+<script src="monde/socle/sans-visage.js?v=1"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Les Lanternes de Nour</title>
 <meta name="description" content="Les histoires des prophètes racontées et chantées pour les enfants de 3 à 10 ans : Adam, Nouh (Noé), Ibrahim (Abraham), Youssouf, Younous. Sources du Coran et des hadiths dans chaque épisode.">
@@ -202,7 +203,7 @@ footer { border-top: 1px solid rgba(245, 185, 66, .18); padding: 22px 0 30px; co
 @media (max-width: 720px) { .cal-cote { display: none; } }
 @media (prefers-reduced-motion: reduce) { .ciel, .gl { animation: none; } }
 </style>
-<link rel="stylesheet" href="accueil/accueil.css?v=4">
+<link rel="stylesheet" href="accueil/accueil.css?v=5">
 <link rel="stylesheet" href="accueil/vie.css?v=1">
 </head>
 <body>
@@ -235,10 +236,12 @@ footer { border-top: 1px solid rgba(245, 185, 66, .18); padding: 22px 0 30px; co
 
 <header class="hero accueil-haut">
   <div class="haut-scene">
-    <div class="haut-monde"><picture>
+    <div class="haut-monde"><picture class="sv-avec">
       <source media="(max-width: 560px)" srcset="accueil/banniere-mobile-780.webp 780w, accueil/banniere-mobile-1122.webp 1122w" sizes="100vw" width="1122" height="1402">
       <img class="banniere" src="accueil/banniere-1280.webp" srcset="accueil/banniere-1280.webp 1280w, accueil/banniere-2172.webp 2172w" sizes="100vw" width="2172" height="724" alt="" decoding="async" fetchpriority="high">
-    </picture></div>
+    </picture>
+    <!-- Mode sans visage : le village, sans personnage, remplace la bannière (la bannière d'origine est conservée plus haut) -->
+    <picture class="sv-sans"><img class="banniere banniere-sans" src="accueil/village.webp?v=2" width="888" height="664" alt="" decoding="async"></picture></div>
     <a class="marque-entete" href="./" aria-label="Les Lanternes de Nour, accueil"><img src="intro/logo-320.webp" srcset="intro/logo-320.webp 320w, intro/logo-640.webp 640w" sizes="(max-width: 700px) 40vw, 380px" alt="Les Lanternes de Nour" width="320" height="215"></a>
   </div>
   <div class="wrap hero-body">

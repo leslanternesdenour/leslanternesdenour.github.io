@@ -2,8 +2,8 @@
 // Chaque monture a son modèle, sa façon de marcher, son cri, sa rareté et sa fiche.
 // « hist » : 'attesté' (animal connu dans l'Arabie ancienne), 'plausible' (rare mais possible), 'imaginaire' (création du jeu).
 import * as THREE from 'three';
-import { piece, fusion, materiau, M } from './formes.js?v=3';
-import { Chameau, Enfant } from './personnages.js?v=3';
+import { piece, fusion, materiau, M } from './formes.js?v=4';
+import { Chameau, Enfant } from './personnages.js?v=4';
 
 const mat = materiau();
 const B = () => new THREE.BoxGeometry(1, 1, 1);
@@ -100,14 +100,14 @@ export class Cheval {
     this.tete.add(maille(fusion([
       piece(SPH(1, 14, 10), robe, { p: [0, dir[1] * 0.17, dir[2] * 0.17], r: [2.2, 0, 0], s: [0.13, 0.32, 0.15] }),
       piece(SPH(0.1, 10, 8), robe, { p: [0, dir[1] * 0.42, dir[2] * 0.42], s: [1, 1, 1.05] }),
-      piece(SPH(0.018, 6, 4), '#2a1c14', { p: [-0.045, dir[1] * 0.45 + 0.02, dir[2] * 0.45 + 0.07] }), piece(SPH(0.018, 6, 4), '#2a1c14', { p: [0.045, dir[1] * 0.45 + 0.02, dir[2] * 0.45 + 0.07] }),
+      piece(SPH(0.018, 6, 4), '#2a1c14', { v: 1, p: [-0.045, dir[1] * 0.45 + 0.02, dir[2] * 0.45 + 0.07] }), piece(SPH(0.018, 6, 4), '#2a1c14', { v: 1, p: [0.045, dir[1] * 0.45 + 0.02, dir[2] * 0.45 + 0.07] }),
       piece(new THREE.ConeGeometry(0.04, 0.15, 6), robe, { p: [-0.06, 0.13, -0.03], r: [-0.25, 0, 0.18] }), piece(new THREE.ConeGeometry(0.04, 0.15, 6), robe, { p: [0.06, 0.13, -0.03], r: [-0.25, 0, -0.18] }),
       piece(B(), crin, { p: [0, 0.1, 0.07], r: [0.6, 0, 0], s: [0.05, 0.08, 0.12] }),
       piece(new THREE.TorusGeometry(0.115, 0.016, 5, 14), '#7a3e2e', { p: [0, dir[1] * 0.33, dir[2] * 0.33], r: [2.2 - Math.PI / 2, 0, 0], m: M.cuir })      // le licol
     ]), ombres));
     this.yeux = new THREE.Group(); this.yeux.position.set(0, -0.02, 0.08); this.tete.add(this.yeux);
-    this.yeux.add(maille(fusion([piece(SPH(0.032, 8, 6), '#1e1610', { p: [-0.11, 0, 0] }), piece(SPH(0.032, 8, 6), '#1e1610', { p: [0.11, 0, 0] }),
-      piece(SPH(0.011, 5, 4), '#fff', { p: [-0.125, 0.013, 0.022] }), piece(SPH(0.011, 5, 4), '#fff', { p: [0.125, 0.013, 0.022] })]), false));
+    this.yeux.add(maille(fusion([piece(SPH(0.032, 8, 6), '#1e1610', { v: 1, p: [-0.11, 0, 0] }), piece(SPH(0.032, 8, 6), '#1e1610', { v: 1, p: [0.11, 0, 0] }),
+      piece(SPH(0.011, 5, 4), '#fff', { v: 1, p: [-0.125, 0.013, 0.022] }), piece(SPH(0.011, 5, 4), '#fff', { v: 1, p: [0.125, 0.013, 0.022] })]), false));
     // les jambes fines
     this.pattes = [[-1, 1], [1, 1], [-1, -1], [1, -1]].map(([sx, sz]) => {
       const haut = new THREE.Group(); haut.position.set(sx * 0.2, -0.22, sz * 0.6); this.corps.add(haut);
@@ -191,8 +191,8 @@ export class Elephant {
     this.oreilles = [-1, 1].map(s => { const o = new THREE.Group(); o.position.set(s * 0.6, 0.25, 0.05); this.tete.add(o);
       o.add(maille(fusion([piece(SPH(1, 14, 10), peau2, { p: [s * 0.32, -0.15, -0.1], s: [0.42, 0.62, 0.07], r: [0, s * 0.35, 0], m: M.cuir })]), ombres)); o.s = s; return o; });
     this.yeux = new THREE.Group(); this.yeux.position.set(0, 0.22, 0.6); this.tete.add(this.yeux);
-    this.yeux.add(maille(fusion([piece(SPH(0.055, 8, 6), '#2a2420', { p: [-0.36, 0, 0] }), piece(SPH(0.055, 8, 6), '#2a2420', { p: [0.36, 0, 0] }),
-      piece(SPH(0.018, 5, 4), '#fff', { p: [-0.38, 0.02, 0.04] }), piece(SPH(0.018, 5, 4), '#fff', { p: [0.38, 0.02, 0.04] })]), false));
+    this.yeux.add(maille(fusion([piece(SPH(0.055, 8, 6), '#2a2420', { v: 1, p: [-0.36, 0, 0] }), piece(SPH(0.055, 8, 6), '#2a2420', { v: 1, p: [0.36, 0, 0] }),
+      piece(SPH(0.018, 5, 4), '#fff', { v: 1, p: [-0.38, 0.02, 0.04] }), piece(SPH(0.018, 5, 4), '#fff', { v: 1, p: [0.38, 0.02, 0.04] })]), false));
     // la trompe, en segments qui ondulent
     this.trompe = [];
     let parent = this.tete, y0 = -0.15, z0 = 0.82;
