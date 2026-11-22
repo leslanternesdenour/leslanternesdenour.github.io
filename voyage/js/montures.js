@@ -4,6 +4,8 @@
 import * as THREE from 'three';
 import { piece, fusion, materiau, M } from './formes.js?v=4';
 import { Chameau, Enfant } from './personnages.js?v=4';
+import { ECURIE, PLACES, PLACE_GRANDE, LIEUX, affecter } from './enclos-plan.js?v=1';
+import { geoFoin, geoLitiere, geoAbreuvoir, creerEauBassin, geoTapis, EAU_BASSIN } from './enclos.js?v=1';
 
 const mat = materiau();
 const B = () => new THREE.BoxGeometry(1, 1, 1);
@@ -250,7 +252,7 @@ export class Elephant {
 }
 
 // ================= L'écurie, près de l'enclos de Sablo =================
-export const ECURIE = { x: 52, z: -24 };
+export { ECURIE };       // le plan complet de l'enclos est dans enclos-plan.js
 export function creerEcurie({ scene, terrain, colliders, ombres }) {
   const H = (x, z) => terrain.hauteur(x, z), { x: ex, z: ez } = ECURIE;
   const g = new THREE.Group(); g.position.set(ex, H(ex, ez) - 0.05, ez); scene.add(g);
@@ -268,30 +270,44 @@ export function creerEcurie({ scene, terrain, colliders, ombres }) {
   p.push(piece(B(), '#a77a4e', { p: [-5.3, 1.0, 5.4], s: [7.4, 0.09, 0.09] }), piece(B(), '#a77a4e', { p: [5.3, 1.0, 5.4], s: [7.4, 0.09, 0.09] }),
     piece(B(), '#a77a4e', { p: [-5.3, 0.55, 5.4], s: [7.4, 0.09, 0.09] }), piece(B(), '#a77a4e', { p: [5.3, 0.55, 5.4], s: [7.4, 0.09, 0.09] }));
   for (const x of [-9.2, 9.2]) p.push(piece(B(), '#a77a4e', { p: [x, 1.0, 0.5], s: [0.09, 0.09, 9.8] }), piece(B(), '#a77a4e', { p: [x, 0.55, 0.5], s: [0.09, 0.09, 9.8] }));
-  // abreuvoir et foin
-  p.push(piece(B(), '#8a6440', { p: [6, 0.35, 3.2], s: [2.6, 0.7, 0.8], m: M.bois }), piece(B(), '#5fd3e0', { p: [6, 0.66, 3.2], s: [2.3, 0.05, 0.55] }));
-  for (let i = 0; i < 3; i++) p.push(piece(B(), '#d9c27a', { p: [-6 + i * 0.9, 0.35 + (i === 1 ? 0.5 : 0), -3.6], s: [0.85, 0.6, 0.6], m: M.bois }));
   const m = new THREE.Mesh(fusion(p), mat); m.castShadow = ombres; m.receiveShadow = ombres; g.add(m);
   // colliders : le mur du fond, la clôture (avec l'entrée devant), l'abreuvoir
   for (let i = 0; i < 9; i++) colliders.push({ x: ex - 8 + i * 2, z: ez - 4.6, r: 1.0 });
   for (const [x, z] of pieux) colliders.push({ x: ex + x, z: ez + z, r: 0.5 });
-  colliders.push({ x: ex + 6, z: ez + 3.2, r: 1.3 });
+  // le décor vivant de l'enclos : tapis de paille (places libres ou non), vrai abreuvoir avec de l'eau, mangeoire à foin, litière de paille
+  { const mat2 = materiau(), ajouterGeo = (geo, x, z, rot = 0, dy = 0) => { const mm = new THREE.Mesh(geo, mat2); mm.position.set(x, H(x, z) + dy, z); mm.rotation.y = rot; mm.castShadow = ombres; mm.receiveShadow = ombres; scene.add(mm); return mm; };
+    for (const pl of PLACES) ajouterGeo(geoTapis(false), pl.x, pl.z, pl.a + Math.PI / 2, 0.0);
+    ajouterGeo(geoTapis(true), PLACE_GRANDE.x, PLACE_GRANDE.z, 0, 0.0);
+    const E = LIEUX.eau.objet, F = LIEUX.foin.objet, Li = LIEUX.litiere.objet;
+    ajouterGeo(geoAbreuvoir(), E.x, E.z, 0, -0.02);
+    const eau = creerEauBassin(); eau.position.set(E.x, H(E.x, E.z) + EAU_BASSIN.y, E.z); scene.add(eau);
+    ajouterGeo(geoFoin(), F.x, F.z, 0, -0.02);
+    ajouterGeo(geoLitiere(), Li.x, Li.z, 0, -0.04);
+    colliders.push({ x: E.x - 0.7, z: E.z, r: 0.7 }, { x: E.x + 0.7, z: E.z, r: 0.7 }, { x: F.x, z: F.z, r: 1.0 }, { x: F.x + 1.5, z: F.z, r: 0.6 }); }
   // le gardien (personnage imaginaire)
   const gardien = new Enfant(ombres, { tunique: '#6b5a3a', pantalon: '#4a3a2a', cheche: '#e8dcc4', peau: '#a8724c', sac: false });
   gardien.racine.scale.setScalar(1.25); gardien.racine.position.set(ex + 2.6, H(ex + 2.6, ez + 6.6), ez + 6.6); gardien.racine.rotation.y = 0.3; scene.add(gardien.racine);
   colliders.push({ x: ex + 2.6, z: ez + 6.6, r: 0.5 });
-  // les places des montures au repos
-  const places = [[-6, -2.4], [-2, -2.4], [2, -2.4], [6, -2.4], [-6, 2], [-2, 2.2], [2, 2.4], [-6.4, 3.6]].map(([x, z]) => ({ x: ex + x, z: ez + z }));
-  let repos = [];
+  // les montures au repos : chacune a SA place (enclos-plan.js, selon l'ordre de la liste possédée). La monture qui voyage n'est pas dessinée ici : elle est
+  // représentée par le personnage principal (jamais deux exemplaires d'une même monture). Les montures au repos sont des obstacles pour l'enfant à pied.
+  let repos = [], bloqueurs = [];
+  const especeDe = id => monture(id).espece;
   return {
     centre: { x: ex, z: ez }, point: { x: ex + 2.6, z: ez + 8.4 }, sortie: { x: ex, z: ez + 8.5 }, gardien,
-    // affiche les montures qui attendent à l'écurie (toutes sauf celle qui voyage avec l'enfant)
-    maj(ids) {
+    // la place d'une monture possédée (ou null s'il n'y a plus de place)
+    placeDe: (id, possedes) => affecter(possedes, especeDe)[id] || null,
+    // les montures qui se reposent (toutes sauf celle qui voyage) avec leur place : pour « Examiner »
+    placesRepos(possedes, actif) { const pl = affecter(possedes, especeDe); return possedes.filter(id => id !== actif && pl[id]).map(id => ({ id, x: pl[id].x, z: pl[id].z, grande: especeDe(id) === 'elephant' })); },
+    // affiche les montures qui attendent à l'écurie : toutes celles de la liste sauf celle qui est en voyage (actif)
+    maj(possedes, actif) {
       for (const r of repos) { scene.remove(r.m.racine); r.m.racine.traverse(o => o.geometry && o.geometry.dispose()); }
-      repos = ids.slice(0, places.length).map((id, i) => {
-        const mo = creerMonture(id, false), pl = places[i], d = monture(id);
-        if (d.espece === 'elephant') { pl.x = ex - 2; pl.z = ez + 1.6; }
-        mo.racine.position.set(pl.x, H(pl.x, pl.z), pl.z); mo.racine.rotation.y = Math.PI / 2 + (i % 2 ? 0.25 : -0.2); scene.add(mo.racine);
+      for (const c of bloqueurs) { const i = colliders.indexOf(c); if (i >= 0) colliders.splice(i, 1); }
+      bloqueurs = [];
+      const places = affecter(possedes, especeDe);
+      repos = possedes.filter(id => id !== actif && places[id]).map((id, i) => {
+        const mo = creerMonture(id, false), pl = places[id], d = monture(id).espece;
+        mo.racine.position.set(pl.x, H(pl.x, pl.z), pl.z); mo.racine.rotation.y = pl.a + (i % 2 ? 0.1 : -0.08); scene.add(mo.racine);
+        const c = { x: pl.x, z: pl.z, r: d === 'elephant' ? 1.7 : 0.9, repos: true }; colliders.push(c); bloqueurs.push(c);
         return { m: mo, decal: i * 1.7 };
       });
     },

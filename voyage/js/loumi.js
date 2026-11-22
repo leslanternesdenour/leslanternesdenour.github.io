@@ -21,7 +21,7 @@ function texteEtoile() {
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
 }
 
-export function creerLoumi({ scene, terrain, ombres = false, x = 0, z = 0 }) {
+export function creerLoumi({ scene, terrain, ombres = false, x = 0, z = 0, regard: regardBase = Math.PI / 2 }) {
   const sol = terrain ? terrain.hauteur(x, z) : 0;
   const lieu = new THREE.Group(); lieu.position.set(x, sol, z); scene.add(lieu);       // l'emplacement fixe
   const racine = new THREE.Group(); lieu.add(racine);       // la lanterne : flotte au-dessus de son support
@@ -99,7 +99,7 @@ export function creerLoumi({ scene, terrain, ombres = false, x = 0, z = 0 }) {
   // ---------- comportement ----------
   const reaction = { type: null, t: 0, dur: 0 };
   let clin = 2.5, finClin = 0, cap = 0, parle = 0;
-  const base = Math.PI / 2;                                  // regarde vers le chemin du souk
+  const base = regardBase;                                   // son orientation de repos (vers l'allée de l'enclos)
   const aire = x => { while (x > Math.PI) x -= Math.PI * 2; while (x < -Math.PI) x += Math.PI * 2; return x; };
 
   function reagir(type) {   // 'joie' | 'surprise' | 'bravo' | 'parle'
@@ -108,9 +108,10 @@ export function creerLoumi({ scene, terrain, ombres = false, x = 0, z = 0 }) {
   }
 
   // appelée à chaque image : elle reste sur place ; seule la tête (la lanterne) se tourne doucement vers l'enfant s'il est à moins de 9 m
-  function maj(dt, t, J) {
+  // `vers` (facultatif) : la monture qui a un besoin — elle la regarde quand l'enfant n'est pas tout près. Sans enfant ni besoin : elle revient EXACTEMENT à son orientation de repos.
+  function maj(dt, t, J, vers = null) {
     const dx = J.x - x, dz = J.z - z, d = Math.hypot(dx, dz);
-    const but = d < 9 ? Math.atan2(dx, dz) : base + Math.sin(t * 0.4) * 0.5;      // « tourner doucement » : va-et-vient lent quand personne n'est là
+    const but = d < 3.6 ? Math.atan2(dx, dz) : vers ? Math.atan2(vers.x - x, vers.z - z) : d < 9 ? Math.atan2(dx, dz) : base;
     cap += aire(but - cap) * Math.min(1, dt * 2.2);
     let sy = 0, saut = 0, ech = 1, surpris = 0, joie = 0;
     if (reaction.type) {

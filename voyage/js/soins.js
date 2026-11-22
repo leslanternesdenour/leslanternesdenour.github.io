@@ -14,12 +14,9 @@ export const PLANCHER = 20;       // jamais moins : aucune mécanique punitive
 export const BAS = 40;            // en dessous : un signal doux
 export const DEPART = 85;
 
-// Lieux de soins dans le village : objet (où il se trouve), stand (où se place la monture) et a (direction de son regard : cap = atan2(x, z)).
-export const LIEUX_SOINS = {
-  eau:     { objet: { x: 0, z: 2.3 },    stand: { x: 0, z: 3.95 },  a: Math.PI,       rayon: 4.2, action: 'boire',  icone: '💧', verbe: 'Faire boire' },
-  foin:    { objet: { x: 5.2, z: -0.6 }, stand: { x: 5.2, z: 1.45 }, a: Math.PI,       rayon: 4.2, action: 'manger', icone: '🌾', verbe: 'Donner à manger à' },
-  litiere: { objet: { x: -5.2, z: 0.4 }, stand: { x: -5.2, z: 0.4 }, a: Math.PI / 2,   rayon: 3.6, action: 'repos',  icone: '🌙', verbe: 'Faire reposer' }
-};
+// Lieux de soins (dans l'enclos de l'écurie) : objet (où il se trouve), stand (où se place la monture) et a (direction de son regard : cap = atan2(x, z)).
+import { LIEUX } from './enclos-plan.js?v=1';
+export const LIEUX_SOINS = LIEUX;      // l'abreuvoir, la mangeoire et la litière sont dans l'enclos de l'écurie (voir enclos-plan.js)
 // Durées des actions (secondes) : marche d'approche, puis soin
 export const DUREES = { boire: 6, manger: 7, repos: 6, dormir: 9, calin: 2.5 };
 
