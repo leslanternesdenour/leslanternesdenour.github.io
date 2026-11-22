@@ -1,0 +1,14 @@
+$TTL 3600
+@	IN SOA dns101.ovh.net. tech.ovh.net. (2026112201 86400 3600 3600000 300)
+	IN NS	dns101.ovh.net.
+	IN NS	ns101.ovh.net.
+	IN A	185.199.108.153
+	IN A	185.199.109.153
+	IN AAAA	2606:50c0:8000::153
+	IN MX	1 mx0.mail.ovh.net.
+	IN MX	5 mx1.mail.ovh.net.
+	IN TXT	"v=spf1 include:mx.ovh.com ~all"
+www	IN CNAME	leslanternesdenour.github.io.
+_dmarc	IN TXT	"v=DMARC1; p=none"
+ovhmo123-selector._domainkey	IN TXT	( "v=DKIM1; k=rsa; p=AAAA" "BBBB" )
+autoconfig	IN CNAME	mailconfig.ovh.net.
