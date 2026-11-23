@@ -34,7 +34,7 @@ let phrases = [], verdicts = {}, cleStock = '', base = '';
 const sauver = () => { try { localStorage.setItem(cleStock, JSON.stringify(verdicts)); } catch (e) {} };
 const jeu = () => $('jeu').value, etatDe = f => verdicts[f] ? verdicts[f].v : 'non';
 async function charger() {
-  cleStock = 'ldn-revue-audio-v1-' + jeu(); verdicts = {}; try { verdicts = JSON.parse(localStorage.getItem(cleStock) || '{}'); } catch (e) {}
+  cleStock = 'ldn-revue-audio-v1-' + jeu(); verdicts = {}; if (jeu() === 'voyage-nouvelles-voix') $('langue').value = ''; try { verdicts = JSON.parse(localStorage.getItem(cleStock) || '{}'); } catch (e) {}
   $('corps').innerHTML = ''; $('msg').textContent = 'Chargement…';
   try { const r = await fetch(`manifestes/${jeu()}.json`); const mf = await r.json(); phrases = mf.phrases; base = mf.base || `/audio/jeux/${jeu()}`; $('msg').textContent = ''; } catch (e) { phrases = []; $('msg').textContent = 'Manifeste introuvable pour ce jeu.'; }
   dessiner();
