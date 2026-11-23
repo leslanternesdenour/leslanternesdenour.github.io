@@ -129,7 +129,7 @@ function wireDh(){$$('[data-play]').forEach(b=>b.onclick=()=>say(DH[b.dataset.pl
 function surBlock(s){const S=SUR[s];return `<div class="dh"><div class="ttl2">Sourate ${S.n} · récitation de cheikh Al-Housary</div><div id="qv">${S.tr.map((t,i)=>`<div class="ay" data-i="${i}"><div class="ar" lang="ar" dir="rtl" id="qa${i}">…</div><div class="trl">${t}</div><div class="frm">${S.fr[i]}</div>
  <div class="acts2"><button class="mini" data-ay="${i}">▶</button><button class="mini" data-ays="${i}">🐢</button></div></div>`).join('')}</div>
  <div class="acts2"><button class="mini b" id="qall">▶ Toute la sourate</button></div><div class="src">Texte du Coran : édition uthmânî (alquran.cloud) · Voix : Mahmoud Khalil Al-Housary</div></div>`}
-function wireSur(s){loadSur(s).then(t=>{if(t)t.forEach((a,i)=>{const e=$('#qa'+i);if(e)e.textContent=a})});
+function wireSur(s){loadSur(s).then(t=>{if(t)t.forEach((a,i)=>{const e=$('#qa'+i);if(e)e.textContent=a});else $$('[id^="qa"]').forEach(e=>{e.dir='ltr';e.lang='fr';e.classList.add('indispo');e.textContent='Texte arabe momentanément indisponible (vérifie ta connexion). Tu peux lire la phonétique et le sens ci-dessous.'})});
  const hl=i=>$$('.ay').forEach(e=>e.classList.toggle('on',+e.dataset.i===i));
  $$('[data-ay]').forEach(b=>b.onclick=()=>{if(!sound)return;stopVoice();hl(+b.dataset.ay);url(ayUrl(s,+b.dataset.ay),1,()=>hl(-1))});
  $$('[data-ays]').forEach(b=>b.onclick=()=>{if(!sound)return;stopVoice();hl(+b.dataset.ays);url(ayUrl(s,+b.dataset.ays),.75,()=>hl(-1))});
@@ -206,7 +206,7 @@ function g3(){const qs=shuffle(Q3).slice(0,6);let n=0,ok=0;
 /* JEU 4 : construis ta prière (que dit-on ici ?) */
 const R4=[{p:'takbir',d:'ak'},{p:'roukou',d:'rk'},{p:'debout',d:'sm'},{p:'soujoud',d:'sj'},{p:'assis',d:'gh'},{p:'soujoud',d:'sj'},{p:'salam',d:'ts'}];
 function g4(){let n=0,ok=0;const keys=['ak','rk','sm','sj','gh','ts'];
- const draw=(msg,c,id)=>{const q=R4[n];const opts=shuffle([q.d,...shuffle(keys.filter(k=>k!==q.d)).slice(0,2)]);
+ const draw=(msg,c,id)=>{const q=R4[n];const opts=shuffle([q.d,...shuffle(keys.filter(k=>k!==q.d&&(q.d==='ak'||k!=='ak'))).slice(0,2)]);   /* « Allâhou akbar » se dit aussi entre les positions : on ne le propose en mauvaise réponse que s'il n'est pas la bonne */
   A.innerHTML=topbar('Construis ta prière')+`<div class="gh"><h2>Que dit-on ici ?</h2></div><div class="build">${R4.map((r,i)=>`<span class="bp ${i<n?'f':i===n?'cur':''}">${pose(r.p)}</span>`).join('')}</div>
   <div class="pbox">${pose(q.p,'big')}</div>${bubble(msg,c,id)}<div class="opts o1">${opts.map(k=>`<button class="opt ar2" data-d="${k}"><span lang="ar" dir="rtl">${DH[k].ar}</span><small>${DH[k].tr}</small></button>`).join('')}</div>`;
   wire();$$('.opt').forEach(b=>b.onclick=()=>{const good=b.dataset.d===q.d;$$('.opt').forEach(x=>{x.disabled=true;if(x.dataset.d===q.d)x.classList.add('good')});if(good){ok++;burst(25);b.classList.add('good')}else b.classList.add('bad');
