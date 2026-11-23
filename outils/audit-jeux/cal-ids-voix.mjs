@@ -1,0 +1,12 @@
+import { readFileSync } from 'node:fs';
+const R = '/home/user/leslanternesdenour.github.io/calendrier/';
+globalThis.window = {}; new Function('window', readFileSync(R + 'data.js', 'utf8'))(globalThis.window); const D = window.D;
+const vx = JSON.parse(readFileSync(R + 'voix/voix.json', 'utf8')); const app = readFileSync(R + 'app.js', 'utf8');
+const req = new Set();
+for (let d = 1; d <= 30; d++) { req.add('ms' + d); req.add('mb' + d); } req.add('msstar'); req.add('mbstar');
+for (let i = 0; i < 5; i++) req.add('cheer' + i); ['l10', 'l20', 'l29', 'inscription', 'mem_s', 'mem_b', 'mem_win'].forEach(x => req.add(x));
+for (const m of app.matchAll(/"k":\s*"([a-z0-9_]+)"/g)) req.add('w_' + m[1]);
+for (const [t, p] of [['d', 'dev'], ['q', 'qr']]) for (const [l, lv] of [['p', 's'], ['g', 'b']]) D.J[p][lv].forEach((_, i) => { req.add(t + l + i + 'q'); req.add(t + l + i + 'a'); });
+const direct = [...app.matchAll(/say\('([a-zA-Z0-9_]+)'/g)].map(m => m[1]); direct.forEach(x => req.add(x));
+const manque = [...req].filter(i => !vx[i]); console.log('ids de voix requis:', req.size, '| absents de voix.json:', manque.length, manque.join(', '));
+console.log('voix non utilisées (informatif):', Object.keys(vx).filter(k => !req.has(k)).length);
