@@ -9,7 +9,7 @@ import { Controles, ACTIONS, nomTouche } from './controles.js?v=3';
 import { creerOiseaux } from './oiseaux.js?v=3';
 import { creerFaucon } from './faucon.js?v=4';
 import * as S from './sons.js?v=3';
-import { chargerVoixVoyage, direTextes, direIds, direMotArabe, arreterVoixVoyage, ajouterPhrases } from './voix.js?v=4';
+import { chargerVoixVoyage, direTextes, direIds, direMotArabe, arreterVoixVoyage, ajouterPhrases } from './voix.js?v=5';
 import { chargerPremium, MESSAGE_FERME } from './premium.js?v=1';
 import { ZONES, POINTS, BIENTOT, DESCRIPTIONS_LIEUX } from './contenu.js?v=4';
 import { sauvegarde } from '../../monde/socle/sauvegarde.js?v=3';
@@ -797,6 +797,7 @@ async function demarrer() {
   }
   function fermerCarnet() { if ($('carnet').classList.contains('cache')) return; $('carnet').classList.add('cache'); interface_ouverte = false; ctl.bloque = false; }
   $('btn-carnet').addEventListener('click', ouvrirCarnet);
+  $('btn-missions').addEventListener('click', () => ouvrirCarnet('missions'));      // bouton du haut : missions du jour + lanternes cachées, à la demande seulement
   $('carnet-fermer').addEventListener('click', fermerCarnet);
   $('carnet').addEventListener('click', e => { if (e.target.id === 'carnet') fermerCarnet(); });
 

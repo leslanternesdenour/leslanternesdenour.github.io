@@ -884,40 +884,80 @@
 0,
 5.486
 ],
+"NOUR-VOIX-ARB-001": [
+"fr/vocabulaire/nour-voix-arb-001.mp3",
+0,
+1.115
+],
 "NOUR-VOIX-ARB-002": [
 "fr/vocabulaire/nour-voix-arb-002.mp3",
 0,
 4.963
+],
+"NOUR-VOIX-ARB-003": [
+"fr/vocabulaire/nour-voix-arb-003.mp3",
+0,
+0.975
 ],
 "NOUR-VOIX-ARB-004": [
 "fr/vocabulaire/nour-voix-arb-004.mp3",
 0,
 6.165
 ],
+"NOUR-VOIX-ARB-005": [
+"fr/vocabulaire/nour-voix-arb-005.mp3",
+0,
+1.207
+],
 "NOUR-VOIX-ARB-006": [
 "fr/vocabulaire/nour-voix-arb-006.mp3",
 0,
 6.661
+],
+"NOUR-VOIX-ARB-007": [
+"fr/vocabulaire/nour-voix-arb-007.mp3",
+0,
+1.068
 ],
 "NOUR-VOIX-ARB-008": [
 "fr/vocabulaire/nour-voix-arb-008.mp3",
 0,
 5.512
 ],
+"NOUR-VOIX-ARB-009": [
+"fr/vocabulaire/nour-voix-arb-009.mp3",
+0,
+1.254
+],
 "NOUR-VOIX-ARB-010": [
 "fr/vocabulaire/nour-voix-arb-010.mp3",
 0,
 5.878
+],
+"NOUR-VOIX-ARB-011": [
+"fr/vocabulaire/nour-voix-arb-011.mp3",
+0,
+0.975
 ],
 "NOUR-VOIX-ARB-012": [
 "fr/vocabulaire/nour-voix-arb-012.mp3",
 0,
 4.519
 ],
+"NOUR-VOIX-ARB-013": [
+"fr/vocabulaire/nour-voix-arb-013.mp3",
+0,
+1.115
+],
 "NOUR-VOIX-ARB-014": [
 "fr/vocabulaire/nour-voix-arb-014.mp3",
 0,
 5.721
+],
+"NOUR-VOIX-ARB-015": [
+"fr/vocabulaire/nour-voix-arb-015.mp3",
+0,
+1.115
 ],
 "NOUR-VOIX-ARB-016": [
 "fr/vocabulaire/nour-voix-arb-016.mp3",
@@ -1763,5 +1803,65 @@
 "fr/decouvertes/nour-voix-dec-019.mp3",
 0,
 11.076
+],
+"NOUR-VOIX-LOU-001": [
+"fr/loumi/nour-voix-lou-001.mp3",
+0,
+8.48
+],
+"NOUR-VOIX-LOU-002": [
+"fr/loumi/nour-voix-lou-002.mp3",
+0,
+3.04
+],
+"NOUR-VOIX-LOU-003": [
+"fr/loumi/nour-voix-lou-003.mp3",
+0,
+10.24
+],
+"NOUR-VOIX-LOU-004": [
+"fr/loumi/nour-voix-lou-004.mp3",
+0,
+10.16
+],
+"NOUR-VOIX-LOU-005": [
+"fr/loumi/nour-voix-lou-005.mp3",
+0,
+10.88
+],
+"NOUR-VOIX-LOU-006": [
+"fr/loumi/nour-voix-lou-006.mp3",
+0,
+11.28
+],
+"NOUR-VOIX-LOU-007": [
+"fr/loumi/nour-voix-lou-007.mp3",
+0,
+7.84
+],
+"NOUR-VOIX-LOU-008": [
+"fr/loumi/nour-voix-lou-008.mp3",
+0,
+11.04
+],
+"NOUR-VOIX-LOU-009": [
+"fr/loumi/nour-voix-lou-009.mp3",
+0,
+11.52
+],
+"NOUR-VOIX-LOU-010": [
+"fr/loumi/nour-voix-lou-010.mp3",
+0,
+10.96
+],
+"NOUR-VOIX-LOU-011": [
+"fr/loumi/nour-voix-lou-011.mp3",
+0,
+11.52
+],
+"NOUR-VOIX-LOU-012": [
+"fr/loumi/nour-voix-lou-012.mp3",
+0,
+11.36
 ]
 }
