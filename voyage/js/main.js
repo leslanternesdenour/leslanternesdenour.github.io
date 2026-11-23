@@ -1,5 +1,6 @@
 // Le Grand Voyage de Nour : un monde à explorer à pied et à dos de chameau.
 // Ce fichier relie tout : terrain, décors, ciel, personnages, commandes, sons, découvertes et carnet.
+import './route/bac-a-sable-demarrage.js';   // mode test isolé (?sandbox=1) : doit rester le PREMIER import
 import * as THREE from 'three';
 import { Terrain, LIEUX, LIMITE, lisse, activerSortieRoute } from './terrain.js?v=3';
 import { creerDecor } from './decor.js?v=6';
@@ -1481,7 +1482,7 @@ async function demarrer() {
       bouger(C, Math.sin(C.a) * C.vit * dt, Math.cos(C.a) * C.vit * dt, monture(AV.monture).espece === 'elephant' ? 1.8 : 1.1, dt);
       J.x = C.x; J.z = C.z; J.a = C.a; J.vit = 0;
     } else {
-      const vmax = (d.course ? 6.2 : 3.3) * (d.analogique || 0);
+      const vmax = (d.course ? 6.2 : 3.3) * (d.analogique || 0) * (route && route.enRoute() ? route.facteurMarche : 1);   // sur la Route : marche un peu plus lente
       const tx = force > 0.05 ? wx / force * vmax : 0, tz = force > 0.05 ? wz / force * vmax : 0;
       const k = Math.min(1, dt * 10);
       J.vx += (tx - J.vx) * k; J.vz += (tz - J.vz) * k;

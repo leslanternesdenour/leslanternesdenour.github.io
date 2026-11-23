@@ -6,7 +6,7 @@ import { creerLieux3D } from './lieux-3d.js';
 import { preparerRoute, memoriserPosition, positionDeReprise } from './etat-route.js';
 import { faireEtape, progression } from './missions-route.js';
 import { DEC, versRoute, S_DEBUT, S_FIN_TRANCHE, LARGEUR, OASIS } from './relief.js';
-import { regionA, LIEUX_ROUTE, MISSIONS_ROUTE, SAC_ROUTE, RELAIS_VILLAGE, auSeuilVillage, versLaRoute, auRetourRoute, versLeVillage } from './donnees.js';
+import { FACTEUR_MARCHE_ROUTE, regionA, LIEUX_ROUTE, MISSIONS_ROUTE, SAC_ROUTE, RELAIS_VILLAGE, auSeuilVillage, versLaRoute, auRetourRoute, versLeVillage } from './donnees.js';
 import { texteLieu, GUIDE, VOYAGEUSE, MESSAGES } from './textes-route.js';
 import { CONTENU, etiquette, texteDe } from './contenu-a-valider.js';
 import { pageCarnetRoute } from './carnet-route.js';
@@ -237,7 +237,7 @@ export function creerRoute(ctx) {
   }
 
   return {
-    enRoute: () => dans, maj, bouger, ouvrirCarte, ouvrirSac, parlerGuide,
+    enRoute: () => dans, facteurMarche: FACTEUR_MARCHE_ROUTE, maj, bouger, ouvrirCarte, ouvrirSac, parlerGuide,
     carte, monde, lieux3d: L, etat: R, fermerCarte: () => carte.fermer(), carteOuverte: () => carte.ouverte(),
     pageCarnet: () => pageCarnetRoute({ route: R, badges: AV.badges || {}, age: age() }),
     sauver() { if (dans) memoriserPosition(etat, J); },

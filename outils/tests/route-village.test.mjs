@@ -21,3 +21,11 @@ test('main : la Route n\'est branchée que derrière le drapeau, chargée à la 
   assert.match(m, /if \(route && route\.enRoute\(\)\) route\.sauver\(\)/, 'en route, la position du village (etat.joueur) n\'est pas écrasée');
   assert.match(m, /offerte \|\| AV\.montures\.includes/, 'le dromadaire offert n\'est pas achetable à l\'écurie');
 });
+
+test('Premium : l\'accès Premium existant n\'est pas modifié par la Route (mêmes zones fermables, mêmes zones et missions Premium)', () => {
+  assert.match(lire('regions.js'), /const FERMABLES = \['camp', 'dunes', 'wadi', 'rochers'\];/);
+  const p = lire('premium.js');
+  assert.match(p, /ZONES_PREMIUM = \['camp', 'dunes', 'col', 'montagnes', 'wadi', 'rochers'\]/);
+  assert.match(p, /MISSIONS_PREMIUM = \['lanternes', 'tresor', 'voyageur', 'animaux'\]/);
+  assert.ok(!/route/i.test(p.replace(/^\s*\/\/.*$/gm, '')), 'premium.js ne connaît pas la Route : elle ne dépend d\'aucun droit Premium ni ne l\'élargit');
+});

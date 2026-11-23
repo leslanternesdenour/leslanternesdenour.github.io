@@ -107,3 +107,18 @@ test('textes : chaque lieu a un texte court et simple (version 3–5 ans et vers
   assert.equal(texteLieu('balise1', '3-5'), TEXTES_LIEUX.balise1.petit);
   assert.equal(texteLieu('balise1', '6-10'), TEXTES_LIEUX.balise1.grand);
 });
+
+test('marche naturelle : sur la Route, la marche à pied est légèrement plus lente que dans le village (distance inchangée), sans toucher à la vitesse des montures ni du village', async () => {
+  const { VITESSES, VITESSES_ROUTE, FACTEUR_MARCHE_ROUTE, dureeMinutes, DISTANCE_TOTALE } = await import('../../voyage/js/route/donnees.js');
+  const { S_FIN_TRANCHE } = await import('../../voyage/js/route/relief.js');
+  assert.ok(FACTEUR_MARCHE_ROUTE >= 0.8 && FACTEUR_MARCHE_ROUTE < 1, 'légèrement plus lente, pas une marche d\'escargot');
+  assert.ok(Math.abs(VITESSES_ROUTE.marche - VITESSES.marche * FACTEUR_MARCHE_ROUTE) < 1e-9);
+  assert.ok(Math.abs(VITESSES_ROUTE.course - VITESSES.course * FACTEUR_MARCHE_ROUTE) < 1e-9);
+  const t = dureeMinutes(S_FIN_TRANCHE, VITESSES_ROUTE.marche), tot = dureeMinutes(DISTANCE_TOTALE, VITESSES_ROUTE.marche);
+  assert.ok(t > 15 && t < 19, `première tranche à pied : ${t.toFixed(1)} min`);
+  assert.ok(tot > 29 && tot < 35, `grand voyage complet à pied : ${tot.toFixed(1)} min`);
+  assert.equal(DISTANCE_TOTALE, 5600, 'la distance du voyage est conservée');
+  const fs = await import('node:fs');
+  const main = fs.readFileSync(new URL('../../voyage/js/main.js', import.meta.url), 'utf8');
+  assert.ok(main.includes(`(d.course ? ${VITESSES.course} : ${VITESSES.marche}) * (d.analogique || 0) * (route && route.enRoute() ? route.facteurMarche : 1)`), 'le facteur ne s\'applique qu\'à pied et sur la Route');
+});

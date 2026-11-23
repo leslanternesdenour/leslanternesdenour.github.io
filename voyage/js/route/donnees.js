@@ -109,3 +109,7 @@ export { positionLieu as positionDeLieu };
 
 // Le relais de la grande route au village : le guide, la carte ancienne et le sac. Juste au bord du village, sur la piste du sud (hors des maisons).
 export const RELAIS_VILLAGE = { x: 64, z: 30 };
+
+// Marche plus naturelle sur la Route (demande du créateur) : à pied seulement, légèrement plus lente que dans le village. La distance du voyage ne change pas.
+export const FACTEUR_MARCHE_ROUTE = 0.88;
+export const VITESSES_ROUTE = { marche: VITESSES.marche * FACTEUR_MARCHE_ROUTE, course: VITESSES.course * FACTEUR_MARCHE_ROUTE };
