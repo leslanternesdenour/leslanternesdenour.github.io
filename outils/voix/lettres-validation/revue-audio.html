@@ -17,7 +17,7 @@ input.note{width:100%;min-width:120px;background:#14102e;color:#fff;border:1px s
 <p class="nd"><a href="./">← validation des 28 lettres</a> · <a href="ecoute?voix=narratrice">écoute guidée</a></p>
 <div class="avert"><b>Outil interne. Rien n'est modifié sur le site.</b> Écoute chaque audio (▶), puis marque <b>Bon</b>, <b>À refaire</b> ou <b>Doute</b>. Ton jugement est le tien : pour l'arabe, la validation finale revient à une personne compétente. Les audios « à refaire » sont ensuite régénérés (voix Nour existantes seulement) sans toucher aux anciens fichiers avant ton accord.</div>
 <div class="barre">
-  <label>Jeu : <select id="jeu"><option value="ecole-lettres">École des lettres arabes</option><option value="ecole-lecture">École de lecture</option><option value="ecole-chiffres">École des chiffres</option><option value="chasse-aux-mots">Chasse aux mots</option><option value="mysteres-desert">Mystères du désert</option><option value="quiz-nour">Quiz de Nour</option></select></label>
+  <label>Jeu : <select id="jeu"><option value="voyage-nouvelles-voix">Grand Voyage : mots arabes + Loumi (nouveau)</option><option value="ecole-lettres">École des lettres arabes</option><option value="ecole-lecture">École de lecture</option><option value="ecole-chiffres">École des chiffres</option><option value="chasse-aux-mots">Chasse aux mots</option><option value="mysteres-desert">Mystères du désert</option><option value="quiz-nour">Quiz de Nour</option></select></label>
   <label>Langue : <select id="langue"><option value="">Toutes</option><option value="ar" selected>Arabe</option><option value="fr">Français</option></select></label>
   <label>État : <select id="etat"><option value="">Tous</option><option value="non">Non jugés</option><option value="ok">Bon</option><option value="ko">À refaire</option><option value="nsp">Doute</option></select></label>
   <span id="bilan"></span>
@@ -30,13 +30,13 @@ import { VOIX_NOUR } from './donnees.js';
 const $ = id => document.getElementById(id), lecteur = $('lecteur'), NOMV = {};
 for (const v of Object.values(VOIX_NOUR)) NOMV[v.id] = v.nom.replace('Nour - ', '').replace(/ \(.*\)/, '');
 const p = new URLSearchParams(location.search); if (p.get('jeu')) $('jeu').value = p.get('jeu'); if (!$('jeu').value) $('jeu').value = 'ecole-lettres';
-let phrases = [], verdicts = {}, cleStock = '';
+let phrases = [], verdicts = {}, cleStock = '', base = '';
 const sauver = () => { try { localStorage.setItem(cleStock, JSON.stringify(verdicts)); } catch (e) {} };
 const jeu = () => $('jeu').value, etatDe = f => verdicts[f] ? verdicts[f].v : 'non';
 async function charger() {
   cleStock = 'ldn-revue-audio-v1-' + jeu(); verdicts = {}; try { verdicts = JSON.parse(localStorage.getItem(cleStock) || '{}'); } catch (e) {}
   $('corps').innerHTML = ''; $('msg').textContent = 'Chargement…';
-  try { const r = await fetch(`manifestes/${jeu()}.json`); phrases = (await r.json()).phrases; $('msg').textContent = ''; } catch (e) { phrases = []; $('msg').textContent = 'Manifeste introuvable pour ce jeu.'; }
+  try { const r = await fetch(`manifestes/${jeu()}.json`); const mf = await r.json(); phrases = mf.phrases; base = mf.base || `/audio/jeux/${jeu()}`; $('msg').textContent = ''; } catch (e) { phrases = []; $('msg').textContent = 'Manifeste introuvable pour ce jeu.'; }
   dessiner();
 }
 function bilan() { const c = { ok: 0, ko: 0, nsp: 0 }; for (const x of phrases) { const e = etatDe(x.fichier); if (c[e] !== undefined) c[e]++; } $('bilan').textContent = `${phrases.length} audios · ✓ ${c.ok} bons · ✗ ${c.ko} à refaire · ? ${c.nsp} doutes · ${phrases.length - c.ok - c.ko - c.nsp} non jugés`; }
@@ -45,7 +45,7 @@ function ligne(x, n) {
   const td = (t, cl) => { const c = document.createElement('td'); if (cl) c.className = cl; if (t !== undefined) c.textContent = t; tr.appendChild(c); return c; };
   td(n); td(x.id); td(x.texte, 'txt ' + (x.langue === 'ar' ? 'ar' : '')).lang = x.langue === 'ar' ? 'ar' : 'fr';
   td(NOMV[x.voixId] || (x.voixId ? 'autre voix' : '?')); td((x.duree || 0).toFixed(1) + ' s');
-  const j = td(); const b = document.createElement('button'); b.textContent = '▶'; b.onclick = () => { lecteur.src = `/audio/jeux/${jeu()}/${x.fichier}`; lecteur.play().catch(() => {}); }; j.appendChild(b);
+  const j = td(); const b = document.createElement('button'); b.textContent = '▶'; b.onclick = () => { lecteur.src = `${base}/${x.fichier}`; lecteur.play().catch(() => {}); }; j.appendChild(b);
   const v = td(undefined, 'v'); for (const [k, t] of [['ok', '✓ Bon'], ['ko', '✗ À refaire'], ['nsp', '? Doute']]) { const bb = document.createElement('button'); bb.textContent = t; bb.className = 'b-' + k + (e === k ? ' sel' : ''); bb.onclick = () => { verdicts[x.fichier] = { ...(verdicts[x.fichier] || {}), v: k, fichier: x.fichier, id: x.id, langue: x.langue, texte: x.texte, voixId: x.voixId, date: new Date().toISOString() }; sauver(); dessiner(); }; v.appendChild(bb); }
   const nt = td(); const i = document.createElement('input'); i.className = 'note'; i.placeholder = 'Ce qui ne va pas (facultatif)'; i.value = (verdicts[x.fichier] && verdicts[x.fichier].n) || ''; i.oninput = () => { verdicts[x.fichier] = { ...(verdicts[x.fichier] || {}), n: i.value }; sauver(); }; nt.appendChild(i);
   return tr;
