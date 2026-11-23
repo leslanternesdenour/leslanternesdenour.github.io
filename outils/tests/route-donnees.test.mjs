@@ -10,7 +10,7 @@ test('régions : consécutives, sans trou ni chevauchement', async () => {
 test('regionA : donne la région où l\'on se trouve, et reste valable au-delà des bords', async () => {
   const { regionA } = await import('../../voyage/js/route/donnees.js');
   assert.equal(regionA(-20).id, 'sortie'); assert.equal(regionA(900).id, 'plaines'); assert.equal(regionA(1800).id, 'dunes'); assert.equal(regionA(2500).id, 'oasis');
-  assert.equal(regionA(-1000).id, 'sortie'); assert.equal(regionA(99999).id, 'montagnes');
+  assert.equal(regionA(-1000).id, 'sortie'); assert.equal(regionA(99999).id, 'cite');
 });
 
 test('lieux : jamais plus de 300 m de marche sans rien à voir (long par l\'exploration, pas par la marche vide)', async () => {
@@ -54,7 +54,7 @@ test('sac : les six objets du voyage, chacun avec son utilité, sans aucune jaug
 
 test('missions : trois missions de la première tranche, chacune réalisable avec les lieux qui existent', async () => {
   const { MISSIONS_ROUTE, LIEUX_ROUTE } = await import('../../voyage/js/route/donnees.js');
-  assert.deepEqual(Object.keys(MISSIONS_ROUTE), ['chemin', 'traces', 'campement']);
+  assert.deepEqual(Object.keys(MISSIONS_ROUTE), ['chemin', 'traces', 'campement', 'cite', 'collines']);
   for (const [id, m] of Object.entries(MISSIONS_ROUTE)) {
     const n = LIEUX_ROUTE.filter(l => l.mission === id).length;
     assert.equal(m.total, n, `${id} : ${m.total} étapes annoncées, ${n} lieux`);

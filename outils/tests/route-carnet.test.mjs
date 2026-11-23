@@ -28,7 +28,7 @@ test('carnet : le nombre de haltes possibles suit les lieux de repos qui existen
   const { pageCarnetRoute } = await import('../../voyage/js/route/carnet-route.js');
   const { LIEUX_ROUTE } = await import('../../voyage/js/route/donnees.js');
   const n = LIEUX_ROUTE.filter(l => l.type === 'repos').length;
-  assert.equal(n, 5);
+  assert.ok(n >= 5, 'au moins les cinq haltes des premières étapes');
   const html = pageCarnetRoute({ route: { decouvertes: [], repos: ['repos1', 'repos4'], missions: {}, objets: [], connaissances: [], sac: {}, pos: null }, badges: {}, age: '6-10' });
   assert.ok(html.includes(`Haltes faites : 2 / ${n}`), 'le total de haltes est calculé, pas écrit en dur');
 });

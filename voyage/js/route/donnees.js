@@ -13,8 +13,14 @@ export const REGIONS_ROUTE = [
     ambiance: { brume: '#f0d29a', proche: 100, loin: 480, ciel: '#f7d9a0' } },
   { id: 'oasis', nom: 'L\'oasis de la Source Claire', icone: '🌴', s0: 2300, s1: 3200, couleur: '#7fa65a',
     ambiance: { brume: '#dfe0b8', proche: 90, loin: 450, ciel: '#eadfb4' } },
-  { id: 'montagnes', nom: 'Les contreforts et le premier col', icone: '⛰️', s0: 3200, s1: 4500, couleur: '#a5543a',
-    ambiance: { brume: '#cfd6df', proche: 70, loin: 420, ciel: '#d5dbe2' } }
+  { id: 'montagnes', nom: 'Les montagnes et les cols', icone: '⛰️', s0: 3200, s1: 4750, couleur: '#a5543a',
+    ambiance: { brume: '#cfd6df', proche: 70, loin: 420, ciel: '#d5dbe2' } },
+  { id: 'chemins', nom: 'Les chemins vers la cité', icone: '🛤️', s0: 4750, s1: 5300, couleur: '#b88a56',
+    ambiance: { brume: '#e6d4ae', proche: 100, loin: 520, ciel: '#efddb6' } },
+  { id: 'arrivee', nom: 'La vallée de l\'arrivée', icone: '🌅', s0: 5300, s1: 5450, couleur: '#c4a77d',
+    ambiance: { brume: '#efdcb4', proche: 140, loin: 700, ciel: '#f4e2b8' } },
+  { id: 'cite', nom: 'La cité ancienne', icone: '🏘️', s0: 5450, s1: 6100, couleur: '#b79f78',
+    ambiance: { brume: '#f2e2bf', proche: 130, loin: 650, ciel: '#f6e6c0' } }
 ];
 
 // La région d'un endroit (au-delà des bords : la première ou la dernière)
@@ -56,7 +62,25 @@ export const LIEUX_ROUTE = [
   { id: 'wadi-galets', type: 'decouverte', s: 3720, dt: -14, nom: 'Le lit de galets', icone: '🌊' },
   { id: 'belvedere-col', type: 'decouverte', s: 3880, dt: 18, nom: 'Le belvédère du premier col', icone: '🌄' },
   { id: 'repos5', type: 'repos', s: 4040, dt: -12, nom: 'Le replat de la vallée', icone: '🪨' },
-  { id: 'cairn-fin', type: 'cairn', s: 4200, dt: 0, nom: 'Le grand cairn', icone: '🪨' }
+  { id: 'cairn-fin', type: 'cairn', s: 4200, dt: 0, nom: 'Le grand cairn', icone: '🪨' },
+  { id: 'col-vue', type: 'decouverte', s: 4400, dt: 0, nom: 'Le deuxième col', icone: '⛰️' },
+  { id: 'repos6', type: 'repos', s: 4560, dt: 10, nom: 'Le replat des voyageurs', icone: '🪨' },
+  { id: 'muret-pierre', type: 'decouverte', s: 4730, dt: -12, nom: 'Le muret de pierres sèches', icone: '🧱' },
+  { id: 'puits-chemin', type: 'decouverte', s: 4900, dt: 14, nom: 'Un puits au bord du chemin', icone: '🏺' },
+  { id: 'repos7', type: 'repos', s: 5060, dt: -10, nom: 'Le dernier replat avant la cité', icone: '🪨' },
+  { id: 'carrefour', type: 'decouverte', s: 5120, dt: 12, nom: 'Le carrefour des sentiers', icone: '🔱' },
+  { id: 'montagne-nord-pied', type: 'decouverte', s: 5250, t: -390, nom: 'Au pied de la grande montagne du nord', icone: '⛰️' },
+  { id: 'jardins', type: 'decouverte', s: 5260, dt: 14, nom: 'Les premiers jardins', icone: '🌿' },
+  { id: 'crete-vue', type: 'decouverte', s: 5380, dt: 0, nom: 'La dernière crête', icone: '🌅' },
+  { id: 'cite-porte', type: 'decouverte', s: 5470, dt: 0, nom: 'La porte de la cité', icone: '🚪', mission: 'cite' },
+  { id: 'cite-atelier', type: 'decouverte', s: 5530, dt: 22, nom: 'L\'atelier du potier', icone: '🏺', mission: 'cite' },
+  { id: 'cite-colline-b', type: 'decouverte', s: 5540, dt: -208, nom: 'La première colline', icone: '⛰️', mission: 'collines' },
+  { id: 'cite-place', type: 'decouverte', s: 5606, dt: 14, nom: 'La grande place', icone: '🕌', mission: 'cite' },
+  { id: 'cite-puits', type: 'decouverte', s: 5690, dt: 30, nom: 'Le puits de la place', icone: '🏺' },
+  { id: 'cite-colline-a', type: 'decouverte', s: 5740, dt: -198, nom: 'La seconde colline', icone: '⛰️', mission: 'collines' },
+  { id: 'cite-marche', type: 'decouverte', s: 5800, dt: 60, nom: 'Le marché', icone: '🛍️', mission: 'cite' },
+  { id: 'montagne-sud-pied', type: 'decouverte', s: 5840, t: 420, nom: 'Au pied de la grande montagne du sud', icone: '⛰️' },
+  { id: 'cite-fin', type: 'cairn', s: 5880, dt: 0, nom: 'La limite de la cité', icone: '🪨' }
 ];
 
 // La position (s, t) d'un lieu
@@ -88,7 +112,13 @@ export const MISSIONS_ROUTE = {
     resume: 'Trois animaux du désert sont passés par là. Observe leurs traces et devine qui les a laissées.' },
   campement: { titre: 'Les affaires de la voyageuse', icone: '🎒', total: 3, recompense: 200, categorie: 'entraide',
     simple: 'Aide la voyageuse : retrouve ses trois affaires autour du campement.',
-    resume: 'Une voyageuse a perdu un tapis, une jarre et un petit sac près du campement. Retrouve-les et rapporte-les-lui.' }
+    resume: 'Une voyageuse a perdu un tapis, une jarre et un petit sac près du campement. Retrouve-les et rapporte-les-lui.' },
+  cite: { titre: 'Découvrir la cité ancienne', icone: '🏘️', total: 4, recompense: 250, categorie: 'exploration',
+    simple: 'Visite la porte, l\'atelier, la grande place et le marché de la cité.',
+    resume: 'La cité est faite de maisons de pierre, de ruelles et de places. Visite la porte, l\'atelier du potier, la grande place et le marché pour la découvrir.' },
+  collines: { titre: 'Les deux collines', icone: '⛰️', total: 2, recompense: 150, categorie: 'observation',
+    simple: 'Va voir les deux collines, tranquillement.',
+    resume: 'Deux petites collines dominent la cité. Va les observer l\'une après l\'autre, à ton rythme : il n\'y a ni course ni chronomètre.' }
 };
 
 // ---------- le village : la sortie, le seuil et l'ouverture ----------

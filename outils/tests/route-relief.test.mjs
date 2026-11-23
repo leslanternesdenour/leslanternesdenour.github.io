@@ -59,3 +59,26 @@ test('montagnes : le fond de la vallée est doux, jamais une tranchée dans laqu
     assert.ok(creux < 1.0, `le fond est ${creux.toFixed(2)} m sous les bords proches à s=${s}`);
   }
 });
+
+test('cité : un bassin plat et ouvert autour de la place, entouré de collines basses, avec la route qui y entre ; la route va jusqu\'à la cité', async () => {
+  const { CITE, hauteur, pointChemin, S_FIN_TRANCHE, relief } = await import('../../voyage/js/route/relief.js');
+  assert.ok(S_FIN_TRANCHE >= CITE.s + 250, 'la partie jouable dépasse la place centrale');
+  assert.ok(CITE.s > 5500 && CITE.s < 5800, 'la place est au bout d\'environ 5,6 km');
+  const centre = hauteur(CITE.s, CITE.t);
+  for (const a of [0, 1.2, 2.4, 3.6, 4.8, 6]) assert.ok(Math.abs(hauteur(CITE.s + Math.cos(a) * 40, CITE.t + Math.sin(a) * 40) - centre) < 0.6, 'la place est plate');
+  assert.ok(relief(CITE.s, CITE.t).plaza > 0.95 && relief(CITE.s + 200, CITE.t).plaza < 0.05, 'la place est marquée au sol');
+  const plat = hauteur(CITE.s - 150, pointChemin(CITE.s - 150).t);
+  assert.ok(plat < 4, 'la route arrive dans une vallée basse');
+  let colline = 0; for (let a = 0; a < 6.28; a += 0.4) colline = Math.max(colline, hauteur(CITE.s + Math.cos(a) * 420, CITE.t + Math.sin(a) * 420));
+  assert.ok(colline > 12, 'des collines entourent la cité');
+});
+
+test('montagnes isolées : les deux sentiers se marchent jusqu\'à une terrasse plate au pied de chaque montagne, qui domine le bassin', async () => {
+  const { hauteur, TERRASSES, MONTAGNE_NORD, MONTAGNE_SUD, sentiers } = await import('../../voyage/js/route/relief.js');
+  assert.ok(hauteur(MONTAGNE_NORD.s, MONTAGNE_NORD.t) > 100 && hauteur(MONTAGNE_SUD.s, MONTAGNE_SUD.t) > 100, 'deux vraies montagnes');
+  let pire = 0, ou = '';
+  for (const S of sentiers().slice(1)) for (let i = 0; i < S.length - 1; i++) { const [a, b, c, d] = [...S[i], ...S[i + 1]]; const n = Math.ceil(Math.hypot(c - a, d - b) / 3);
+    for (let k = 0; k < n; k++) { const s0 = a + (c - a) * k / n, t0 = b + (d - b) * k / n, s1 = a + (c - a) * (k + 1) / n, t1 = b + (d - b) * (k + 1) / n; const p = Math.abs(hauteur(s1, t1) - hauteur(s0, t0)) / Math.hypot(s1 - s0, t1 - t0); if (p > pire) { pire = p; ou = `${s0.toFixed(0)},${t0.toFixed(0)}`; } } }
+  assert.ok(pire < 0.45, `pente max sur les sentiers ${pire.toFixed(2)} à ${ou}`);
+  for (const T of TERRASSES) { const h = hauteur(T.s, T.t); for (const a of [0, 1.6, 3.2, 4.8]) assert.ok(Math.abs(hauteur(T.s + Math.cos(a) * 12, T.t + Math.sin(a) * 12) - h) < 0.7, `la terrasse ${T.id} est plate`); }
+});

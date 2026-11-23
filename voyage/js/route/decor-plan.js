@@ -1,7 +1,7 @@
 // Le semis du décor de La Route, tuile par tuile (pur, sans Three.js) : toujours le même pour la même tuile, léger, et la piste reste libre.
 // Le décor de chaque tuile est choisi selon la région (rochers à la sortie, buissons dans la plaine, palmiers à l'oasis…).
 import { TAILLE_TUILE } from './tuiles-plan.js';
-import { relief, distanceChemin, OASIS, CAMP } from './relief.js';
+import { relief, distanceChemin, OASIS, CAMP, CITE } from './relief.js';
 import { lisse } from './bruit.js';
 import { regionA, LIEUX_ROUTE, positionDeLieu } from './donnees.js';
 
@@ -14,7 +14,11 @@ const SEMIS = {
   dunes: [['rocher', 1.5, 1.0, 0.7, 1.8], ['caillou', 6, 0, 0.6, 1.2], ['buisson', 5, 0.5, 0.6, 1.2], ['touffe', 9, 0, 0.7, 1.3]],
   oasis: [['rocher', 1.5, 1.0, 0.7, 1.6], ['caillou', 6, 0, 0.6, 1.2], ['buisson', 6, 0.5, 0.7, 1.3], ['touffe', 8, 0, 0.7, 1.3]],
   // les contreforts : roches rouges et grises, épineux rares, galets (le fond de la vallée) ; les flancs reçoivent en plus MONTAGNE
-  montagnes: [['rocher', 5, 1.1, 0.9, 2.8], ['caillou', 16, 0, 0.6, 1.5], ['buisson', 3, 0.5, 0.6, 1.1], ['touffe', 3, 0, 0.6, 1.0]]
+  montagnes: [['rocher', 5, 1.1, 0.9, 2.8], ['caillou', 16, 0, 0.6, 1.5], ['buisson', 3, 0.5, 0.6, 1.1], ['touffe', 3, 0, 0.6, 1.0]],
+  // les chemins vers la cité : plus de verdure, des murets, des arbustes ; l'arrivée : la vallée s'ouvre ; la cité : la nature s'efface (aucun rocher parmi les maisons)
+  chemins: [['rocher', 3, 1.0, 0.7, 2.0], ['caillou', 12, 0, 0.6, 1.3], ['buisson', 9, 0.5, 0.7, 1.4], ['acacia', 0.8, 0.6, 0.9, 1.4], ['touffe', 10, 0, 0.7, 1.3]],
+  arrivee: [['rocher', 2, 1.0, 0.7, 1.6], ['caillou', 8, 0, 0.6, 1.2], ['buisson', 6, 0.5, 0.7, 1.3], ['acacia', 0.6, 0.6, 0.9, 1.4], ['touffe', 8, 0, 0.7, 1.3]],
+  cite: [['rocher', 2, 1.0, 0.7, 1.6], ['caillou', 6, 0, 0.6, 1.2], ['buisson', 3, 0.5, 0.7, 1.2], ['touffe', 4, 0, 0.7, 1.2]]
 };
 const MONTAGNE = [['rocher', 14, 1.6, 1.4, 4.2], ['caillou', 12, 0, 0.8, 1.8]];
 
@@ -25,6 +29,7 @@ export function semerTuile(i, j) {
   const R = hasard(Math.imul(i + 1000, 73856093) ^ Math.imul(j + 1000, 19349663) ^ 0x9e3779b9);
   const s0 = i * TAILLE_TUILE, t0 = j * TAILLE_TUILE, sortie = [];
   const valide = (s, t, type) => {
+    if (Math.hypot(s - CITE.s, t - CITE.t) < CITE.rayon + 20) return false;     // dans la cité : des maisons, pas de rochers ni de buissons
     const dC = distanceChemin(s, t);
     if (dC < 3.5) return false;
     const r = relief(s, t);

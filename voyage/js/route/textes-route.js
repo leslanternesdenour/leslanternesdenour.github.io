@@ -27,7 +27,25 @@ export const TEXTES_LIEUX = {
   'wadi-galets': { petit: 'Un lit de cailloux ronds : une rivière dormait ici.', grand: 'Un wadi est un lit de rivière à sec. La pluie est rare, mais quand elle tombe en montagne, l\'eau peut couler d\'un coup. Les galets sont ronds parce que l\'eau les a roulés.' },
   'belvedere-col': { petit: 'Regarde derrière toi : tout le chemin parcouru !', grand: 'Du haut du premier col, on voit toute la route : les dunes, l\'oasis et la plaine. C\'est un bon endroit pour se souvenir du chemin parcouru.' },
   repos5: { petit: 'Encore un coin calme dans la vallée.', grand: 'Un replat tranquille dans le fond de la vallée, près des galets. Ton voyage est sauvegardé.' },
-  'cairn-fin': { petit: 'Le chemin continue… bientôt !', grand: 'Le grand cairn marque la fin de cette étape. La route continue au-delà des premiers cols : elle s\'ouvrira bientôt. Bravo, tu as traversé les plaines, les dunes et les contreforts !' }
+  'cairn-fin': { petit: 'Le haut du premier col : la cité n\'est plus très loin.', grand: 'Le grand cairn marque le haut du premier col. Après lui, la route redescend vers d\'autres vallées, puis vers les chemins qui mènent à la cité.' },
+  'col-vue': { petit: 'Un deuxième col, encore un passage entre les montagnes.', grand: 'Un deuxième col. La route monte, puis redescend de l\'autre côté. Regarde les couches de roche sur les parois : elles se sont empilées pendant très longtemps.' },
+  repos6: { petit: 'Un coin pour souffler. Ton voyage est gardé.', grand: 'Un replat où les voyageurs se reposaient avant de repartir. Ton voyage est sauvegardé.' },
+  'muret-pierre': { petit: 'Un petit mur de pierres, sans ciment.', grand: 'Un muret de pierres sèches : les pierres tiennent toutes seules, bien emboîtées, sans ciment. On en faisait pour border les chemins et les jardins.' },
+  'puits-chemin': { petit: 'Un puits au bord du chemin.', grand: 'Un puits au bord du chemin (un lieu imaginaire) : les voyageurs et leurs animaux pouvaient s\'y arrêter pour boire.' },
+  repos7: { petit: 'Dernier coin calme avant la cité.', grand: 'Le dernier replat avant la cité. Ton voyage est sauvegardé.' },
+  carrefour: { petit: 'Un sentier part vers une grande montagne.', grand: 'Un carrefour : un sentier part vers le nord, vers une grande montagne. Tu peux le suivre pour aller voir, puis revenir sur la route.' },
+  'montagne-nord-pied': { petit: 'Une très grande montagne se dresse devant toi.', grand: 'Au pied d\'une très grande montagne isolée. Remarque sa forme, ses pentes raides et ses rochers sombres : on ne peut pas la gravir ici.' },
+  jardins: { petit: 'De petits jardins entourés de murets.', grand: 'Les premiers jardins : de petits champs et des arbres protégés par des murets de pierre. Ils annoncent qu\'une cité n\'est plus très loin.' },
+  'crete-vue': { petit: 'La cité apparaît au loin !', grand: 'Du haut de la dernière crête, on voit la vallée : au fond, les toits plats d\'une grande cité. Prends un moment pour regarder.' },
+  'cite-porte': { petit: 'La porte de la cité.', grand: 'La porte de la cité : deux gros piliers de pierre. Elle ouvre sur des ruelles, des cours et des places.' },
+  'cite-atelier': { petit: 'Un atelier de potier : des jarres en terre cuite.', grand: 'L\'atelier du potier : on façonne des jarres et des bols en terre, que l\'on fait cuire. Ils servent à garder l\'eau, les dattes et le grain.' },
+  'cite-colline-b': { petit: 'Une petite colline de pierre.', grand: 'Une petite colline rocheuse à l\'intérieur de la cité. De là-haut, on voit les toits plats et les ruelles.' },
+  'cite-place': { petit: 'La grande place, au centre de la cité.', grand: 'La grande place, au centre de la cité : un grand espace dégagé, sans étal ni obstacle, entouré de maisons de pierre.' },
+  'cite-puits': { petit: 'Un puits de pierre sur la place.', grand: 'Un puits de pierre avec une margelle basse et une jarre. L\'eau est précieuse dans toute la cité.' },
+  'cite-colline-a': { petit: 'Une autre petite colline de pierre.', grand: 'Une autre petite colline rocheuse, de l\'autre côté de la cité. On peut aller de l\'une à l\'autre en marchant tranquillement.' },
+  'cite-marche': { petit: 'Le marché : des étals, des jarres, des tissus.', grand: 'Le marché : des étals sous des auvents de tissu, des jarres, des paniers, des dattes. On y échange et on y bavarde.' },
+  'montagne-sud-pied': { petit: 'Une autre grande montagne, plus au sud.', grand: 'Au pied d\'une autre grande montagne, plus massive et à plusieurs sommets. De loin, ses crêtes se découpent sur le ciel.' },
+  'cite-fin': { petit: 'Ici s\'arrête le monde construit, pour l\'instant.', grand: 'Ici s\'arrête la partie du monde déjà construite. Bravo : tu as traversé les plaines, les montagnes et la cité !' }
 };
 export const texteLieu = (id, age) => { const t = TEXTES_LIEUX[id]; return t ? (age === '3-5' ? t.petit : t.grand) : ''; };
 

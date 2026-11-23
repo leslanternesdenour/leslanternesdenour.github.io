@@ -43,3 +43,10 @@ test('décor des montagnes : beaucoup plus de roches et de plus grandes sur les 
   let toutes = 0; for (let j = -3; j <= 3; j++) for (const o of semerTuile(iMont, j)) { toutes++; assert.ok(distanceChemin(o.s, o.t) > 3.2, 'la piste du fond de la vallée reste libre'); }
   assert.ok(toutes <= 7 * 70, 'budget respecté');
 });
+
+test('décor : des chemins et de l\'arrivée à la cité, la nature s\'efface (aucun rocher ni buisson parmi les maisons) ; les tuiles de ces régions se construisent sans erreur', async () => {
+  const { semerTuile } = await import('../../voyage/js/route/decor-plan.js');
+  const { CITE } = await import('../../voyage/js/route/relief.js');
+  for (const s of [4800, 5000, 5200, 5350]) assert.ok(semerTuile(Math.floor(s / 64), 0).length > 3, `tuile à s=${s} trop vide ou en erreur`);
+  for (const [ds, dt] of [[0, 0], [100, 80], [-120, -60], [60, -150]]) assert.equal(semerTuile(Math.floor((CITE.s + ds) / 64), Math.floor((CITE.t + dt) / 64)).filter(o => o.type !== 'palmier').length, 0, 'la cité est faite de maisons, pas de rochers');
+});

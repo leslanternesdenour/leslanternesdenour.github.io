@@ -100,3 +100,18 @@ test('monde : les histoires se découvrent dans les lieux (lanterne + bouton « 
   assert.match(jeu, /Découvrir cette histoire/); assert.match(jeu, /creerRecitUI/); assert.match(jeu, /'recit:'/);
   assert.match(l3, /lanterne/i, 'une lanterne marque le lieu');
 });
+
+test('lieux de la cité : les quatre premières histoires sont placées dans leurs lieux, avec les noms et textes « À VALIDER » séparés des données neutres', async () => {
+  const { LIEUX_SACRES } = await import('../../voyage/js/route/lieux-mecque-a-valider.js');
+  const { LIEUX_ROUTE } = await import('../../voyage/js/route/donnees.js');
+  const { recit } = await import('../../voyage/js/route/recits-a-valider.js');
+  const ids = new Set(LIEUX_ROUTE.map(l => l.id)), places = new Set();
+  for (const [id, s] of Object.entries(LIEUX_SACRES)) {
+    assert.ok(ids.has(id), `${id} : lieu inexistant`); assert.equal(s.statut, 'À VALIDER'); assert.ok(s.nom && s.petit && s.grand, `${id} : nom ou textes manquants`);
+    assert.ok(s.petit.length <= 130 && s.grand.length <= 360, `${id} : texte trop long`);
+    assert.ok(!/[«»"“”]/.test(s.petit + s.grand), `${id} : aucune parole rapportée`);
+    for (const r of s.recits || []) { assert.ok(recit(r), `${id} : histoire inconnue ${r}`); places.add(r); }
+  }
+  for (const r of ['hajar-ismail-zamzam', 'safa-marwa', 'communaute-mecque', 'fondations-kaaba', 'quraysh-reconstruction']) assert.ok(places.has(r), `${r} n'est placée dans aucun lieu du monde`);
+  assert.ok(LIEUX_SACRES['montagne-nord-pied'].nom && LIEUX_SACRES['montagne-sud-pied'].nom, 'les deux montagnes ont leur nom');
+});

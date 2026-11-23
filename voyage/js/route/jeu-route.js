@@ -3,9 +3,11 @@
 // (bourse, habitants, dialogues, découvertes, régions, montures) et jamais dupliqués.
 import { creerMondeRoute } from './monde.js';
 import { creerLieux3D } from './lieux-3d.js';
+import { creerVille3D } from './ville-3d.js';
+import { LIEUX_SACRES } from './lieux-mecque-a-valider.js';
 import { preparerRoute, memoriserPosition, positionDeReprise } from './etat-route.js';
 import { faireEtape, progression } from './missions-route.js';
-import { DEC, versRoute, S_DEBUT, S_FIN_TRANCHE, LARGEUR, OASIS } from './relief.js';
+import { DEC, versRoute, S_DEBUT, S_FIN_TRANCHE, LARGEUR, OASIS, CITE } from './relief.js';
 import { FACTEUR_MARCHE_ROUTE, regionA, LIEUX_ROUTE, MISSIONS_ROUTE, SAC_ROUTE, RELAIS_VILLAGE, auSeuilVillage, versLaRoute, auRetourRoute, versLeVillage } from './donnees.js';
 import { texteLieu, GUIDE, VOYAGEUSE, MESSAGES } from './textes-route.js';
 import { CONTENU, etiquette, texteDe } from './contenu-a-valider.js';
@@ -25,6 +27,7 @@ export function creerRoute(ctx) {
   const monde = creerMondeRoute({ scene, Q: ctx.Q, TX: ctx.TX, ombres: ctx.ombres });
   const fixes = [];                                      // les obstacles des lieux (tentes, rochers…) : ne changent jamais
   const L = creerLieux3D({ scene, hauteur: monde.hauteur, colliders: fixes, ombres: ctx.ombres, TX: ctx.TX });
+  const V = creerVille3D({ scene, hauteur: monde.hauteur, ombres: ctx.ombres });          // la cité ancienne
   const Couleur = scene.fog.color.constructor, cible = new Couleur();
   const fog0 = { near: scene.fog.near, far: scene.fog.far };
   let dans = false, brumeVillage = false, regionActuelle = null;
@@ -35,7 +38,7 @@ export function creerRoute(ctx) {
   const h0 = terrain.hauteur.bind(terrain), m0 = terrain.matiere.bind(terrain);
   terrain.hauteur = (x, z) => z > SEUIL_Z ? monde.hauteur(x, z) : h0(x, z);
   terrain.matiere = (x, z) => z > SEUIL_Z ? monde.matiere(x, z) : m0(x, z);
-  const montrer = v => { monde.montrer(v); L.groupe.visible = v; terrain.mesh.visible = !v; };
+  const montrer = v => { monde.montrer(v); L.groupe.visible = v; V.montrer(v); terrain.mesh.visible = !v; };
   montrer(false);
 
   // ---------- les lieux déjà faits (reprise d'une sauvegarde) ----------
@@ -57,13 +60,17 @@ export function creerRoute(ctx) {
     return r;
   }
   const lieu = id => LIEUX_ROUTE.find(l => l.id === id);
-  const dialogueLieu = (id, plus = {}) => { const l = lieu(id); ui.dialogue({ titre: `${l.icone} ${l.nom}`, texte: texteLieu(id, age()), icone: l.icone, ...plus }); };
+  // nom, icône et texte d'un lieu : neutres, ou « À VALIDER » quand le lieu est lié à un récit religieux ou historique
+  const infoLieu = id => { const l = lieu(id), sa = LIEUX_SACRES[id]; return { nom: sa ? sa.nom : l.nom, icone: sa ? sa.icone : l.icone, texte: sa ? (age() === '3-5' ? sa.petit : sa.grand) : texteLieu(id, age()), valider: !!sa }; };
+  const recitsDe = l => [...(l.recit ? [l.recit] : []), ...((LIEUX_SACRES[l.id] && LIEUX_SACRES[l.id].recits) || [])];
+  const dialogueLieu = (id, plus = {}) => { const i = infoLieu(id); ui.dialogue({ titre: `${i.icone} ${i.nom}`, texte: i.texte, icone: i.icone, sous: i.valider ? '⚠️ À VALIDER par une personne compétente' : undefined, ...plus }); };
   function decouvrirLieu(id, type = 'nature') {
     const l = lieu(id), p = L.lieux[id] || L.pos(id);
     if (R.decouvertes.includes(id)) { dialogueLieu(id); return false; }
     R.decouvertes.push(id); enregistrer();
-    ui.decouvrir({ type, cle: 'route-' + id, nom: l.nom, icone: l.icone, texte: texteLieu(id, age()), nouveau: true, x: p.x, z: p.z });
-    setTimeout(() => gagner('lieu:' + id, 20, 'Nouveau lieu : ' + l.nom), 900);
+    const i = infoLieu(id);
+    ui.decouvrir({ type, cle: 'route-' + id, nom: i.nom, icone: i.icone, texte: i.texte + (i.valider ? ' (⚠️ À VALIDER)' : ''), nouveau: true, x: p.x, z: p.z });
+    setTimeout(() => gagner('lieu:' + id, 20, 'Nouveau lieu : ' + i.nom), 900);
     return true;
   }
 
@@ -88,7 +95,7 @@ export function creerRoute(ctx) {
       memoriserPosition(etat, J); enregistrer();
       ui.dialogue({ titre: `${l.icone} ${l.nom}`, texte: texteLieu(l.id, age()) + (R.sac.lanterne ? ' Ta petite lanterne brille doucement.' : ''), icone: l.icone, boutons: [{ txt: 'Continuer le voyage', fn: () => {} }] });
     } });
-    else if (l.type === 'decouverte') ajouter(l.id, { ...base, rayon: l.id === 'rocher-aigle' ? 5 : 4, label: 'Regarder', icone: '👀', ouvrir: () => decouvrirLieu(l.id) });
+    else if (l.type === 'decouverte') ajouter(l.id, { ...base, rayon: l.id === 'rocher-aigle' ? 5 : 4, label: 'Regarder', icone: '👀', ouvrir: () => { decouvrirLieu(l.id); if (l.mission) etape(l.mission, l.id); } });
     else if (l.type === 'objet') ajouter(l.id, { ...base, rayon: 2.6, label: 'Ramasser', icone: '🤲', actif: () => !R.objets.includes(l.id), ouvrir: () => {
       R.objets.push(l.id); L.retirerObjet(l.id); const r = etape('campement', l.id);
       ui.indice(`🎒 Tu as retrouvé ${l.nom} !`, r.termine ? 1500 : 3000);
@@ -123,11 +130,13 @@ export function creerRoute(ctx) {
     surFermer: () => { ui.carteFermee && ui.carteFermee(); enregistrer(); }, surChange: () => enregistrer() });
   const ouvrirHistoire = id => { ui.carteOuverte && ui.carteOuverte(); recitUI.ouvrir(id); };
   const annonce = new Set();
-  for (const l of LIEUX_ROUTE.filter(o => o.recit)) {
+  for (const l of LIEUX_ROUTE.filter(o => recitsDe(o).length)) {
     const lan = L.lanternes[l.id]; if (!lan) continue;
-    ajouter('recit:' + l.id, { x: lan.x, z: lan.z, rayon: 5, label: 'Découvrir cette histoire', icone: '📜', ouvrir: () => ouvrirHistoire(l.recit) });
+    ajouter('recit:' + l.id, { x: lan.x, z: lan.z, rayon: 5, label: 'Découvrir cette histoire', icone: '📜', ouvrir: () => { const rs = recitsDe(l);
+      if (rs.length === 1) ouvrirHistoire(rs[0]);
+      else ui.dialogue({ titre: '📜 ' + infoLieu(l.id).nom, texte: 'Plusieurs histoires se découvrent ici. Laquelle veux-tu lire ?', petitsBoutons: true, boutons: [...rs.map(id => ({ txt: recit(id).titre, fn: () => setTimeout(() => ouvrirHistoire(id), 60) })), { txt: 'Plus tard', fn: () => {} }] }); } });
   }
-  const lanternesProches = () => { for (const l of LIEUX_ROUTE.filter(o => o.recit)) { const lan = L.lanternes[l.id]; if (!lan) continue; const d = Math.hypot(J.x - lan.x, J.z - lan.z); lan.allumer(d < 70);
+  const lanternesProches = () => { for (const l of LIEUX_ROUTE.filter(o => recitsDe(o).length)) { const lan = L.lanternes[l.id]; if (!lan) continue; const d = Math.hypot(J.x - lan.x, J.z - lan.z); lan.allumer(d < 70);
     if (d < 20 && !annonce.has(l.id) && !recitUI.ouverte()) { annonce.add(l.id); ui.indice('📜 Une lanterne est allumée : une histoire à découvrir ici.', 4500); } } };
 
   // ---------- au village : le guide, le panneau, le sac ----------
@@ -202,7 +211,7 @@ export function creerRoute(ctx) {
       const trop = (x, z) => (monde.hauteur(x, z) - h0p) / pas > 1.05;
       if (trop(nx, nz)) { if (!trop(o.x + dx, o.z)) nz = o.z; else if (!trop(o.x, o.z + dz)) nx = o.x; else { nx = o.x; nz = o.z; } }
     }
-    for (const liste of [fixes, monde.colliders]) for (const c of liste) {
+    for (const liste of [fixes, monde.colliders, V.colliders]) for (const c of liste) {
       if (c.repos && o === C) continue;
       const ex = nx - c.x, ez = nz - c.z, r = c.r + rayon;
       if (Math.abs(ex) > r || Math.abs(ez) > r) continue;
@@ -216,7 +225,7 @@ export function creerRoute(ctx) {
     o.x = nx; o.z = nz;
   }
   let dernierFin = 0;
-  function avertirFin() { const t = performance.now(); if (t - dernierFin > 9000) { dernierFin = t; ui.indice('🪨 Le chemin continue… bientôt ! Pour l\'instant, cette étape s\'arrête ici.', 5000); } }
+  function avertirFin() { const t = performance.now(); if (t - dernierFin > 9000) { dernierFin = t; ui.indice('🪨 Ici s\'arrête le monde construit, pour l\'instant. Bravo pour ce long voyage !', 5000); } }
 
   // ---------- chaque image ----------
   let tDecouverte = 0;
@@ -230,7 +239,9 @@ export function creerRoute(ctx) {
       return;
     }
     if (auRetourRoute(J.z)) { sortir(); return; }
-    monde.maj(J); L.animer(dt, t, J); lanternesProches();
+    monde.maj(J); L.animer(dt, t, J); lanternesProches(); V.obstacles(J);
+    // l'arrivée : la dernière crête ouvre la vue sur la cité ; la caméra se tourne doucement vers elle (sans jamais bloquer l'enfant)
+    if (!R.vu.arrivee) { const c = L.lieux['crete-vue']; if (c && Math.hypot(J.x - c.x, J.z - c.z) < 30) { R.vu.arrivee = true; enregistrer(); ui.bandeau('La cité apparaît !', '🌅 ' + infoLieu('crete-vue').nom); if (ctx.regarder) ctx.regarder(CITE.t, DEC + CITE.s, 9); } }
     const { s } = versRoute(J.x, J.z), reg = regionA(s);
     if (reg.id !== regionActuelle) {
       regionActuelle = reg.id; ui.lieu(`${reg.icone} ${reg.nom}`);
@@ -252,7 +263,7 @@ export function creerRoute(ctx) {
   }
 
   return {
-    enRoute: () => dans, facteurMarche: FACTEUR_MARCHE_ROUTE, ouvrirHistoire, fermerHistoire: () => recitUI.fermer(), histoireOuverte: () => recitUI.ouverte(), maj, bouger, ouvrirCarte, ouvrirSac, parlerGuide,
+    ville: V, enRoute: () => dans, facteurMarche: FACTEUR_MARCHE_ROUTE, ouvrirHistoire, fermerHistoire: () => recitUI.fermer(), histoireOuverte: () => recitUI.ouverte(), maj, bouger, ouvrirCarte, ouvrirSac, parlerGuide,
     carte, monde, lieux3d: L, etat: R, fermerCarte: () => carte.fermer(), carteOuverte: () => carte.ouverte(),
     pageCarnet: () => pageCarnetRoute({ route: R, badges: AV.badges || {}, age: age() }),
     sauver() { if (dans) memoriserPosition(etat, J); },

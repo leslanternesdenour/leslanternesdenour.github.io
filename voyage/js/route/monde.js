@@ -14,7 +14,7 @@ const PAS = 4, N = TAILLE_TUILE / PAS;
 const TUILES_PAR_IMAGE = 1;                     // budget : une tuile construite par image au plus (jamais de gel)
 const C = n => new THREE.Color(n);
 const sable = C('#e9c88f'), sable2 = C('#dcb06f'), clair = C('#f3dfb2'), ocre = C('#d39a5c'), chemin = C('#d8b07a'),
-  herbe = C('#93bd5f'), herbe2 = C('#6d9a45'), roche = C('#94705c'), roche2 = C('#5d4f48'), mouille = C('#8c7650');
+  terreBattue = C('#b79f78'), dalle = C('#d8c9a8'), herbe = C('#93bd5f'), herbe2 = C('#6d9a45'), roche = C('#94705c'), roche2 = C('#5d4f48'), mouille = C('#8c7650');
 const teintes = REGIONS_ROUTE.map(r => C(r.couleur)), t1 = new THREE.Color(), t2 = new THREE.Color();
 
 function teinteRegion(s, out) {
@@ -36,7 +36,9 @@ function colorier(s, t, r, out, mat) {
   const roc = lisse(2, 28, r.massif + r.rochers);
   if (roc > 0) { t2.copy(roche).lerp(roche2, v1); t2.lerp(teinteRegion(s, t1), 0.55 * r.zm); out.lerp(t2, roc); out.multiplyScalar(1 - roc * (0.1 + 0.1 * Math.sin(r.h * 0.9 + v1 * 3))); }
   if (r.lac > 0.05) out.lerp(mouille, Math.min(1, r.lac * 1.6));
-  if (r.surChemin > 0) out.lerp(chemin, r.surChemin * 0.8);
+  if (r.cite > 0) out.lerp(terreBattue, r.cite * 0.75);                    // la cité : terre battue
+  if (r.plaza > 0) out.lerp(dalle, r.plaza * 0.9);                         // la grande place : dalles claires
+  if (r.surChemin > 0) out.lerp(chemin, r.surChemin * 0.8 * (1 - r.plaza * 0.6));
   mat[0] = Math.max(0, 1 - vert - roc); mat[1] = vert * (1 - r.surChemin); mat[2] = roc * (1 - r.surChemin * 0.6);
   return { herbe: vert, roche: roc };
 }

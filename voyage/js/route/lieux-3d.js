@@ -3,7 +3,8 @@
 import * as THREE from 'three';
 import { piece, fusion, materiau, M } from '../formes.js?v=4';
 import { Enfant, Chameau } from '../personnages.js?v=4';
-import { DEC, OASIS, CAMP } from './relief.js';
+import { DEC, OASIS, CAMP, MONTAGNE_NORD, MONTAGNE_SUD } from './relief.js';
+import { LIEUX_SACRES } from './lieux-mecque-a-valider.js';
 import { LIEUX_ROUTE, positionDeLieu } from './donnees.js';
 
 const B = () => new THREE.BoxGeometry(1, 1, 1), DOD = r => new THREE.DodecahedronGeometry(r, 0), CYL = (a, b, h, s = 8) => new THREE.CylinderGeometry(a, b, h, s);
@@ -40,7 +41,7 @@ export function creerLieux3D({ scene, hauteur, colliders, ombres, TX }) {
     monter(fusion(g), mat, p.x, p.z); bloquer(p.x, p.z, 4.6); bloquer(p.x + 4.2, p.z + 1.5, 2.8); bloquer(p.x - 3.5, p.z + 2.2, 2.2);
     lieux['rocher-aigle'] = { x: p.x - 7, z: p.z - 3 }; }
   // ---- les points de repos : une dalle de pierre et une petite lanterne ----
-  for (const id of ['repos1', 'repos2', 'repos3', 'repos4', 'repos5']) {
+  for (const id of ['repos1', 'repos2', 'repos3', 'repos4', 'repos5', 'repos6', 'repos7']) {
     const p = pos(id), g = [piece(B(), '#a8906e', { p: [0, 0.22, 0], s: [3.2, 0.44, 1.4], m: M.pierre }), piece(DOD(0.9), '#9a8062', { p: [-2.2, 0.4, 0.3] }), piece(DOD(0.7), '#b09672', { p: [2.1, 0.3, -0.4] }),
       piece(CYL(0.16, 0.2, 0.5, 6), '#c9a26a', { p: [0.8, 0.7, 0.1] }), piece(CYL(0.2, 0.2, 0.05, 6), '#8a6440', { p: [0.8, 0.97, 0.1] })];
     monter(fusion(g), mat, p.x, p.z, { rot: 0 });
@@ -140,9 +141,59 @@ export function creerLieux3D({ scene, hauteur, colliders, ombres, TX }) {
     monter(fusion(g), mat, p.x, p.z); bloquer(p.x, p.z, 2.6); lieux['cairn-fin'] = { x: p.x, z: p.z - 4 };
     for (const dx of [-5, 5]) { monter(fusion([piece(DOD(1.6), '#a08566', { p: [0, 0.8, 0], s: [1.2, 0.9, 1] }), piece(DOD(1.0), '#8f7a5e', { p: [0.8, 0.5, 0.6] })]), mat, p.x + dx, p.z + 0.5); bloquer(p.x + dx, p.z + 0.5, 1.9); } }
 
+  // ---- de la dernière montagne à la cité : cols, murets, puits, carrefour, pieds des deux grandes montagnes, jardins, porte, atelier, collines, place, marché ----
+  const belvedere = (id, rot = 0.3) => { const p = pos(id), g = [piece(B(), '#a8906e', { p: [0, 0.35, 0], s: [5.5, 0.7, 3.4], m: M.pierre }), piece(DOD(0.7), '#9a8062', { p: [1.5, 1.1, 0.4] }), piece(DOD(0.5), '#a08566', { p: [1.6, 1.8, 0.45] }), piece(DOD(0.35), '#b8a07a', { p: [1.6, 2.25, 0.4] })];
+    monter(fusion(g), mat, p.x, p.z, { rot }); bloquer(p.x + 1.5, p.z + 0.4, 0.9); lieux[id] = { x: p.x - 3.4, z: p.z }; };
+  belvedere('col-vue'); belvedere('crete-vue', 0);
+  { const p = pos('muret-pierre'), g = [];
+    for (let r = 0; r < 4; r++) for (let k = 0; k < 7 - r; k++) g.push(piece(B(), (k + r) % 2 ? '#a8906e' : '#9a8e7c', { p: [-3.2 + k * 1.0 + r * 0.5, 0.2 + r * 0.38, 0], s: [0.95, 0.36, 0.55], m: M.pierre }));
+    monter(fusion(g), mat, p.x, p.z, { rot: Math.PI / 2 }); for (let k = 0; k < 4; k++) bloquer(p.x, p.z - 2.4 + k * 1.6, 0.9); lieux['muret-pierre'] = { x: p.x + 2, z: p.z }; }
+  const puits = id => { const p = pos(id), g = [];
+    for (let k = 0; k < 10; k++) { const a = k / 10 * Math.PI * 2; g.push(piece(B(), k % 2 ? '#a8906e' : '#b8a07a', { p: [Math.cos(a) * 1.0, 0.45, Math.sin(a) * 1.0], s: [0.75, 0.9, 0.5], r: [0, -a + Math.PI / 2, 0], m: M.pierre })); }
+    g.push(piece(CYL(0.85, 0.85, 0.05, 12), '#2f2a28', { p: [0, 0.35, 0] }), piece(B(), '#6b4a30', { p: [-1.05, 1.3, 0], s: [0.12, 2.0, 0.12], m: M.bois }), piece(B(), '#6b4a30', { p: [1.05, 1.3, 0], s: [0.12, 2.0, 0.12], m: M.bois }), piece(B(), '#6b4a30', { p: [0, 2.3, 0], s: [2.4, 0.12, 0.12], m: M.bois }), piece(CYL(0.2, 0.28, 0.5, 8), '#b0643c', { p: [1.6, 0.25, 0.8], m: M.terre }));
+    monter(fusion(g), mat, p.x, p.z); bloquer(p.x, p.z, 1.5); lieux[id] = { x: p.x, z: p.z - 2.4 }; };
+  puits('puits-chemin'); puits('cite-puits');
+  { const p = pos('carrefour'), g = [piece(B(), '#6b4a30', { p: [0, 1.4, 0], s: [0.16, 2.8, 0.16], m: M.bois }), piece(B(), '#c9a26a', { p: [-0.7, 2.4, 0], s: [1.5, 0.45, 0.07], r: [0, 0, 0.12], m: M.bois }), piece(B(), '#c9a26a', { p: [0.7, 1.8, 0], s: [1.5, 0.45, 0.07], r: [0, 0, -0.12], m: M.bois }), piece(DOD(0.5), '#9a8062', { p: [0.6, 0.2, 0.6] })];
+    monter(fusion(g), mat, p.x, p.z); bloquer(p.x, p.z, 0.4); lieux['carrefour'] = { x: p.x + 1.2, z: p.z - 1.6 }; }
+  // les pieds des deux grandes montagnes : une terrasse, un petit panneau, et l'entrée d'une grotte vue de loin (fermée par un éboulis, jamais enterrée dans une scène)
+  for (const [id, mt] of [['montagne-nord-pied', MONTAGNE_NORD], ['montagne-sud-pied', MONTAGNE_SUD]]) {
+    const p = pos(id), cx = mt.t, cz = DEC + mt.s, dx = cx - p.x, dz = cz - p.z, L = Math.hypot(dx, dz), ux = dx / L, uz = dz / L, gx = p.x + ux * 38, gz = p.z + uz * 38, face = Math.atan2(-ux, -uz);
+    const g = [piece(B(), '#6b4a30', { p: [-2.5, 1.2, 0], s: [0.14, 2.4, 0.14], m: M.bois }), piece(B(), '#c9a26a', { p: [-2.5, 2.2, 0.05], s: [1.5, 0.55, 0.07], m: M.bois }), piece(B(), '#a8906e', { p: [0, 0.2, 0], s: [4, 0.4, 1.4], m: M.pierre })];
+    monter(fusion(g), mat, p.x, p.z, { rot: face }); lieux[id] = { x: p.x, z: p.z };
+    const grotte = [piece(DOD(5), '#6b5a4a', { p: [0, 2.2, 0], s: [1.4, 1.0, 0.8] }), piece(B(), '#14110f', { p: [0, 1.4, 0.8], s: [3.4, 2.8, 0.6] }), piece(DOD(1.6), '#7a6a58', { p: [-3.2, 1.0, 1.2] }), piece(DOD(1.4), '#7a6a58', { p: [3.3, 0.9, 1.1] }), piece(DOD(1.2), '#8a7a66', { p: [-1.2, 0.6, 2.2] }), piece(DOD(1.0), '#8a7a66', { p: [1.4, 0.5, 2.3] })];
+    monter(fusion(grotte), mat, gx, gz, { rot: face }); bloquer(gx, gz, 4);
+  }
+  { const p = pos('jardins'), g = [];
+    for (let k = 0; k < 8; k++) g.push(piece(B(), '#a8906e', { p: [-4 + k * 1.15, 0.3, -3], s: [1.1, 0.6, 0.5], m: M.pierre }), piece(B(), '#a8906e', { p: [-4 + k * 1.15, 0.3, 3], s: [1.1, 0.6, 0.5], m: M.pierre }));
+    for (let r = 0; r < 4; r++) g.push(piece(B(), '#6f9a45', { p: [0, 0.08, -1.8 + r * 1.2], s: [7, 0.16, 0.6] }));
+    [[-3, 0], [3.3, 0.6]].forEach(([dx, dz]) => g.push(piece(CYL(0.12, 0.18, 2.4, 5), '#6b4a30', { p: [dx, 1.2, dz] }), piece(SPH(1.4, 7, 5), '#6f9a45', { p: [dx, 3.0, dz], s: [1, 0.8, 1] })));
+    monter(fusion(g), matVent, p.x, p.z, { rot: 0.1 }); lieux['jardins'] = { x: p.x, z: p.z - 4.2 }; }
+  { const p = pos('cite-porte'), g = [];
+    for (const sg of [-1, 1]) g.push(piece(B(), '#9a8e7c', { p: [sg * 3.4, 2.2, 0], s: [1.5, 4.4, 1.5], m: M.pierre }), piece(B(), '#847868', { p: [sg * 3.4, 4.6, 0], s: [1.9, 0.4, 1.9], m: M.pierre }));
+    g.push(piece(B(), '#6e4e34', { p: [0, 4.4, 0], s: [8, 0.5, 0.7], m: M.bois }));
+    monter(fusion(g), mat, p.x, p.z); bloquer(p.x - 3.4, p.z, 1.1); bloquer(p.x + 3.4, p.z, 1.1); lieux['cite-porte'] = { x: p.x, z: p.z + 4 }; }
+  { const p = pos('cite-atelier'), g = [piece(B(), '#c4a77d', { p: [0, 1.2, 0], s: [4.4, 2.4, 3.4], m: M.terre }), piece(B(), '#6e4e34', { p: [0, 2.5, 1.9], s: [4.8, 0.1, 1.6], r: [0.25, 0, 0], m: M.bois }), piece(SPH(1.3, 10, 6), '#a8906e', { p: [3.6, 0.4, 0], s: [1, 0.8, 1] })];
+    for (let k = 0; k < 6; k++) g.push(piece(CYL(0.22, 0.3, 0.6, 8), k % 2 ? '#b0643c' : '#a35a34', { p: [-2.6 + (k % 3) * 0.7, 0.3, 2.4 + Math.floor(k / 3) * 0.7], m: M.terre }), piece(SPH(0.3, 8, 6), '#b0643c', { p: [-2.6 + (k % 3) * 0.7, 0.75, 2.4 + Math.floor(k / 3) * 0.7], m: M.terre }));
+    monter(fusion(g), mat, p.x, p.z, { rot: -0.4 }); bloquer(p.x, p.z, 2.8); lieux['cite-atelier'] = { x: p.x - 1.5, z: p.z + 4.8 }; }
+  for (const id of ['cite-colline-a', 'cite-colline-b']) { const p = pos(id), g = [piece(B(), '#a8906e', { p: [0, 0.2, 0], s: [3, 0.4, 1.2], m: M.pierre }), piece(B(), '#6b4a30', { p: [-1.8, 1.1, 0], s: [0.14, 2.2, 0.14], m: M.bois }), piece(B(), '#c9a26a', { p: [-1.8, 2.0, 0.05], s: [1.2, 0.5, 0.07], m: M.bois })];
+    monter(fusion(g), mat, p.x, p.z, { rot: 0.2 }); lieux[id] = { x: p.x + 1, z: p.z + 1.4 }; }
+  { const p = pos('cite-place'), g = [];
+    for (let k = 0; k < 3; k++) g.push(piece(B(), '#b09672', { p: [-2.2 + k * 2.2, 0.28, 0], s: [2, 0.56, 0.9], m: M.pierre }));
+    g.push(piece(B(), '#6b4a30', { p: [3.4, 1.2, 0], s: [0.14, 2.4, 0.14], m: M.bois }), piece(B(), '#c9a26a', { p: [3.4, 2.2, 0.05], s: [1.6, 0.55, 0.07], m: M.bois }));
+    monter(fusion(g), mat, p.x, p.z, { rot: Math.PI / 2 }); lieux['cite-place'] = { x: p.x - 1.2, z: p.z }; }
+  { const p = pos('cite-marche'), g = [];
+    for (let k = 0; k < 5; k++) { const a = k * 1.256, dx = Math.cos(a) * 7, dz = Math.sin(a) * 7, c = ['#b5654a', '#c9a26a', '#46587a', '#a85a40', '#e8dcc4'][k];
+      g.push(piece(CYL(0.08, 0.1, 2.2, 5), '#6b4a30', { p: [dx - 1.1, 1.1, dz - 0.8] }), piece(CYL(0.08, 0.1, 2.2, 5), '#6b4a30', { p: [dx + 1.1, 1.1, dz - 0.8] }), piece(B(), c, { p: [dx, 2.3, dz], s: [2.8, 0.08, 2.2], r: [0.15, a, 0], m: M.tissu }), piece(B(), '#8a6440', { p: [dx, 0.6, dz - 0.4], s: [2.2, 0.9, 0.9], m: M.bois }),
+        piece(CYL(0.22, 0.3, 0.5, 8), '#b0643c', { p: [dx - 0.6, 1.3, dz - 0.4], m: M.terre }), piece(B(), '#c9a26a', { p: [dx + 0.5, 1.15, dz - 0.4], s: [0.6, 0.3, 0.5], m: M.laine })); bloquer(p.x + dx, p.z + dz, 1.6); }
+    monter(fusion(g), matVent, p.x, p.z); lieux['cite-marche'] = { x: p.x, z: p.z }; }
+  { const p = pos('cite-fin'), g = [];
+    for (let k = 0; k < 14; k++) { const a = k * 2.4, r = 1.6 - k * 0.08; g.push(piece(DOD(0.7 + (k % 3) * 0.2), k % 2 ? '#a8906e' : '#9a8062', { p: [Math.cos(a) * r, 0.45 + k * 0.16, Math.sin(a) * r], s: [1, 0.8, 1], r: [k, k * 0.7, 0] })); }
+    g.push(piece(B(), '#8a6440', { p: [0, 2.4, 0], s: [0.14, 3.2, 0.14], m: M.bois }), piece(B(), '#c9a26a', { p: [0, 3.1, 0.1], s: [1.6, 0.6, 0.07], m: M.bois }));
+    monter(fusion(g), mat, p.x, p.z); bloquer(p.x, p.z, 2.4); lieux['cite-fin'] = { x: p.x, z: p.z - 3.6 }; }
+
   // ---- les lanternes des histoires : une petite lanterne sur un poteau à côté du lieu ; elle s'allume quand l'enfant approche ----
   const lanternes = {};
-  for (const l of LIEUX_ROUTE.filter(o => o.recit)) {
+  for (const l of LIEUX_ROUTE.filter(o => o.recit || (LIEUX_SACRES[o.id] && LIEUX_SACRES[o.id].recits.length))) {
     const p = lieux[l.id]; if (!p) continue;
     const x = p.x + 3.2, z = p.z + 1.2, g = [piece(CYL(0.07, 0.09, 2.2, 6), '#6b4a30', { p: [0, 1.1, 0], m: M.bois }), piece(B(), '#8a6440', { p: [0.35, 2.1, 0], s: [0.7, 0.06, 0.06], m: M.bois }), piece(CYL(0.19, 0.19, 0.34, 6), '#c9a26a', { p: [0.7, 1.85, 0] })];
     monter(fusion(g), mat, x, z); bloquer(x, z, 0.3);

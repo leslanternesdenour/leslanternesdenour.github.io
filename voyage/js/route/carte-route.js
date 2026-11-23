@@ -4,7 +4,7 @@
 import { REGIONS_ROUTE, LIEUX_ROUTE, positionDeLieu, regionA } from './donnees.js';
 import { pointChemin, OASIS, S_FIN_TRANCHE } from './relief.js';
 
-const S0 = -300, S1 = 4500, T0 = -600, T1 = 600;          // l'étendue de la carte (m)
+const S0 = -300, S1 = 6100, T0 = -800, T1 = 800;          // l'étendue de la carte (m)
 export function creerProjection(w, h, portrait) {
   const long = S1 - S0, large = T1 - T0;
   const k = portrait ? Math.min(w / large, h / long) : Math.min(w / long, h / large);

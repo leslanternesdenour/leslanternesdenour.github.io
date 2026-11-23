@@ -200,7 +200,8 @@ async function demarrer() {
     let f = $('fondu-route'); if (!f) { f = document.createElement('div'); f.id = 'fondu-route'; f.style.cssText = 'position:fixed;inset:0;z-index:60;background:#ecd9ac;opacity:0;pointer-events:none'; document.body.appendChild(f); }
     f.style.transition = 'none'; f.style.opacity = '0.96'; void f.offsetWidth; f.style.transition = 'opacity 1s ease'; f.style.opacity = '0';
   }
-  const route = ROUTE ? (await import('./route/jeu-route.js')).creerRoute({ scene, terrain, Q, TX, ombres: !!Q.ombres, etat, AV, enregistrer, habitants, regions, village, J, C,
+  let regard = null;   // la caméra se tourne doucement vers un point (arrivée dans la cité) ; l'enfant garde la main
+  const route = ROUTE ? (await import('./route/jeu-route.js')).creerRoute({ regarder: (x, z, s) => { regard = { x, z, t: s }; }, scene, terrain, Q, TX, ombres: !!Q.ombres, etat, AV, enregistrer, habitants, regions, village, J, C,
     monte: () => monte, age: () => sauvegarde.get().age,
     donner: (id, n, raison) => bourse.recompense(id, n, raison, ouDonner()),
     arreterGuide: () => { guide.arreter(); etat.guidage = null; enregistrer(); majGuidage(null); },
@@ -1555,6 +1556,7 @@ async function demarrer() {
       cam.yawCible += angleVers(cam.yawCible, derriere) * Math.min(1, dt * (monte ? 1.1 : 0.8));
     }
     // la caméra suit en douceur (pas de saccade, même avec un doigt nerveux)
+    if (regard && regard.t > 0 && !interface_ouverte) { regard.t -= dt; cam.yawCible = Math.atan2(J.x - regard.x, J.z - regard.z); cam.pitchCible = Math.max(cam.pitchCible, 0.17); }
     cam.yaw += angleVers(cam.yaw, cam.yawCible) * Math.min(1, dt * 12);
     cam.pitch += (cam.pitchCible - cam.pitch) * Math.min(1, dt * 12);
     let distBase = (monte || (sequence && sequence.type === 'monter')) ? (chameau.espece === 'elephant' ? 13 : 10.5) : 6.5;
