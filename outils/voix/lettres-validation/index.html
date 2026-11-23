@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><title>Validation des 28 lettres · outil interne</title>
+<style>
+:root{--fond:#14102e;--carte:#221b52;--or:#f5b942;--txt:#f4efff;--ok:#6fd49a;--ko:#ff8c8c;--nsp:#ffd27a}
+*{box-sizing:border-box}body{margin:0;background:var(--fond);color:var(--txt);font:16px/1.5 system-ui,Segoe UI,Roboto,sans-serif;padding:16px 16px 90px}
+main{max-width:980px;margin:0 auto}h1{font-size:26px;margin:8px 0}h2{font-size:21px;color:var(--or);margin:34px 0 10px}
+.avert{background:#4a1f2a;border:2px solid #ff8c8c;border-radius:14px;padding:12px 16px;margin:12px 0}
+.info{background:#1d2a4a;border:1px solid #5b7bd6;border-radius:14px;padding:12px 16px;margin:12px 0}
+.carte{background:var(--carte);border-radius:20px;padding:16px;margin:14px 0}
+.tete{display:flex;gap:16px;align-items:center;flex-wrap:wrap}.gly{font:700 76px/1 'Amiri','Noto Naskh Arabic','Traditional Arabic',serif;min-width:90px;text-align:center;color:#fff}
+.ar{font:700 30px 'Amiri','Noto Naskh Arabic',serif;direction:rtl}.num{color:#b9afe6;font-size:14px}
+.mk{font-size:14px;color:#d8cff5;margin:6px 0 0}.mk .ar{font-size:19px;font-weight:400;display:block}
+.ligne{display:grid;grid-template-columns:150px 1fr;gap:10px;align-items:start;border-top:1px solid #3a3175;padding:10px 0}
+.el b{display:block}.el .ar{font-size:26px}.el small{color:#b9afe6}
+.act{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+button{font:inherit;cursor:pointer;border-radius:12px;border:2px solid #5b4fb0;background:#2b2366;color:#fff;padding:8px 12px;min-height:44px}
+button:disabled{opacity:.4;cursor:not-allowed}button.cand{border-color:var(--ok)}button.on{outline:3px solid #fff}
+.jug{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}.jug label{display:inline-flex;align-items:center;gap:4px;padding:6px 10px;border-radius:999px;border:2px solid #5b4fb0;cursor:pointer;min-height:40px}
+.jug input{accent-color:#fff}.jug label.s-ok{border-color:var(--ok)}.jug label.s-ko{border-color:var(--ko)}.jug label.s-nsp{border-color:var(--nsp)}
+textarea{width:100%;min-height:38px;margin-top:6px;border-radius:10px;border:1px solid #5b4fb0;background:#14102e;color:#fff;padding:6px 8px;font:inherit}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{border-bottom:1px solid #3a3175;padding:6px 8px;text-align:left}td.ar{font:700 24px 'Amiri',serif;direction:rtl;text-align:center}
+.barre{position:fixed;left:0;right:0;bottom:0;background:#0d0a22;border-top:2px solid var(--or);padding:10px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;z-index:5}
+.barre span{flex:1;min-width:200px}.nd{color:#9b92cf;font-size:13px}
+@media print{.barre,button,.jug,textarea{display:none}body{background:#fff;color:#000}.carte{background:#fff;border:1px solid #999}}
+</style></head>
+<body><main>
+<h1>Validation des prononciations — les 28 lettres arabes</h1>
+<div class="avert"><b>Outil interne — préproduction uniquement. Aucun audio du site n'est modifié ni remplacé par cette page.</b><br>
+Les audios « <b>actuels</b> » sont de la <b>synthèse vocale NON validée</b> (jugée incorrecte). Les « <b>candidats</b> » apparaissent ici dès que des enregistrements sont déposés dans <code>outils/voix/lettres-candidats/&lt;lettre&gt;/</code> (voir la fiche d'enregistrement en bas). Seule une personne compétente en arabe littéraire (الفصحى) ou en phonétique arabe peut déclarer une prononciation juste : une IA n'est pas garante de son exactitude.</div>
+<div class="info">Pour chaque lettre : écoute le <b>nom</b> (ex. « بَاء », baa) puis le <b>son</b> avec les trois voyelles courtes — <b>فتحة</b> (a), <b>ضمّة</b> (ou), <b>كسرة</b> (i). Le son d'une lettre n'est jamais son nom. Les indications de point d'articulation (مخرج الحرف) sont <b>proposées</b>, à valider aussi. Ton jugement est gardé dans ce navigateur ; « Exporter le bilan » en fait un fichier à transmettre.</div>
+<h2>1. Les 28 lettres, dans l'ordre de l'alphabet</h2><div id="lettres"></div>
+<h2>2. Lettres aux sons proches, à comparer</h2><div id="proches"></div>
+<h2>3. Fiche d'enregistrement (à remettre à la personne qui enregistre)</h2>
+<div class="info"><b>Consignes :</b> arabe littéraire (الفصحى), articulation lente, claire et naturelle, pour des enfants ; <b>aucune francisation</b>, aucune transcription latine lue ; <b>pas de musique ni d'instruments</b>. Un clip par ligne : lire <b>exactement</b> le texte arabe vocalisé de la colonne « À lire ». Format : un fichier par clip (mp3 ou wav, mono, 44,1 kHz), nommé comme la colonne « Fichier », rangé dans un dossier par lettre. Pour les « sons », dire seulement la syllabe (ex. « بَ »), pas le nom de la lettre. Imprimable (Ctrl+P).</div>
+<div id="fiche"></div>
+</main>
+<div class="barre"><span id="progres">…</span><button id="exp">Exporter le bilan (JSON)</button><button id="copie">Copier le bilan</button></div>
+<audio id="lecteur" preload="none"></audio>
+<script type="module">
+import { ALPHABET } from '../../../ecole-arabe/commun/langue/alphabet.js';
+import { MAKHRAJ, PROCHES, VOYELLES, fiche, audioActuel, urlCandidat } from './donnees.js';
+const $ = id => document.getElementById(id), lecteur = $('lecteur'), CLE = 'ldn-validation-lettres-v1';
+const ELEMENTS = [['nom', 'Nom de la lettre', null], ['fatha', 'Son + فتحة', VOYELLES.fatha], ['damma', 'Son + ضمّة', VOYELLES.damma], ['kasra', 'Son + كسرة', VOYELLES.kasra]];
+let bilan = {}; try { bilan = JSON.parse(localStorage.getItem(CLE) || '{}'); } catch (e) {}
+const sauver = () => { try { localStorage.setItem(CLE, JSON.stringify(bilan)); } catch (e) {} };
+const texteDe = (a, el) => el === 'nom' ? a.nomAr : (a.id === 'alif' ? 'ء' : a.ar) + VOYELLES[el];
+const actuel = (a, el) => { const x = audioActuel(a.id); return el === 'nom' ? '/' + x.nom : el === 'fatha' ? '/' + x.fatha : null; };
+const candidats = new Set();
+function lire(url, bouton) { lecteur.pause(); document.querySelectorAll('button.on').forEach(b => b.classList.remove('on')); lecteur.src = url; lecteur.play().catch(() => {}); if (bouton) bouton.classList.add('on'); lecteur.onended = () => bouton && bouton.classList.remove('on'); }
+function carte(a) {
+  const mk = MAKHRAJ[a.id], c = document.createElement('div'); c.className = 'carte'; c.id = 'l-' + a.id;
+  c.innerHTML = `<div class="tete"><div class="gly" lang="ar">${a.ar}</div><div><div class="num">${a.num} / 28 · ${a.translit}</div><div class="ar" lang="ar">${a.nomAr}</div>
+    <div class="mk">Point d'articulation <span class="nd">(proposé — à valider)</span><span class="ar" lang="ar">${mk.ar}</span>${mk.fr}</div></div></div>`;
+  for (const [el, nom, signe] of ELEMENTS) {
+    const cle = `${a.id}.${el}`, a1 = actuel(a, el), l = document.createElement('div'); l.className = 'ligne';
+    l.innerHTML = `<div class="el"><b>${nom}</b><span class="ar" lang="ar">${texteDe(a, el)}</span></div><div><div class="act">
+      <button data-u="${a1 || ''}" ${a1 ? '' : 'disabled'} title="${a1 ? 'Audio actuel (synthèse, non validé)' : 'Aucun audio actuel pour cette voyelle'}">▶ actuel${a1 ? '' : ' (non produit)'}</button>
+      <button class="cand" data-c="${urlCandidat(a.id, el)}" disabled>▶ candidat (pas encore enregistré)</button></div>
+      <div class="jug">${[['ok', '✓ juste'], ['ko', '✗ à refaire'], ['nsp', '? pas sûr']].map(([v, t]) => `<label class="${bilan[cle] && bilan[cle].v === v ? 's-' + v : ''}"><input type="radio" name="${cle}" value="${v}" ${bilan[cle] && bilan[cle].v === v ? 'checked' : ''}>${t}</label>`).join('')}</div>
+      <textarea placeholder="Remarque (ce qui ne va pas : voyelle, point d'articulation, francisation…)" data-n="${cle}">${(bilan[cle] && bilan[cle].n) || ''}</textarea></div>`;
+    c.appendChild(l);
+  }
+  return c;
+}
+const zone = $('lettres'); for (const a of ALPHABET) zone.appendChild(carte(a));
+zone.addEventListener('click', e => { const b = e.target.closest('button'); if (!b || b.disabled) return; lire(b.dataset.c || b.dataset.u, b); });
+zone.addEventListener('change', e => { const r = e.target; if (r.type !== 'radio') return; const cle = r.name; bilan[cle] = { ...(bilan[cle] || {}), v: r.value }; r.closest('.jug').querySelectorAll('label').forEach(l => l.className = ''); r.parentElement.className = 's-' + r.value; sauver(); maj(); });
+zone.addEventListener('input', e => { const t = e.target; if (t.tagName !== 'TEXTAREA') return; bilan[t.dataset.n] = { ...(bilan[t.dataset.n] || {}), n: t.value }; sauver(); });
+function maj() { const tot = ALPHABET.length * ELEMENTS.length, n = Object.values(bilan).filter(x => x.v).length, ok = Object.values(bilan).filter(x => x.v === 'ok').length, ko = Object.values(bilan).filter(x => x.v === 'ko').length;
+  $('progres').textContent = `${n} / ${tot} clips jugés · ✓ ${ok} · ✗ ${ko} · ? ${n - ok - ko} — rien n'est intégré au site tant que tout n'est pas validé.`; }
+maj();
+// groupes de lettres proches : on joue le « son + فتحة » de chaque lettre, l'une après l'autre
+const pz = $('proches');
+for (const g of PROCHES) { const d = document.createElement('div'); d.className = 'carte';
+  d.innerHTML = `<b>${g.titre}</b><div class="act" style="margin-top:8px">${g.ids.map(id => { const a = ALPHABET.find(x => x.id === id); return `<button data-id="${id}"><span class="ar" lang="ar" style="font-size:24px">${texteDe(a, 'fatha')}</span> actuel</button>`; }).join('')}<button data-seq="${g.ids.join(',')}">▶ toutes à la suite</button></div>`; pz.appendChild(d); }
+pz.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return;
+  const suite = b.dataset.seq ? b.dataset.seq.split(',') : [b.dataset.id]; let i = 0;
+  const joue = () => { if (i >= suite.length) return; lecteur.src = '/' + audioActuel(suite[i++]).fatha; lecteur.onended = () => setTimeout(joue, 500); lecteur.play().catch(() => {}); }; joue(); });
+// fiche d'enregistrement
+$('fiche').innerHTML = `<table><thead><tr><th>#</th><th>Lettre</th><th>Élément</th><th>À lire (exactement)</th><th>Fichier</th></tr></thead><tbody>${fiche(ALPHABET).map(r => `<tr><td>${r.num}</td><td class="ar" lang="ar">${r.lettre}</td><td>${r.element === 'nom' ? 'nom de la lettre' : 'son + ' + { fatha: 'فتحة', damma: 'ضمّة', kasra: 'كسرة' }[r.element]}</td><td class="ar" lang="ar">${r.texte}</td><td><code>${r.fichier}</code></td></tr>`).join('')}</tbody></table>`;
+// détection des candidats déjà déposés (dossier interne) : le bouton « candidat » s'active seulement si le fichier existe
+for (const b of document.querySelectorAll('button.cand')) fetch('/' + b.dataset.c, { method: 'HEAD' }).then(r => { if (r.ok && /audio|octet/.test(r.headers.get('content-type') || 'audio')) { b.disabled = false; b.textContent = '▶ candidat'; } }).catch(() => {});
+const bilanTexte = () => JSON.stringify({ outil: 'validation-28-lettres', date: new Date().toISOString(), jugements: bilan }, null, 2);
+$('exp').onclick = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([bilanTexte()], { type: 'application/json' })); a.download = 'bilan-validation-lettres.json'; a.click(); };
+$('copie').onclick = () => navigator.clipboard.writeText(bilanTexte()).then(() => { $('copie').textContent = 'Copié ✓'; setTimeout(() => $('copie').textContent = 'Copier le bilan', 1500); });
+</script></body></html>

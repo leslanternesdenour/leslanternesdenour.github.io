@@ -1,0 +1,8 @@
+Dossier des enregistrements CANDIDATS pour les 28 lettres arabes (interne, préproduction seulement ; jamais publié en production).
+
+Déposer ici un dossier par lettre, un fichier par clip, nommés comme dans la fiche d'enregistrement de la page « Validation des 28 lettres » :
+   <lettre>/nom.mp3  <lettre>/fatha.mp3  <lettre>/damma.mp3  <lettre>/kasra.mp3        exemple : tha/nom.mp3, tha/fatha.mp3 …
+Identifiants des lettres : alif ba ta tha jim ha kha dal dhal ra zay sin shin sad dad ta2 za2 ayn ghayn fa qaf kaf lam mim nun ha2 waw ya
+
+Ces fichiers apparaissent comme « candidats » dans la page d'écoute. Rien n'est remplacé sur le site tant que les prononciations ne sont pas validées
+par une personne compétente en arabe littéraire et que le créateur n'a pas donné son accord. Les anciens audios (audio/jeux/ecole-lettres) sont conservés.
