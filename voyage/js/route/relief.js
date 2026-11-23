@@ -66,18 +66,20 @@ export function relief(s, t) {
   const zm = lisse(S_MONTAGNES_DEBUT, S_MONTAGNES_DEBUT + 500, s);
   const debutBord = 460 - 390 * zm;
   const bord = lisse(debutBord, debutBord + 440 - 150 * zm, Math.abs(t));
-  const vallee = zm * lisse(70, 14, dC);                       // le fond de la vallée suit la piste
+  const vallee = zm * lisse(150, 45, dC);                      // le fond de la vallée suit la piste : large et plat (jamais une tranchée), les parois montent plus loin
   const massif = bord * (30 + fbm(s * 0.006, t * 0.006, 3) * 80) * (1 + 0.7 * zm) * (1 - 0.9 * vallee);
   const rochers = bord * Math.pow(Math.abs(fbm(s * 0.05, t * 0.05, 3) - 0.5) * 2, 1.5) * 8 * (1 - 0.85 * vallee);
   // quelques collines basses de roche près du départ
   const collines = lisse(-100, 80, s) * (1 - lisse(520, 720, s)) * lisse(35, 90, dC) * (3 + fbm(s * 0.012, t * 0.012, 3) * 10);
 
-  let h = plaine * (1 - 0.8 * surChemin) + dunes + massif + rochers + collines * (1 - surChemin);
+  // la piste suit le niveau de la plaine à cet endroit et se fond dans le décor sur ~30 m : jamais une tranchée dans laquelle on s'enfonce
+  const t0 = interpoler(PISTE, s), plainePiste = fbm(s * 0.006, t0 * 0.006, 3) * 3.2 + fbm(s * 0.03, t0 * 0.03, 2) * 0.7;
+  let h = melange(plaine, plainePiste, lisse(30, 3, dC)) + dunes + massif + rochers + collines * (1 - surChemin);
   // montagnes en gradins : corniches et falaises (grès et granit), jamais sur la piste ni dans le fond de la vallée
   const gradins = zm * (1 - surChemin) * (1 - vallee) * lisse(12, 34, massif);
   if (gradins > 0.01) { const pas = 7 + fbm(s * 0.004, t * 0.004, 2) * 4, q = h / pas, f = q - Math.floor(q); h = melange(h, (Math.floor(q) + lisse(0.5, 0.88, f)) * pas, gradins * 0.8); }
   // le lit de galets : la piste creuse un peu le fond de la vallée
-  h -= zm * lisse(14, 3, dC) * 1.6;
+  h -= zm * lisse(26, 4, dC) * 0.5;
   // le campement et l'oasis sont plats
   const camp = lisse(CAMP.r + 16, CAMP.r - 2, dCamp);
   h = melange(h, 0.5 + plaine * 0.1, camp);

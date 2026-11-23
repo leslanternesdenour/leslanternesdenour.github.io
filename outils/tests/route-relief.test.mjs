@@ -41,9 +41,21 @@ test('montagnes : la piste s\'enfonce dans un fond de vallée, les parois monten
   for (const s of [3400, 3700, 4000]) {
     const t = pointChemin(s).t, fond = hauteur(s, t);
     assert.ok(fond < 8, `fond de vallée trop haut à s=${s} (${fond.toFixed(1)})`);
-    assert.ok(hauteur(s, t + 160) > fond + 25 || hauteur(s, t - 160) > fond + 25, `pas de paroi à s=${s}`);
+    assert.ok(hauteur(s, t + 260) > fond + 40 || hauteur(s, t - 260) > fond + 40, `pas de paroi à s=${s} (la vallée est large : les parois montent à 100–250 m de la piste)`);
   }
   assert.ok(hauteur(S_MONTAGNES_DEBUT - 200, 400) < 25, 'avant les montagnes, la plaine reste ouverte à côté de la piste');
   const cote = s => { const t = pointChemin(s).t; return Math.max(hauteur(s, t + 200), hauteur(s, t - 200)); };
   assert.ok(cote(3700) > cote(3000) + 10, 'les montagnes se rapprochent de la piste');
+});
+
+test('montagnes : le fond de la vallée est doux, jamais une tranchée dans laquelle on a l\'impression de s\'enfoncer', async () => {
+  const { hauteur, pointChemin } = await import('../../voyage/js/route/relief.js');
+  let pire = 0, ou = '';
+  for (let s = 3350; s <= 4200; s += 10) { const t0 = pointChemin(s).t; for (let d = -22; d < 22; d += 2) {
+    const p = Math.abs(hauteur(s, t0 + d + 2) - hauteur(s, t0 + d)) / 2; if (p > pire) { pire = p; ou = `s=${s} d=${d}`; } } }
+  assert.ok(pire < 0.16, `pente latérale max ${pire.toFixed(2)} à ${ou} : on dirait une tranchée`);
+  for (let s = 3400; s <= 4150; s += 50) {
+    const t0 = pointChemin(s).t, creux = (hauteur(s, t0 + 24) + hauteur(s, t0 - 24)) / 2 - hauteur(s, t0);
+    assert.ok(creux < 1.0, `le fond est ${creux.toFixed(2)} m sous les bords proches à s=${s}`);
+  }
 });

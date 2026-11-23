@@ -201,7 +201,7 @@ export function creerRoute(ctx) {
     o.x = nx; o.z = nz;
   }
   let dernierFin = 0;
-  function avertirFin() { const t = performance.now(); if (t - dernierFin > 9000) { dernierFin = t; ui.indice('🗿 Le chemin continue… bientôt ! Pour l\'instant, cette étape s\'arrête ici.', 5000); } }
+  function avertirFin() { const t = performance.now(); if (t - dernierFin > 9000) { dernierFin = t; ui.indice('🪨 Le chemin continue… bientôt ! Pour l\'instant, cette étape s\'arrête ici.', 5000); } }
 
   // ---------- chaque image ----------
   let tDecouverte = 0;

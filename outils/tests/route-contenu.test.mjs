@@ -21,3 +21,13 @@ test('séparation : aucun terme religieux ou historique hors du fichier de conte
     assert.ok(!interdits.test(code), `${f} contient un terme religieux : à déplacer dans contenu-a-valider.js`);
   }
 });
+
+test('aucune statue, idole ni figure sculptée : ni dans les icônes, ni dans les textes, ni dans les modèles 3D de la Route', async () => {
+  const fs = await import('node:fs');
+  const dossier = new URL('../../voyage/js/route/', import.meta.url);
+  const interdit = /(🗿|🗽|🎎|🪆|🧿|🛕|\b(statue|idole|idoles|sculpture|visage sculpté)\b)/i;
+  for (const f of fs.readdirSync(dossier).filter(n => n.endsWith('.js'))) {
+    const code = fs.readFileSync(new URL(f, dossier), 'utf8').replace(/^\s*\/\/.*$/gm, '').replace(/\s\/\/ .*$/gm, '');
+    assert.ok(!interdit.test(code), `${f} contient une icône ou un mot de statue : on ne représente ni statue ni idole`);
+  }
+});
