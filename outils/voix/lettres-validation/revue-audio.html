@@ -36,7 +36,7 @@ const jeu = () => $('jeu').value, etatDe = f => verdicts[f] ? verdicts[f].v : 'n
 async function charger() {
   cleStock = 'ldn-revue-audio-v1-' + jeu(); verdicts = {}; try { verdicts = JSON.parse(localStorage.getItem(cleStock) || '{}'); } catch (e) {}
   $('corps').innerHTML = ''; $('msg').textContent = 'Chargement…';
-  try { const r = await fetch(`/audio/jeux/${jeu()}/manifeste.json`); phrases = (await r.json()).phrases; $('msg').textContent = ''; } catch (e) { phrases = []; $('msg').textContent = 'Manifeste introuvable pour ce jeu.'; }
+  try { const r = await fetch(`manifestes/${jeu()}.json`); phrases = (await r.json()).phrases; $('msg').textContent = ''; } catch (e) { phrases = []; $('msg').textContent = 'Manifeste introuvable pour ce jeu.'; }
   dessiner();
 }
 function bilan() { const c = { ok: 0, ko: 0, nsp: 0 }; for (const x of phrases) { const e = etatDe(x.fichier); if (c[e] !== undefined) c[e]++; } $('bilan').textContent = `${phrases.length} audios · ✓ ${c.ok} bons · ✗ ${c.ko} à refaire · ? ${c.nsp} doutes · ${phrases.length - c.ok - c.ko - c.nsp} non jugés`; }
