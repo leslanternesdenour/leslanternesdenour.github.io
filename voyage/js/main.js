@@ -2,7 +2,7 @@
 // Ce fichier relie tout : terrain, décors, ciel, personnages, commandes, sons, découvertes et carnet.
 import * as THREE from 'three';
 import { Terrain, LIEUX, LIMITE, lisse } from './terrain.js?v=3';
-import { creerDecor } from './decor.js?v=5';
+import { creerDecor } from './decor.js?v=6';
 import { Ciel } from './ciel.js?v=3';
 import { Enfant, Chameau } from './personnages.js?v=4';
 import { Controles, ACTIONS, nomTouche } from './controles.js?v=3';
@@ -23,7 +23,7 @@ import { RARETES, articlesDuJour, modeleObjet } from './catalogue.js?v=3';
 import { Voyageur, TENUES, PEAUX, convient } from './voyageur.js?v=9';
 import { creerCour } from './cour.js?v=3';
 import { MONTURES, monture, creerMonture, creerEcurie, FICHES_ESPECES } from './montures.js?v=5';
-import { ECURIE as ECURIE_PLAN, NID_LOUMI, dansEnclos, pres as presEcurie, etape as etapeEnclos, sortie as sortieEnclos } from './enclos-plan.js?v=2';
+import { ECURIE as ECURIE_PLAN, NID_LOUMI, dansEnclos, pres as presEcurie, etape as etapeEnclos, sortie as sortieEnclos } from './enclos-plan.js?v=3';
 import { creerVeille } from './veille.js?v=1';
 import { COLLECTIONS, BADGES, progressionCollection } from './succes.js?v=3';
 import { creerGuide } from './guide.js?v=3';

@@ -411,7 +411,8 @@ export function creerDecor(scene, terrain, Q, TX = {}) {
     const ex = 33, ez = -9;
     const enclos = [];
     for (let i = 0; i <= 8; i++) { const a = deg(-200 + i * 25), x = ex + Math.cos(a) * 7, z = ez + Math.sin(a) * 7; enclos.push({ x, z, rot: -a }); colliders.push({ x, z, r: 0.3 }); }
-    copies(g, fusion([piece(CYL(0.1, 0.12, 1.3, 6), '#8a6440', { p: [0, 0.65, 0] }), piece(B(), '#a77a4e', { p: [0, 1.0, 0.9], s: [0.08, 0.1, 1.9] }), piece(B(), '#a77a4e', { p: [0, 0.6, 0.9], s: [0.08, 0.1, 1.9] })]), matBase, enclos);
+    copies(g, fusion([piece(CYL(0.1, 0.12, 1.3, 6), '#8a6440', { p: [0, 0.65, 0] }), piece(B(), '#a77a4e', { p: [0, 1.0, 1.55], s: [0.08, 0.1, 3.1] }), piece(B(), '#a77a4e', { p: [0, 0.6, 1.55], s: [0.08, 0.1, 3.1] })]), matBase, enclos.slice(0, 8));
+    copies(g, fusion([piece(CYL(0.1, 0.12, 1.3, 6), '#8a6440', { p: [0, 0.65, 0] })]), matBase, enclos.slice(8));      // le dernier piquet ferme l'arc : pas de lisse dans le vide
     ajouter(g, fusion([piece(B(), '#8a6440', { p: [0, 0.35, 0], s: [2.4, 0.7, 0.9] }), piece(B(), '#5fd3e0', { p: [0, 0.66, 0], s: [2.1, 0.05, 0.65] })]), matBase, ex + 3.5, ez - 3.5, { rot: 0.6 });
     colliders.push({ x: ex + 3.5, z: ez - 3.5, r: 1.2 });
     stele(g, 'sablo', ex - 6, ez - 4, deg(-60));
