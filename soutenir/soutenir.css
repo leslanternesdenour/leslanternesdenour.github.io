@@ -53,11 +53,30 @@ p{margin:0}
 .encadre strong{color:#ffe3a3}
 
 /* --- montants --- */
-.montants{list-style:none;margin:0 0 22px;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
-.montants li{display:grid;gap:2px;text-align:center;padding:16px 10px;border-radius:20px;background:#1b1348;border:2px solid #4a3a99}
+/* formulaire de don : choix du montant en cartes à cocher (boutons radio, utilisables au clavier et au lecteur d'écran) */
+.don{display:grid;gap:16px;width:100%;max-width:760px}
+.don fieldset{border:0;margin:0;padding:0;min-width:0}
+.don legend{font:800 18px Nunito,system-ui;color:#ffe3a3;margin:0 0 12px;padding:0;text-align:center;width:100%}
+.montants{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.montants li{position:relative}
+.montants label{display:grid;gap:2px;align-content:center;text-align:center;height:100%;min-height:96px;padding:16px 10px;border-radius:20px;background:#1b1348;border:2px solid #4a3a99;cursor:pointer}
+.montants label:hover{border-color:#8b78e6}
+.montants input{position:absolute;opacity:0;width:1px;height:1px}
+.montants label:has(input:checked){border-color:#f5b942;background:#2a1f6e;box-shadow:0 0 0 3px rgba(245,185,66,.35)}
+.montants label:has(input:focus-visible){outline:3px solid #ffe3a3;outline-offset:3px}
+.montants input:checked+b{color:#fff}
 .montants b{font:900 30px Poppins,system-ui;color:#f5b942;line-height:1.1}
 .montants .libre b{font-size:20px;line-height:1.5}
 .montants span{font-size:14px;color:#d8cff5}
+.champ-libre{display:grid;gap:8px;justify-items:center}
+.champ-libre label{font-weight:800;color:#fff3d1}
+.champ-libre .saisie{display:inline-flex;align-items:center;gap:8px;font:900 24px Poppins,system-ui;color:#f5b942}
+.champ-libre input{width:7ch;min-height:52px;text-align:center;font:900 24px Poppins,system-ui;color:#2a1d00;background:#fff6e0;border:3px solid #f5b942;border-radius:16px;padding:6px 8px}
+.erreur{font-weight:800;color:#ffd6d6;background:rgba(200,50,50,.22);border:2px solid rgba(255,150,150,.55);border-radius:16px;padding:12px 16px;text-align:center}
+.paiement-zone{width:100%;max-width:760px;display:grid;gap:12px;justify-items:center}
+#paiement{width:100%;min-height:140px;background:#fff;border-radius:20px;padding:6px;overflow:hidden}
+.lien-bouton{background:none;border:0;color:#ffe3a3;font:800 16px Nunito,system-ui;text-decoration:underline;cursor:pointer;min-height:44px;padding:8px 12px}
+.merci-don{font:800 clamp(18px,4.4vw,22px) Nunito,system-ui;color:#ffe3a3;background:rgba(255,227,163,.12);border:2px solid rgba(255,227,163,.45);border-radius:20px;padding:18px 22px;max-width:640px}
 
 .action{display:grid;gap:14px;justify-items:center;text-align:center;padding:24px 18px;border-radius:26px;background:radial-gradient(100% 140% at 50% 0,rgba(245,185,66,.16),rgba(245,185,66,0) 70%),#241a5e;border:2px dashed rgba(255,227,163,.35)}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:20px;padding:16px 28px;min-height:56px;font:900 clamp(16px,4.4vw,20px) Nunito,system-ui;cursor:pointer;text-decoration:none;letter-spacing:.02em}

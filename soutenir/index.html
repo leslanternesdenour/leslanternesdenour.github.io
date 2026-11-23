@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../univers/univers.css?v=1">
-<link rel="stylesheet" href="soutenir.css?v=1">
+<link rel="stylesheet" href="soutenir.css?v=2">
 </head>
 <body>
 <div id="deco" aria-hidden="true"></div>
@@ -65,21 +65,36 @@
   <!-- ===== Participer ===== -->
   <section class="bloc" id="participer" aria-labelledby="t-part">
     <h2 id="t-part">Participer, si vous le souhaitez</h2>
-    <p class="chapo">Vous êtes libre de contribuer ou non, et de choisir le montant qui vous convient. Voici quelques idées de montants ; vous saisirez le vôtre directement sur la page sécurisée de la cagnotte.</p>
-    <ul class="montants" aria-label="Exemples de montants">
-      <li><b>2 €</b><span>Un petit geste</span></li>
-      <li><b>5 €</b><span>Une participation</span></li>
-      <li><b>10 €</b><span>Un soutien en plus</span></li>
-      <li><b>20 €</b><span>Une contribution plus importante</span></li>
-      <li class="libre"><b>Montant libre</b><span>Chacun selon ses moyens</span></li>
-    </ul>
+    <p class="chapo">Vous êtes libre de contribuer ou non, et de choisir le montant qui vous convient. Le paiement se fait ici, sur un formulaire sécurisé fourni par Stripe : nous ne voyons ni ne conservons vos informations bancaires.</p>
 
     <div class="action" id="zone-action">
-      <!-- Rempli par soutenir.js selon SUPPORT_POT_URL ; repli sans JavaScript : -->
+      <!-- Tant que le don en ligne n'est pas configuré côté serveur (ou sans JavaScript), seul ce message s'affiche : soutenir.js / don.js affichent le formulaire sinon. -->
       <noscript><p class="bientot" role="status">La cagnotte sera bientôt disponible.</p></noscript>
       <p class="bientot" id="msg-bientot" role="status" hidden>La cagnotte sera bientôt disponible.</p>
-      <a class="btn btn-or" id="btn-participer" href="#" target="_blank" rel="noopener noreferrer" hidden>PARTICIPER À LA CAGNOTTE</a>
-      <p class="petit" id="note-leetchi" hidden>Le bouton ouvre la cagnotte dans un nouvel onglet, sur le site de Leetchi. Le paiement est entièrement géré par Leetchi : nous ne collectons aucune information bancaire. Il n'y a aucune obligation de participer, et partager cette page est aussi une aide précieuse.</p>
+
+      <form class="don" id="form-don" novalidate hidden>
+        <fieldset>
+          <legend>Choisissez un montant</legend>
+          <ul class="montants">
+            <li><label><input type="radio" name="montant" value="5"><b>5 €</b><span>Une participation</span></label></li>
+            <li><label><input type="radio" name="montant" value="10"><b>10 €</b><span>Un soutien en plus</span></label></li>
+            <li><label><input type="radio" name="montant" value="20"><b>20 €</b><span>Une contribution plus importante</span></label></li>
+            <li class="libre"><label><input type="radio" name="montant" value="libre"><b>Montant libre</b><span>Chacun selon ses moyens</span></label></li>
+          </ul>
+        </fieldset>
+        <p class="champ-libre" id="champ-libre" hidden><label for="montant-libre">Votre montant, en euros (de 1 à 500)</label><span class="saisie"><input id="montant-libre" type="text" inputmode="numeric" autocomplete="off" maxlength="3"> €</span></p>
+        <p class="erreur" id="erreur-don" role="alert" hidden></p>
+        <button class="btn btn-or" id="btn-continuer" type="submit">CONTINUER VERS LE PAIEMENT</button>
+      </form>
+
+      <div class="paiement-zone" id="zone-paiement" hidden>
+        <div id="paiement"></div>
+        <button class="lien-bouton" id="btn-changer" type="button">‹ Changer le montant</button>
+      </div>
+
+      <p class="merci-don" id="merci-don" role="status" hidden>Merci de tout cœur pour votre soutien ! Votre contribution aide vraiment à faire grandir les Lanternes de Nour.</p>
+
+      <p class="petit" id="note-don" hidden>Contribution unique, sans abonnement ni paiement récurrent. Le paiement est traité par Stripe ; d'autres moyens que la carte bancaire (par exemple Apple Pay ou Google Pay) peuvent être proposés selon votre appareil. Il n'y a aucune obligation de participer, et partager cette page est aussi une aide précieuse.</p>
     </div>
   </section>
 
@@ -159,7 +174,7 @@
   <symbol id="lanterne" viewBox="20 0 60 118"><path d="M50 0v16" stroke="#d9952a" stroke-width="2.4"/><path d="M30 32 38 16h24l8 16z" fill="#f5b942"/><rect x="26" y="32" width="48" height="8" rx="2" fill="#d9952a"/><rect x="28" y="40" width="44" height="46" rx="8" fill="#ffd77a" opacity=".92"/><path d="M36 42v42M50 42v42M64 42v42" stroke="#d9952a" stroke-width="1.6" opacity=".5"/><rect x="26" y="86" width="48" height="8" rx="2" fill="#d9952a"/><path d="M34 94l4 12h24l4-12z" fill="#f5b942"/><path d="M50 106v8" stroke="#d9952a" stroke-width="2.4"/></symbol>
 </defs></svg>
 
-<script type="module" src="soutenir.js?v=1"></script>
+<script type="module" src="soutenir.js?v=2"></script>
 <script src="../univers/univers.js?v=1" defer></script>
 </body>
 </html>

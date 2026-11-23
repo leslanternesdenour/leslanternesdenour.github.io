@@ -1,20 +1,41 @@
-# Cagnotte de soutien — page `/soutenir/`
+# Soutien — page `/soutenir/` (don en ligne par Stripe)
 
-Page dédiée (indépendante des abonnements Premium / Famille, sans Stripe, sans compte, sans collecte de données).
-Fichiers : `soutenir/index.html`, `soutenir/soutenir.css`, `soutenir/soutenir.js`, `soutenir/config.js`.
+Page dédiée, indépendante des abonnements Premium / Famille : sans compte, sans collecte de données par ce site.
+Le paiement est un **formulaire Stripe intégré dans la page** (aucune redirection). Aucune donnée bancaire ne passe par nos serveurs.
 
-## Pour ouvrir la cagnotte (une seule modification)
-1. Créer la cagnotte sur Leetchi (https://www.leetchi.com/fr) et copier son **vrai** lien.
-2. Le coller dans `soutenir/config.js` : `export const SUPPORT_POT_URL = 'https://www.leetchi.com/…';`
-3. Retirer `<meta name="robots" content="noindex">` de `soutenir/index.html` et ajouter `https://leslanternesdenour.fr/soutenir/` à `sitemap.xml` si la page doit être référencée.
-4. Commiter, déployer, vérifier que le bouton « PARTICIPER À LA CAGNOTTE » s'ouvre dans un nouvel onglet.
+Fichiers :
+- page : `soutenir/index.html`, `soutenir/soutenir.css`, `soutenir/soutenir.js` (point d'entrée), `soutenir/don.js` (liaison navigateur), `soutenir/don-logique.js` (logique testée), `soutenir/config.js` ;
+- serveur : `serveur/don.js` (validation, limitation, erreurs neutres), `serveur/stripe.js` (`creerDon`), `functions/api/don/config.js` et `functions/api/don/session.js` ;
+- sécurité : bloc `/soutenir/*` de `_headers` (CSP et Permissions-Policy élargies des seules ressources Stripe) ;
+- tests : `outils/tests/don.test.mjs`, `outils/tests/soutenir-don.test.mjs`, `outils/tests/garde-branche.test.mjs`.
 
-Tant que `SUPPORT_POT_URL` est vide : message « La cagnotte sera bientôt disponible », aucun bouton cliquable.
-Une adresse qui n'est pas en https sur `leetchi.com` est ignorée (sécurité).
+## Comment ça marche
+1. La page demande `GET /api/don/config`. Tant que la clé publiable n'est pas configurée, le serveur répond calmement `200 {"cle": null}` (état normal, pas d'erreur serveur) ; si le serveur ne répond pas du tout, c'est pareil : la page affiche « La cagnotte sera bientôt disponible » et **aucun formulaire**.
+2. Sinon, la personne choisit 5 €, 10 €, 20 € ou un montant libre (euros entiers, 1 à 500). Le montant est **revalidé par le serveur**.
+3. `POST /api/don/session` crée une session Stripe en paiement intégré (`ui_mode: embedded_page`, don unique en euros) et renvoie **uniquement** le secret du formulaire.
+4. La page charge `https://js.stripe.com/endive/stripe.js` et monte le formulaire de paiement dans `#paiement`.
+
+## Secrets (jamais dans le dépôt)
+| Nom | Rôle | Où |
+|---|---|---|
+| `STRIPE_CLE_SECRETE` | clé secrète (`sk_test_…` en test) | tableau de bord Cloudflare (Pages → Réglages → Variables et secrets) ; en local : fichier `.dev.vars` (ignoré par Git) |
+| `STRIPE_CLE_PUBLIABLE` | clé publiable (`pk_test_…`), qui est publique | idem |
+
+- Une clé réelle (`sk_live_…`) est **refusée** par le code tant que `STRIPE_MODE_REEL` ne vaut pas `autorise` (décision du créateur, voir `serveur/stripe.js`).
+- La préproduction est un déploiement d'aperçu (« Preview ») : y mettre uniquement des clés de **test**, dans les secrets de l'environnement Preview, jamais ceux de la production.
+- Le serveur ne renvoie jamais une clé : `GET /api/don/config` n'accepte qu'une valeur commençant par `pk_`.
+
+## Version de l'API Stripe
+Le don fixe `Stripe-Version: 2026-11-18.endive` (constante `VERSION_API_DON` dans `serveur/stripe.js`) et la page charge le script `endive` : les deux doivent rester cohérents. Cette version n'est appliquée **qu'au don** : les appels des abonnements Premium ne sont pas modifiés.
+
+## Pour ouvrir le don en ligne (quand le compte Stripe est prêt)
+1. Tester d'abord en mode test avec des cartes fictives (https://docs.stripe.com/testing), y compris dans la console du navigateur : aucune erreur de politique de sécurité (CSP).
+2. Renseigner le RIB et terminer la vérification du compte dans Stripe (nécessaire pour recevoir de l'argent réel, pas pour le mode test).
+3. Pour Apple Pay : déclarer le domaine `leslanternesdenour.fr` dans Stripe (Réglages → Moyens de paiement → Domaines de moyens de paiement) ; cela ne fonctionne qu'avec un compte activé.
+4. Passage en réel : décision explicite du créateur (clés réelles + `STRIPE_MODE_REEL=autorise`), après relecture des pages légales (Stripe comme sous-traitant de paiement).
+5. Retirer `<meta name="robots" content="noindex">` de `soutenir/index.html` et ajouter `https://leslanternesdenour.fr/soutenir/` à `sitemap.xml` si la page doit être référencée.
 
 ## Règles respectées
 Contribution facultative ; aucun contenu gratuit bloqué ; aucun montant collecté ni contributeur affiché (la répartition est une **estimation prévisionnelle**) ; pas de contribution récurrente ; pas de compte à rebours ; pas de promesse de réduction fiscale ; le projet n'est pas présenté comme une association.
 
-## À fournir par le responsable du projet (non inventé)
-Éventuelles informations légales (statut, identité du porteur de la cagnotte, adresse de contact), si Leetchi ou la loi l'exigent ; elles ne figurent pas sur la page.
 Accès : pied de page de l'accueil (`index.html`) et de la page « Découvrir » (`decouvrir/index.html`). Aucune sollicitation dans les jeux.

@@ -28,7 +28,7 @@
 | Grand Voyage de Nour | Non audité par ma session (tests du dépôt verts) | `voyage/` |
 | Comptes, espace famille, profils enfants, sauvegardes | **Non touchés ni revérifiés** ; comptes non fonctionnels sur l'aperçu (Preview sans secrets, d'après la doc) | `compte/`, `functions/`, `serveur/` |
 | Premium / Famille / Stripe | **Non touchés** ; Stripe en mode test, non configuré en production, aucun paiement réel | `tarifs/`, `serveur/` |
-| Cagnotte `/soutenir/` | Réalisée et en ligne en préprod ; **bouton volontairement absent** (lien Leetchi inexistant) ; page `noindex` | `soutenir/`, `docs/SOUTIEN-CAGNOTTE.md` |
+| Cagnotte `/soutenir/` | Réalisée et en ligne en préprod ; **don en ligne par formulaire Stripe intégré, fermé tant que les clés Stripe ne sont pas configurées** ; page `noindex` | `soutenir/`, `docs/SOUTIEN-CAGNOTTE.md` |
 | Firebase / Cloudflare / GitHub / sécurité | Voir `ETAT-TECHNIQUE-ACTUEL.md` ; aucune protection modifiée ; aucun secret dans le dépôt | — |
 | Mobile + ordinateur | Chargement des 6 jeux sans débordement sur 3 tailles ; parcours complets : voir TODO P1-3 | — |
 
@@ -103,7 +103,7 @@ node outils/icones-ecole/generer.mjs
 1. Élucider P1-1 (Ablutions 3D, mode Apprendre) : rejouer à la main puis relancer `outils/audit-jeux/ablu3d-jeu.js`.
 2. Exécuter `outils/audit-jeux/pri3d-jeu.js` (Prière 3D) et corriger ce qui est réellement défectueux.
 3. Parcours téléphone/tablette des autres jeux ; corriger P1-2 (une ligne dans `ecole-arabe/index.html`) ; relancer `tout.sh`.
-4. Remettre au responsable le **rapport d'audit final** (tableau des six jeux, honnête sur ce qui n'a pas pu être testé) et lui poser **une seule fois** les questions 🧑 (lien Leetchi, validations religieuses, choix du village, contraste/sections manquantes de la cagnotte).
+4. Remettre au responsable le **rapport d'audit final** (tableau des six jeux, honnête sur ce qui n'a pas pu être testé) et lui poser **une seule fois** les questions 🧑 (clés Stripe et RIB, validations religieuses, choix du village, contraste/sections manquantes de la cagnotte).
 
 ## 13. Modèle et effort recommandés pour la reprise
 **Claude Opus 5.5 (contexte étendu), effort « high »** pour cette reprise : dépôt volumineux, débogage 3D (swiftshader) et tests longs. Sonnet 5.5 convient pour des corrections ciblées ou la maintenance courante.
@@ -116,6 +116,6 @@ Tu reprends le projet « Les Lanternes de Nour » (dépôt GitHub leslanternesde
 2) AVANT toute modification, vérifie toi-même l'état Git : branche active (doit être « preproduction »), « git status », dernier commit (« git log -3 »), écart avec origin/preproduction (git fetch puis git rev-list --left-right --count origin/preproduction...HEAD), absence de verrous/opérations en cours (ls .git ; find .git -name '*.lock' ; git worktree list). Confirme-moi que « preproduction » est accessible et non bloquée, et mentionne toute modification non enregistrée sans la jeter.
 3) Comprends ce qui est déjà terminé (PASSATION § 2 et § 4) et NE LE REFAIS PAS (pas d'audit général déjà réalisé, pas de refonte des jeux).
 4) Reprends directement la prochaine tâche prioritaire (PASSATION § 12 / TODO P1-1 à P1-3) : audit des six jeux là où il s'est arrêté (Ablutions 3D, Prière 3D, parcours téléphone/tablette), correction des défauts réels, puis rapport honnête au responsable.
-5) Respecte TOUTES les règles permanentes (PASSATION § 7) : travail uniquement sur « preproduction » ; jamais de modification de « production » ni de « main » et aucun déploiement en production sans accord explicite ; aucun push forcé ; préserver comptes, profils enfants, progressions, récompenses, sauvegardes (dont la branche backup-village-avant-refonte, intangible) ; ne pas toucher à Firebase, aux prix ni aux paiements ; aucun secret affiché ; ElevenLabs : seulement les 10 voix « Nour - … », aucun crédit gaspillé, jamais de récitation coranique synthétisée ; contenu religieux incertain = le signaler, ne pas le modifier ; n'invente aucun lien ni information juridique (la cagnotte attend le vrai lien Leetchi du responsable).
+5) Respecte TOUTES les règles permanentes (PASSATION § 7) : travail uniquement sur « preproduction » ; jamais de modification de « production » ni de « main » et aucun déploiement en production sans accord explicite ; aucun push forcé ; préserver comptes, profils enfants, progressions, récompenses, sauvegardes (dont la branche backup-village-avant-refonte, intangible) ; ne pas toucher à Firebase, aux prix ni aux paiements ; aucun secret affiché ; ElevenLabs : seulement les 10 voix « Nour - … », aucun crédit gaspillé, jamais de récitation coranique synthétisée ; contenu religieux incertain = le signaler, ne pas le modifier ; n'invente aucun lien ni information juridique (le don en ligne attend les clés Stripe du responsable).
 Travaille de façon autonome, avec des commits propres et fréquents (« git push origin preproduction » simple), teste ce que tu modifies, et ne me demande pas de valider chaque petite décision technique. Signale seulement les vrais blocages. Modèle recommandé : Claude Opus 5.5, effort « high ».
 ```

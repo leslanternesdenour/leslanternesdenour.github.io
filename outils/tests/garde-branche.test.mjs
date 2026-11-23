@@ -27,8 +27,30 @@ test('CSP : /compte/, /admin/, /apercu/ élargies de apis.google.com + cadre fir
     assert.deepEqual(Object.keys(e).sort(), Object.keys(base).sort(), b + ' : mêmes directives');
     for (const k of Object.keys(base)) { const ajouts = e[k].filter(x => !base[k].includes(x)); const attendus = k === 'script-src' ? ['https://apis.google.com'] : k === 'frame-src' ? ['https://lanternes-de-nour.firebaseapp.com'] : []; assert.deepEqual(ajouts, attendus, b + ' ' + k); assert.deepEqual(base[k].filter(x => !e[k].includes(x)), [], b + ' ' + k + ' : rien de retiré'); }
   }
-  for (const b of Object.keys(blocs)) if (!['/compte/*', '/admin/*', '/apercu/*', '/*'].includes(b)) assert.ok(!blocs[b].some(x => /^Content-Security-Policy:/.test(x)), b + ' : pas de CSP propre');
+  for (const b of Object.keys(blocs)) if (!['/compte/*', '/admin/*', '/apercu/*', '/soutenir/*', '/*'].includes(b)) assert.ok(!blocs[b].some(x => /^Content-Security-Policy:/.test(x)), b + ' : pas de CSP propre');   // /soutenir/* : contenu fixé par le test suivant (ressources Stripe uniquement)
   assert.ok(!/unsafe-eval/.test(csp('/compte/*')), 'pas de unsafe-eval');
+});
+
+// CSP du don en ligne : /soutenir/* est élargie des seules ressources Stripe documentées (docs.stripe.com/security/guide : Stripe.js + Checkout), rien d'autre.
+test('CSP : /soutenir/* élargie des seules ressources Stripe (paiement intégré) ; paiement du navigateur ouvert à Stripe seulement', () => {
+  const t = fs.readFileSync('_headers', 'utf8'); const blocs = {}; let cur = null;
+  for (const l of t.split('\n')) { if (/^\//.test(l)) { cur = l.trim(); blocs[cur] = blocs[cur] || []; } else if (cur && /^\s+\S/.test(l)) blocs[cur].push(l.trim()); }
+  const csp = b => (blocs[b].find(x => /^Content-Security-Policy:/.test(x)) || '').replace(/^Content-Security-Policy:\s*/, '');
+  const dirs = c => Object.fromEntries(c.split(';').map(x => x.trim()).filter(Boolean).map(x => { const [k, ...v] = x.split(/\s+/); return [k, v]; }));
+  const base = dirs(csp('/*')), b = '/soutenir/*';
+  assert.ok(blocs[b], b + ' : bloc présent');
+  assert.ok(blocs[b].includes('! Content-Security-Policy'), 'la CSP stricte héritée doit être retirée'); assert.equal(blocs[b].filter(x => /^Content-Security-Policy:/.test(x)).length, 1);
+  const e = dirs(csp(b));
+  assert.deepEqual(Object.keys(e).sort(), Object.keys(base).sort(), 'mêmes directives');
+  const attendus = { 'script-src': ['https://*.js.stripe.com', 'https://checkout.stripe.com', 'https://js.stripe.com'], 'connect-src': ['https://api.stripe.com', 'https://checkout.stripe.com'],
+    'frame-src': ['https://*.js.stripe.com', 'https://checkout.stripe.com', 'https://hooks.stripe.com', 'https://js.stripe.com'], 'img-src': ['https://*.stripe.com'] };
+  for (const k of Object.keys(base)) { assert.deepEqual(e[k].filter(x => !base[k].includes(x)).sort(), attendus[k] || [], b + ' ' + k); assert.deepEqual(base[k].filter(x => !e[k].includes(x)), [], k + ' : rien de retiré'); }
+  assert.ok(!/unsafe-eval/.test(csp(b)), 'pas de unsafe-eval');
+  // Permissions-Policy : « payment » (Apple Pay / Google Pay) est bloqué partout (payment=()) ; sur cette page seulement, il est délégué à Stripe. Tout le reste reste bloqué.
+  assert.ok(blocs[b].includes('! Permissions-Policy'));
+  const pp = blocs[b].find(x => /^Permissions-Policy:/.test(x)) || '';
+  assert.match(pp, /payment=\(self "https:\/\/js\.stripe\.com" "https:\/\/\*\.js\.stripe\.com" "https:\/\/checkout\.stripe\.com"\)/);
+  for (const f of ['camera', 'microphone', 'geolocation', 'usb', 'interest-cohort']) assert.match(pp, new RegExp(f + '=\\(\\)'), f + ' reste bloqué');
 });
 
 // ----- Mise en production : « main » n'est construite que si SON wrangler.toml déclare la production (acte explicite et versionné) -----

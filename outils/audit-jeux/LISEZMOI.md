@@ -19,7 +19,7 @@
 | `ablu3d-jeu.js` | `pc` | modes Apprendre / S'entraîner / Libre — **bloque à l'étape 5 (voir `TODO-RESTANT-PROJET.md` P1-1)** |
 | `pri3d-jeu.js` | `pc` | modes Guidé / S'entraîner (2 rak‘at) / Libre — **jamais exécuté** |
 | `fumee.js` | — | chargement des 11 pages × 3 tailles (JS, réseau, débordement) |
-| `soutenir.js` | — | page `/soutenir/` : 3 tailles + 4 cas d'URL Leetchi simulés |
+| `soutenir.js` | — | page `/soutenir/` : état « bientôt » sur 3 tailles + formulaire de don (réponses serveur simulées, aucun paiement) |
 
 ## Scripts de contenu (lecture seule, sans navigateur)
 `quiz-contenu.mjs` (liste des 96 questions), `quiz-ids-voix.mjs` (213 voix requises présentes), `cal-data.mjs`/`cal-contenu.mjs` (structure et contenu du calendrier), `cal-ids-voix.mjs` (identifiants de voix du calendrier), `ablutions-2d-vs-3d.mjs` (contenus identiques). L'audit audio des 313 clips du Monde est `outils/tests/audit-audio-monde.mjs`.
