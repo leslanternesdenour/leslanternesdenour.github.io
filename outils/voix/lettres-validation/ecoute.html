@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<title>Écoute guidée des 28 lettres · outil interne</title>
+<style>
+:root{--fond:#14102e;--carte:#221b52;--or:#f5b942;--ok:#6fd49a;--ko:#ff8c8c;--nsp:#ffd27a}
+*{box-sizing:border-box}body{margin:0;background:var(--fond);color:#f4efff;font:17px/1.5 system-ui,Segoe UI,sans-serif;padding:14px}
+main{max-width:760px;margin:0 auto}h1{font-size:22px;margin:6px 0}a{color:#ffe3a3}
+.avert{background:#4a1f2a;border:2px solid var(--ko);border-radius:14px;padding:10px 14px;margin:10px 0;font-size:15px}
+.barre{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 0}select{font:inherit;padding:8px;border-radius:10px;background:#2b2366;color:#fff;border:2px solid #5b4fb0;min-height:44px}
+.prog{flex:1;min-width:160px}.prog div{height:10px;border-radius:6px;background:#2b2366;overflow:hidden}.prog i{display:block;height:100%;background:var(--or);width:0}
+.carte{background:var(--carte);border-radius:22px;padding:18px;text-align:center}
+.gly{font:700 110px/1.1 'Amiri','Noto Naskh Arabic','Traditional Arabic',serif;direction:rtl}.nomlettre{color:#b9afe6;font-size:14px}
+.lire{font:700 46px 'Amiri','Noto Naskh Arabic',serif;direction:rtl;margin:4px 0;color:#fff}.el{font-weight:700;color:var(--or)}
+.mk{font-size:14px;color:#d8cff5;margin:8px 0}.mk .ar{display:block;font:400 20px 'Amiri',serif;direction:rtl}
+.btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:14px 0}
+button{font:inherit;cursor:pointer;border-radius:14px;border:2px solid #5b4fb0;background:#2b2366;color:#fff;padding:10px 16px;min-height:52px}
+button.grand{font-size:20px;min-width:140px}.ok{border-color:var(--ok);background:#173b2b}.ko{border-color:var(--ko);background:#4a1f2a}.nsp{border-color:var(--nsp);background:#4a3d12}
+button.sel{outline:3px solid #fff}.etat{min-height:26px;font-weight:700}.etat.ok{color:var(--ok);background:none}.etat.ko{color:var(--ko);background:none}.etat.nsp{color:var(--nsp);background:none}
+textarea{width:100%;min-height:54px;border-radius:12px;border:1px solid #5b4fb0;background:#14102e;color:#fff;padding:8px;font:inherit;display:none}
+.voix{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:10px}.voix button{min-height:38px;padding:4px 10px;font-size:14px}
+.nd{color:#9b92cf;font-size:13px}.fin{display:none;background:var(--carte);border-radius:18px;padding:16px;margin-top:14px}
+</style></head><body><main>
+<h1>Écoute guidée — un clip à la fois</h1>
+<p class="nd"><a href="./">← vue d'ensemble des 28 lettres</a></p>
+<div class="avert"><b>Outil interne — rien n'est remplacé sur le site.</b> Ces clips sont de la <b>synthèse NON validée</b>. Ton « ✓ valider » est <b>ton</b> jugement ; la validation définitive revient à une personne compétente en arabe littéraire. Raccourcis : <b>Espace</b> rejouer · <b>V</b> valider · <b>X</b> à refaire · <b>D</b> doute · <b>←/→</b> clip précédent/suivant.</div>
+<div class="barre"><label>Voix : <select id="voix"></select></label><div class="prog"><div><i id="barre"></i></div><span class="nd" id="progres"></span></div></div>
+<div class="carte" id="carte">
+  <div class="gly" id="gly" lang="ar"></div><div class="nomlettre" id="nomlettre"></div>
+  <div class="el" id="el"></div><div class="lire" id="lire" lang="ar"></div>
+  <div class="mk" id="mk"></div>
+  <div class="btns"><button class="grand" id="rejouer">▶ Rejouer</button></div>
+  <div class="btns"><button class="grand ok" id="valide">✓ Valider</button><button class="grand ko" id="refaire">✗ À refaire</button><button class="nsp" id="doute">? Doute</button></div>
+  <textarea id="note" placeholder="Ce qui ne va pas (voyelle, articulation, francisation, durée…) — facultatif"></textarea>
+  <div class="etat" id="etat"></div>
+  <div class="btns"><button id="prec">← Précédent</button><button id="suiv">Suivant →</button><button id="prochain">Prochain non jugé ⏭</button></div>
+  <div class="voix" id="voixbtns"><span class="nd">Comparer les voix sur ce clip :</span></div>
+</div>
+<div class="fin" id="fin"><b>Bilan de cette voix</b><div id="bilan"></div><div class="btns"><button id="exp">Exporter (JSON)</button><button id="copie">Copier le bilan</button></div></div>
+</main><audio id="lecteur" preload="auto"></audio>
+<script type="module">
+import { ALPHABET } from '../../../ecole-arabe/commun/langue/alphabet.js';
+import { MAKHRAJ, VOIX_NOUR, fiche, audioActuel, urlCandidat } from './donnees.js';
+const $ = id => document.getElementById(id), lecteur = $('lecteur'), CLE = 'ldn-validation-guidee-v1';
+const CLIPS = fiche(ALPHABET), NOMS_EL = { nom: 'Nom de la lettre', fatha: 'Son avec فتحة', damma: 'Son avec ضمّة', kasra: 'Son avec كسرة' };
+let verdicts = {}; try { verdicts = JSON.parse(localStorage.getItem(CLE) || '{}'); } catch (e) {}
+const sauver = () => { try { localStorage.setItem(CLE, JSON.stringify(verdicts)); } catch (e) {} };
+const sel = $('voix'); sel.innerHTML = `<option value="actuel">ACTUEL (site, non validé)</option>` + Object.entries(VOIX_NOUR).map(([k, v]) => `<option value="${k}">${v.nom.replace('Nour - ', '')}</option>`).join('');
+sel.value = new URLSearchParams(location.search).get('voix') || 'narratrice'; if (!sel.value) sel.value = 'narratrice';
+let i = Math.max(0, Math.min(CLIPS.length - 1, Number(new URLSearchParams(location.search).get('clip') || 1) - 1));
+const cle = (voix, c) => `${voix}:${c.id}.${c.element}`;
+const url = (voix, c) => { if (voix === 'actuel') { const a = audioActuel(c.id); return c.element === 'nom' ? '/' + a.nom : c.element === 'fatha' ? '/' + a.fatha : null; } return '/' + urlCandidat(c.id, c.element, voix); };
+function jouer() { const c = CLIPS[i], u = url(sel.value, c); lecteur.pause(); if (!u) { $('etat').textContent = 'Pas d\'audio actuel pour cette voyelle (non produit).'; $('etat').className = 'etat nsp'; return; } lecteur.src = u; lecteur.play().catch(() => {}); }
+function maj() {
+  const c = CLIPS[i], a = ALPHABET.find(x => x.id === c.id), voix = sel.value, v = verdicts[cle(voix, c)];
+  $('gly').textContent = a.ar; $('nomlettre').textContent = `${a.num} / 28 · ${a.translit} · ${a.nomAr}`; $('el').textContent = NOMS_EL[c.element]; $('lire').textContent = c.texte;
+  $('mk').innerHTML = `Point d'articulation <span class="nd">(proposé — à valider)</span><span class="ar" lang="ar">${MAKHRAJ[c.id].ar}</span>${MAKHRAJ[c.id].fr}`;
+  $('note').style.display = v && v.v === 'ko' ? 'block' : 'none'; $('note').value = (v && v.n) || '';
+  const t = { ok: '✓ validé par toi', ko: '✗ à refaire', nsp: '? doute' }; $('etat').textContent = v ? t[v.v] : ''; $('etat').className = 'etat ' + (v ? v.v : '');
+  for (const b of ['valide', 'refaire', 'doute']) $(b).classList.remove('sel'); if (v) $({ ok: 'valide', ko: 'refaire', nsp: 'doute' }[v.v]).classList.add('sel');
+  const faits = CLIPS.filter(x => verdicts[cle(voix, x)]).length; $('progres').textContent = `clip ${i + 1} / ${CLIPS.length} · ${faits} jugés avec cette voix`; $('barre').style.width = (faits / CLIPS.length * 100) + '%';
+  document.querySelectorAll('#voixbtns button').forEach(b => b.classList.toggle('sel', b.dataset.v === voix));
+  const bil = { ok: 0, ko: 0, nsp: 0 }; for (const x of CLIPS) { const y = verdicts[cle(voix, x)]; if (y) bil[y.v]++; }
+  $('fin').style.display = faits ? 'block' : 'none'; $('bilan').textContent = `✓ ${bil.ok} validés · ✗ ${bil.ko} à refaire · ? ${bil.nsp} doutes · ${CLIPS.length - faits} non jugés`;
+}
+function aller(n, lire = true) { i = Math.max(0, Math.min(CLIPS.length - 1, n)); maj(); if (lire) jouer(); }
+function juger(v) { const c = CLIPS[i], k = cle(sel.value, c); verdicts[k] = { ...(verdicts[k] || {}), v, voix: sel.value, lettre: c.id, element: c.element, texte: c.texte, date: new Date().toISOString() }; sauver(); maj(); if (v !== 'ko') setTimeout(() => aller(i + 1), 350); }
+$('valide').onclick = () => juger('ok'); $('refaire').onclick = () => juger('ko'); $('doute').onclick = () => juger('nsp');
+$('note').oninput = e => { const k = cle(sel.value, CLIPS[i]); verdicts[k] = { ...(verdicts[k] || {}), n: e.target.value }; sauver(); };
+$('rejouer').onclick = jouer; $('prec').onclick = () => aller(i - 1); $('suiv').onclick = () => aller(i + 1);
+$('prochain').onclick = () => { const n = CLIPS.findIndex((c, k) => k > i && !verdicts[cle(sel.value, c)]); aller(n >= 0 ? n : CLIPS.findIndex(c => !verdicts[cle(sel.value, c)])); };
+sel.onchange = () => { maj(); jouer(); };
+$('voixbtns').insertAdjacentHTML('beforeend', Object.entries(VOIX_NOUR).map(([k, v]) => `<button data-v="${k}">${v.nom.replace('Nour - ', '').replace(/ \(.*\)/, '')}</button>`).join(''));
+$('voixbtns').onclick = e => { const b = e.target.closest('button'); if (!b) return; sel.value = b.dataset.v; maj(); jouer(); };
+addEventListener('keydown', e => { if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return; const k = e.key.toLowerCase();
+  if (e.code === 'Space') { e.preventDefault(); jouer(); } else if (k === 'v') juger('ok'); else if (k === 'x') juger('ko'); else if (k === 'd') juger('nsp'); else if (e.key === 'ArrowRight') aller(i + 1); else if (e.key === 'ArrowLeft') aller(i - 1); });
+const exporter = () => JSON.stringify({ outil: 'validation-guidee-28-lettres', date: new Date().toISOString(), voix: sel.value, jugements: Object.values(verdicts).filter(x => x.voix === sel.value) }, null, 2);
+$('exp').onclick = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([exporter()], { type: 'application/json' })); a.download = `validation-${sel.value}.json`; a.click(); };
+$('copie').onclick = () => navigator.clipboard.writeText(exporter()).then(() => { $('copie').textContent = 'Copié ✓'; setTimeout(() => $('copie').textContent = 'Copier le bilan', 1500); });
+maj();
+</script></body></html>
