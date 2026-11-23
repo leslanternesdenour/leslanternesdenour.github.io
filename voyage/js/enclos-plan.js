@@ -47,3 +47,9 @@ export function etape(de, vers) {
   if (ax > ENCLOS.demi - 0.2 && de.z < DEVANT + 1.2) return { x: de.x, z: DEVANT + 1.6 };      // le long de la clôture : d'abord s'écarter vers l'avant
   return ax > 1.2 ? ENTREE : PORTE_DEDANS;
 }
+
+// Le prochain point à viser quand une monture, APPELÉE par l'enfant, sort de l'enclos : d'abord la porte (dedans), puis l'entrée, puis l'enfant. Jamais à travers la clôture.
+export function sortie(de, vers) {
+  if (!dansEnclos(de.x, de.z)) return vers;
+  return Math.abs(de.x - ECURIE.x) > 1.2 ? PORTE_DEDANS : ENTREE;
+}

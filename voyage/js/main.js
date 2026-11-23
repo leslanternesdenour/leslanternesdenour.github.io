@@ -23,7 +23,7 @@ import { RARETES, articlesDuJour, modeleObjet } from './catalogue.js?v=3';
 import { Voyageur, TENUES, PEAUX, convient } from './voyageur.js?v=9';
 import { creerCour } from './cour.js?v=3';
 import { MONTURES, monture, creerMonture, creerEcurie, FICHES_ESPECES } from './montures.js?v=5';
-import { ECURIE as ECURIE_PLAN, NID_LOUMI, dansEnclos, pres as presEcurie, etape as etapeEnclos } from './enclos-plan.js?v=1';
+import { ECURIE as ECURIE_PLAN, NID_LOUMI, dansEnclos, pres as presEcurie, etape as etapeEnclos, sortie as sortieEnclos } from './enclos-plan.js?v=2';
 import { creerVeille } from './veille.js?v=1';
 import { COLLECTIONS, BADGES, progressionCollection } from './succes.js?v=3';
 import { creerGuide } from './guide.js?v=3';
@@ -1455,7 +1455,8 @@ async function demarrer() {
         const ex = J.x - C.x, ez = J.z - C.z, dist = Math.hypot(ex, ez);
         if (dist < 3.4) { C.venir = false; C.vit = 0; }
         else {
-          const ecart = angleVers(C.a, Math.atan2(ex, ez));
+          const but = sortieEnclos({ x: C.x, z: C.z }, { x: J.x, z: J.z });      // appelée depuis l'enclos : la monture passe par la porte, jamais à travers la clôture
+          const ecart = angleVers(C.a, Math.atan2(but.x - C.x, but.z - C.z));
           C.a += Math.sign(ecart) * Math.min(Math.abs(ecart), dt * 2.5);
           C.vit += ((dist > 20 ? 9 : 5) - C.vit) * Math.min(1, dt * 2);
           bouger(C, Math.sin(C.a) * C.vit * dt, Math.cos(C.a) * C.vit * dt, 1.1, dt);
