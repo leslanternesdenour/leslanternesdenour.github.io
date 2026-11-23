@@ -7,6 +7,11 @@ compatibility_date = "2026-11-01"
 ENVIRONNEMENT = "preproduction"
 # Identifiant PUBLIC du projet Firebase (pas un secret).
 FIREBASE_PROJET = "lanternes-de-nour"
+# Identifiants PUBLICS (pas des secrets) des 3 tarifs Stripe en MODE TEST, créés le 23/11/2026 : préproduction uniquement.
+# La production aura ses propres identifiants (mode réel), créés dans Stripe au moment de l'ouverture des paiements.
+STRIPE_PRIX_PREMIUM_MENSUEL = "price_1Uev94D88y9eITej7dv4VPA9"
+STRIPE_PRIX_PREMIUM_ANNUEL = "price_1Uev96D88y9eITejxWarVO7v"
+STRIPE_PRIX_FAMILLE_ANNUEL = "price_1Uev97D88y9eITejrIU7gGiF"
 
 # --- Raccordements (rien n'est activé ici ; voir _documentation/PREPRODUCTION_ACTIONS.md) ---
 # Avec ce fichier, Cloudflare le traite comme référence : les variables NON secrètes (identifiants publics) se déclarent ICI

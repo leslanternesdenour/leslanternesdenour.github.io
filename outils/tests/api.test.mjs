@@ -218,6 +218,16 @@ test('Stripe (mode test) : paiement, webhooks signés, doublons, résiliation, f
   assert.throws(() => clientStripe({ STRIPE_CLE_SECRETE: 'sk_live_xxx' }), /mode test/, 'clé réelle refusée sans accord');
 });
 
+test('Stripe, API récentes : la fin de période est lue dans items.data[0] quand elle n\'est plus au niveau de l\'abonnement (sinon un abonné payant passerait en Gratuit)', async () => {
+  const c = await connecter('uid-api-recente', { email: 'recente@exemple.fr' });
+  const fin = Math.floor((maintenant + 30 * J) / 1000);
+  const ev = { id: 'evt_items_periode', livemode: false, type: 'customer.subscription.created', data: { object: { id: 'sub_recente', customer: 'cus_recente', status: 'active', cancel_at_period_end: false, metadata: { uid: 'uid-api-recente' }, items: { data: [{ price: { id: 'price_pm' }, current_period_end: fin }] } } } };
+  assert.equal((await webhook(ev)).s, 200);
+  const moi = (await appel('GET', '/api/moi', { cookie: c })).j;
+  assert.equal(moi.statut, 'abonne');
+  assert.equal(moi.niveau, 'premium');
+});
+
 test('Contenus Premium : 401 / 403 / 200 selon les droits, jamais en cache, chemins piégés refusés', async () => {
   assert.equal((await appel('GET', '/api/premium/voyage/camp/zone.json')).s, 401, 'visiteur');
   const g = await connecter('uid-gratuit2');
