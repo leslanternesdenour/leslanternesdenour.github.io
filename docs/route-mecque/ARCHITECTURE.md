@@ -144,3 +144,19 @@ Tests : unitaires (relief pur, tuiles, sauvegarde/reprise, drapeau d'hôte, coll
 - Poids de la ville (phase 6) : fusion de géométries et distance de coupe obligatoires.
 - `main.js` fait 1 738 lignes : l'intégration `mondeActif` doit rester une couche mince, avec un test de non-régression avant/après.
 - Voix et prononciations arabes : tout reste en texte tant que le créateur n'a pas écouté et validé.
+
+---
+
+## 14. Mise en œuvre de la première tranche (préproduction, 23/11/2026)
+
+**Écarts par rapport au plan ci-dessus (à connaître) :**
+- **Repère réel** : x = t (écart latéral), z = `DEC` + s avec `DEC = 20000` (voir `voyage/js/route/relief.js`). La Route est dans la même scène que le village, mais si loin qu'aucun objet du village ne peut se déclencher. Le sol de la Route répond au même `terrain.hauteur` / `terrain.matiere` que le village (surcharge sur l'instance), donc pas, ombres, monture et pièces fonctionnent sans changement.
+- **Sortie du village à l'EST, pas au sud** : la zone « dunes » du village est Premium (fermée hors abonnement, et toujours fermée sur la préproduction, comptes en erreur 503). Une sortie au sud était bloquée. La piste de sortie part de la route de l'oasis (zone gratuite), passe au sud du lac et traverse le rempart de dunes à l'est (brèche dans `terrain.js`, activée seulement si la Route l'est). Un test vérifie que la piste ne traverse aucune zone Premium.
+- **Aucune nouvelle clé de sauvegarde, aucun changement de `CLES_JEU`** : tout est dans `etat.route` (clé `monde_voyage`). Sur la Route, `etat.joueur` / `etat.chameau` (village) ne sont pas écrasés.
+- **Durée** (vitesses réelles du jeu, testées) : première tranche (2 900 m) ≈ 14,6 min à pied, ≈ 7,8 min en courant ; grand voyage complet (5 600 m) ≈ 28 min à pied.
+- **Dromadaire offert** : « Rihla » (fictif), ajouté à `MONTURES` seulement en préproduction, donné à l'arrivée à l'oasis (`AV.montures`), masqué à l'écurie tant qu'il n'est pas gagné (`offerte: true`).
+- **Voix** : aucune. Les textes s'affichent sans audio ; aucune phrase n'est enregistrée avant validation.
+
+**Fichiers** (`voyage/js/route/`) : `drapeau` (hôtes autorisés) · `etat-route` (sauvegarde) · `bruit`, `relief` (relief pur) · `donnees` (régions, lieux, sac, missions, ouverture, seuil) · `textes-route` (textes non religieux) · `contenu-a-valider` (religieux/historique, « À VALIDER ») · `missions-route`, `badges-route`, `carnet-route` · `tuiles-plan`, `decor-plan` (découpage et semis purs) · `monde` (terrain par tuiles, fond lointain, décor en instances) · `lieux-3d` · `village-route` (relais, panneau, éboulis) · `carte-route` · `jeu-route` (chef d'orchestre). Branchement : quelques lignes dans `main.js`, toutes derrière `routeActive()` et en `import()` dynamique.
+
+**Reste à faire pour les tranches suivantes** : montagnes et passages, cité et Kaaba, Zamzam/Safa/Marwa/Jabal an-Nour/Jabal Thawr, personnages et missions complets, voix après validation, sons d'ambiance propres à la Route, tests de charge sur vrais mobiles. Les noms définitifs des lieux et tous les textes religieux restent à valider.

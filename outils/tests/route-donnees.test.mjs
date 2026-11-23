@@ -79,14 +79,31 @@ test('seuil : la piste du village mène au seuil ; on passe d\'un monde à l\'au
   const { SORTIE_VILLAGE, auSeuilVillage, versLaRoute, auRetourRoute, versLeVillage } = await import('../../voyage/js/route/donnees.js');
   const { DEC, dansLaRoute } = await import('../../voyage/js/route/relief.js');
   const fin = SORTIE_VILLAGE.at(-1);
-  assert.ok(fin[1] <= 358, 'la piste reste dans les limites du village (360)');
-  assert.equal(auSeuilVillage(50, 330), false); assert.equal(auSeuilVillage(50, 349), true); assert.equal(auSeuilVillage(-200, 349), false, 'hors de la piste');
-  const arrivee = versLaRoute({ x: 52, z: 350, a: 0.2 });
+  assert.ok(fin[0] <= 358, 'la piste reste dans les limites du village (360)');
+  // la sortie est à l'EST, par la zone gratuite de l'oasis : elle ne traverse aucune zone Premium (dunes, camp, col, montagnes, wadi, rochers)
+  for (const [x, z] of SORTIE_VILLAGE) for (const [nom, c] of Object.entries({ dunes: [30, 230, 124], camp: [-175, 60, 46], wadi: [-245, 175, 50], rochers: [150, -95, 44], montagnes: [0, -265, 74] }))
+    assert.ok(Math.hypot(x - c[0], z - c[1]) > c[2], `la piste de sortie traverse la zone ${nom} (Premium)`);
+  assert.equal(auSeuilVillage(330, 50), false); assert.equal(auSeuilVillage(349, 50), true); assert.equal(auSeuilVillage(349, -200), false, 'hors de la piste');
+  const arrivee = versLaRoute({ x: 350, z: 50, a: Math.PI / 2 });
   assert.ok(dansLaRoute(arrivee.z) && arrivee.z > DEC - 100 && arrivee.z < DEC, 'on arrive juste avant le seuil de la Route');
-  assert.equal(arrivee.a, 0.2, 'même direction : pas de demi-tour surprise');
+  assert.ok(Math.abs(arrivee.a) < 1e-9, 'on regardait vers l\'est, on regarde maintenant vers l\'avant de la piste : pas de demi-tour surprise');
+  assert.ok(Math.abs(arrivee.x - 46) < 1e-9, 'au centre de la piste quand on arrive au milieu de la sortie');
   assert.equal(auRetourRoute(arrivee.z), false, 'on n\'est pas renvoyé tout de suite au village');
   assert.equal(auRetourRoute(DEC - 80), true);
-  const retour = versLeVillage({ x: 48, z: DEC - 80, a: 3 });
+  const retour = versLeVillage({ x: 46, z: DEC - 80, a: Math.PI });
   assert.equal(auSeuilVillage(retour.x, retour.z), false, 'au retour on n\'est pas renvoyé tout de suite sur la Route');
-  assert.ok(retour.z < 345 && retour.z > 300);
+  assert.ok(retour.x < 345 && retour.x > 300 && Math.abs(retour.z - 50) < 1e-9);
+  assert.ok(Math.abs(Math.abs(retour.a) - Math.PI / 2) < 1e-9, 'on repart vers l\'ouest');
+});
+
+test('textes : chaque lieu a un texte court et simple (version 3–5 ans et version 6–10 ans), sans religion ni inventions historiques', async () => {
+  const { LIEUX_ROUTE } = await import('../../voyage/js/route/donnees.js');
+  const { TEXTES_LIEUX, texteLieu } = await import('../../voyage/js/route/textes-route.js');
+  for (const l of LIEUX_ROUTE.filter(o => !['objet', 'personnage'].includes(o.type))) {
+    const t = TEXTES_LIEUX[l.id]; assert.ok(t, `texte manquant : ${l.id}`);
+    assert.ok(t.petit && t.petit.length <= 110, `${l.id} : version 3–5 ans trop longue (${(t.petit || '').length})`);
+    assert.ok(t.grand && t.grand.length <= 330, `${l.id} : version 6–10 ans trop longue`);
+  }
+  assert.equal(texteLieu('balise1', '3-5'), TEXTES_LIEUX.balise1.petit);
+  assert.equal(texteLieu('balise1', '6-10'), TEXTES_LIEUX.balise1.grand);
 });

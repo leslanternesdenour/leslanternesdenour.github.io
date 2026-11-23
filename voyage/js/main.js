@@ -1,7 +1,7 @@
 // Le Grand Voyage de Nour : un monde à explorer à pied et à dos de chameau.
 // Ce fichier relie tout : terrain, décors, ciel, personnages, commandes, sons, découvertes et carnet.
 import * as THREE from 'three';
-import { Terrain, LIEUX, LIMITE, lisse } from './terrain.js?v=3';
+import { Terrain, LIEUX, LIMITE, lisse, activerSortieRoute } from './terrain.js?v=3';
 import { creerDecor } from './decor.js?v=6';
 import { Ciel } from './ciel.js?v=3';
 import { Enfant, Chameau } from './personnages.js?v=4';
@@ -40,6 +40,7 @@ import { mascotte } from '../../monde/mascottes.js?v=3';
 import { creerLoumi } from './loumi.js?v=5';
 import { creerHabitants } from './habitants.js?v=2';
 import { creerHud } from './hud.js?v=1';
+import { routeActive } from './route/drapeau.js';
 import { noeud as noeudLoumi, depart as departLoumi } from './loumi-dialogues.js?v=2';
 import { creerSoins, BESOINS, INFOS, LIEUX_SOINS, DUREES as DUREES_SOINS, poseSoin, PLANCHER, BAS } from './soins.js?v=2';
 
@@ -78,6 +79,18 @@ async function demarrer() {
     .catch(() => ({ zoneOuverte: id => !['camp', 'dunes', 'col', 'montagnes', 'wadi', 'rochers'].includes(id), missionOuverte: id => !['lanternes', 'tresor', 'voyageur', 'animaux'].includes(id) }));
   $('chargement-detail').textContent = 'On dessine le désert et les montagnes';
   await attendre();
+  // La Route vers La Mecque : préproduction et machine locale seulement (voir route/drapeau.js). Sur le vrai site, rien de tout cela n'existe.
+  const ROUTE = routeActive();
+  let donneesRoute = null;
+  if (ROUTE) {
+    donneesRoute = await import('./route/donnees.js');
+    activerSortieRoute(donneesRoute.SORTIE_VILLAGE);
+    LIEUX.route = { x: 352, z: 50, r: 30 };
+    REGIONS.route = donneesRoute.REGION_ROUTE;
+    BADGES.push(...(await import('./route/badges-route.js')).BADGES_ROUTE);
+    if (!MONTURES.some(m => m.id === 'route')) MONTURES.push({ id: 'route', fem: true, nom: 'Rihla', espece: 'dromadaire', race: 'Dromadaire de la grande route', icone: '🐪', rarete: 'peu', prix: 0, offerte: true, hist: 'attesté',
+      robe: ['#d9b27a', '#c99a60', '#7a5636'], desc: 'Offerte à la fin de la première grande étape de la route. Calme et endurante, elle adore les longues routes.', vitesse: [5.8, 11.5] });
+  }
   const terrain = new Terrain(Q.terrain, TX.sol);
   scene.add(terrain.mesh);
   const H = (x, z) => terrain.hauteur(x, z);
@@ -128,6 +141,9 @@ async function demarrer() {
   const quetes = creerQuetes({ scene, terrain, colliders: decor.colliders, AV, etat, enregistrer, ombres: !!Q.ombres,
     donner: (id, n, raison) => bourse.recompense(id, n, raison, ouDonner()),
     ui: { dialogue: p => dialogue(p), decouverte: d => decouvrir(d), bandeau: (a, b) => { bandeau(a, b); S.sonDecouverte(); }, evenement: t => quotidien.evenement(t) } });
+  // La Route : le relais du guide, le panneau et l'éboulis du seuil (la barrière s'ouvre comme celles du wadi et des rochers)
+  const village = ROUTE ? (await import('./route/village-route.js')).creerVillageRoute({ scene, H, colliders: decor.colliders, ombres: !!Q.ombres }) : null;
+  if (village) decor.barrieres.route = village.barriere;
   // les régions à débloquer (le wadi, les rochers gravés)
   const regions = creerRegions({ etat, AV, enregistrer, barrieres: decor.barrieres, acces,
     ui: { debloquee: (id, R) => { setTimeout(() => { bandeau('Nouvelle région débloquée !', `${R.icone} ${R.nom}`); S.sonPorte(); montrerIndice(`🗺️ ${R.nom} est ouvert : regarde ta carte !`, 4000); }, 600); } } });
@@ -178,6 +194,19 @@ async function demarrer() {
   const LOUMI_POS = { x: NID_LOUMI.x, z: NID_LOUMI.z };      // son nid, dans l'enclos de l'écurie, à côté des montures (enclos-plan.js)
   const loumi = creerLoumi({ scene, terrain, ombres: !!Q.ombres, x: LOUMI_POS.x, z: LOUMI_POS.z, regard: NID_LOUMI.regard });
   decor.colliders.push({ x: LOUMI_POS.x, z: LOUMI_POS.z, r: 0.7 });
+  // La Route vers La Mecque : un second monde chargé à la demande (aucun système du village n'est dupliqué : bourse, habitants, dialogues, régions, montures)
+  function fondu() {
+    let f = $('fondu-route'); if (!f) { f = document.createElement('div'); f.id = 'fondu-route'; f.style.cssText = 'position:fixed;inset:0;z-index:60;background:#ecd9ac;opacity:0;pointer-events:none'; document.body.appendChild(f); }
+    f.style.transition = 'none'; f.style.opacity = '0.96'; void f.offsetWidth; f.style.transition = 'opacity 1s ease'; f.style.opacity = '0';
+  }
+  const route = ROUTE ? (await import('./route/jeu-route.js')).creerRoute({ scene, terrain, Q, TX, ombres: !!Q.ombres, etat, AV, enregistrer, habitants, regions, village, J, C,
+    monte: () => monte, age: () => sauvegarde.get().age,
+    donner: (id, n, raison) => bourse.recompense(id, n, raison, ouDonner()),
+    arreterGuide: () => { guide.arreter(); etat.guidage = null; enregistrer(); majGuidage(null); },
+    surSaut: () => { cam.cible.set(J.x, H(J.x, J.z) + 1.4, J.z); cam.distVue = null; cam.yawCible = cam.yaw = J.a + Math.PI; },
+    ui: { dialogue: p => dialogue(p), decouvrir: d => decouvrir(d), bandeau: (a, b) => { bandeau(a, b); S.sonDecouverte(); }, indice: (h, ms) => montrerIndice(h, ms),
+      lieu: t => { $('lieu').textContent = t; hud.temporaire($('lieu'), 4500); }, fondu,
+      carteOuverte: () => { fermerPanneaux(); interface_ouverte = true; ctl.bloque = true; }, carteFermee: () => { interface_ouverte = false; ctl.bloque = false; dernierEtatBoutons = ''; } } }) : null;
   etat.loumi = Object.assign({ rencontre: false, vus: [], rappels: {} }, etat.loumi || {});
   if (!etat.loumi.rappels || typeof etat.loumi.rappels !== 'object') etat.loumi.rappels = {};
   function parlerLoumi(id) {
@@ -394,6 +423,7 @@ async function demarrer() {
   // ---------- déplacements ----------
   const colliders = decor.colliders;
   function bouger(o, dx, dz, rayon, dt) {
+    if (route && route.enRoute() && o.z > 10000) return route.bouger(o, dx, dz, rayon);
     let nx = o.x + dx, nz = o.z + dz;
     // pente trop raide : on glisse le long
     const h0 = H(o.x, o.z), pas = Math.hypot(dx, dz);
@@ -620,6 +650,7 @@ async function demarrer() {
   }
   let zoneActuelle = undefined;
   function verifierZone() {
+    if (route && route.enRoute()) { zoneActuelle = 'route'; return; }
     const z = zoneIci(J.x, J.z);
     if (z === zoneActuelle) return;
     zoneActuelle = z;
@@ -695,7 +726,14 @@ async function demarrer() {
     $('carnet').classList.remove('cache');
   }
   document.querySelectorAll('.onglets button').forEach(b => b.addEventListener('click', () => ouvrirCarnet(b.dataset.onglet)));
+  if (route) {   // l'onglet « Itinéraire » de La Route, et le bouton de sa carte dans la carte du pays
+    const b = document.createElement('button'); b.setAttribute('role', 'tab'); b.dataset.onglet = 'route'; b.textContent = '🐪 Itinéraire';
+    document.querySelector('.onglets').appendChild(b); b.addEventListener('click', () => ouvrirCarnet('route'));
+    const c = document.createElement('button'); c.textContent = '🐪'; c.setAttribute('aria-label', 'Carte de la grande route vers La Mecque'); c.title = 'La grande route';
+    c.addEventListener('click', () => { fermerCarte(); setTimeout(() => route.ouvrirCarte(), 60); }); document.querySelector('.carte-outils').appendChild(c);
+  }
   function pageCarnet(o) {
+    if (o === 'route' && route) return route.pageCarnet();
     if (o === 'missions') {
       const etoiles = n => `<span class="diff" title="Difficulté">${'★'.repeat(n)}<i>${'★'.repeat(3 - n)}</i></span>`;
       const piece = '<span class="piece" style="width:16px;height:16px;vertical-align:-3px"></span>';
@@ -781,7 +819,7 @@ async function demarrer() {
       const items = ARTICLES.filter(a => a.cat === 'monture');
       const mo = monture(AV.monture);
       return `<p>${mo.icone} <b>${mo.nom}</b> voyage avec toi. Prends soin de ${mo.fem ? 'elle' : 'lui'} : de l'eau, de l'ombre, du repos et de la douceur.</p>
-        <h3>🐾 Mes montures</h3><div class="etal-grille">${MONTURES.map(m => { const R = RARETES[m.rarete], avoir = AV.montures.includes(m.id);
+        <h3>🐾 Mes montures</h3><div class="etal-grille">${MONTURES.filter(m => !m.offerte || AV.montures.includes(m.id)).map(m => { const R = RARETES[m.rarete], avoir = AV.montures.includes(m.id);
           return `<div class="objet ${avoir ? '' : 'pas-a-toi'}" style="--r:${R.couleur};--f:${R.fond}"><button class="voir" data-fiche-monture="${m.id}"><span class="vignette"><i>${m.icone}</i></span><b>${m.nom}</b><span style="font-size:12px">${m.race}</span><span class="badge-rarete" style="--r:${R.couleur}">${R.nom}</span></button>
             <span class="ou">${AV.monture === m.id ? '✓ En voyage' : avoir ? 'À l\'écurie' : `Écurie · <span class="piece"></span> ${m.prix}`}</span></div>`; }).join('')}</div>
         <p class="note">Pour changer de monture, va voir Nabil à l'écurie, près de l'enclos, à l'est du village.</p>
@@ -1059,7 +1097,7 @@ async function demarrer() {
     $('boutique-icone').textContent = '🐎'; $('boutique-nom').textContent = 'Nabil, le gardien de l\'écurie';
     $('boutique-accueil').textContent = 'Bienvenue à l\'écurie ! Ici, tes montures se reposent, boivent et mangent. Choisis celle qui partira en voyage avec toi.'; direTextes([{ t: $('boutique-accueil').textContent }]);
     $('boutique-pieces').textContent = AV.pieces;
-    $('boutique-articles').innerHTML = `<div class="etal-grille">${MONTURES.map(m => {
+    $('boutique-articles').innerHTML = `<div class="etal-grille">${MONTURES.filter(m => !m.offerte || AV.montures.includes(m.id)).map(m => {
       const R = RARETES[m.rarete], avoir = AV.montures.includes(m.id), actif = AV.monture === m.id;
       const etiq = actif ? '<span class="etat-obj porte">✓ En voyage avec toi</span>' : avoir ? '<span class="etat-obj">À l\'écurie</span>' : `<span class="etat-obj prix-obj ${AV.pieces < m.prix ? 'cher' : ''}"><span class="piece"></span> ${m.prix}</span>`;
       return `<button class="objet" data-monture="${m.id}" style="--r:${R.couleur};--f:${R.fond}"><span class="vignette"><img data-apercu-monture="${m.id}" alt=""><i>${m.icone}</i></span><b>${m.nom}</b><span style="font-size:12px">${m.race}</span><span class="badge-rarete" style="--r:${R.couleur}">${R.nom}</span>${etiq}</button>`;
@@ -1311,6 +1349,7 @@ async function demarrer() {
     arreter: () => { guide.arreter(); etat.guidage = null; enregistrer(); majGuidage(null); }, fermer: () => fermerCarte()
   });
   function ouvrirCarte(lieuId) {
+    if (route && route.enRoute()) { if (!interface_ouverte) route.ouvrirCarte(); return; }
     if (interface_ouverte && $('carte-pays').classList.contains('cache')) return;
     fermerPanneaux(); interface_ouverte = true; ctl.bloque = true;
     $('carte-pays').classList.remove('cache'); carte.ouvrir(lieuId);
@@ -1568,6 +1607,8 @@ async function demarrer() {
     // --- monde vivant ---
     const nuit = ciel.maj(dt, cam.cible, etat.cycle !== false); nuitActuelle = !!nuit;
     decor.maj({ x: J.x, z: J.z }, tTotal, nuit);
+    if (route) route.maj(dt, tTotal, nuit);
+    if (village) village.animer(dt, tTotal);
     oiseaux.maj(dt, tTotal, nuit);
     faucon.maj(dt, tTotal, { x: enfant.racine.position.x, y: enfant.racine.position.y, z: enfant.racine.position.z });
     { const sol = terrain.matiere(J.x, J.z), village = Math.hypot(J.x, J.z) < 60;
@@ -1600,7 +1641,7 @@ async function demarrer() {
       const dO = Math.hypot(J.x - LIEUX.oasis.x, J.z - LIEUX.oasis.z), dF = Math.hypot(J.x, J.z), dC = Math.hypot(J.x - LIEUX.camp.x, J.z - LIEUX.camp.z);
       S.majSons(0.4, {
         nuit, altitude: Math.max(0, H(J.x, J.z) - 2),
-        procheEau: Math.max(lisse(55, 20, dO), lisse(16, 3, dF) * 0.5),
+        procheEau: (route && route.procheEau() != null) ? route.procheEau() : Math.max(lisse(55, 20, dO), lisse(16, 3, dF) * 0.5),
         procheFeu: lisse(16, 3, dC),
         procheVert: Math.max(lisse(60, 20, dF), lisse(70, 25, dO)),
         desert: 1 - Math.max(lisse(60, 25, dF), lisse(70, 30, dO))
@@ -1611,8 +1652,11 @@ async function demarrer() {
     tSauvegarde += dt;
     if (tSauvegarde > 3) {
       tSauvegarde = 0;
-      etat.joueur = { x: +J.x.toFixed(2), z: +J.z.toFixed(2), a: +J.a.toFixed(3) };
-      etat.chameau = { x: +C.x.toFixed(2), z: +C.z.toFixed(2), a: +C.a.toFixed(3) };
+      if (route && route.enRoute()) route.sauver();   // sur la Route : position exacte dans etat.route ; la position du village reste celle d'avant
+      else {
+        etat.joueur = { x: +J.x.toFixed(2), z: +J.z.toFixed(2), a: +J.a.toFixed(3) };
+        etat.chameau = { x: +C.x.toFixed(2), z: +C.z.toFixed(2), a: +C.a.toFixed(3) };
+      }
       etat.monte = monte && !sequence; etat.heure = +ciel.p.toFixed(4);
       enregistrer(); verifierSucces(); regions.verifier();
     }
@@ -1676,13 +1720,14 @@ async function demarrer() {
   $('hud').classList.remove('cache');
   $('tactile').classList.remove('cache'); ctl.appliquer();   // les commandes ont maintenant leur taille : on les garde dans l'écran
   setTimeout(() => carte.preparer(), 5000);
-  if (etat.guidage) { const g0 = etat.guidage; etat.guidage = null; if (!guiderVers({ ...g0, silencieux: true })) etat.guidage = null; }   // la carte se dessine en douce
+  if (etat.guidage && !(route && route.enRoute())) { const g0 = etat.guidage; etat.guidage = null; if (!guiderVers({ ...g0, silencieux: true })) etat.guidage = null; }   // la carte se dessine en douce
   if (!perso()) ouvrirPerso(true);
   else if (!etat.aideVue) montrerAide();
   else { const go = () => { S.demarrerSons(); S.reglerSons(sons()); removeEventListener('pointerdown', go); removeEventListener('keydown', go); }; addEventListener('pointerdown', go); addEventListener('keydown', go); }
 
   // pour les tests
   window.__voyage = {
+    route, ROUTE,
     loumi, soins, faireSoin: (type) => lancerSoin(type, lieuDe(type)), soin: () => soin, pose: () => pose, nuit: () => nuitActuelle, habitants, parlerLoumi, LOUMI_POS, veille, bulleLoumi, ecurie, sOccuper, interactionMontures, interactionSoins, reglerOption: (k, v) => { etat.options[k] = v; enregistrer(); },
     etat, J, C, decor, ciel, H, cam, aventure, bourse, action: () => action(),
     teleporter(x, z) { J.x = x; J.z = z; if (monte) { C.x = x; C.z = z; } },

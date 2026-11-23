@@ -26,12 +26,12 @@ export function regionA(s) {
 // Règle de conception : jamais plus de 300 m de marche sans rien à voir ou à faire.
 export const LIEUX_ROUTE = [
   { id: 'seuil', type: 'seuil', s: -30, dt: 0, nom: 'Le seuil de la grande route', icone: '🚏' },
-  { id: 'balise1', type: 'balise', s: 140, dt: -6, nom: 'Une vieille balise de pierre', icone: '🪧', mission: 'chemin' },
+  { id: 'balise1', type: 'balise', s: 140, dt: -6, nom: 'Une vieille balise de pierre', icone: '🚩', mission: 'chemin' },
   { id: 'rocher-aigle', type: 'decouverte', s: 300, dt: 42, nom: 'Le rocher de l\'aigle', icone: '🦅' },
-  { id: 'balise2', type: 'balise', s: 420, dt: 8, nom: 'Une deuxième balise', icone: '🪧', mission: 'chemin' },
+  { id: 'balise2', type: 'balise', s: 420, dt: 8, nom: 'Une deuxième balise', icone: '🚩', mission: 'chemin' },
   { id: 'repos1', type: 'repos', s: 560, dt: 12, nom: 'Le rocher du premier repos', icone: '🪨' },
   { id: 'trace1', type: 'trace', s: 660, dt: 10, nom: 'Des petites traces dans le sable', icone: '🐾', mission: 'traces', animal: 'lezard' },
-  { id: 'balise3', type: 'balise', s: 800, dt: 6, nom: 'La troisième balise', icone: '🪧', mission: 'chemin' },
+  { id: 'balise3', type: 'balise', s: 800, dt: 6, nom: 'La troisième balise', icone: '🚩', mission: 'chemin' },
   { id: 'acacias', type: 'decouverte', s: 930, dt: -18, nom: 'Les acacias de la plaine', icone: '🌳' },
   { id: 'campement', type: 'campement', s: 1100, dt: -34, nom: 'Le campement des Trois Tentes', icone: '⛺' },
   { id: 'voyageuse', type: 'personnage', s: 1112, dt: -26, nom: 'Une voyageuse du campement', icone: '🧕' },
@@ -42,7 +42,7 @@ export const LIEUX_ROUTE = [
   { id: 'repos2', type: 'repos', s: 1420, dt: 10, nom: 'Le replat du deuxième repos', icone: '🪨' },
   { id: 'belvedere', type: 'decouverte', s: 1580, dt: -30, nom: 'Le belvédère des dunes', icone: '🌄' },
   { id: 'trace3', type: 'trace', s: 1780, dt: 6, nom: 'Des empreintes entre les dunes', icone: '🐾', mission: 'traces', animal: 'renard' },
-  { id: 'citerne', type: 'decouverte', s: 2000, dt: 22, nom: 'La vieille citerne de pierre', icone: '🪣' },
+  { id: 'citerne', type: 'decouverte', s: 2000, dt: 22, nom: 'La vieille citerne de pierre', icone: '🏺' },
   { id: 'repos3', type: 'repos', s: 2250, dt: -10, nom: 'Le dernier replat avant l\'oasis', icone: '🪨' },
   { id: 'oasis', type: 'oasis', s: 2476, t: 62, nom: 'L\'oasis de la Source Claire', icone: '🌴' },
   { id: 'palmeraie', type: 'decouverte', s: 2650, dt: -14, nom: 'La palmeraie', icone: '🌴' },
@@ -94,13 +94,18 @@ export const REGION_ROUTE = {
   ]
 };
 
-// La piste qui part des grandes dunes du village (fin de CHEMINS[3] à (30, 205)) et traverse le rempart jusqu'au seuil. Coordonnées du village.
-export const SORTIE_VILLAGE = [[30, 205], [36, 250], [44, 300], [50, 346]];
-export const SEUIL_VILLAGE = { x: 50, z: 346 };
-export const auSeuilVillage = (x, z) => z >= SEUIL_VILLAGE.z && Math.abs(x - SEUIL_VILLAGE.x) < 40;
+// La piste de sortie : elle part de la route de l'oasis (zone gratuite, jamais les zones Premium), passe au sud du lac et traverse le rempart de dunes à l'est. Coordonnées du village.
+export const SORTIE_VILLAGE = [[95, 20], [130, 48], [175, 78], [230, 76], [285, 60], [346, 50]];
+export const SEUIL_VILLAGE = { x: 346, z: 50 };
+export const auSeuilVillage = (x, z) => x >= SEUIL_VILLAGE.x && Math.abs(z - SEUIL_VILLAGE.z) < 40;
 // Passer au monde de la Route : même x, même direction, on arrive un peu avant le seuil de la Route (s = -20), la brume cache la couture
-const S_ARRIVEE = -20, S_RETOUR = -75, Z_RETOUR_VILLAGE = 326;
-export const versLaRoute = p => ({ x: p.x, z: DEC + S_ARRIVEE, a: p.a });
+const S_ARRIVEE = -20, S_RETOUR = -75, X_RETOUR_VILLAGE = 326, T_PISTE = 46;
+// la sortie du village est à l'est : en y entrant on regardait vers l'est, on regarde maintenant vers l'avant de la piste (quart de tour, caché par la brume)
+const tour = a => { while (a > Math.PI) a -= Math.PI * 2; while (a <= -Math.PI) a += Math.PI * 2; return a; };
+export const versLaRoute = p => ({ x: Math.max(16, Math.min(76, T_PISTE - (p.z - SEUIL_VILLAGE.z))), z: DEC + S_ARRIVEE, a: tour(p.a - Math.PI / 2) });
 export const auRetourRoute = z => z - DEC <= S_RETOUR;
-export const versLeVillage = p => ({ x: p.x, z: Z_RETOUR_VILLAGE, a: p.a });
+export const versLeVillage = p => ({ x: X_RETOUR_VILLAGE, z: Math.max(SEUIL_VILLAGE.z - 30, Math.min(SEUIL_VILLAGE.z + 30, SEUIL_VILLAGE.z - (p.x - T_PISTE))), a: tour(p.a + Math.PI / 2) });
 export { positionLieu as positionDeLieu };
+
+// Le relais de la grande route au village : le guide, la carte ancienne et le sac. Juste au bord du village, sur la piste du sud (hors des maisons).
+export const RELAIS_VILLAGE = { x: 64, z: 30 };
