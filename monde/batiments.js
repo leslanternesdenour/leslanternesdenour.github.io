@@ -18,10 +18,10 @@ export const BATIMENTS = [
     etat: 'ouvert', lien: '../calendrier/' },
   { id: 'sons', univers: 'sourates', emplacement: 3, forme: 'tour', couleur: '#8a6cf0', icone: '🔤', image: 'icones/ecole-lettres.png',
     nom: "L'École des lettres arabes", texte: 'Découvre les 28 lettres arabes, leurs sons et leurs formes avec Maktoub.',
-    etat: 'ouvert', lien: '../ecole-arabe/lettres/' },
+    etat: 'bientot' },   // en cours de création : le jeu reste à ../ecole-arabe/lettres/ (préproduction), la maison rouvrira quand il sera prêt
   { id: 'jardin', univers: 'jeux', emplacement: 7, forme: 'jardin', couleur: '#3fbf7f', icone: '📖', image: 'icones/ecole-lecture.png',
     nom: 'Je découvre la lecture arabe', texte: 'Lis tes premières syllabes, tes premiers mots et tes premières phrases.',
-    etat: 'ouvert', lien: '../ecole-arabe/lecture/' },
+    etat: 'bientot' },   // en cours de création : le jeu reste à ../ecole-arabe/lecture/ (préproduction), la maison rouvrira quand il sera prêt
   { id: 'mots', univers: 'quiz', emplacement: 2, forme: 'large', couleur: '#4a90e2', icone: '🔎',
     nom: 'Chasse aux mots', texte: 'Retrouve les mots cachés dans le village.',
     etat: 'bientot' },
