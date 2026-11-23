@@ -53,3 +53,11 @@ test('reprise : une position abîmée ou hors de la Route est ignorée (on repre
   assert.equal(positionDeReprise({ route: { monde: 'village', pos: { x: 0, z: 21000, a: 0 } } }), null, 'l\'enfant était au village');
   assert.deepEqual(mal({ x: 12, z: 21000, a: 0 }), { x: 12, z: 21000, a: 0 });
 });
+
+test('récits : la progression des histoires est ajoutée à etat.route sans rien toucher d\'autre', async () => {
+  const { preparerRoute } = await import('../../voyage/js/route/etat-route.js');
+  const ancien = { route: { v: 1, monde: 'route', pos: null, sac: {}, decouvertes: ['seuil'], repos: [], missions: {}, objets: [], connaissances: [], vu: {} } };
+  const r = preparerRoute(ancien);
+  assert.deepEqual(r.recits, {}, 'une ancienne sauvegarde reçoit un carnet d\'histoires vide');
+  assert.deepEqual(r.decouvertes, ['seuil'], 'le reste est inchangé');
+});

@@ -140,8 +140,17 @@ export function creerLieux3D({ scene, hauteur, colliders, ombres, TX }) {
     monter(fusion(g), mat, p.x, p.z); bloquer(p.x, p.z, 2.6); lieux['cairn-fin'] = { x: p.x, z: p.z - 4 };
     for (const dx of [-5, 5]) { monter(fusion([piece(DOD(1.6), '#a08566', { p: [0, 0.8, 0], s: [1.2, 0.9, 1] }), piece(DOD(1.0), '#8f7a5e', { p: [0.8, 0.5, 0.6] })]), mat, p.x + dx, p.z + 0.5); bloquer(p.x + dx, p.z + 0.5, 1.9); } }
 
+  // ---- les lanternes des histoires : une petite lanterne sur un poteau à côté du lieu ; elle s'allume quand l'enfant approche ----
+  const lanternes = {};
+  for (const l of LIEUX_ROUTE.filter(o => o.recit)) {
+    const p = lieux[l.id]; if (!p) continue;
+    const x = p.x + 3.2, z = p.z + 1.2, g = [piece(CYL(0.07, 0.09, 2.2, 6), '#6b4a30', { p: [0, 1.1, 0], m: M.bois }), piece(B(), '#8a6440', { p: [0.35, 2.1, 0], s: [0.7, 0.06, 0.06], m: M.bois }), piece(CYL(0.19, 0.19, 0.34, 6), '#c9a26a', { p: [0.7, 1.85, 0] })];
+    monter(fusion(g), mat, x, z); bloquer(x, z, 0.3);
+    const matL = new THREE.MeshBasicMaterial({ color: '#8a7a52' }), lampe = new THREE.Mesh(SPH(0.2, 8, 6), matL); lampe.position.set(x + 0.7, hauteur(x, z) + 1.85, z); groupe.add(lampe);
+    lanternes[l.id] = { x, z, allumer(k) { matL.color.set(k ? '#ffd36b' : '#8a7a52'); lampe.scale.setScalar(k ? 1.25 : 1); } };
+  }
   return {
-    groupe, lieux, voyageuse, dromadaire, pos, camp,
+    groupe, lieux, voyageuse, dromadaire, pos, camp, lanternes,
     retirerGemme(id) { const g = gemmes[id]; if (g) { groupe.remove(g); delete gemmes[id]; } },
     gemmeVisible(id, v) { if (gemmes[id]) gemmes[id].visible = v; },
     // un objet ramassé disparaît du sol, et sa pierre dorée aussi

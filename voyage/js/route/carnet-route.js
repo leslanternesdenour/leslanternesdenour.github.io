@@ -4,9 +4,28 @@ import { LIEUX_ROUTE, REGIONS_ROUTE, MISSIONS_ROUTE, SAC_ROUTE, DISTANCE_TOTALE 
 import { BADGES_ROUTE } from './badges-route.js';
 import { CONTENU, etiquette, texteDe } from './contenu-a-valider.js';
 import { DEC } from './relief.js';
+import { recit, ORIGINES, STATUT } from './recits-a-valider.js';
+import { illustrationSvg } from './recits-illustrations.js';
+import { recitsDuCarnet, questionsPour } from './recits-route.js';
 
 const nomLieu = id => (LIEUX_ROUTE.find(l => l.id === id) || {}).nom || id;
 const iconeLieu = id => (LIEUX_ROUTE.find(l => l.id === id) || {}).icone || '✨';
+
+
+// « Mes histoires découvertes » : seulement les histoires que l'enfant a ajoutées à son carnet
+function histoires(route, age) {
+  const ids = route.recits ? recitsDuCarnet(route) : [];
+  if (!ids.length) return '<h3>📜 Mes histoires découvertes</h3><p class="note">Pas encore d\'histoire dans ton carnet. Cherche les lanternes dans les lieux de la route !</p>';
+  const grand = age !== '3-5';
+  return '<h3>📜 Mes histoires découvertes · ' + ids.length + '</h3>' + ids.map(id => {
+    const r = recit(id), e = route.recits[id], qs = questionsPour(id, age);
+    return '<div class="carte-mission"><h4>' + r.titre + '<span class="etiquette">⚠️ ' + STATUT + '</span></h4>' +
+      '<p style="margin:0 0 4px;font-size:14px">📍 ' + r.lieuNom + ' · ' + r.periode + '</p>' + illustrationSvg(r.illustration.scene, r.illustration.description) +
+      r.enonces.map(x => '<p style="margin:6px 0"><b>' + ORIGINES[x.origine].icone + ' ' + ORIGINES[x.origine].nom + '.</b> ' + (grand ? x.grand : x.petit) + '</p>').join('') +
+      (grand ? '<p style="margin:6px 0;font-size:13px">Sources : ' + r.sources.map(s => s.ref ? ORIGINES[s.type].nom + ' : ' + s.ref + ' (à vérifier)' : (s.indication || 'Référence à vérifier')).join(' · ') + '</p>' : '') +
+      qs.map(q => '<p style="margin:6px 0">Question : ' + q.texte + ' ' + (e.reponses[q.id] !== undefined ? '<b>✓ ' + q.choix[q.bonne] + '</b>' : '<i>(à retrouver dans l\'histoire)</i>') + '</p>').join('') + '</div>';
+  }).join('');
+}
 
 export function pageCarnetRoute({ route, badges = {}, age = '6-10' }) {
   const decouv = route.decouvertes || [];
@@ -34,5 +53,5 @@ export function pageCarnetRoute({ route, badges = {}, age = '6-10' }) {
   const connaissances = `<h3>📖 Mes connaissances</h3>${fiches.length ? fiches.map(f => `<div class="carte-mission"><h4>${f.sujet}<span class="etiquette">${etiquette(f)}</span></h4><p style="margin:0">${texteDe(f, age)}</p></div>`).join('') : '<p class="note">Les fiches que tu liras apparaîtront ici.</p>'}`;
   const gagnes = BADGES_ROUTE.filter(b => badges[b.id]).length;
   const bad = `<h3>🎖️ Mes badges · ${gagnes} / ${BADGES_ROUTE.length}</h3><div class="grille-collection badges">${BADGES_ROUTE.map(b => `<div class="${badges[b.id] ? 'badge-gagne' : 'manque'}" title="${b.desc}"><span>${b.icone}</span><b>${b.nom}</b><small>${b.desc}</small></div>`).join('')}</div>`;
-  return itineraire + decouvertes + missions + objets + connaissances + bad + '<p class="note">Les Pièces de Nour se gagnent en explorant et en aidant, jamais avec de l\'argent.</p>';
+  return itineraire + decouvertes + missions + objets + histoires(route, age) + connaissances + bad + '<p class="note">Les Pièces de Nour se gagnent en explorant et en aidant, jamais avec de l\'argent.</p>';
 }

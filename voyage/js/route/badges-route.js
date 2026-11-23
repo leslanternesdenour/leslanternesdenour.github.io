@@ -8,5 +8,6 @@ export const BADGES_ROUTE = [
   { id: 'route-traces', icone: '🐾', nom: 'Pisteur du désert', desc: 'Reconnaître les trois traces d\'animaux dans le sable.', ok: c => fini(c, 'traces') },
   { id: 'route-entraide', icone: '🤝', nom: 'Ami des voyageurs', desc: 'Aider la voyageuse du campement.', ok: c => fini(c, 'campement') && !!R(c).vu.campementRendu },
   { id: 'route-repos', icone: '🪨', nom: 'Voyageur reposé', desc: 'Faire halte aux trois points de repos.', ok: c => R(c).repos.length >= 3 },
+  { id: 'route-histoires', icone: '📜', nom: 'Curieux des histoires', desc: 'Garder deux histoires dans ton carnet de voyage.', ok: c => Object.values(R(c).recits || {}).filter(r => r.carnet).length >= 2 },
   { id: 'route-oasis', icone: '🌴', nom: 'Première étape', desc: 'Arriver à l\'oasis de la Source Claire.', ok: c => R(c).decouvertes.includes('oasis') }
 ];

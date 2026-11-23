@@ -11,6 +11,7 @@ const defaut = () => ({
   missions: {},           // { id: { etat, n, faits:[] } }
   objets: [],             // objets ramassés sur la route
   connaissances: [],      // fiches lues (ids de contenu-a-valider.js)
+  recits: {},             // les histoires découvertes : { id: { etape, reponses, activite, carnet, t } }
   vu: {}                  // petits drapeaux (présentation vue, etc.)
 });
 

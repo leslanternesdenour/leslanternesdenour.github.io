@@ -10,6 +10,8 @@ import { FACTEUR_MARCHE_ROUTE, regionA, LIEUX_ROUTE, MISSIONS_ROUTE, SAC_ROUTE, 
 import { texteLieu, GUIDE, VOYAGEUSE, MESSAGES } from './textes-route.js';
 import { CONTENU, etiquette, texteDe } from './contenu-a-valider.js';
 import { pageCarnetRoute } from './carnet-route.js';
+import { creerRecitUI } from './recit-ui.js';
+import { recit } from './recits-a-valider.js';
 import { creerCarteRoute } from './carte-route.js';
 
 const SEUIL_Z = 10000;                                  // au-delà : on est dans le monde de la Route (le village ne dépasse jamais z = 400)
@@ -115,6 +117,19 @@ export function creerRoute(ctx) {
     else ui.dialogue({ titre: V.titre, texte: R.objets.length >= 3 ? V.tout[a] : (M ? V.attente[a] : V.debut[a]), boutons: [{ txt: M ? 'Je continue de chercher' : 'Oui, je t\'aide !', fn: () => { if (!M) { R.missions.campement = { etat: 'en_cours', n: 0, faits: [] }; enregistrer(); ui.bandeau('Nouvelle mission', MISSIONS_ROUTE.campement.icone + ' ' + MISSIONS_ROUTE.campement.titre); } } }] });
   }
 
+  // ---------- les récits : une lanterne dans le lieu, un bouton « Découvrir cette histoire », un panneau, le carnet ----------
+  const recitUI = creerRecitUI({ route: R, age,
+    surCarnet: id => { gagner('recit:' + id, 30, 'Une histoire découverte : ' + recit(id).titre); ui.bandeau('Histoire ajoutée à ton carnet', '📜 ' + recit(id).titre); },
+    surFermer: () => { ui.carteFermee && ui.carteFermee(); enregistrer(); }, surChange: () => enregistrer() });
+  const ouvrirHistoire = id => { ui.carteOuverte && ui.carteOuverte(); recitUI.ouvrir(id); };
+  const annonce = new Set();
+  for (const l of LIEUX_ROUTE.filter(o => o.recit)) {
+    const lan = L.lanternes[l.id]; if (!lan) continue;
+    ajouter('recit:' + l.id, { x: lan.x, z: lan.z, rayon: 5, label: 'Découvrir cette histoire', icone: '📜', ouvrir: () => ouvrirHistoire(l.recit) });
+  }
+  const lanternesProches = () => { for (const l of LIEUX_ROUTE.filter(o => o.recit)) { const lan = L.lanternes[l.id]; if (!lan) continue; const d = Math.hypot(J.x - lan.x, J.z - lan.z); lan.allumer(d < 70);
+    if (d < 20 && !annonce.has(l.id) && !recitUI.ouverte()) { annonce.add(l.id); ui.indice('📜 Une lanterne est allumée : une histoire à découvrir ici.', 4500); } } };
+
   // ---------- au village : le guide, le panneau, le sac ----------
   const pg = village.positionGuide, pp = village.panneau;
   function conditionsTexte() {
@@ -215,7 +230,7 @@ export function creerRoute(ctx) {
       return;
     }
     if (auRetourRoute(J.z)) { sortir(); return; }
-    monde.maj(J); L.animer(dt, t, J);
+    monde.maj(J); L.animer(dt, t, J); lanternesProches();
     const { s } = versRoute(J.x, J.z), reg = regionA(s);
     if (reg.id !== regionActuelle) {
       regionActuelle = reg.id; ui.lieu(`${reg.icone} ${reg.nom}`);
@@ -237,7 +252,7 @@ export function creerRoute(ctx) {
   }
 
   return {
-    enRoute: () => dans, facteurMarche: FACTEUR_MARCHE_ROUTE, maj, bouger, ouvrirCarte, ouvrirSac, parlerGuide,
+    enRoute: () => dans, facteurMarche: FACTEUR_MARCHE_ROUTE, ouvrirHistoire, fermerHistoire: () => recitUI.fermer(), histoireOuverte: () => recitUI.ouverte(), maj, bouger, ouvrirCarte, ouvrirSac, parlerGuide,
     carte, monde, lieux3d: L, etat: R, fermerCarte: () => carte.fermer(), carteOuverte: () => carte.ouverte(),
     pageCarnet: () => pageCarnetRoute({ route: R, badges: AV.badges || {}, age: age() }),
     sauver() { if (dans) memoriserPosition(etat, J); },

@@ -1,0 +1,102 @@
+// Les récits (آثار الأنبياء) : structure des fiches pédagogiques. Tout est « À VALIDER » ; chaque phrase est rattachée à son origine ; aucune représentation de prophète.
+import test from 'node:test'; import assert from 'node:assert/strict';
+
+test('fiches : structure complète, statut À VALIDER, chaque énoncé classé par origine avec ses références', async () => {
+  const { RECITS, ORIGINES, STATUT } = await import('../../voyage/js/route/recits-a-valider.js');
+  assert.equal(STATUT, 'À VALIDER');
+  assert.deepEqual(Object.keys(ORIGINES), ['coran', 'hadith', 'tradition', 'discute', 'illustration']);
+  assert.ok(RECITS.length >= 6);
+  for (const r of RECITS) {
+    for (const k of ['id', 'titre', 'lieu', 'periode']) assert.ok(r[k], `${r.id} : ${k} manquant`);
+    assert.equal(r.statut, STATUT, `${r.id} ne peut pas être validée sans vérification humaine`);
+    assert.equal(r.validePar, undefined);
+    assert.ok(r.enonces.length >= 3, `${r.id} : trop peu d'énoncés`);
+    assert.ok(r.sources.length >= 1 && r.sources.every(s => s.id && s.type && s.verifie === false && (s.ref || /Référence à vérifier/.test(s.indication || ''))), `${r.id} : chaque source a une référence OU la mention « Référence à vérifier » (jamais une référence inventée), verifie:false`);
+    const ids = new Set(r.sources.map(s => s.id));
+    for (const e of r.enonces) {
+      assert.ok(e.id && e.petit && e.grand, `${r.id}/${e.id} : textes manquants`);
+      assert.ok(ORIGINES[e.origine], `${r.id}/${e.id} : origine inconnue ${e.origine}`);
+      if (e.origine === 'illustration') assert.deepEqual(e.refs, [], 'une illustration du jeu n\'a pas de référence');
+      else { assert.ok(e.refs.length >= 1, `${r.id}/${e.id} : référence manquante`); for (const ref of e.refs) assert.ok(ids.has(ref), `${r.id}/${e.id} : la référence ${ref} n'est pas dans les sources`); }
+    }
+  }
+});
+
+test('rigueur : aucun dialogue inventé, aucune parole attribuée, aucune date certaine, aucun arabe non validé, aucune représentation, l\'origine est nommée dans chaque phrase', async () => {
+  const { RECITS } = await import('../../voyage/js/route/recits-a-valider.js');
+  const marqueur = { coran: /Coran/, hadith: /hadith/i, tradition: /(tradition|récits? historiques?|histoire)/i, discute: /(discuté|incertain|pas connu|n'est pas détaillé|ne sait pas)/i, illustration: /(jeu|image|dessin)/i };
+  for (const r of RECITS) {
+    const tout = JSON.stringify(r);
+    for (const x of r.enonces) for (const t of [x.petit, x.grand]) assert.ok(!/[«»"“”]/.test(t), `${r.id}/${x.id} : pas de guillemets (aucune parole rapportée ni citation reproduite de mémoire)`);
+    assert.ok(!/[\u0600-\u06FF]/.test(tout), `${r.id} : pas d'arabe tant qu'il n'est pas validé`);
+    assert.ok(!/(il|elle) (dit|répond|demande|crie|s'écrie|murmure|prie)\b/i.test(JSON.stringify(r.enonces)), `${r.id} : aucune parole attribuée à un personnage`);
+    assert.ok(r.illustration.figure === false, `${r.id} : aucune figure humaine dans l'illustration`);
+    for (const x of r.enonces) {
+      for (const t of [x.petit, x.grand]) {
+        assert.match(t, marqueur[x.origine], `${r.id}/${x.id} (${x.origine}) : l'origine doit être nommée dans la phrase : « ${t.slice(0, 50)}… »`);
+        if (x.origine !== 'discute') assert.ok(!/\b(en|vers|depuis|dès|l'an|année)\s+\d{3,4}\b|\b\d{3,4}\s*(av|ap)\.?\s*J\.?-?C|\bJ\.-C\b/i.test(t), `${r.id}/${x.id} : pas de date présentée comme certaine`);
+      }
+      assert.ok(x.petit.length <= 130, `${r.id}/${x.id} : version 3–5 ans trop longue`);
+      assert.ok(x.grand.length <= 330, `${r.id}/${x.id} : version 6–10 ans trop longue`);
+    }
+  }
+});
+
+test('progression : une histoire s\'ouvre, avance par étapes, se retrouve plus tard ; l\'ajout au carnet ne se fait qu\'une fois (pas de récompense en double)', async () => {
+  const { ouvrirRecit, avancer, ajouterAuCarnet, etatRecit, recitsDuCarnet } = await import('../../voyage/js/route/recits-route.js');
+  const route = { recits: {} };
+  assert.equal(etatRecit(route, 'safa-marwa'), null, 'jamais ouverte : pas d\'état');
+  const e = ouvrirRecit(route, 'safa-marwa'); assert.equal(e.etape, 0); assert.equal(e.carnet, false);
+  avancer(route, 'safa-marwa', 2); assert.equal(etatRecit(route, 'safa-marwa').etape, 2, 'on la retrouve où on l\'avait laissée');
+  avancer(route, 'safa-marwa', 1); assert.equal(etatRecit(route, 'safa-marwa').etape, 2, 'on ne recule pas');
+  assert.deepEqual(recitsDuCarnet(route), [], 'pas encore dans le carnet');
+  assert.equal(ajouterAuCarnet(route, 'safa-marwa'), true); assert.equal(ajouterAuCarnet(route, 'safa-marwa'), false, 'la récompense ne se donne qu\'une fois');
+  assert.deepEqual(recitsDuCarnet(route), ['safa-marwa']);
+  assert.equal(ouvrirRecit(route, 'safa-marwa').carnet, true, 'rouvrir ne perd rien');
+  assert.throws(() => ouvrirRecit(route, 'histoire-inconnue'), /inconnue/);
+});
+
+test('questions : adaptées à l\'âge, une mauvaise réponse n\'est jamais une punition (on peut réessayer), la bonne réponse est conservée', async () => {
+  const { questionsPour, repondre, etatRecit, ouvrirRecit } = await import('../../voyage/js/route/recits-route.js');
+  const petits = questionsPour('hajar-ismail-zamzam', '3-5'), grands = questionsPour('hajar-ismail-zamzam', '6-10');
+  assert.equal(petits.length, 1, 'les 3–5 ans : une question facile'); assert.equal(grands.length, 2, 'les 6–10 ans : plus de questions');
+  assert.ok(petits[0].texte.length > 5 && petits[0].choix.length >= 2);
+  const route = { recits: {} }; ouvrirRecit(route, 'hajar-ismail-zamzam');
+  const faux = repondre(route, 'hajar-ismail-zamzam', 'q1', 1); assert.equal(faux.juste, false); assert.equal(faux.bonne, 0, 'on indique la bonne réponse avec douceur');
+  assert.equal(etatRecit(route, 'hajar-ismail-zamzam').reponses.q1, undefined, 'une réponse fausse n\'est pas retenue : on peut réessayer');
+  assert.equal(repondre(route, 'hajar-ismail-zamzam', 'q1', 0).juste, true);
+  assert.equal(etatRecit(route, 'hajar-ismail-zamzam').reponses.q1, 0);
+});
+
+test('illustrations : une image symbolique pour chaque histoire (paysages, eau, pierres, tissu, tentes), jamais de personnage', async () => {
+  const { RECITS } = await import('../../voyage/js/route/recits-a-valider.js');
+  const { illustrationSvg, SCENES } = await import('../../voyage/js/route/recits-illustrations.js');
+  const fs = await import('node:fs');
+  for (const r of RECITS) { const svg = illustrationSvg(r.illustration.scene); assert.match(svg, /^<svg[^>]+aria-label="[^"]{10,}"/, `${r.id} : image sans description`); assert.ok(SCENES.includes(r.illustration.scene)); }
+  assert.throws(() => illustrationSvg('une-personne'), /inconnue/);
+  const code = fs.readFileSync(new URL('../../voyage/js/route/recits-illustrations.js', import.meta.url), 'utf8').replace(/^\s*\/\/.*$/gm, '');
+  assert.ok(!/(visage|silhouette|personnage|bonhomme|tête|head|face|person|human)/i.test(code), 'aucune forme de personne dans les illustrations');
+});
+
+test('panneau : on peut toujours fermer et reprendre plus tard, chaque étape affiche l\'origine et la mention À VALIDER, aucun audio n\'est généré, aucun chronomètre', async () => {
+  const fs = await import('node:fs');
+  const u = fs.readFileSync(new URL('../../voyage/js/route/recit-ui.js', import.meta.url), 'utf8').replace(/^\s*\/\/.*$/gm, '');
+  assert.match(u, /export function creerRecitUI\(/);
+  assert.match(u, /aria-label="Fermer"/, 'une croix de fermeture toujours présente');
+  assert.match(u, /À VALIDER/); assert.match(u, /ORIGINES/); assert.match(u, /certitude/);
+  assert.match(u, /Référence à vérifier/);
+  assert.ok(!/(new Audio|speechSynthesis|fetch\(|setInterval|Date\.now\(\) -)/.test(u), 'ni audio, ni réseau, ni chronomètre');
+  assert.match(u, /Disponible après validation/, 'le bouton Écouter attend la validation humaine du texte');
+});
+
+test('monde : les histoires se découvrent dans les lieux (lanterne + bouton « Découvrir cette histoire »), pas dans un menu', async () => {
+  const { LIEUX_ROUTE } = await import('../../voyage/js/route/donnees.js');
+  const { recit } = await import('../../voyage/js/route/recits-a-valider.js');
+  const fs = await import('node:fs');
+  const avec = LIEUX_ROUTE.filter(l => l.recit);
+  assert.deepEqual(avec.map(l => l.id).sort(), ['campement', 'oasis'], 'les deux découvertes générales sont placées dans les lieux qui existent déjà');
+  for (const l of avec) assert.ok(recit(l.recit), `${l.id} : histoire inconnue ${l.recit}`);
+  const jeu = fs.readFileSync(new URL('../../voyage/js/route/jeu-route.js', import.meta.url), 'utf8'), l3 = fs.readFileSync(new URL('../../voyage/js/route/lieux-3d.js', import.meta.url), 'utf8');
+  assert.match(jeu, /Découvrir cette histoire/); assert.match(jeu, /creerRecitUI/); assert.match(jeu, /'recit:'/);
+  assert.match(l3, /lanterne/i, 'une lanterne marque le lieu');
+});

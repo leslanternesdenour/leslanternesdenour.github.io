@@ -14,7 +14,7 @@ test('séparation : aucun terme religieux ou historique hors du fichier de conte
   const fs = await import('node:fs'), path = await import('node:path');
   const dossier = new URL('../../voyage/js/route/', import.meta.url);
   const interdits = /\b(kaaba|qibla|zamzam|hajj|omra|safa|marwa|hira|thawr|jabal|proph[eè]te|allah|cor[ao]n|ismaïl|hajar|pèlerin)/i;
-  const fichiers = fs.readdirSync(dossier).filter(f => f.endsWith('.js') && f !== 'contenu-a-valider.js');
+  const fichiers = fs.readdirSync(dossier).filter(f => f.endsWith('.js') && !f.includes('a-valider'));   // les fichiers « …-a-valider.js » sont les seuls à contenir du texte religieux
   assert.ok(fichiers.length >= 5);
   for (const f of fichiers) {
     const code = fs.readFileSync(new URL(f, dossier), 'utf8').replace(/^\s*\/\/.*$/gm, '').replace(/\s\/\/ .*$/gm, '');
