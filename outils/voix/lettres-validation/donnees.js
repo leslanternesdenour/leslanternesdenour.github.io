@@ -16,7 +16,23 @@ export function fiche(alphabet) {
 // Audios ACTUELS du site (synthèse vocale, NON validés) : consultés en lecture seule, jamais modifiés par cet outil.
 export const audioActuel = id => ({ nom: `audio/jeux/ecole-lettres/nom.${id}.mp3`, fatha: `audio/jeux/ecole-lettres/son.${id}.mp3` });
 // Audios CANDIDATS (enregistrements à valider) : dossier INTERNE, copié en préproduction seulement. Rien ici n'est jamais publié en production.
-export const urlCandidat = (id, element) => `outils/voix/lettres-candidats/${id}/${element}.mp3`;
+export const urlCandidat = (id, element, variante) => variante ? `outils/voix/lettres-candidats/_synthese/${variante}/${id}/${element}.mp3` : `outils/voix/lettres-candidats/${id}/${element}.mp3`;
+// Candidats de SYNTHÈSE, NON validés : produits avec EXACTEMENT les 10 voix « Nour » déjà existantes du compte du créateur (identifiants et noms de outils/voix/jeux/voix-nour.json).
+// Aucune voix n'est créée, clonée, modifiée ni supprimée ; aucune autre voix n'est utilisée (un test compare cette liste à voix-nour.json).
+export const VOIX_NOUR = {
+  amina:      { id: 'pzZMNBXJh6wfnYfk2wLK', nom: 'Nour - Amina (tapis)' },
+  hassan:     { id: 'IbnTg9TZjxSEt8tJQteX', nom: 'Nour - Hassan (sellier)' },
+  karim:      { id: 'lM87a4ey2IQxE37nDvti', nom: 'Nour - Karim (marchand)' },
+  salim:      { id: '8aQsvxWbavqMpn00DVgR', nom: 'Nour - Salim (voyageur)' },
+  samira:     { id: 'HAjl4nFl1aflZ2gaim1o', nom: 'Nour - Samira (potiere)' },
+  nour:       { id: '7FhMHxpv3kwYS7eBOJoC', nom: 'Nour - Nour (mascotte)' },
+  narratrice: { id: 'hddT377hAwvRoOKqMj0E', nom: 'Nour - Narratrice (maitresse)' },
+  layla:      { id: 'y01lcQwxER91RfOMk2oG', nom: 'Nour - Layla (tisserande)' },
+  nabil:      { id: '4sifSi2zIrBX7VkoWfjD', nom: 'Nour - Nabil (ecurie)' },
+  hakim:      { id: 'hbGEl9097evPuRZp5BNY', nom: 'Nour - Hakim (ancien)' }
+};
+// Un seul modèle pour comparer les voix à armes égales : eleven_multilingual_v2 (le plus stable ; il reconnaît l'arabe par l'écriture), parole ralentie (0,8) pour des enfants.
+export const MODELE_SYNTHESE = { model_id: 'eleven_multilingual_v2', reglages: { stability: 0.75, similarity_boost: 0.75, style: 0, speed: 0.8, use_speaker_boost: true } };
 
 // Lettres aux sons proches mais DISTINCTS : à écouter l'une après l'autre. (Groupes proposés, à compléter ou corriger par la personne qui valide.)
 export const PROCHES = [

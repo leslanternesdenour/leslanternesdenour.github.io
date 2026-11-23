@@ -18,6 +18,7 @@ main{max-width:980px;margin:0 auto}h1{font-size:26px;margin:8px 0}h2{font-size:2
 .act{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 button{font:inherit;cursor:pointer;border-radius:12px;border:2px solid #5b4fb0;background:#2b2366;color:#fff;padding:8px 12px;min-height:44px}
 button:disabled{opacity:.4;cursor:not-allowed}button.cand{border-color:var(--ok)}button.on{outline:3px solid #fff}
+.voix{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:8px}button.v{min-height:36px;padding:4px 10px;font-size:14px;border-color:#7c6fe0}button.suite{min-height:36px;padding:4px 10px;font-size:14px;border-color:var(--or)}
 .jug{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}.jug label{display:inline-flex;align-items:center;gap:4px;padding:6px 10px;border-radius:999px;border:2px solid #5b4fb0;cursor:pointer;min-height:40px}
 .jug input{accent-color:#fff}.jug label.s-ok{border-color:var(--ok)}.jug label.s-ko{border-color:var(--ko)}.jug label.s-nsp{border-color:var(--nsp)}
 textarea{width:100%;min-height:38px;margin-top:6px;border-radius:10px;border:1px solid #5b4fb0;background:#14102e;color:#fff;padding:6px 8px;font:inherit}
@@ -29,7 +30,7 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{border-bottom:1px
 <body><main>
 <h1>Validation des prononciations — les 28 lettres arabes</h1>
 <div class="avert"><b>Outil interne — préproduction uniquement. Aucun audio du site n'est modifié ni remplacé par cette page.</b><br>
-Les audios « <b>actuels</b> » sont de la <b>synthèse vocale NON validée</b> (jugée incorrecte). Les « <b>candidats</b> » apparaissent ici dès que des enregistrements sont déposés dans <code>outils/voix/lettres-candidats/&lt;lettre&gt;/</code> (voir la fiche d'enregistrement en bas). Seule une personne compétente en arabe littéraire (الفصحى) ou en phonétique arabe peut déclarer une prononciation juste : une IA n'est pas garante de son exactitude.</div>
+Les audios « <b>actuels</b> » sont de la <b>synthèse vocale NON validée</b> (jugée incorrecte). Pour chaque clip, les <b>10 voix « Nour »</b> du compte ElevenLabs ont aussi produit une synthèse (boutons nommés, <b>NON validée</b>) à comparer. Les « <b>enregistrements humains</b> » apparaîtront dès qu'ils seront déposés dans <code>outils/voix/lettres-candidats/&lt;lettre&gt;/</code> (voir la fiche d'enregistrement en bas). Seule une personne compétente en arabe littéraire (الفصحى) ou en phonétique arabe peut déclarer une prononciation juste : une IA n'est pas garante de son exactitude.</div>
 <div class="info">Pour chaque lettre : écoute le <b>nom</b> (ex. « بَاء », baa) puis le <b>son</b> avec les trois voyelles courtes — <b>فتحة</b> (a), <b>ضمّة</b> (ou), <b>كسرة</b> (i). Le son d'une lettre n'est jamais son nom. Les indications de point d'articulation (مخرج الحرف) sont <b>proposées</b>, à valider aussi. Ton jugement est gardé dans ce navigateur ; « Exporter le bilan » en fait un fichier à transmettre.</div>
 <h2>1. Les 28 lettres, dans l'ordre de l'alphabet</h2><div id="lettres"></div>
 <h2>2. Lettres aux sons proches, à comparer</h2><div id="proches"></div>
@@ -41,7 +42,7 @@ Les audios « <b>actuels</b> » sont de la <b>synthèse vocale NON validée</b> 
 <audio id="lecteur" preload="none"></audio>
 <script type="module">
 import { ALPHABET } from '../../../ecole-arabe/commun/langue/alphabet.js';
-import { MAKHRAJ, PROCHES, VOYELLES, fiche, audioActuel, urlCandidat } from './donnees.js';
+import { MAKHRAJ, PROCHES, VOYELLES, VOIX_NOUR, fiche, audioActuel, urlCandidat } from './donnees.js';
 const $ = id => document.getElementById(id), lecteur = $('lecteur'), CLE = 'ldn-validation-lettres-v1';
 const ELEMENTS = [['nom', 'Nom de la lettre', null], ['fatha', 'Son + فتحة', VOYELLES.fatha], ['damma', 'Son + ضمّة', VOYELLES.damma], ['kasra', 'Son + كسرة', VOYELLES.kasra]];
 let bilan = {}; try { bilan = JSON.parse(localStorage.getItem(CLE) || '{}'); } catch (e) {}
@@ -58,7 +59,8 @@ function carte(a) {
     const cle = `${a.id}.${el}`, a1 = actuel(a, el), l = document.createElement('div'); l.className = 'ligne';
     l.innerHTML = `<div class="el"><b>${nom}</b><span class="ar" lang="ar">${texteDe(a, el)}</span></div><div><div class="act">
       <button data-u="${a1 || ''}" ${a1 ? '' : 'disabled'} title="${a1 ? 'Audio actuel (synthèse, non validé)' : 'Aucun audio actuel pour cette voyelle'}">▶ actuel${a1 ? '' : ' (non produit)'}</button>
-      <button class="cand" data-c="${urlCandidat(a.id, el)}" disabled>▶ candidat (pas encore enregistré)</button></div>
+      <button class="cand" data-c="${urlCandidat(a.id, el)}" disabled>▶ enregistrement humain (pas encore déposé)</button></div>
+      <div class="voix" title="Synthèse par les 10 voix « Nour » du compte ElevenLabs — NON validée"><span class="nd">Synthèse, 10 voix Nour :</span>${Object.entries(VOIX_NOUR).map(([k, v]) => `<button class="v" data-vf="${urlCandidat(a.id, el, k)}" data-u="" disabled title="${v.nom}">${v.nom.replace('Nour - ', '')}</button>`).join('')}<button class="suite" data-suite="${a.id}|${el}" disabled>▶ les 10 à la suite</button></div>
       <div class="jug">${[['ok', '✓ juste'], ['ko', '✗ à refaire'], ['nsp', '? pas sûr']].map(([v, t]) => `<label class="${bilan[cle] && bilan[cle].v === v ? 's-' + v : ''}"><input type="radio" name="${cle}" value="${v}" ${bilan[cle] && bilan[cle].v === v ? 'checked' : ''}>${t}</label>`).join('')}</div>
       <textarea placeholder="Remarque (ce qui ne va pas : voyelle, point d'articulation, francisation…)" data-n="${cle}">${(bilan[cle] && bilan[cle].n) || ''}</textarea></div>`;
     c.appendChild(l);
@@ -66,7 +68,11 @@ function carte(a) {
   return c;
 }
 const zone = $('lettres'); for (const a of ALPHABET) zone.appendChild(carte(a));
-zone.addEventListener('click', e => { const b = e.target.closest('button'); if (!b || b.disabled) return; lire(b.dataset.c || b.dataset.u, b); });
+zone.addEventListener('click', e => { const b = e.target.closest('button'); if (!b || b.disabled) return;
+  if (b.dataset.suite) { // les 10 voix l'une après l'autre, pour comparer
+    const [id, el] = b.dataset.suite.split('|'), liste = [...b.parentElement.querySelectorAll('button.v:not(:disabled)')]; let i = 0;
+    const joue = () => { if (i >= liste.length) return; const x = liste[i++]; lire(x.dataset.u, x); lecteur.onended = () => { x.classList.remove('on'); setTimeout(joue, 450); }; }; joue(); return; }
+  lire(b.dataset.c || b.dataset.u, b); });
 zone.addEventListener('change', e => { const r = e.target; if (r.type !== 'radio') return; const cle = r.name; bilan[cle] = { ...(bilan[cle] || {}), v: r.value }; r.closest('.jug').querySelectorAll('label').forEach(l => l.className = ''); r.parentElement.className = 's-' + r.value; sauver(); maj(); });
 zone.addEventListener('input', e => { const t = e.target; if (t.tagName !== 'TEXTAREA') return; bilan[t.dataset.n] = { ...(bilan[t.dataset.n] || {}), n: t.value }; sauver(); });
 function maj() { const tot = ALPHABET.length * ELEMENTS.length, n = Object.values(bilan).filter(x => x.v).length, ok = Object.values(bilan).filter(x => x.v === 'ok').length, ko = Object.values(bilan).filter(x => x.v === 'ko').length;
@@ -81,6 +87,10 @@ pz.addEventListener('click', e => { const b = e.target.closest('button'); if (!b
   const joue = () => { if (i >= suite.length) return; lecteur.src = '/' + audioActuel(suite[i++]).fatha; lecteur.onended = () => setTimeout(joue, 500); lecteur.play().catch(() => {}); }; joue(); });
 // fiche d'enregistrement
 $('fiche').innerHTML = `<table><thead><tr><th>#</th><th>Lettre</th><th>Élément</th><th>À lire (exactement)</th><th>Fichier</th></tr></thead><tbody>${fiche(ALPHABET).map(r => `<tr><td>${r.num}</td><td class="ar" lang="ar">${r.lettre}</td><td>${r.element === 'nom' ? 'nom de la lettre' : 'son + ' + { fatha: 'فتحة', damma: 'ضمّة', kasra: 'كسرة' }[r.element]}</td><td class="ar" lang="ar">${r.texte}</td><td><code>${r.fichier}</code></td></tr>`).join('')}</tbody></table>`;
+// synthèse des 10 voix Nour : le manifeste (un seul fichier) dit quels clips existent ; les boutons correspondants s'activent
+fetch('/outils/voix/lettres-candidats/_synthese/manifeste.json').then(r => r.ok ? r.json() : null).then(m => { if (!m) return; const clips = m.clips || {};
+  for (const b of document.querySelectorAll('button.v')) { if (clips[b.dataset.vf]) { b.disabled = false; b.dataset.u = '/' + b.dataset.vf; b.title = clips[b.dataset.vf].voixNom + ' — synthèse NON validée'; } }
+  for (const s of document.querySelectorAll('button.suite')) s.disabled = !s.parentElement.querySelector('button.v:not(:disabled)'); }).catch(() => {});
 // détection des candidats déjà déposés (dossier interne) : le bouton « candidat » s'active seulement si le fichier existe
 for (const b of document.querySelectorAll('button.cand')) fetch('/' + b.dataset.c, { method: 'HEAD' }).then(r => { if (r.ok && /audio|octet/.test(r.headers.get('content-type') || 'audio')) { b.disabled = false; b.textContent = '▶ candidat'; } }).catch(() => {});
 const bilanTexte = () => JSON.stringify({ outil: 'validation-28-lettres', date: new Date().toISOString(), jugements: bilan }, null, 2);
