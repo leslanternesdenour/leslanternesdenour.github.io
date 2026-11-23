@@ -12,7 +12,9 @@ export const REGIONS_ROUTE = [
   { id: 'dunes', nom: 'Les dunes et les vallées', icone: '🌄', s0: 1400, s1: 2300, couleur: '#e0b46e',
     ambiance: { brume: '#f0d29a', proche: 100, loin: 480, ciel: '#f7d9a0' } },
   { id: 'oasis', nom: 'L\'oasis de la Source Claire', icone: '🌴', s0: 2300, s1: 3200, couleur: '#7fa65a',
-    ambiance: { brume: '#dfe0b8', proche: 90, loin: 450, ciel: '#eadfb4' } }
+    ambiance: { brume: '#dfe0b8', proche: 90, loin: 450, ciel: '#eadfb4' } },
+  { id: 'montagnes', nom: 'Les contreforts et le premier col', icone: '⛰️', s0: 3200, s1: 4500, couleur: '#a5543a',
+    ambiance: { brume: '#cfd6df', proche: 70, loin: 420, ciel: '#d5dbe2' } }
 ];
 
 // La région d'un endroit (au-delà des bords : la première ou la dernière)
@@ -46,7 +48,15 @@ export const LIEUX_ROUTE = [
   { id: 'repos3', type: 'repos', s: 2250, dt: -10, nom: 'Le dernier replat avant l\'oasis', icone: '🪨' },
   { id: 'oasis', type: 'oasis', s: 2476, t: 62, nom: 'L\'oasis de la Source Claire', icone: '🌴' },
   { id: 'palmeraie', type: 'decouverte', s: 2650, dt: -14, nom: 'La palmeraie', icone: '🌴' },
-  { id: 'cairn-fin', type: 'cairn', s: 2880, dt: 0, nom: 'Le grand cairn', icone: '🗿' }
+  { id: 'puits-voyageurs', type: 'decouverte', s: 2860, dt: 14, nom: 'Le puits des voyageurs', icone: '🏺' },
+  { id: 'plateau-plat', type: 'decouverte', s: 3060, dt: -22, nom: 'Le plateau de pierres plates', icone: '🪨' },
+  { id: 'seuil-montagnes', type: 'decouverte', s: 3240, dt: 6, nom: 'Le seuil des montagnes', icone: '⛰️' },
+  { id: 'col-porte', type: 'decouverte', s: 3400, dt: 0, nom: 'La porte de pierre', icone: '🚪' },
+  { id: 'repos4', type: 'repos', s: 3560, dt: 12, nom: 'L\'abri sous la falaise', icone: '🪨' },
+  { id: 'wadi-galets', type: 'decouverte', s: 3720, dt: -14, nom: 'Le lit de galets', icone: '🌊' },
+  { id: 'belvedere-col', type: 'decouverte', s: 3880, dt: 18, nom: 'Le belvédère du premier col', icone: '🌄' },
+  { id: 'repos5', type: 'repos', s: 4040, dt: -12, nom: 'Le replat de la vallée', icone: '🪨' },
+  { id: 'cairn-fin', type: 'cairn', s: 4200, dt: 0, nom: 'Le grand cairn', icone: '🗿' }
 ];
 
 // La position (s, t) d'un lieu

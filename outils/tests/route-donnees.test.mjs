@@ -10,7 +10,7 @@ test('régions : consécutives, sans trou ni chevauchement', async () => {
 test('regionA : donne la région où l\'on se trouve, et reste valable au-delà des bords', async () => {
   const { regionA } = await import('../../voyage/js/route/donnees.js');
   assert.equal(regionA(-20).id, 'sortie'); assert.equal(regionA(900).id, 'plaines'); assert.equal(regionA(1800).id, 'dunes'); assert.equal(regionA(2500).id, 'oasis');
-  assert.equal(regionA(-1000).id, 'sortie'); assert.equal(regionA(99999).id, 'oasis');
+  assert.equal(regionA(-1000).id, 'sortie'); assert.equal(regionA(99999).id, 'montagnes');
 });
 
 test('lieux : jamais plus de 300 m de marche sans rien à voir (long par l\'exploration, pas par la marche vide)', async () => {
@@ -36,11 +36,11 @@ test('lieux : chaque lieu se trouve sur un sol praticable, jamais dans l\'eau ni
 
 test('durée : calculée avec les VRAIES vitesses du jeu (marche 3,3 m/s, course 6,2 m/s)', async () => {
   const { VITESSES, dureeMinutes, DISTANCE_TOTALE } = await import('../../voyage/js/route/donnees.js');
-  const { S_FIN_TRANCHE } = await import('../../voyage/js/route/relief.js');
+  const { S_FIN_TRANCHE_1 } = await import('../../voyage/js/route/relief.js');
   const fs = await import('node:fs');
   const main = fs.readFileSync(new URL('../../voyage/js/main.js', import.meta.url), 'utf8');
   assert.ok(main.includes(`d.course ? ${VITESSES.course} : ${VITESSES.marche}`), 'les vitesses de donnees.js doivent suivre celles de main.js');
-  const tranche = dureeMinutes(S_FIN_TRANCHE, VITESSES.marche);
+  const tranche = dureeMinutes(S_FIN_TRANCHE_1, VITESSES.marche);
   assert.ok(tranche > 12 && tranche < 18, `première tranche à pied : ${tranche.toFixed(1)} min`);
   assert.ok(dureeMinutes(DISTANCE_TOTALE, VITESSES.marche) < 31, 'le grand voyage complet reste d\'une demi-heure de marche');
   assert.ok(dureeMinutes(DISTANCE_TOTALE, VITESSES.course) < dureeMinutes(DISTANCE_TOTALE, VITESSES.marche) / 1.8);
@@ -110,11 +110,11 @@ test('textes : chaque lieu a un texte court et simple (version 3–5 ans et vers
 
 test('marche naturelle : sur la Route, la marche à pied est légèrement plus lente que dans le village (distance inchangée), sans toucher à la vitesse des montures ni du village', async () => {
   const { VITESSES, VITESSES_ROUTE, FACTEUR_MARCHE_ROUTE, dureeMinutes, DISTANCE_TOTALE } = await import('../../voyage/js/route/donnees.js');
-  const { S_FIN_TRANCHE } = await import('../../voyage/js/route/relief.js');
+  const { S_FIN_TRANCHE_1 } = await import('../../voyage/js/route/relief.js');
   assert.ok(FACTEUR_MARCHE_ROUTE >= 0.8 && FACTEUR_MARCHE_ROUTE < 1, 'légèrement plus lente, pas une marche d\'escargot');
   assert.ok(Math.abs(VITESSES_ROUTE.marche - VITESSES.marche * FACTEUR_MARCHE_ROUTE) < 1e-9);
   assert.ok(Math.abs(VITESSES_ROUTE.course - VITESSES.course * FACTEUR_MARCHE_ROUTE) < 1e-9);
-  const t = dureeMinutes(S_FIN_TRANCHE, VITESSES_ROUTE.marche), tot = dureeMinutes(DISTANCE_TOTALE, VITESSES_ROUTE.marche);
+  const t = dureeMinutes(S_FIN_TRANCHE_1, VITESSES_ROUTE.marche), tot = dureeMinutes(DISTANCE_TOTALE, VITESSES_ROUTE.marche);
   assert.ok(t > 15 && t < 19, `première tranche à pied : ${t.toFixed(1)} min`);
   assert.ok(tot > 29 && tot < 35, `grand voyage complet à pied : ${tot.toFixed(1)} min`);
   assert.equal(DISTANCE_TOTALE, 5600, 'la distance du voyage est conservée');

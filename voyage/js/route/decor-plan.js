@@ -2,6 +2,7 @@
 // Le décor de chaque tuile est choisi selon la région (rochers à la sortie, buissons dans la plaine, palmiers à l'oasis…).
 import { TAILLE_TUILE } from './tuiles-plan.js';
 import { relief, distanceChemin, OASIS, CAMP } from './relief.js';
+import { lisse } from './bruit.js';
 import { regionA, LIEUX_ROUTE, positionDeLieu } from './donnees.js';
 
 function hasard(graine) { let s = (graine >>> 0) || 1; return () => { s = (Math.imul(s, 1664525) + 1013904223) >>> 0; return s / 4294967296; }; }
@@ -11,7 +12,9 @@ const SEMIS = {
   sortie: [['rocher', 7, 1.1, 0.8, 2.6], ['caillou', 14, 0, 0.6, 1.4], ['buisson', 6, 0.5, 0.7, 1.3], ['touffe', 6, 0, 0.7, 1.2]],
   plaines: [['rocher', 3, 1.0, 0.7, 2.0], ['caillou', 14, 0, 0.6, 1.4], ['buisson', 12, 0.5, 0.7, 1.4], ['acacia', 0.6, 0.6, 0.9, 1.4], ['touffe', 10, 0, 0.7, 1.3]],
   dunes: [['rocher', 1.5, 1.0, 0.7, 1.8], ['caillou', 6, 0, 0.6, 1.2], ['buisson', 5, 0.5, 0.6, 1.2], ['touffe', 9, 0, 0.7, 1.3]],
-  oasis: [['rocher', 1.5, 1.0, 0.7, 1.6], ['caillou', 6, 0, 0.6, 1.2], ['buisson', 6, 0.5, 0.7, 1.3], ['touffe', 8, 0, 0.7, 1.3]]
+  oasis: [['rocher', 1.5, 1.0, 0.7, 1.6], ['caillou', 6, 0, 0.6, 1.2], ['buisson', 6, 0.5, 0.7, 1.3], ['touffe', 8, 0, 0.7, 1.3]],
+  // les contreforts : roches rouges et grises, épineux rares, galets (le fond de la vallée) ; les flancs reçoivent en plus MONTAGNE
+  montagnes: [['rocher', 5, 1.1, 0.9, 2.8], ['caillou', 16, 0, 0.6, 1.5], ['buisson', 3, 0.5, 0.6, 1.1], ['touffe', 3, 0, 0.6, 1.0]]
 };
 const MONTAGNE = [['rocher', 14, 1.6, 1.4, 4.2], ['caillou', 12, 0, 0.8, 1.8]];
 
@@ -40,7 +43,7 @@ export function semerTuile(i, j) {
   };
   const centreS = s0 + TAILLE_TUILE / 2, centreT = t0 + TAILLE_TUILE / 2;
   const regle = SEMIS[regionA(centreS).id];
-  const montagneux = Math.abs(centreT) > 380 ? Math.min(1, (Math.abs(centreT) - 380) / 300) : 0;
+  const montagneux = Math.max(Math.abs(centreT) > 380 ? Math.min(1, (Math.abs(centreT) - 380) / 300) : 0, lisse(14, 50, relief(centreS, centreT).massif));   // les flancs des montagnes, où qu'ils soient
   for (const [type, nb, rayon, a, b] of regle) poser(type, nb * (1 - 0.7 * montagneux), rayon, a, b, s0, t0, s0 + TAILLE_TUILE, t0 + TAILLE_TUILE);
   if (montagneux) for (const [type, nb, rayon, a, b] of MONTAGNE) poser(type, nb * montagneux, rayon, a, b, s0, t0, s0 + TAILLE_TUILE, t0 + TAILLE_TUILE);
   // l'oasis : des palmiers en couronne autour de l'eau, des roseaux sur la rive

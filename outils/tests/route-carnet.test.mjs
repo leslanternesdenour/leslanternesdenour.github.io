@@ -22,3 +22,12 @@ test('badges : se méritent en explorant et en aidant, jamais présentés comme 
   const fini = { etat: { route: { decouvertes: ['seuil', 'oasis'], repos: ['a', 'b', 'c'], missions: { chemin: { etat: 'finie' }, traces: { etat: 'finie' }, campement: { etat: 'finie' } }, vu: { campementRendu: true } } } };
   assert.equal(BADGES_ROUTE.every(b => b.ok(fini)), true, 'tous acquis quand tout est fait');
 });
+
+test('carnet : le nombre de haltes possibles suit les lieux de repos qui existent (5 maintenant)', async () => {
+  const { pageCarnetRoute } = await import('../../voyage/js/route/carnet-route.js');
+  const { LIEUX_ROUTE } = await import('../../voyage/js/route/donnees.js');
+  const n = LIEUX_ROUTE.filter(l => l.type === 'repos').length;
+  assert.equal(n, 5);
+  const html = pageCarnetRoute({ route: { decouvertes: [], repos: ['repos1', 'repos4'], missions: {}, objets: [], connaissances: [], sac: {}, pos: null }, badges: {}, age: '6-10' });
+  assert.ok(html.includes(`Haltes faites : 2 / ${n}`), 'le total de haltes est calculé, pas écrit en dur');
+});

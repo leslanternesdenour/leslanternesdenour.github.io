@@ -47,3 +47,15 @@ test('performance : la densité du décor suit le profil graphique (mobile = moi
   assert.match(m, /Q\.densiteDeco/, 'le décor dépend du profil (faible 0,5 · équilibré 0,8 · élevé 1)');
   assert.match(m, /Q\.leger \? 3/, 'rayon de chargement réduit sur appareil léger');
 });
+
+test('montagnes : le fond lointain suit la fin de la partie jouable, et la roche prend la couleur de la région (rouge brique)', () => {
+  const m = lire('monde.js');
+  assert.ok(!/ 3340 /.test(m), 'plus de longueur écrite en dur : le fond suit S_FIN_TRANCHE');
+  assert.match(m, /S_FIN_TRANCHE \+ 700/);
+  assert.match(m, /r\.zm/, 'la teinte rouge de la roche dépend de la proximité des montagnes');
+});
+
+test('jeu : l\'aide de test « vers » emmène aussi la monture quand l\'enfant est dessus (sinon la monture le ramène au village)', () => {
+  const j = lire('jeu-route.js');
+  assert.match(j, /vers\(s, t\) \{[^\n]*ctx\.monte\(\)[^\n]*C\.x = J\.x/);
+});

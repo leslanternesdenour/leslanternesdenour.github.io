@@ -22,3 +22,12 @@ test('cap : l\'angle vers un lieu est relatif à la direction du joueur', async 
   const derriere = capVers({ s: 100, t: 0, a: 0 }, { s: 0, t: 0 });
   assert.ok(Math.abs(Math.abs(derriere.angle) - Math.PI) < 1e-9);
 });
+
+test('carte : le parchemin couvre toute la partie jouable, jusqu\'au grand cairn et aux montagnes', async () => {
+  const { creerProjection } = await import('../../voyage/js/route/carte-route.js');
+  const { S_FIN_TRANCHE } = await import('../../voyage/js/route/relief.js');
+  for (const portrait of [false, true]) {
+    const P = creerProjection(900, 600, portrait);
+    for (const t of [-500, 0, 500]) { const p = P(S_FIN_TRANCHE + 100, t); assert.ok(p.x >= 0 && p.x <= 900 && p.y >= 0 && p.y <= 600, `la fin de la route est hors du cadre (portrait=${portrait})`); }
+  }
+});

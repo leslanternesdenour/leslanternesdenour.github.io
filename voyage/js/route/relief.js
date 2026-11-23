@@ -9,12 +9,14 @@ export const versRoute = (x, z) => ({ s: z - DEC, t: x });
 export const dansLaRoute = z => z > DEC - 2000;          // le village ne dépasse jamais |z| = 400
 
 export const S_DEBUT = -150;           // un peu en arrière du seuil (pour qu'on voie la piste qu'on vient de quitter)
-export const S_FIN_TRANCHE = 2900;     // le cairn « le chemin continue » de la première tranche
+export const S_FIN_TRANCHE_1 = 2900;   // la fin de la première tranche (repère historique)
+export const S_MONTAGNES_DEBUT = 2950;  // les montagnes commencent à se rapprocher de la piste
+export const S_FIN_TRANCHE = 4220;     // le grand cairn : la fin de la partie jouable actuelle (contreforts et premier col)
 export const LARGEUR = 1000;           // le monde ne va pas plus loin que ±900 m de la piste
 
 // Points de la piste principale (s, t). Elle serpente doucement : jamais une ligne droite d'horizon à horizon.
 const PISTE = [[-300, 50], [-150, 48], [-40, 45], [120, 30], [300, -10], [520, -40], [760, -20], [1000, 10], [1100, 0], [1350, 40],
-  [1600, 90], [1850, 60], [2100, 20], [2350, -10], [2440, 0], [2650, 10], [2900, 40], [3100, 60]];
+  [1600, 90], [1850, 60], [2100, 20], [2350, -10], [2440, 0], [2650, 10], [2900, 40], [3100, 60], [3300, 90], [3500, 60], [3700, 5], [3900, -45], [4100, -70], [4300, -60], [4500, -50]];
 // Le sentier qui mène à l'eau de l'oasis
 const SENTIER = [[2400, -4], [2440, 22], [2480, 44]];
 
@@ -60,14 +62,22 @@ export function relief(s, t) {
   const ondes = 1 - Math.abs(Math.sin((s * 0.5 + t) * 0.032 + fbm(s * 0.006, t * 0.006, 3) * 6));
   const creux = 1 - 0.92 * lisse(46, 8, dC);
   const dunes = zoneDunes * (fbm(s * 0.012, t * 0.012, 3) * 3 + ondes * ondes * 6.5) * creux;
-  // les montagnes au loin, de chaque côté : elles bordent l'horizon sans jamais gêner la piste
-  const bord = lisse(460, 900, Math.abs(t));
-  const massif = bord * (30 + fbm(s * 0.006, t * 0.006, 3) * 80);
-  const rochers = bord * Math.pow(Math.abs(fbm(s * 0.05, t * 0.05, 3) - 0.5) * 2, 1.5) * 8;
+  // les montagnes : au loin de chaque côté d'abord, puis elles se rapprochent de la piste (contreforts, vallée encaissée, premier col)
+  const zm = lisse(S_MONTAGNES_DEBUT, S_MONTAGNES_DEBUT + 500, s);
+  const debutBord = 460 - 390 * zm;
+  const bord = lisse(debutBord, debutBord + 440 - 150 * zm, Math.abs(t));
+  const vallee = zm * lisse(70, 14, dC);                       // le fond de la vallée suit la piste
+  const massif = bord * (30 + fbm(s * 0.006, t * 0.006, 3) * 80) * (1 + 0.7 * zm) * (1 - 0.9 * vallee);
+  const rochers = bord * Math.pow(Math.abs(fbm(s * 0.05, t * 0.05, 3) - 0.5) * 2, 1.5) * 8 * (1 - 0.85 * vallee);
   // quelques collines basses de roche près du départ
   const collines = lisse(-100, 80, s) * (1 - lisse(520, 720, s)) * lisse(35, 90, dC) * (3 + fbm(s * 0.012, t * 0.012, 3) * 10);
 
   let h = plaine * (1 - 0.8 * surChemin) + dunes + massif + rochers + collines * (1 - surChemin);
+  // montagnes en gradins : corniches et falaises (grès et granit), jamais sur la piste ni dans le fond de la vallée
+  const gradins = zm * (1 - surChemin) * (1 - vallee) * lisse(12, 34, massif);
+  if (gradins > 0.01) { const pas = 7 + fbm(s * 0.004, t * 0.004, 2) * 4, q = h / pas, f = q - Math.floor(q); h = melange(h, (Math.floor(q) + lisse(0.5, 0.88, f)) * pas, gradins * 0.8); }
+  // le lit de galets : la piste creuse un peu le fond de la vallée
+  h -= zm * lisse(14, 3, dC) * 1.6;
   // le campement et l'oasis sont plats
   const camp = lisse(CAMP.r + 16, CAMP.r - 2, dCamp);
   h = melange(h, 0.5 + plaine * 0.1, camp);
@@ -75,6 +85,6 @@ export function relief(s, t) {
   h = melange(h, 0.4, oasis);
   const lac = lisse(OASIS.lac + 3, OASIS.lac - 5, dOasis);
   h -= lac * 2.8;
-  return { h, surChemin, dunes: zoneDunes, plaine, massif, rochers, oasis, lac, camp, dOasis, dCamp, bord };
+  return { h, surChemin, zm, dunes: zoneDunes, plaine, massif, rochers, oasis, lac, camp, dOasis, dCamp, bord };
 }
 export const hauteur = (s, t) => relief(s, t).h;

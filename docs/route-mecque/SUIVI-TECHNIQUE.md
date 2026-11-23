@@ -26,3 +26,8 @@
 - Marche à pied sur la Route : facteur 0,88 (2,90 m/s au lieu de 3,3 ; course 5,46 au lieu de 6,2), seulement à pied et seulement sur la Route. Distance du voyage inchangée (5 600 m). Première tranche ≈ 16,6 min, voyage complet ≈ 32 min à pied. Vitesses du village et des montures inchangées.
 - Dromadaire Rihla conservé comme récompense à l'oasis. Noms provisoires acceptés : Source Claire, Trois Tentes, Rachid, Dalila, Rihla.
 - Sortie à l'est : vérifiée cohérente (zone de l'oasis, gratuite) ; test ajouté : `regions.js` et `premium.js` inchangés, la piste ne traverse aucune zone Premium.
+
+## Avancement : les montagnes, étape 1 (23/11/2026)
+- **Fait** (préproduction) : région « Les contreforts et le premier col » (s = 3 200 → 4 500 m), relief de vallée encaissée entre deux parois rouge brique (fond de vallée toujours praticable à pied ; parois infranchissables), 9 nouveaux lieux (puits des voyageurs, plateau de pierres plates, seuil des montagnes, porte de pierre, 2 haltes, lit de galets, belvédère du premier col, grand cairn déplacé en s = 4 200), décor de roches par flancs, carte et carnet étendus (5 haltes). La partie jouable fait désormais ≈ 4 220 m (≈ 24 min à pied à 2,9 m/s).
+- **Pas encore fait** : Jabal an-Nour, Jabal Thawr, chemins et vallées suivants, arrivée dans la cité, Kaaba, Zamzam, Safa et Marwa. Les fiches religieuses restent vides et « À VALIDER » : elles ne sont **pas** du contenu terminé et doivent être renseignées puis vérifiées avant toute publication.
+- **Perf** (ordinateur, profil automatique) : ≈ 240 000 triangles et ≈ 80 appels de dessin dans la vallée ; à surveiller sur mobile réel (profil « faible » : rayon 3 tuiles et 50 % du décor).

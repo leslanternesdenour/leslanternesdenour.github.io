@@ -34,7 +34,7 @@ function colorier(s, t, r, out, mat) {
   const vert = Math.min(1, r.oasis * lisse(OASIS.r + 4, OASIS.lac + 4, r.dOasis) * 1.2);
   if (vert > 0) { t2.copy(herbe).lerp(herbe2, Math.min(1, v1 * 0.7 + fbm(s * 0.15, t * 0.15, 2) * 0.6)); out.lerp(t2, vert); }
   const roc = lisse(2, 28, r.massif + r.rochers);
-  if (roc > 0) { t2.copy(roche).lerp(roche2, v1); out.lerp(t2, roc); out.multiplyScalar(1 - roc * (0.1 + 0.1 * Math.sin(r.h * 0.9 + v1 * 3))); }
+  if (roc > 0) { t2.copy(roche).lerp(roche2, v1); t2.lerp(teinteRegion(s, t1), 0.55 * r.zm); out.lerp(t2, roc); out.multiplyScalar(1 - roc * (0.1 + 0.1 * Math.sin(r.h * 0.9 + v1 * 3))); }
   if (r.lac > 0.05) out.lerp(mouille, Math.min(1, r.lac * 1.6));
   if (r.surChemin > 0) out.lerp(chemin, r.surChemin * 0.8);
   mat[0] = Math.max(0, 1 - vert - roc); mat[1] = vert * (1 - r.surChemin); mat[2] = roc * (1 - r.surChemin * 0.6);
@@ -64,7 +64,7 @@ export function creerMondeRoute({ scene, Q, TX, ombres = false }) {
   function matiere(x, z) { const { s, t } = versRoute(x, z), r = relief(s, t); return colorier(s, t, r, t1, mm); }
 
   // ---------- le fond lointain : les montagnes et l'horizon, en grosses mailles (une seule fois) ----------
-  { const E = 32, s0 = -320, t0 = -1120, nS = Math.ceil((3340 - s0) / E), nT = Math.ceil(-2 * t0 / E), n1 = nT + 1;
+  { const E = 32, s0 = -320, t0 = -1120, nS = Math.ceil((S_FIN_TRANCHE + 700 - s0) / E), nT = Math.ceil(-2 * t0 / E), n1 = nT + 1;
     const pos = new Float32Array((nS + 1) * n1 * 3), col = new Float32Array((nS + 1) * n1 * 3), am = new Float32Array((nS + 1) * n1 * 3), c = new THREE.Color(), m3 = [0, 0, 0];
     for (let a = 0; a <= nS; a++) for (let b = 0; b <= nT; b++) {
       const s = s0 + a * E, t = t0 + b * E, r = relief(s, t), k = a * n1 + b;

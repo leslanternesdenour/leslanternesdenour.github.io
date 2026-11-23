@@ -40,7 +40,7 @@ export function creerLieux3D({ scene, hauteur, colliders, ombres, TX }) {
     monter(fusion(g), mat, p.x, p.z); bloquer(p.x, p.z, 4.6); bloquer(p.x + 4.2, p.z + 1.5, 2.8); bloquer(p.x - 3.5, p.z + 2.2, 2.2);
     lieux['rocher-aigle'] = { x: p.x - 7, z: p.z - 3 }; }
   // ---- les points de repos : une dalle de pierre et une petite lanterne ----
-  for (const id of ['repos1', 'repos2', 'repos3']) {
+  for (const id of ['repos1', 'repos2', 'repos3', 'repos4', 'repos5']) {
     const p = pos(id), g = [piece(B(), '#a8906e', { p: [0, 0.22, 0], s: [3.2, 0.44, 1.4], m: M.pierre }), piece(DOD(0.9), '#9a8062', { p: [-2.2, 0.4, 0.3] }), piece(DOD(0.7), '#b09672', { p: [2.1, 0.3, -0.4] }),
       piece(CYL(0.16, 0.2, 0.5, 6), '#c9a26a', { p: [0.8, 0.7, 0.1] }), piece(CYL(0.2, 0.2, 0.05, 6), '#8a6440', { p: [0.8, 0.97, 0.1] })];
     monter(fusion(g), mat, p.x, p.z, { rot: 0 });
@@ -73,6 +73,28 @@ export function creerLieux3D({ scene, hauteur, colliders, ombres, TX }) {
     for (let k = 0; k < 12; k++) { const a = k / 12 * Math.PI * 2; g.push(piece(B(), k % 2 ? '#a8906e' : '#b8a07a', { p: [Math.cos(a) * 1.9, 0.5, Math.sin(a) * 1.9], s: [1.1, 1.0, 0.6], r: [0, -a + Math.PI / 2, 0], m: M.pierre })); }
     g.push(piece(CYL(1.7, 1.7, 0.06, 14), '#4a3a28', { p: [0, 0.3, 0] }), piece(B(), '#8a6440', { p: [0, 1.7, 0], s: [0.12, 0.12, 4.4], m: M.bois }), piece(B(), '#8a6440', { p: [-1.9, 1.1, 0], s: [0.14, 2.2, 0.14] }), piece(B(), '#8a6440', { p: [1.9, 1.1, 0], s: [0.14, 2.2, 0.14] }));
     monter(fusion(g), mat, p.x, p.z); bloquer(p.x, p.z, 2.3); lieux.citerne = { x: p.x, z: p.z - 3.6 }; }
+
+  // ---- les contreforts : puits, plateau, seuil, porte de pierre, lit de galets, belvédère du premier col ----
+  { const p = pos('puits-voyageurs'), g = [];
+    for (let k = 0; k < 10; k++) { const a = k / 10 * Math.PI * 2; g.push(piece(B(), k % 2 ? '#a8906e' : '#b8a07a', { p: [Math.cos(a) * 1.0, 0.45, Math.sin(a) * 1.0], s: [0.75, 0.9, 0.5], r: [0, -a + Math.PI / 2, 0], m: M.pierre })); }
+    g.push(piece(CYL(0.85, 0.85, 0.05, 12), '#2f2a28', { p: [0, 0.35, 0] }), piece(B(), '#6b4a30', { p: [-1.05, 1.3, 0], s: [0.12, 2.0, 0.12], m: M.bois }), piece(B(), '#6b4a30', { p: [1.05, 1.3, 0], s: [0.12, 2.0, 0.12], m: M.bois }), piece(B(), '#6b4a30', { p: [0, 2.3, 0], s: [2.4, 0.12, 0.12], m: M.bois }));
+    monter(fusion(g), mat, p.x, p.z); bloquer(p.x, p.z, 1.5); lieux['puits-voyageurs'] = { x: p.x, z: p.z - 2.4 }; }
+  { const p = pos('plateau-plat'), g = [], y0 = hauteur(p.x, p.z);
+    for (let k = 0; k < 14; k++) { const a = k * 2.1, r = 1 + (k % 5) * 1.5, dx = Math.cos(a) * r, dz = Math.sin(a) * r; g.push(piece(B(), k % 2 ? '#b09672' : '#a08a68', { p: [dx, hauteur(p.x + dx, p.z + dz) - y0 + 0.06, dz], s: [1.6 + (k % 3) * 0.5, 0.12, 1.2 + (k % 2) * 0.6], r: [0, k, 0], m: M.pierre })); }
+    const o = monter(fusion(g), mat, p.x, p.z); o.castShadow = false; lieux['plateau-plat'] = { x: p.x, z: p.z }; }
+  { const p = pos('seuil-montagnes'), g = [];
+    for (const s of [-1, 1]) g.push(piece(DOD(1.3), '#8a4a38', { p: [s * 3.2, 1.6, 0], s: [0.9, 1.6, 0.9] }), piece(DOD(0.8), '#6b4a3a', { p: [s * 3.9, 0.5, 0.6] }));
+    g.push(piece(B(), '#8a6440', { p: [4.6, 1.5, 0], s: [0.14, 3.0, 0.14], m: M.bois }), piece(B(), '#c9a26a', { p: [4.6, 2.9, 0.1], s: [1.5, 0.55, 0.07], m: M.bois }));
+    monter(fusion(g), mat, p.x, p.z); bloquer(p.x - 3.2, p.z, 1.3); bloquer(p.x + 3.2, p.z, 1.3); lieux['seuil-montagnes'] = { x: p.x, z: p.z + 3 }; }
+  { const p = pos('col-porte'), g = [piece(DOD(2.6), '#7a4a3a', { p: [-4.2, 2.6, 0], s: [0.9, 1.5, 1.0], r: [0.1, 0.4, 0.1] }), piece(DOD(2.4), '#6b4538', { p: [4.4, 2.4, 0], s: [0.9, 1.5, 1.0], r: [0.2, 1, 0] }),
+      piece(DOD(1.9), '#8a5a44', { p: [-3.0, 5.6, 0], s: [1.6, 0.6, 1.1] }), piece(DOD(1.5), '#7d4e3c', { p: [3.2, 5.4, 0], s: [1.5, 0.6, 1.0] }), piece(DOD(0.9), '#9a6a50', { p: [-5.5, 0.5, 1.5] }), piece(DOD(0.8), '#6b4538', { p: [5.6, 0.4, -1.6] })];
+    monter(fusion(g), mat, p.x, p.z); bloquer(p.x - 4.2, p.z, 2.5); bloquer(p.x + 4.4, p.z, 2.3); lieux['col-porte'] = { x: p.x, z: p.z - 3.5 }; }
+  { const p = pos('wadi-galets'), g = [], y0 = hauteur(p.x, p.z);
+    for (let k = 0; k < 40; k++) { const a = k * 2.399, r = 0.6 + Math.sqrt(k) * 1.1, dx = Math.cos(a) * r, dz = Math.sin(a) * r * 1.4; g.push(piece(DOD(0.16 + (k % 4) * 0.05), ['#8f8678', '#a39b8d', '#6f6a63', '#b0a79a'][k % 4], { p: [dx, hauteur(p.x + dx, p.z + dz) - y0 + 0.08, dz], s: [1.3, 0.6, 1] })); }
+    const o = monter(fusion(g), mat, p.x, p.z); o.castShadow = false; lieux['wadi-galets'] = { x: p.x, z: p.z }; }
+  { const p = pos('belvedere-col'), g = [piece(B(), '#a8906e', { p: [0, 0.35, 0], s: [5.5, 0.7, 3.4], m: M.pierre }), piece(DOD(0.7), '#9a8062', { p: [1.5, 1.1, 0.4] }), piece(DOD(0.5), '#a08566', { p: [1.6, 1.8, 0.45] }), piece(DOD(0.35), '#b8a07a', { p: [1.6, 2.25, 0.4] }),
+      piece(B(), '#6b4a30', { p: [-1.6, 1.0, -0.6], s: [0.14, 2.0, 0.14], m: M.bois }), piece(B(), '#c9a26a', { p: [-1.6, 1.9, -0.55], s: [1.2, 0.5, 0.07], m: M.bois })];
+    monter(fusion(g), mat, p.x, p.z, { rot: 0.3 }); bloquer(p.x + 1.5, p.z + 0.4, 0.9); lieux['belvedere-col'] = { x: p.x - 3.4, z: p.z }; }
 
   // ---- le campement des Trois Tentes ----
   const camp = { x: CAMP.t, z: DEC + CAMP.s };

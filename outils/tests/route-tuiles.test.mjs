@@ -30,3 +30,16 @@ test('décor : le semis d\'une tuile est toujours le même, laisse la piste libr
   assert.ok(total > 100, `décor trop pauvre : ${total}`);
   assert.ok(genres.size >= 5, `peu de variété : ${[...genres]}`);
 });
+
+test('décor des montagnes : beaucoup plus de roches et de plus grandes sur les flancs que dans la plaine, la piste de la vallée reste libre', async () => {
+  const { semerTuile } = await import('../../voyage/js/route/decor-plan.js');
+  const { distanceChemin, pointChemin, hauteur } = await import('../../voyage/js/route/relief.js');
+  const compte = (i, j) => semerTuile(i, j).filter(o => o.type === 'rocher');
+  const tPiste = pointChemin(3700).t, haut = hauteur(3700, tPiste + 220) > hauteur(3700, tPiste - 220) ? 220 : -220;   // le flanc le plus haut de la vallée
+  const jFlanc = Math.floor((tPiste + haut) / 64), iMont = Math.floor(3700 / 64);
+  const flanc = compte(iMont, jFlanc), plaine = compte(Math.floor(900 / 64), Math.floor(60 / 64));
+  assert.ok(flanc.length >= plaine.length + 5, `flanc : ${flanc.length} roches, plaine : ${plaine.length}`);
+  assert.ok(Math.max(...flanc.map(o => o.sc)) > 2.8, 'de grosses roches sur les flancs');
+  let toutes = 0; for (let j = -3; j <= 3; j++) for (const o of semerTuile(iMont, j)) { toutes++; assert.ok(distanceChemin(o.s, o.t) > 3.2, 'la piste du fond de la vallée reste libre'); }
+  assert.ok(toutes <= 7 * 70, 'budget respecté');
+});

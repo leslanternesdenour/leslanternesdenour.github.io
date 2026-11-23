@@ -19,7 +19,15 @@ export const TEXTES_LIEUX = {
   citerne: { petit: 'Une vieille citerne en pierre.', grand: 'Une vieille citerne de pierre (un lieu imaginaire). Elle gardait l\'eau de la pluie : dans le désert, chaque goutte compte.' },
   oasis: { petit: 'L\'oasis ! De l\'eau, de l\'ombre et des palmiers.', grand: 'L\'oasis de la Source Claire (un lieu imaginaire). Dans une oasis, l\'eau est proche de la surface : les palmiers et les plantes peuvent pousser au milieu du désert.' },
   palmeraie: { petit: 'Les palmiers donnent des dattes.', grand: 'Le palmier dattier donne des dattes, un fruit très nourrissant. Ses racines aiment l\'eau, et son ombre abrite d\'autres plantes.' },
-  'cairn-fin': { petit: 'Le chemin continue… bientôt !', grand: 'Le grand cairn marque la fin de cette première étape. La route continue vers les montagnes : elle s\'ouvrira bientôt. Bravo, tu as traversé les plaines et les dunes !' }
+  'puits-voyageurs': { petit: 'Un vieux puits de pierre pour les voyageurs.', grand: 'Un puits de pierre (un lieu imaginaire). Les voyageurs y faisaient boire leurs animaux avant de quitter la plaine pour les montagnes.' },
+  'plateau-plat': { petit: 'Des pierres plates et lisses, comme un grand sol.', grand: 'Un plateau de pierres plates. Le soleil, le vent et le sable les ont polies pendant très longtemps. Après lui, le chemin monte doucement vers les montagnes.' },
+  'seuil-montagnes': { petit: 'Les montagnes ! Le chemin entre dans la vallée.', grand: 'Ici commencent les contreforts, les premières montagnes. Le sable se mêle de cailloux, la roche devient rouge et grise, et la vallée se resserre autour de toi.' },
+  'col-porte': { petit: 'Une porte de pierre entre deux grands rochers.', grand: 'Deux grands rochers forment une porte naturelle (un lieu imaginaire). Un col est un passage entre deux montagnes : c\'est souvent le chemin le plus facile pour les traverser.' },
+  repos4: { petit: 'Un abri sous la falaise, au frais.', grand: 'Un abri sous la falaise, à l\'ombre et au frais. Ton voyage est sauvegardé.' },
+  'wadi-galets': { petit: 'Un lit de cailloux ronds : une rivière dormait ici.', grand: 'Un wadi est un lit de rivière à sec. La pluie est rare, mais quand elle tombe en montagne, l\'eau peut couler d\'un coup. Les galets sont ronds parce que l\'eau les a roulés.' },
+  'belvedere-col': { petit: 'Regarde derrière toi : tout le chemin parcouru !', grand: 'Du haut du premier col, on voit toute la route : les dunes, l\'oasis et la plaine. C\'est un bon endroit pour se souvenir du chemin parcouru.' },
+  repos5: { petit: 'Encore un coin calme dans la vallée.', grand: 'Un replat tranquille dans le fond de la vallée, près des galets. Ton voyage est sauvegardé.' },
+  'cairn-fin': { petit: 'Le chemin continue… bientôt !', grand: 'Le grand cairn marque la fin de cette étape. La route continue au-delà des premiers cols : elle s\'ouvrira bientôt. Bravo, tu as traversé les plaines, les dunes et les contreforts !' }
 };
 export const texteLieu = (id, age) => { const t = TEXTES_LIEUX[id]; return t ? (age === '3-5' ? t.petit : t.grand) : ''; };
 
