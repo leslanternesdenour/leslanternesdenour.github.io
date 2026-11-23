@@ -128,6 +128,9 @@ export async function traiter(req, ctx) {
     if (m !== 'GET' && m !== 'HEAD' && !memeOrigine(req)) return erreur(403, 'origine');
     const session = await lireSession(lireCookie(req.headers.get('Cookie')), ctx.env.SESSION_SECRET, ctx.maintenant);
 
+    // Mode des paiements, pour que les pages affichent le bon texte (jamais une valeur de clé) : « ferme » (pas de Stripe configuré), « test » ou « reel ».
+    if (chemin === '/api/paiement/mode' && m === 'GET') return json({ mode: !ctx.stripe ? 'ferme' : ctx.stripe.modeTest ? 'test' : 'reel' });
+
     // ----- session -----
     if (chemin === '/api/session' && m === 'POST') {
       if (tropDeTentatives('session:' + ip, 30, 10 * 60000, ctx.maintenant)) return erreur(429, 'trop-de-tentatives');

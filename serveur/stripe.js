@@ -1,5 +1,6 @@
-// Stripe : vérification des webhooks (signature HMAC) et appels API, en MODE TEST uniquement.
-// Une clé « sk_live_ » est refusée tant que STRIPE_MODE_REEL n'est pas explicitement « autorise » (accord du créateur).
+// Stripe : vérification des webhooks (signature HMAC) et appels API. MODE TEST par défaut.
+// Une clé « sk_live_ » est refusée tant que STRIPE_MODE_REEL n'est pas explicitement « autorise » (accord du créateur) :
+// c'est le seul interrupteur du passage aux paiements réels (voir docs/SOUTIEN-CAGNOTTE.md et les secrets du tableau de bord Cloudflare).
 // Version d'API de l'appel « don » (celle de la documentation Stripe du paiement intégré, ui_mode « embedded_page ») :
 // elle ne dépend pas de la version par défaut du compte. Doit rester cohérente avec le script chargé par /soutenir/ (soutenir/don.js).
 export const VERSION_API_DON = '2026-11-18.endive';

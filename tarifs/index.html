@@ -61,7 +61,7 @@ ul{margin:0;padding-left:20px;color:#e9e2ff;line-height:1.6}
 <main>
   <h1>🏮 Les formules</h1>
   <p class="bandeau-sim cache" id="bandeau-sim">SIMULATION LOCALE — faux paiements (aucun service réel)</p>
-  <p class="bandeau-sim" id="bandeau-test">MODE TEST — aucun paiement réel n'est possible. Prix provisoires.</p>
+  <p class="bandeau-sim cache" id="bandeau-test">MODE TEST — aucun paiement réel n'est possible. Prix provisoires.</p>
   <p style="text-align:center">Cette page est pour les parents.</p>
 
   <section class="carte">
@@ -104,6 +104,8 @@ const etat = (t, ko) => { $('etat').textContent = t || ''; $('etat').className =
 const NOMS = { premium_mensuel: 'Premium au mois', premium_annuel: 'Premium à l\'année', famille_annuel: 'Famille à l\'année' };
 let formule = null, D = null;
 if (C.simulation()) $('bandeau-sim').classList.remove('cache');
+// Le bandeau « MODE TEST » n'apparaît que si le serveur annonce réellement le mode test (jamais en paiements réels, jamais par défaut).
+C.api('/api/paiement/mode').then(r => { if (r && r.mode === 'test') $('bandeau-test').classList.remove('cache'); }).catch(() => {});
 if (new URLSearchParams(location.search).get('paiement') === 'annule') etat('Paiement annulé : rien n\'a été prélevé.');
 for (const b of document.querySelectorAll('.choisir')) b.onclick = async () => {
   formule = b.dataset.formule; document.querySelectorAll('.formule').forEach(f => f.classList.toggle('choisie', f.contains(b)));
