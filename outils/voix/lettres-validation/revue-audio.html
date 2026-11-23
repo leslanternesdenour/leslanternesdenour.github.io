@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<title>Tableau de revue des audios du jeu · outil interne</title>
+<style>
+:root{--fond:#14102e;--carte:#221b52;--or:#f5b942;--ok:#6fd49a;--ko:#ff8c8c;--nsp:#ffd27a}
+*{box-sizing:border-box}body{margin:0;background:var(--fond);color:#f4efff;font:16px/1.45 system-ui,Segoe UI,sans-serif;padding:12px}main{max-width:1100px;margin:0 auto}
+h1{font-size:22px;margin:6px 0}a{color:#ffe3a3}.avert{background:#4a1f2a;border:2px solid var(--ko);border-radius:14px;padding:10px 14px;margin:10px 0;font-size:15px}
+.barre{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 0}select,button{font:inherit;border-radius:10px;border:2px solid #5b4fb0;background:#2b2366;color:#fff;padding:6px 10px;min-height:42px;cursor:pointer}
+table{width:100%;border-collapse:collapse}th{position:sticky;top:0;background:#2b2366;text-align:left;padding:6px;font-size:14px;z-index:1}td{padding:6px;border-bottom:1px solid #3a3175;vertical-align:middle}
+tr.ok{background:#173b2b}tr.ko{background:#4a1f2a}tr.nsp{background:#4a3d12}
+.txt{font-size:15px;max-width:380px}.txt.ar{font:700 26px 'Amiri','Noto Naskh Arabic',serif;direction:rtl;text-align:right}
+.v button{min-height:38px;padding:2px 10px;margin:1px}.v button.sel{outline:3px solid #fff}.v .b-ok{border-color:var(--ok)}.v .b-ko{border-color:var(--ko)}.v .b-nsp{border-color:var(--nsp)}
+input.note{width:100%;min-width:120px;background:#14102e;color:#fff;border:1px solid #5b4fb0;border-radius:8px;padding:5px;font:inherit}
+.nd{color:#9b92cf;font-size:13px}#bilan{font-weight:700}
+</style></head><body><main>
+<h1>Tableau de revue des audios du jeu</h1>
+<p class="nd"><a href="./">← validation des 28 lettres</a> · <a href="ecoute?voix=narratrice">écoute guidée</a></p>
+<div class="avert"><b>Outil interne. Rien n'est modifié sur le site.</b> Écoute chaque audio (▶), puis marque <b>Bon</b>, <b>À refaire</b> ou <b>Doute</b>. Ton jugement est le tien : pour l'arabe, la validation finale revient à une personne compétente. Les audios « à refaire » sont ensuite régénérés (voix Nour existantes seulement) sans toucher aux anciens fichiers avant ton accord.</div>
+<div class="barre">
+  <label>Jeu : <select id="jeu"><option value="ecole-lettres">École des lettres arabes</option><option value="ecole-lecture">École de lecture</option><option value="ecole-chiffres">École des chiffres</option><option value="chasse-aux-mots">Chasse aux mots</option><option value="mysteres-desert">Mystères du désert</option><option value="quiz-nour">Quiz de Nour</option></select></label>
+  <label>Langue : <select id="langue"><option value="">Toutes</option><option value="ar" selected>Arabe</option><option value="fr">Français</option></select></label>
+  <label>État : <select id="etat"><option value="">Tous</option><option value="non">Non jugés</option><option value="ok">Bon</option><option value="ko">À refaire</option><option value="nsp">Doute</option></select></label>
+  <span id="bilan"></span>
+</div>
+<div class="barre"><button id="exp">Exporter tout (JSON)</button><button id="copieko">Copier la liste « à refaire »</button><button id="copie">Copier tout le bilan</button><span class="nd" id="msg"></span></div>
+<table><thead><tr><th>#</th><th>Identifiant</th><th>Ce que l'audio doit dire</th><th>Voix</th><th>Durée</th><th>Écouter</th><th>Ton verdict</th><th>Note</th></tr></thead><tbody id="corps"></tbody></table>
+<audio id="lecteur" preload="none"></audio>
+<script type="module">
+import { VOIX_NOUR } from './donnees.js';
+const $ = id => document.getElementById(id), lecteur = $('lecteur'), NOMV = {};
+for (const v of Object.values(VOIX_NOUR)) NOMV[v.id] = v.nom.replace('Nour - ', '').replace(/ \(.*\)/, '');
+const p = new URLSearchParams(location.search); if (p.get('jeu')) $('jeu').value = p.get('jeu'); if (!$('jeu').value) $('jeu').value = 'ecole-lettres';
+let phrases = [], verdicts = {}, cleStock = '';
+const sauver = () => { try { localStorage.setItem(cleStock, JSON.stringify(verdicts)); } catch (e) {} };
+const jeu = () => $('jeu').value, etatDe = f => verdicts[f] ? verdicts[f].v : 'non';
+async function charger() {
+  cleStock = 'ldn-revue-audio-v1-' + jeu(); verdicts = {}; try { verdicts = JSON.parse(localStorage.getItem(cleStock) || '{}'); } catch (e) {}
+  $('corps').innerHTML = ''; $('msg').textContent = 'Chargement…';
+  try { const r = await fetch(`/audio/jeux/${jeu()}/manifeste.json`); phrases = (await r.json()).phrases; $('msg').textContent = ''; } catch (e) { phrases = []; $('msg').textContent = 'Manifeste introuvable pour ce jeu.'; }
+  dessiner();
+}
+function bilan() { const c = { ok: 0, ko: 0, nsp: 0 }; for (const x of phrases) { const e = etatDe(x.fichier); if (c[e] !== undefined) c[e]++; } $('bilan').textContent = `${phrases.length} audios · ✓ ${c.ok} bons · ✗ ${c.ko} à refaire · ? ${c.nsp} doutes · ${phrases.length - c.ok - c.ko - c.nsp} non jugés`; }
+function ligne(x, n) {
+  const tr = document.createElement('tr'), e = etatDe(x.fichier); tr.className = e === 'non' ? '' : e; tr.dataset.f = x.fichier;
+  const td = (t, cl) => { const c = document.createElement('td'); if (cl) c.className = cl; if (t !== undefined) c.textContent = t; tr.appendChild(c); return c; };
+  td(n); td(x.id); td(x.texte, 'txt ' + (x.langue === 'ar' ? 'ar' : '')).lang = x.langue === 'ar' ? 'ar' : 'fr';
+  td(NOMV[x.voixId] || (x.voixId ? 'autre voix' : '?')); td((x.duree || 0).toFixed(1) + ' s');
+  const j = td(); const b = document.createElement('button'); b.textContent = '▶'; b.onclick = () => { lecteur.src = `/audio/jeux/${jeu()}/${x.fichier}`; lecteur.play().catch(() => {}); }; j.appendChild(b);
+  const v = td(undefined, 'v'); for (const [k, t] of [['ok', '✓ Bon'], ['ko', '✗ À refaire'], ['nsp', '? Doute']]) { const bb = document.createElement('button'); bb.textContent = t; bb.className = 'b-' + k + (e === k ? ' sel' : ''); bb.onclick = () => { verdicts[x.fichier] = { ...(verdicts[x.fichier] || {}), v: k, fichier: x.fichier, id: x.id, langue: x.langue, texte: x.texte, voixId: x.voixId, date: new Date().toISOString() }; sauver(); dessiner(); }; v.appendChild(bb); }
+  const nt = td(); const i = document.createElement('input'); i.className = 'note'; i.placeholder = 'Ce qui ne va pas (facultatif)'; i.value = (verdicts[x.fichier] && verdicts[x.fichier].n) || ''; i.oninput = () => { verdicts[x.fichier] = { ...(verdicts[x.fichier] || {}), n: i.value }; sauver(); }; nt.appendChild(i);
+  return tr;
+}
+function dessiner() {
+  const f = document.scrollingElement.scrollTop, L = $('langue').value, E = $('etat').value, corps = $('corps'); corps.innerHTML = '';
+  phrases.forEach((x, k) => { if (L && x.langue !== L) return; if (E && etatDe(x.fichier) !== E) return; corps.appendChild(ligne(x, k + 1)); });
+  bilan(); document.scrollingElement.scrollTop = f;
+}
+const jugements = () => Object.values(verdicts).filter(x => x.v);
+const sortie = liste => JSON.stringify({ outil: 'revue-audio-jeu', jeu: jeu(), date: new Date().toISOString(), jugements: liste }, null, 2);
+const copier = (txt, btn, lib) => navigator.clipboard.writeText(txt).then(() => { btn.textContent = 'Copié ✓'; setTimeout(() => btn.textContent = lib, 1500); });
+$('exp').onclick = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([sortie(jugements())], { type: 'application/json' })); a.download = `revue-audio-${jeu()}.json`; a.click(); };
+$('copie').onclick = () => copier(sortie(jugements()), $('copie'), 'Copier tout le bilan');
+$('copieko').onclick = () => copier(sortie(jugements().filter(x => x.v === 'ko')), $('copieko'), 'Copier la liste « à refaire »');
+$('jeu').onchange = charger; $('langue').onchange = dessiner; $('etat').onchange = dessiner;
+charger();
+</script></main></body></html>
