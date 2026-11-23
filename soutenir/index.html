@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="fr" data-univers="priere">
+<head>
+<meta charset="utf-8">
+<script src="../monde/socle/sans-visage.js?v=1"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- noindex tant que la cagnotte n'est pas ouverte (retirer cette ligne et ajouter la page au sitemap au lancement) -->
+<meta name="robots" content="noindex">
+<title>Soutenir les Lanternes de Nour</title>
+<meta name="description" content="Soutenez librement le développement des Lanternes de Nour, un projet indépendant d'univers éducatif pour les enfants. Contribution facultative, sans lien avec les abonnements.">
+<link rel="canonical" href="https://leslanternesdenour.fr/soutenir/">
+<meta name="theme-color" content="#191345">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../univers/univers.css?v=1">
+<link rel="stylesheet" href="soutenir.css?v=2">
+</head>
+<body>
+<div id="deco" aria-hidden="true"></div>
+<a class="evitement" href="#contenu">Aller au contenu</a>
+
+<header class="wrap haut">
+  <a class="marque" href="../">‹ Les Lanternes de Nour</a>
+  <a class="lien-famille" href="../decouvrir/">Découvrir le projet</a>
+</header>
+
+<main id="contenu" class="wrap">
+
+  <!-- ===== En-tête de page ===== -->
+  <section class="hero" aria-labelledby="titre">
+    <div class="lanternes-haut" aria-hidden="true">
+      <svg class="lg l1" viewBox="20 0 60 118"><use href="#lanterne"/></svg>
+      <svg class="lg l2" viewBox="20 0 60 118"><use href="#lanterne"/></svg>
+      <svg class="lg l3" viewBox="20 0 60 118"><use href="#lanterne"/></svg>
+    </div>
+    <p class="sur">Un projet indépendant</p>
+    <h1 id="titre">Soutenir <span>les Lanternes de Nour</span></h1>
+    <p class="intro">Aidons ensemble à faire grandir un monde éducatif pour les enfants.</p>
+    <svg class="filet" viewBox="0 0 320 24" aria-hidden="true"><path d="M0 12h120M200 12h120" stroke="#f5b942" stroke-width="2" opacity=".6"/><path d="M160 2l5 8 9 2-9 2-5 8-5-8-9-2 9-2z" fill="#f5b942"/><circle cx="132" cy="12" r="3" fill="#f5b942" opacity=".7"/><circle cx="188" cy="12" r="3" fill="#f5b942" opacity=".7"/></svg>
+  </section>
+
+  <!-- ===== Présentation ===== -->
+  <section class="bloc presentation" aria-labelledby="t-pres">
+    <div class="carte grande">
+      <div class="texte">
+        <h2 id="t-pres">Chaque petite contribution aide à faire grandir notre univers.</h2>
+        <p>Les Lanternes de Nour est un projet indépendant consacré à la création d'un univers éducatif, ludique et bienveillant pour les enfants.</p>
+        <p>Derrière ce projet, il y a des heures de développement, de création graphique, de programmation, de conception pédagogique et de préparation de contenus.</p>
+        <p>Nous souhaitons continuer à enrichir cet univers, améliorer les jeux, développer de nouvelles aventures et proposer toujours plus de découvertes aux enfants.</p>
+        <p>Cette cagnotte permet à celles et ceux qui le souhaitent de soutenir librement cette aventure. Chaque contribution, quel que soit son montant, est appréciée.</p>
+      </div>
+      <figure class="maktoub">
+        <div class="cadre"><img src="../ecole-arabe/commun/maktoub/celebration.webp" width="360" height="409" alt="Maktoub, le livre compagnon, sourit et fait un geste joyeux" loading="lazy" decoding="async"></div>
+        <figcaption>Maktoub, le livre compagnon de l'école arabe, vous dit merci d'être passé.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ===== Encadré : facultatif ===== -->
+  <aside class="encadre" aria-label="À savoir">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="none" stroke="#ffe3a3" stroke-width="2.4"/><path d="M16 14v8" stroke="#ffe3a3" stroke-width="2.6" stroke-linecap="round"/><circle cx="16" cy="9.6" r="1.8" fill="#ffe3a3"/></svg>
+    <p><strong>Les contributions sont facultatives.</strong> Elles servent à soutenir le développement des Lanternes de Nour et ne donnent pas automatiquement accès à des avantages Premium.</p>
+  </aside>
+
+  <!-- ===== Participer ===== -->
+  <section class="bloc" id="participer" aria-labelledby="t-part">
+    <h2 id="t-part">Participer, si vous le souhaitez</h2>
+    <p class="chapo">Vous êtes libre de contribuer ou non, et de choisir le montant qui vous convient. Le paiement se fait ici, sur un formulaire sécurisé fourni par Stripe : nous ne voyons ni ne conservons vos informations bancaires.</p>
+
+    <div class="action" id="zone-action">
+      <!-- Tant que le don en ligne n'est pas configuré côté serveur (ou sans JavaScript), seul ce message s'affiche : soutenir.js / don.js affichent le formulaire sinon. -->
+      <noscript><p class="bientot" role="status">La cagnotte sera bientôt disponible.</p></noscript>
+      <p class="bientot" id="msg-bientot" role="status" hidden>La cagnotte sera bientôt disponible.</p>
+
+      <form class="don" id="form-don" novalidate hidden>
+        <fieldset>
+          <legend>Choisissez un montant</legend>
+          <ul class="montants">
+            <li><label><input type="radio" name="montant" value="5"><b>5 €</b><span>Une participation</span></label></li>
+            <li><label><input type="radio" name="montant" value="10"><b>10 €</b><span>Un soutien en plus</span></label></li>
+            <li><label><input type="radio" name="montant" value="20"><b>20 €</b><span>Une contribution plus importante</span></label></li>
+            <li class="libre"><label><input type="radio" name="montant" value="libre"><b>Montant libre</b><span>Chacun selon ses moyens</span></label></li>
+          </ul>
+        </fieldset>
+        <p class="champ-libre" id="champ-libre" hidden><label for="montant-libre">Votre montant, en euros (de 1 à 500)</label><span class="saisie"><input id="montant-libre" type="text" inputmode="numeric" autocomplete="off" maxlength="3"> €</span></p>
+        <p class="erreur" id="erreur-don" role="alert" hidden></p>
+        <button class="btn btn-or" id="btn-continuer" type="submit">CONTINUER VERS LE PAIEMENT</button>
+      </form>
+
+      <div class="paiement-zone" id="zone-paiement" hidden>
+        <div id="paiement"></div>
+        <button class="lien-bouton" id="btn-changer" type="button">‹ Changer le montant</button>
+      </div>
+
+      <p class="merci-don" id="merci-don" role="status" hidden>Merci de tout cœur pour votre soutien ! Votre contribution aide vraiment à faire grandir les Lanternes de Nour.</p>
+
+      <p class="petit" id="note-don" hidden>Contribution unique, sans abonnement ni paiement récurrent. Le paiement est traité par Stripe ; d'autres moyens que la carte bancaire (par exemple Apple Pay ou Google Pay) peuvent être proposés selon votre appareil. Il n'y a aucune obligation de participer, et partager cette page est aussi une aide précieuse.</p>
+    </div>
+  </section>
+
+  <!-- ===== Objectif et répartition ===== -->
+  <section class="bloc" aria-labelledby="t-obj">
+    <h2 id="t-obj">Notre objectif : 3 000 €</h2>
+    <p class="chapo"><strong>Répartition prévisionnelle.</strong> Ces montants sont une estimation de ce que nous prévoyons de financer ; les dépenses réelles pourront évoluer selon les besoins du projet. Les barres ci-dessous montrent la <em>part prévue de chaque poste</em> dans l'objectif : elles n'indiquent aucune somme déjà collectée, et aucune somme collectée n'est affichée sur cette page.</p>
+    <ol class="repartition" aria-label="Répartition prévisionnelle de l'objectif de 3 000 €">
+      <li style="--p:25%"><span class="lib">Développement et amélioration du site et des jeux</span><span class="barre" aria-hidden="true"><i></i></span><b>750 €</b></li>
+      <li style="--p:20%"><span class="lib">Illustrations, graphismes et univers visuels</span><span class="barre" aria-hidden="true"><i></i></span><b>600 €</b></li>
+      <li style="--p:16.7%"><span class="lib">Contenus éducatifs, histoires et activités</span><span class="barre" aria-hidden="true"><i></i></span><b>500 €</b></li>
+      <li style="--p:13.3%"><span class="lib">Voix, narration et contenus audio</span><span class="barre" aria-hidden="true"><i></i></span><b>400 €</b></li>
+      <li style="--p:15%"><span class="lib">Hébergement, stockage, sécurité et services techniques</span><span class="barre" aria-hidden="true"><i></i></span><b>450 €</b></li>
+      <li style="--p:10%"><span class="lib">Tests, corrections et optimisation</span><span class="barre" aria-hidden="true"><i></i></span><b>300 €</b></li>
+    </ol>
+  </section>
+
+  <!-- ===== Où va votre contribution ? ===== -->
+  <section class="bloc" aria-labelledby="t-ou">
+    <h2 id="t-ou">Où va votre contribution ?</h2>
+    <div class="grille">
+      <article class="carte poste">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><rect x="5" y="8" width="38" height="28" rx="5" fill="none" stroke="#f5b942" stroke-width="3"/><path d="M20 17l-6 7 6 7M28 17l6 7-6 7" fill="none" stroke="#ffe3a3" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 42h16" stroke="#f5b942" stroke-width="3" stroke-linecap="round"/></svg>
+        <h3>Développement <small>750 €</small></h3>
+        <p>Faire évoluer le site et les jeux, corriger les défauts, ajouter de nouvelles activités et garder le tout fluide et agréable pour les enfants.</p>
+      </article>
+      <article class="carte poste">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 5C12 5 4 13 4 23c0 8 5 11 10 11 3 0 3 3 3 5 0 3 3 4 6 4 14 0 21-8 21-19C44 12 36 5 24 5z" fill="none" stroke="#f5b942" stroke-width="3" stroke-linejoin="round"/><circle cx="15" cy="21" r="3" fill="#ffe3a3"/><circle cx="24" cy="14" r="3" fill="#ffe3a3"/><circle cx="34" cy="19" r="3" fill="#ffe3a3"/></svg>
+        <h3>Illustrations et univers visuels <small>600 €</small></h3>
+        <p>Dessiner les personnages, les lieux et les décors qui donnent vie à l'univers des Lanternes de Nour.</p>
+      </article>
+      <article class="carte poste">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 12C19 8 11 8 5 10v26c6-2 14-2 19 2 5-4 13-4 19-2V10c-6-2-14-2-19 2z" fill="none" stroke="#f5b942" stroke-width="3" stroke-linejoin="round"/><path d="M24 12v26" stroke="#ffe3a3" stroke-width="3"/></svg>
+        <h3>Contenus éducatifs <small>500 €</small></h3>
+        <p>Concevoir et préparer avec soin des histoires, des activités et des parcours d'apprentissage adaptés à chaque âge.</p>
+      </article>
+      <article class="carte poste">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><rect x="17" y="4" width="14" height="24" rx="7" fill="none" stroke="#f5b942" stroke-width="3"/><path d="M9 22c0 8 6 14 15 14s15-6 15-14M24 36v8M16 44h16" fill="none" stroke="#ffe3a3" stroke-width="3" stroke-linecap="round"/></svg>
+        <h3>Voix et narration <small>400 €</small></h3>
+        <p>Enregistrer et soigner les voix, la narration et les contenus audio qui accompagnent les enfants dans les jeux.</p>
+      </article>
+      <article class="carte poste">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 4l16 6v12c0 11-7 18-16 22C15 40 8 33 8 22V10z" fill="none" stroke="#f5b942" stroke-width="3" stroke-linejoin="round"/><path d="M16 24l6 6 11-12" fill="none" stroke="#ffe3a3" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <h3>Hébergement et sécurité <small>450 €</small></h3>
+        <p>Héberger le site, stocker les contenus, protéger les données et payer les services techniques nécessaires à son fonctionnement.</p>
+      </article>
+      <article class="carte poste">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><rect x="3" y="8" width="30" height="22" rx="3" fill="none" stroke="#f5b942" stroke-width="3"/><rect x="29" y="18" width="16" height="24" rx="3" fill="#2a2166" stroke="#f5b942" stroke-width="3"/><path d="M8 38h16" stroke="#f5b942" stroke-width="3" stroke-linecap="round"/><path d="M33 31l4 4 6-7" fill="none" stroke="#ffe3a3" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <h3>Tests et optimisation <small>300 €</small></h3>
+        <p>Vérifier que tout fonctionne bien sur ordinateur, tablette et téléphone, corriger les problèmes et améliorer la fluidité.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===== Transparence ===== -->
+  <section class="bloc" aria-labelledby="t-transp">
+    <h2 id="t-transp">En toute transparence</h2>
+    <div class="carte transp">
+      <ul>
+        <li><b>Le soutien n'est pas un abonnement.</b> Cette cagnotte est indépendante des formules Premium et Famille : contribuer ne déclenche aucun abonnement ni aucun paiement récurrent.</li>
+        <li><b>Rien n'est bloqué pour ceux qui ne contribuent pas.</b> Les apprentissages fondamentaux, notamment les activités autour des ablutions et de la prière, ont vocation à rester accessibles gratuitement.</li>
+        <li><b>Un projet indépendant.</b> Les Lanternes de Nour n'est pas une association ni un organisme reconnu d'intérêt général : les contributions ne donnent droit à aucune réduction d'impôt.</li>
+        <li><b>Des nouvelles du projet.</b> Nous publierons des nouvelles de l'avancement afin que les personnes qui le soutiennent puissent suivre les améliorations réalisées.</li>
+      </ul>
+    </div>
+  </section>
+
+  <p class="merci">Merci à toutes les personnes qui prennent le temps de découvrir ce projet, de le partager ou de le soutenir.</p>
+</main>
+
+<footer class="wrap pied">
+  <span>Les Lanternes de Nour · Un monde pour apprendre, découvrir et grandir.</span>
+  <nav aria-label="Liens du pied de page"><a href="../">Accueil</a> · <a href="../decouvrir/">Le projet</a> · <a href="../conditions/">Conditions</a></nav>
+</footer>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="lanterne" viewBox="20 0 60 118"><path d="M50 0v16" stroke="#d9952a" stroke-width="2.4"/><path d="M30 32 38 16h24l8 16z" fill="#f5b942"/><rect x="26" y="32" width="48" height="8" rx="2" fill="#d9952a"/><rect x="28" y="40" width="44" height="46" rx="8" fill="#ffd77a" opacity=".92"/><path d="M36 42v42M50 42v42M64 42v42" stroke="#d9952a" stroke-width="1.6" opacity=".5"/><rect x="26" y="86" width="48" height="8" rx="2" fill="#d9952a"/><path d="M34 94l4 12h24l4-12z" fill="#f5b942"/><path d="M50 106v8" stroke="#d9952a" stroke-width="2.4"/></symbol>
+</defs></svg>
+
+<script type="module" src="soutenir.js?v=2"></script>
+<script src="../univers/univers.js?v=1" defer></script>
+</body>
+</html>

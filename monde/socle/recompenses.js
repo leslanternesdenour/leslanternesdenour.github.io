@@ -5,6 +5,9 @@
 //                 + étoiles de la Chasse aux mots (clé « maison_mots », 6 max : 3 par jeu)
 //   🏮 lanternes = lanternes allumées dans le calendrier du Ramadan (tous les profils) + lanternes cachées trouvées dans le Grand Voyage
 
+// L'École arabe de Maktoub : le jeu « Les chiffres et les nombres arabes » (clé « ecole_chiffres ») compte dans les étoiles et les lanternes du village.
+import { lire as lireChiffres, recompenses as recompensesChiffres } from '../../ecole-arabe/chiffres/moteur.js';
+
 const JEUX_ABLUTIONS = ['g1', 'g2', 'g3', 'g4'];
 const JEUX_PRIERE = ['g1', 'g3', 'g4'];
 
@@ -12,7 +15,8 @@ const etoilesDe = (p, jeux) => p ? jeux.reduce((s, k) => s + Math.max(0, Math.mi
 
 // lire(cle) → objet JSON ou null
 export function calculerRecompenses(lire) {
-  const abl = lire('ablutions'), pri = lire('priere'), cal = lire('lanternes2'), voy = lire('monde_voyage'), mots = lire('maison_mots');
+  const abl = lire('ablutions'), pri = lire('priere'), cal = lire('lanternes2'), voy = lire('monde_voyage'), mots = lire('maison_mots'), chiffresEt = lireChiffres(lire('ecole_chiffres'));
+  const chiffres = recompensesChiffres(chiffresEt);
 
   const ablutions = etoilesDe(abl, JEUX_ABLUTIONS);
   const priere = etoilesDe(pri, JEUX_PRIERE);
@@ -30,14 +34,15 @@ export function calculerRecompenses(lire) {
   const lanternesVoyage = new Set(ramasses.filter(k => typeof k === 'string' && k.startsWith('lanterne'))).size;
 
   return {
-    etoiles: ablutions + priere + jeuxRamadan.size + chasse,
-    lanternes: lanternesRamadan + lanternesVoyage,
+    etoiles: ablutions + priere + jeuxRamadan.size + chasse + chiffres.etoiles,
+    lanternes: lanternesRamadan + lanternesVoyage + chiffres.lanternes,
     jeux: {
       ablutions: { etoiles: ablutions, appris: !!(abl && abl.learned) },
       priere: { etoiles: priere, appris: !!(pri && pri.learn) },
       ramadan: { etoiles: jeuxRamadan.size, lanternes: lanternesRamadan },
       desert: { lanternes: lanternesVoyage },
-      mots: { etoiles: chasse }
+      mots: { etoiles: chasse },
+      ecole_chiffres: { etoiles: chiffres.etoiles, lanternes: chiffres.lanternes }
     }
   };
 }

@@ -1,0 +1,116 @@
+/* Page « Soutenir les Lanternes de Nour » — même univers que le reste du site : nuit violette, or, lanternes, motifs orientaux. */
+*{box-sizing:border-box}html,body{margin:0}
+html{scroll-behavior:smooth}
+body{min-height:100vh;color:#f4efff;font-family:Nunito,system-ui,sans-serif;line-height:1.6}
+/* ciel de nuit (prime sur le fond clair du décor d'univers) */
+html[data-univers] body{background:radial-gradient(90% 40% at 50% 0,#3b2a86 0,rgba(59,42,134,0) 100%),radial-gradient(60% 30% at 85% 55%,rgba(245,185,66,.10),rgba(245,185,66,0) 100%),linear-gradient(180deg,#241a5e 0,#191345 45%,#120d33 100%)}
+html[data-univers]{background:#191345}
+.wrap{max-width:1040px;margin:0 auto;padding:0 18px;position:relative;z-index:1}
+a{color:#ffe3a3}
+h1,h2,h3{font-family:Poppins,system-ui,sans-serif;line-height:1.2;margin:0}
+p{margin:0}
+[hidden]{display:none!important}
+.evitement{position:absolute;left:-999px;top:8px;background:#f5b942;color:#2a1d00;padding:10px 16px;border-radius:12px;font-weight:900;z-index:10}
+.evitement:focus{left:12px}
+:focus-visible{outline:3px solid #ffe3a3;outline-offset:3px;border-radius:8px}
+
+/* --- en-tête --- */
+.haut{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 18px}
+.haut a{text-decoration:none;font-weight:800}
+.marque{color:#f5b942;min-height:44px;display:inline-flex;align-items:center}
+.lien-famille{background:rgba(255,255,255,.08);border:1px solid rgba(255,227,163,.35);border-radius:999px;padding:10px 16px;min-height:44px;display:inline-flex;align-items:center}
+
+/* --- héros --- */
+.hero{text-align:center;padding:78px 0 8px;position:relative}
+.hero .sur{color:#ffe3a3;font-weight:800;letter-spacing:.08em;text-transform:uppercase;font-size:13px}
+.hero h1{font-size:clamp(32px,7.4vw,58px);color:#fff!important;margin:8px 0 12px;text-shadow:0 4px 24px rgba(245,185,66,.25)}
+.hero h1 span{color:#f5b942;display:inline-block}
+.hero .intro{max-width:640px;margin:0 auto;color:#e6defb;font-size:clamp(17px,2.6vw,21px)}
+.filet{display:block;width:min(320px,70%);height:auto;margin:18px auto 4px}
+.lanternes-haut{position:absolute;inset:0 0 auto 0;height:90px;pointer-events:none}
+.lg{position:absolute;top:-10px;width:44px;height:auto;filter:drop-shadow(0 0 14px rgba(255,200,90,.75));transform-origin:50% 0;animation:balance 5.5s ease-in-out infinite}
+.lg.l1{left:3%}.lg.l2{right:4%;width:54px;animation-delay:-1.8s}.lg.l3{left:14%;width:32px;top:-14px;animation-delay:-3.2s;opacity:.85}
+@keyframes balance{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+@media (max-width:640px){.hero{padding-top:70px}.lg.l3{display:none}.lg{width:34px}.lg.l2{width:40px}}
+
+/* --- blocs --- */
+.bloc{margin:34px 0}
+.bloc>h2{font-size:clamp(22px,4.6vw,32px);color:#fff;margin-bottom:12px}
+.bloc>.chapo{color:#d8cff5;margin-bottom:18px;max-width:780px}
+.carte{background:linear-gradient(180deg,#2c2370,#251c60);border-radius:26px;padding:22px;box-shadow:0 8px 0 #120d33,0 0 0 1px rgba(255,227,163,.12) inset}
+.carte.grande{display:grid;grid-template-columns:1.6fr 1fr;gap:26px;align-items:center;padding:30px;background:radial-gradient(120% 120% at 100% 0,#3d2d8c 0,#2a2166 48%,#221a5a 100%)}
+.carte.grande h2{font-size:clamp(22px,3.8vw,30px);color:#ffe3a3;margin-bottom:14px}
+.carte.grande .texte{display:grid;gap:12px;color:#e6defb;font-size:clamp(16px,2.2vw,18px)}
+.maktoub{margin:0;text-align:center}
+.maktoub .cadre{width:min(230px,70%);margin:0 auto;aspect-ratio:1;border-radius:50%;overflow:hidden;border:5px solid #f5b942;box-shadow:0 0 0 6px rgba(245,185,66,.18),0 14px 34px rgba(0,0,0,.4),0 0 40px rgba(255,200,90,.25);background:#f1dcb4}
+.maktoub img{width:100%;height:100%;object-fit:cover;object-position:50% 30%;display:block}
+.maktoub figcaption{margin-top:12px;font-size:14.5px;color:#cfc4ee}
+@media (max-width:760px){.carte.grande{grid-template-columns:1fr;padding:22px}.maktoub{order:-1}.maktoub .cadre{width:150px}}
+
+/* --- encadré « facultatif » --- */
+.encadre{display:flex;gap:14px;align-items:flex-start;margin:22px 0;padding:18px 20px;border-radius:20px;background:rgba(255,227,163,.1);border:2px solid rgba(255,227,163,.45);color:#fff3d1}
+.encadre svg{width:32px;height:32px;flex:none;margin-top:2px}
+.encadre strong{color:#ffe3a3}
+
+/* --- montants --- */
+/* formulaire de don : choix du montant en cartes à cocher (boutons radio, utilisables au clavier et au lecteur d'écran) */
+.don{display:grid;gap:16px;width:100%;max-width:760px}
+.don fieldset{border:0;margin:0;padding:0;min-width:0}
+.don legend{font:800 18px Nunito,system-ui;color:#ffe3a3;margin:0 0 12px;padding:0;text-align:center;width:100%}
+.montants{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.montants li{position:relative}
+.montants label{display:grid;gap:2px;align-content:center;text-align:center;height:100%;min-height:96px;padding:16px 10px;border-radius:20px;background:#1b1348;border:2px solid #4a3a99;cursor:pointer}
+.montants label:hover{border-color:#8b78e6}
+.montants input{position:absolute;opacity:0;width:1px;height:1px}
+.montants label:has(input:checked){border-color:#f5b942;background:#2a1f6e;box-shadow:0 0 0 3px rgba(245,185,66,.35)}
+.montants label:has(input:focus-visible){outline:3px solid #ffe3a3;outline-offset:3px}
+.montants input:checked+b{color:#fff}
+.montants b{font:900 30px Poppins,system-ui;color:#f5b942;line-height:1.1}
+.montants .libre b{font-size:20px;line-height:1.5}
+.montants span{font-size:14px;color:#d8cff5}
+.champ-libre{display:grid;gap:8px;justify-items:center}
+.champ-libre label{font-weight:800;color:#fff3d1}
+.champ-libre .saisie{display:inline-flex;align-items:center;gap:8px;font:900 24px Poppins,system-ui;color:#f5b942}
+.champ-libre input{width:7ch;min-height:52px;text-align:center;font:900 24px Poppins,system-ui;color:#2a1d00;background:#fff6e0;border:3px solid #f5b942;border-radius:16px;padding:6px 8px}
+.erreur{font-weight:800;color:#ffd6d6;background:rgba(200,50,50,.22);border:2px solid rgba(255,150,150,.55);border-radius:16px;padding:12px 16px;text-align:center}
+.paiement-zone{width:100%;max-width:760px;display:grid;gap:12px;justify-items:center}
+#paiement{width:100%;min-height:140px;background:#fff;border-radius:20px;padding:6px;overflow:hidden}
+.lien-bouton{background:none;border:0;color:#ffe3a3;font:800 16px Nunito,system-ui;text-decoration:underline;cursor:pointer;min-height:44px;padding:8px 12px}
+.merci-don{font:800 clamp(18px,4.4vw,22px) Nunito,system-ui;color:#ffe3a3;background:rgba(255,227,163,.12);border:2px solid rgba(255,227,163,.45);border-radius:20px;padding:18px 22px;max-width:640px}
+
+.action{display:grid;gap:14px;justify-items:center;text-align:center;padding:24px 18px;border-radius:26px;background:radial-gradient(100% 140% at 50% 0,rgba(245,185,66,.16),rgba(245,185,66,0) 70%),#241a5e;border:2px dashed rgba(255,227,163,.35)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:20px;padding:16px 28px;min-height:56px;font:900 clamp(16px,4.4vw,20px) Nunito,system-ui;cursor:pointer;text-decoration:none;letter-spacing:.02em}
+.btn-or{background:linear-gradient(#ffd466,#f5b942);color:#2a1d00;box-shadow:0 6px 0 #d9952a,0 0 30px rgba(245,185,66,.35)}
+.btn-or:hover{filter:brightness(1.05)}
+.btn-or:active{transform:translateY(3px);box-shadow:0 3px 0 #d9952a}
+.bientot{font:800 clamp(17px,4.2vw,21px) Nunito,system-ui;color:#ffe3a3;background:rgba(255,227,163,.1);border:2px solid rgba(255,227,163,.4);border-radius:18px;padding:14px 22px}
+.petit{font-size:14.5px;color:#cfc4ee;max-width:640px}
+
+/* --- répartition --- */
+.repartition{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.repartition li{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) 64px;gap:14px;align-items:center;background:#241a5e;border-radius:18px;padding:12px 16px}
+.repartition .lib{font-weight:800;color:#fff}
+.repartition b{font:900 20px Poppins,system-ui;color:#f5b942;text-align:right}
+.barre{display:block;height:14px;border-radius:999px;background:#150f3b;overflow:hidden;box-shadow:inset 0 2px 0 rgba(0,0,0,.3)}
+.barre i{display:block;height:100%;width:calc(var(--p)*4);max-width:100%;border-radius:999px;background:linear-gradient(90deg,#d9952a,#ffd466);box-shadow:0 0 12px rgba(245,185,66,.5)}
+@media (max-width:640px){.repartition li{grid-template-columns:1fr auto;grid-template-areas:"l b" "r r"}.repartition .lib{grid-area:l}.repartition b{grid-area:b}.repartition .barre{grid-area:r}}
+
+/* --- où va la contribution --- */
+.grille{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.poste{display:grid;gap:8px;align-content:start}
+.poste svg{width:46px;height:46px}
+.poste h3{font-size:19px;color:#fff;display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.poste h3 small{font:900 16px Nunito,system-ui;color:#f5b942;white-space:nowrap}
+.poste p{color:#d8cff5;font-size:15.5px}
+
+.transp ul{margin:0;padding:0;list-style:none;display:grid;gap:14px}
+.transp li{padding-left:30px;position:relative;color:#e6defb}
+.transp li::before{content:"";position:absolute;left:2px;top:7px;width:14px;height:14px;background:#f5b942;transform:rotate(45deg);border-radius:3px}
+.transp b{color:#fff}
+.merci{text-align:center;color:#ffe3a3;font-weight:800;font-size:clamp(17px,2.6vw,20px);margin:36px auto 10px;max-width:640px}
+
+.pied{display:flex;flex-wrap:wrap;gap:8px 18px;justify-content:space-between;align-items:center;border-top:1px solid rgba(245,185,66,.18);padding:22px 18px 34px;margin-top:20px;color:#c9bfe8;font-size:14px}
+.pied a{display:inline-block;padding:6px 2px}
+
+@media (max-width:520px){.haut{padding:10px 14px}.marque,.lien-famille{font-size:14px;white-space:nowrap}.lien-famille{padding:8px 12px}}
+@media (prefers-reduced-motion:reduce){.lg{animation:none}html{scroll-behavior:auto}}

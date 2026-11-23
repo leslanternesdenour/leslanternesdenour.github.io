@@ -128,6 +128,9 @@ export async function traiter(req, ctx) {
     if (m !== 'GET' && m !== 'HEAD' && !memeOrigine(req)) return erreur(403, 'origine');
     const session = await lireSession(lireCookie(req.headers.get('Cookie')), ctx.env.SESSION_SECRET, ctx.maintenant);
 
+    // Mode des paiements, pour que les pages affichent le bon texte (jamais une valeur de clé) : « ferme » (pas de Stripe configuré), « test » ou « reel ».
+    if (chemin === '/api/paiement/mode' && m === 'GET') return json({ mode: !ctx.stripe ? 'ferme' : ctx.stripe.modeTest ? 'test' : 'reel' });
+
     // ----- session -----
     if (chemin === '/api/session' && m === 'POST') {
       if (tropDeTentatives('session:' + ip, 30, 10 * 60000, ctx.maintenant)) return erreur(429, 'trop-de-tentatives');
@@ -486,7 +489,9 @@ async function webhookStripe(req, ctx) {
   if (ev.type === 'customer.subscription.created' || ev.type === 'customer.subscription.updated' || ev.type === 'customer.subscription.deleted') {
     const prix = o.items && o.items.data && o.items.data[0] && o.items.data[0].price && o.items.data[0].price.id;
     const statut = ev.type === 'customer.subscription.deleted' ? 'canceled' : o.status;
-    await ctx.base.ecrire('abonnements', uid, { statut, formule: formuleDuPrix(prix), finPeriode: (o.current_period_end || 0) * 1000, stripeClient: o.customer, stripeAbonnement: o.id, annulationFinPeriode: !!o.cancel_at_period_end, majLe: ctx.maintenant });
+    // Fin de période : au niveau de l'abonnement (anciennes versions d'API), sinon dans le premier article (versions récentes, comme le compte Stripe actuel).
+    const finSecondes = o.current_period_end || (o.items && o.items.data && o.items.data[0] && o.items.data[0].current_period_end) || 0;
+    await ctx.base.ecrire('abonnements', uid, { statut, formule: formuleDuPrix(prix), finPeriode: finSecondes * 1000, stripeClient: o.customer, stripeAbonnement: o.id, annulationFinPeriode: !!o.cancel_at_period_end, majLe: ctx.maintenant });
     // garde-fou : un abonnement payé alors qu'un accès offert est actif → signalé au Créateur (aucun remboursement automatique)
     if (statut === 'active' && (await ctx.base.chercher('acces_offerts', 'uid', uid)).some(a => accesOffertActif(a.data, ctx.maintenant)))
       await journal(ctx, 'alerte-double-acces', { uid, abonnement: o.id });

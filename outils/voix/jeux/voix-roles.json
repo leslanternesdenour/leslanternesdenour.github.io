@@ -1,0 +1,34 @@
+{
+ "_note": "Un rôle = UNE voix stable, la même dans tous les jeux. Seules les 10 voix « Nour - … » du compte ElevenLabs sont autorisées (voir voix-nour.json) ; la voix de la mascotte Nour est réservée à Nour. AUCUNE voix n'est créée ; les nouveaux personnages réutilisent celles des personnages existants. Ne jamais modifier une association déjà utilisée.",
+ "narratrice": "hddT377hAwvRoOKqMj0E",
+ "narrateur": "8aQsvxWbavqMpn00DVgR",
+ "loumi": "pzZMNBXJh6wfnYfk2wLK",
+ "perso-karim": "lM87a4ey2IQxE37nDvti",
+ "perso-hakim": "hbGEl9097evPuRZp5BNY",
+ "perso-salma": "HAjl4nFl1aflZ2gaim1o",
+ "perso-warda": "y01lcQwxER91RfOMk2oG",
+ "perso-yacine": "IbnTg9TZjxSEt8tJQteX",
+ "perso-samir": "4sifSi2zIrBX7VkoWfjD",
+ "_associations": {
+  "narratrice": "Nour - Narratrice (maîtresse) — voix des contenus existants",
+  "narrateur": "Nour - Salim (voyageur), homme d'une quarantaine d'années, chaleureux — narrateur masculin (remplace « Damien Doré », voix extérieure non autorisée). Partagée avec l'explorateur Idriss : seul rôle à partager une voix, car 9 voix « Nour » sont disponibles (celle de la mascotte est réservée) pour 10 rôles.",
+  "loumi": "Nour - Amina (jeune femme d'une vingtaine d'années : claire, vive — Loumi est une petite lanterne joyeuse ; distincte de Nour-mascotte)",
+  "perso-karim": "Nour - Karim (marchand) — le même Karim que le marchand du Grand Voyage",
+  "perso-hakim": "Nour - Hakim (ancien) — le même Hakim que le sage du village",
+  "perso-salma": "Nour - Samira (potière), femme d'une trentaine d'années, posée et chaleureuse",
+  "perso-warda": "Nour - Layla (tisserande), femme calme et douce, qui chuchote bien à la bibliothèque",
+  "perso-yacine": "Nour - Hassan (sellier), homme mûr, calme — le jardinier",
+  "perso-samir": "Nour - Nabil (écurie), jeune homme énergique — le puisatier",
+  "perso-idriss": "Nour - Salim (voyageur), homme d'une quarantaine d'années, chaleureux — l'explorateur Idriss",
+  "nour": "Nour - Nour (mascotte) — la voix de Nour, uniquement pour les paroles du personnage Nour dans SON école des lettres (jamais pour Loumi, le narrateur ou un autre personnage)"
+ },
+ "reglages": {
+  "model_id": "eleven_v4",
+  "stability": 0.5,
+  "similarity_boost": 0.75,
+  "style": 0.0,
+  "speed": 1.0
+ },
+ "perso-idriss": "8aQsvxWbavqMpn00DVgR",
+ "nour": "7FhMHxpv3kwYS7eBOJoC"
+}

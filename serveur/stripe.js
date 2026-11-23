@@ -1,5 +1,9 @@
-// Stripe : vérification des webhooks (signature HMAC) et appels API, en MODE TEST uniquement.
-// Une clé « sk_live_ » est refusée tant que STRIPE_MODE_REEL n'est pas explicitement « autorise » (accord du créateur).
+// Stripe : vérification des webhooks (signature HMAC) et appels API. MODE TEST par défaut.
+// Une clé « sk_live_ » est refusée tant que STRIPE_MODE_REEL n'est pas explicitement « autorise » (accord du créateur) :
+// c'est le seul interrupteur du passage aux paiements réels (voir docs/SOUTIEN-CAGNOTTE.md et les secrets du tableau de bord Cloudflare).
+// Version d'API de l'appel « don » (celle de la documentation Stripe du paiement intégré, ui_mode « embedded_page ») :
+// elle ne dépend pas de la version par défaut du compte. Doit rester cohérente avec le script chargé par /soutenir/ (soutenir/don.js).
+export const VERSION_API_DON = '2026-11-18.endive';
 const enc = new TextEncoder();
 const hex = buf => [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
 
@@ -19,8 +23,8 @@ export function clientStripe(env, { fetcher = fetch } = {}) {
   if (!cle) return null;
   if (cle.startsWith('sk_live_') && env.STRIPE_MODE_REEL !== 'autorise') throw new Error('Clé Stripe RÉELLE refusée : le site doit rester en mode test sans accord du créateur.');
   const formulaire = (o, p = '') => Object.entries(o).flatMap(([k, v]) => { const n = p ? `${p}[${k}]` : k; return v && typeof v === 'object' ? formulaire(v, n) : [[n, String(v)]]; });
-  const appel = async (chemin, params = {}, methode = 'POST') => {
-    const r = await fetcher('https://api.stripe.com/v1/' + chemin, { method: methode, headers: { Authorization: 'Bearer ' + cle, 'Content-Type': 'application/x-www-form-urlencoded' },
+  const appel = async (chemin, params = {}, methode = 'POST', version = null) => {
+    const r = await fetcher('https://api.stripe.com/v1/' + chemin, { method: methode, headers: { Authorization: 'Bearer ' + cle, 'Content-Type': 'application/x-www-form-urlencoded', ...(version ? { 'Stripe-Version': version } : {}) },
       body: methode === 'GET' ? undefined : new URLSearchParams(formulaire(params)).toString() });
     const j = await r.json(); if (!r.ok) throw new Error('Stripe : ' + (j.error && j.error.message || r.status)); return j;
   };
@@ -30,6 +34,15 @@ export function clientStripe(env, { fetcher = fetch } = {}) {
       mode: 'subscription', client_reference_id: uid, 'line_items': { 0: { price: prix, quantity: 1 } },
       ...(client ? { customer: client } : { customer_email: email }), success_url: succes, cancel_url: annulation,
       subscription_data: { metadata: { uid } }, metadata: { uid }, locale: 'fr' }),
+    // Don libre en paiement INTÉGRÉ : le formulaire Stripe s'affiche dans la page /soutenir/ (aucune redirection).
+    // Seul le « client_secret » du formulaire est renvoyé au navigateur ; aucune donnée de carte ne passe par nos serveurs.
+    creerDon: async ({ centimes }) => {
+      const s = await appel('checkout/sessions', {
+        ui_mode: 'embedded_page', mode: 'payment', redirect_on_completion: 'never', submit_type: 'donate', locale: 'fr',
+        line_items: { 0: { quantity: 1, price_data: { currency: 'eur', unit_amount: centimes, product_data: { name: 'Soutien aux Lanternes de Nour' } } } } },
+      'POST', VERSION_API_DON);
+      return { clientSecret: s.client_secret };
+    },
     creerPortail: ({ client, retour }) => appel('billing_portal/sessions', { customer: client, return_url: retour }),
     resilierFinPeriode: abonnementId => appel('subscriptions/' + abonnementId, { cancel_at_period_end: 'true' }),
     lireAbonnement: abonnementId => appel('subscriptions/' + abonnementId, {}, 'GET')

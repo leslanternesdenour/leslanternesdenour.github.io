@@ -93,7 +93,7 @@ async function init() {
   const profil = profilEnfant();
   appliquerProfilEnfant(profil);
   let mod;
-  try { mod = await import('./scene.js?v=7'); }
+  try { mod = await import('./scene.js?v=12'); }
   catch (e) { return montrerErreur(e); }
   await portailPret();
 
@@ -185,7 +185,7 @@ function ouvrirPanneau(b) {
   if (window.decorerUnivers) window.decorerUnivers(pan, pan.dataset.univers);
   const m = mascotte(b.univers);
   $('pan-icone').classList.toggle('avec-mascotte', !!m);
-  if (m) $('pan-icone').innerHTML = m; else $('pan-icone').textContent = b.icone;
+  if (m) $('pan-icone').innerHTML = m; else if (b.image) $('pan-icone').innerHTML = `<img alt="" src="${b.image}" style="width:84px;height:84px;object-fit:contain">`; else $('pan-icone').textContent = b.icone;
   $('pan-nom').textContent = b.nom;
   $('pan-texte').textContent = b.texte;
   const n = sauvegarde.jeu(b.id).etoiles || 0;

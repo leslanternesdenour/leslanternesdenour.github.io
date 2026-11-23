@@ -262,7 +262,7 @@ async function demarrer() {
   if (!D.connecte || D.fournisseur === 'google.com') C.prechargerAuth();   // fenêtre Google ouverte immédiatement au clic (Safari / iPhone)
   $('v-invitation').classList.toggle('cache', !invitation());
   if (!D.connecte) { voir('v-acces'); onglet(location.hash === '#inscription' || invitation() ? 'inscription' : 'connexion'); if (retour()) etat('Connectez-vous (ou créez un compte) pour continuer vers ' + nomRetour(retour()) + '.'); return; }
-  if (params.get('paiement') === 'ok') etat('Merci ! Le paiement (mode test) est confirmé. La formule s\'affiche dès que la banque l\'a validé.');
+  if (params.get('paiement') === 'ok') etat('Merci ! Le paiement est confirmé. La formule s\'affiche dès que la banque l\'a validé.');
   $('e-email').textContent = D.email + (D.fournisseur === 'google.com' ? ' (compte Google)' : '');
   const google = D.fournisseur === 'google.com'; $('s-mdp-label').classList.toggle('cache', google); $('s-google-info').classList.toggle('cache', !google); $('e-statut').textContent = C.NOMS_STATUT[D.statut] + (D.niveau !== 'gratuit' && D.statut !== 'creator' ? ' · ' + C.NOMS_NIVEAU[D.niveau] : '');
   $('e-verif').classList.toggle('cache', !!D.emailVerifie);

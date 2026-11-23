@@ -12,4 +12,10 @@ FIREBASE_PROJET = "lanternes-de-nour"
 
 # Secrets (tableau de bord Cloudflare, environnement « Production », type « Secret ») : SESSION_SECRET, FIREBASE_COMPTE_SERVICE, CREATOR_UID.
 # Paiement : NE PAS définir STRIPE_* en production tant que l'ouverture des paiements n'est pas décidée (le site affiche alors « Le paiement n'est pas encore ouvert »).
+# À L'OUVERTURE DES PAIEMENTS RÉELS (décision du créateur, après régularisation de l'activité et pages légales complètes) :
+#   1. Variables publiques, à ajouter ICI dans [vars] avec les identifiants créés dans Stripe en MODE RÉEL (ne jamais reprendre ceux du mode test) :
+#        STRIPE_PRIX_PREMIUM_MENSUEL = "<price_… réel>"   STRIPE_PRIX_PREMIUM_ANNUEL = "<price_… réel>"   STRIPE_PRIX_FAMILLE_ANNUEL = "<price_… réel>"
+#   2. Secrets (tableau de bord, environnement « Production », type « Secret ») : STRIPE_CLE_SECRETE (sk_live_…), STRIPE_CLE_PUBLIABLE (pk_live_…),
+#      STRIPE_SECRET_WEBHOOK (whsec_… du webhook https://leslanternesdenour.fr/api/stripe/webhook), puis STRIPE_MODE_REEL = autorise (interrupteur final).
+#   3. Le contrôle outils/migration/basculer-cloudflare.mjs (« aucune variable STRIPE_* en production ») est fait pour la bascule initiale : il doit être adapté à ce moment-là.
 # Stockage privé Premium (R2_PREMIUM) : non activé.

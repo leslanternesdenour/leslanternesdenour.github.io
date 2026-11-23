@@ -1,0 +1,10 @@
+/* JEU 3 — styles propres aux chiffres (le reste vient de lettres/ecole.css, commun/decor.css et lecture/lecture.css pour les tuiles) */
+@import url('../lecture/lecture.css?v=3');
+.ar-texte.num{direction:ltr;unicode-bidi:isolate;letter-spacing:.06em}
+.groupe-objets{display:inline-flex;flex-wrap:wrap;gap:4px;justify-content:center;max-width:100%;align-items:center}.groupe-objets i{font-style:normal;font-size:clamp(26px,7vw,38px);line-height:1}
+.cible-objets{background:var(--ivoire);border:4px solid var(--or);border-radius:26px;padding:10px 16px;display:inline-block;max-width:94vw}
+.choix-btn .groupe-objets i{font-size:clamp(18px,5vw,26px)}
+.fleche{font-size:34px;margin:0 12px}.inconnu{display:inline-flex;align-items:center;justify-content:center;width:84px;height:100px;border:4px dashed #b9822a;border-radius:20px;font-size:56px;color:#b9822a;font-weight:900;vertical-align:middle}
+.calcul{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;background:var(--ivoire);border:4px solid var(--or);border-radius:26px;padding:10px 14px;color:#3a1d10}.calcul b{font-size:40px}.calcul .op{width:100%;margin:0;text-align:center}
+.ar-nom-etape{font-size:30px}
+.presentation .ar-texte.ar-moyen{color:#ffe9a8}

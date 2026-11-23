@@ -1,0 +1,39 @@
+{
+ "As-salâmou ʿalaykoum ! Bienvenue dans mon village. Le chameau Sablo t'attend à la sortie du village, du côté du soleil levant. Monte sur son dos, et partez découvrir l'oasis, le camp des caravanes et le grand désert !": [
+  "NOUR-VOIX-MAS-001"
+ ],
+ "As-salâmou ʿalaykoum ! Bienvenue dans mon village. Le chameau Sablo t'attend à la sortie du village, du côté du soleil levant. Monte sur son dos, et partez découvrir l'oasis, le camp des caravanes et le grand désert ! J'ai besoin de toi ! Douze petites lanternes se sont cachées dans tout le pays… et j'ai perdu mon seau, ma gourde et mon arrosoir près de l'oasis. Tu veux bien m'aider ?": [
+  "NOUR-VOIX-MAS-001",
+  "NOUR-VOIX-MAS-002"
+ ],
+ "Courage ! Regarde ton carnet pour suivre tes missions : les lanternes cachées, les objets perdus de nour.": [
+  "NOUR-VOIX-MAS-006"
+ ],
+ "Douze petites lanternes dorées se sont cachées dans tout le pays de Nour. Retrouve-les toutes !": [
+  "NOUR-VOIX-MIS-001"
+ ],
+ "J'ai besoin de toi ! Douze petites lanternes se sont cachées dans tout le pays… et j'ai perdu mon seau, ma gourde et mon arrosoir près de l'oasis. Tu veux bien m'aider ?": [
+  "NOUR-VOIX-MAS-002"
+ ],
+ "Merci, tu as retrouvé une de mes affaires ! Il en manque encore 1.": [
+  "NOUR-VOIX-MAS-003"
+ ],
+ "Merci, tu as retrouvé une de mes affaires ! Il en manque encore 2.": [
+  "NOUR-VOIX-MAS-003"
+ ],
+ "Mon seau, ma gourde et mon arrosoir ! Merci mille fois. Grâce à toi, je peux arroser les fleurs du village.": [
+  "NOUR-VOIX-MAS-005"
+ ],
+ "Nour a perdu son seau, sa gourde et son arrosoir près de l'oasis. Retrouve-les et rapporte-les-lui au village.": [
+  "NOUR-VOIX-MIS-002"
+ ],
+ "Observe sept animaux différents et découvre comment ils vivent. Approche doucement, sans courir !": [
+  "NOUR-VOIX-MIS-005"
+ ],
+ "Salim, le voyageur du camp, a besoin de 2 paniers de dattes et de 2 outres d'eau. Va les chercher à l'oasis et apporte-les-lui.": [
+  "NOUR-VOIX-MIS-004"
+ ],
+ "Suis les petits tas de pierres au ruban turquoise : chacun donne un indice. Le dernier mène au coffre.": [
+  "NOUR-VOIX-MIS-003"
+ ]
+}
