@@ -6,6 +6,7 @@
 // La lecture passe par le lecteur commun du village : une seule voix à la fois, la musique s'efface pendant qu'elle parle.
 import { chargerVoix, dire, existe, arreterVoix, ajouterVoix } from '../../monde/socle/voix.js?v=3';
 import { PHRASES, SUITE, NOMBRES, LANTERNE } from './voix-textes.js?v=4';
+import { PHRASES_LOUMI } from './voix-loumi.js?v=1';
 
 // même façon d'écrire pour le texte du jeu et celui du catalogue
 export function normaliser(t) {
@@ -22,6 +23,7 @@ function indexer(liste) {
   }
 }
 indexer(PHRASES);
+indexer(PHRASES_LOUMI);
 // Phrases et voix d'une zone Premium, reçues du serveur après vérification des droits (voir premium.js)
 export function ajouterPhrases(liste, voix) {
   if (Array.isArray(liste)) indexer(liste.filter(x => Array.isArray(x) && typeof x[0] === 'string' && typeof x[1] === 'string'));

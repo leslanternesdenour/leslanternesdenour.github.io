@@ -2,14 +2,14 @@
 // Ce fichier relie tout : terrain, décors, ciel, personnages, commandes, sons, découvertes et carnet.
 import * as THREE from 'three';
 import { Terrain, LIEUX, LIMITE, lisse } from './terrain.js?v=3';
-import { creerDecor } from './decor.js?v=4';
+import { creerDecor } from './decor.js?v=5';
 import { Ciel } from './ciel.js?v=3';
 import { Enfant, Chameau } from './personnages.js?v=4';
 import { Controles, ACTIONS, nomTouche } from './controles.js?v=3';
 import { creerOiseaux } from './oiseaux.js?v=3';
 import { creerFaucon } from './faucon.js?v=4';
 import * as S from './sons.js?v=3';
-import { chargerVoixVoyage, direTextes, direIds, direMotArabe, arreterVoixVoyage, ajouterPhrases } from './voix.js?v=4';
+import { chargerVoixVoyage, direTextes, direIds, direMotArabe, arreterVoixVoyage, ajouterPhrases } from './voix.js?v=5';
 import { chargerPremium, MESSAGE_FERME } from './premium.js?v=1';
 import { ZONES, POINTS, BIENTOT, DESCRIPTIONS_LIEUX } from './contenu.js?v=4';
 import { sauvegarde } from '../../monde/socle/sauvegarde.js?v=3';
@@ -22,7 +22,9 @@ import { creerMarche, MARCHANDS, ARTICLES, article } from './marche.js?v=3';
 import { RARETES, articlesDuJour, modeleObjet } from './catalogue.js?v=3';
 import { Voyageur, TENUES, PEAUX, convient } from './voyageur.js?v=9';
 import { creerCour } from './cour.js?v=3';
-import { MONTURES, monture, creerMonture, creerEcurie, FICHES_ESPECES } from './montures.js?v=4';
+import { MONTURES, monture, creerMonture, creerEcurie, FICHES_ESPECES } from './montures.js?v=5';
+import { ECURIE as ECURIE_PLAN, NID_LOUMI, dansEnclos, pres as presEcurie, etape as etapeEnclos } from './enclos-plan.js?v=1';
+import { creerVeille } from './veille.js?v=1';
 import { COLLECTIONS, BADGES, progressionCollection } from './succes.js?v=3';
 import { creerGuide } from './guide.js?v=3';
 import { creerQuetes, QUETES, CATEGORIES_QUETES, SPOTS } from './quetes.js?v=4';
@@ -35,8 +37,11 @@ import { creerBourse } from './economie.js?v=3';
 import { creerQuotidien } from './quotidien.js?v=3';
 import { reglageGrain, materiau } from './formes.js?v=4';
 import { mascotte } from '../../monde/mascottes.js?v=3';
-import { creerLoumi } from './loumi.js?v=3';
-import { creerSoins, BESOINS, INFOS, LIEUX_SOINS, DUREES as DUREES_SOINS, poseSoin, PLANCHER, BAS } from './soins.js?v=1';
+import { creerLoumi } from './loumi.js?v=5';
+import { creerHabitants } from './habitants.js?v=2';
+import { creerHud } from './hud.js?v=1';
+import { noeud as noeudLoumi, depart as departLoumi } from './loumi-dialogues.js?v=2';
+import { creerSoins, BESOINS, INFOS, LIEUX_SOINS, DUREES as DUREES_SOINS, poseSoin, PLANCHER, BAS } from './soins.js?v=2';
 
 const $ = id => document.getElementById(id);
 const attendre = () => new Promise(r => requestAnimationFrame(() => setTimeout(r, 0)));
@@ -160,48 +165,88 @@ async function demarrer() {
   let monte = !!etat.monte;
   let sequence = null;   // animation pour monter / descendre
 
-  // Loumi, la petite lanterne vivante, accompagne l'enfant (elle remplace la goutte Nour ; mascotte 3D dessinée par-dessus le monde, en haut à gauche)
-  const loumi = creerLoumi();
-  let nuitActuelle = false;
+  let nuitActuelle = false, zoneVillage = true;
   const soins = creerSoins({ A: AV, enregistrer });
+  const hud = creerHud();                  // interface contextuelle : tout ce qui n'est pas essentiel apparaît puis s'efface (voir hud.js)
+  let suiviPret = false; setTimeout(() => { suiviPret = true; }, 5000);      // pas d'affichage de mission pendant le démarrage
 
-
-  // ============ Loumi : accueil, indications, félicitations (bulle + réactions 3D) ============
-  const ui_loumi = { bulle: $('loumi-bulle'), zone: $('loumi-ui'), bouton: $('btn-loumi'), timer: null };
-  const vP = new THREE.Vector3();
-  function loumiDit(texte, ms = 4200) {
-    if (!texte) return;
-    const b = ui_loumi.bulle; b.textContent = texte; b.classList.remove('cache'); loumi.reagir('parle');
-    clearTimeout(ui_loumi.timer); ui_loumi.timer = setTimeout(() => b.classList.add('cache'), ms);
-    direTextes([{ t: texte, opt: true }]);   // lue seulement si la phrase fait partie des voix enregistrées et validées
+  // ============ Les habitants du village : registre commun ============
+  // Un habitant ne parle JAMAIS de lui-même : il apparaît comme action « Parler » quand l'enfant s'approche, et sa conversation se ferme quand l'enfant s'éloigne.
+  const habitants = creerHabitants();
+  // LOUMI, la petite lanterne : habitante FIXE du village, à l'entrée du souk. Elle ne suit pas l'enfant, ne monte pas sur la monture.
+  // Mémoire et dialogues PROPRES (loumi-dialogues.js) : rien n'est partagé avec Nour, les missions ou le carnet.
+  const LOUMI_POS = { x: NID_LOUMI.x, z: NID_LOUMI.z };      // son nid, dans l'enclos de l'écurie, à côté des montures (enclos-plan.js)
+  const loumi = creerLoumi({ scene, terrain, ombres: !!Q.ombres, x: LOUMI_POS.x, z: LOUMI_POS.z, regard: NID_LOUMI.regard });
+  decor.colliders.push({ x: LOUMI_POS.x, z: LOUMI_POS.z, r: 0.7 });
+  etat.loumi = Object.assign({ rencontre: false, vus: [], rappels: {} }, etat.loumi || {});
+  if (!etat.loumi.rappels || typeof etat.loumi.rappels !== 'object') etat.loumi.rappels = {};
+  function parlerLoumi(id) {
+    const n = noeudLoumi(id || departLoumi(etat.loumi), { tactile: !!ctl.tactile }); if (!n) return;
+    etat.loumi.rencontre = true; if (!etat.loumi.vus.includes(n.id)) etat.loumi.vus.push(n.id); enregistrer();
+    loumi.reagir(n.id === 'accueil' ? 'joie' : 'parle');
+    dialogue({ titre: 'Loumi', mascotte: 'loumi', texte: n.texte, boutons: n.choix.map(c => ({ txt: c.txt, fn: () => { if (c.vers) setTimeout(() => parlerLoumi(c.vers), 60); else habitants.ferme(); } })) });
+    habitants.marquer('loumi');
   }
-  function loumiReagir(type, texte) { loumi.reagir(type); if (texte) loumiDit(texte, 3200); }
-  function majLoumi(dt) {
-    const montre = !$('hud').classList.contains('cache') && $('perso').classList.contains('cache') && !interface_ouverte;
-    loumi.maj(dt, tTotal, camera, { cache: !montre });
-    ui_loumi.zone.classList.toggle('cache', !montre);
-    if (montre) {                                   // le bouton « Parler à Loumi » suit sa position à l'écran
-      vP.copy(loumi.racine.position).project(camera);
-      ui_loumi.zone.style.left = ((vP.x * 0.5 + 0.5) * innerWidth) + 'px'; ui_loumi.zone.style.top = ((-vP.y * 0.5 + 0.5) * innerHeight) + 'px';
+  habitants.ajouter({ id: 'loumi', x: LOUMI_POS.x, z: LOUMI_POS.z, rayon: 3.4, label: 'Parler', icone: '💬', ouvrir: () => parlerLoumi() });
+  // LA VEILLE DE LOUMI : elle regarde l'état RÉEL de la monture choisie (soins.js). Un rappel = une petite bulle 3D au-dessus d'elle, seulement quand l'enfant est
+  // près de l'enclos ; jamais de conversation automatique, jamais de répétition tant que le besoin n'a pas empiré, et la bulle disparaît dès que le besoin est satisfait.
+  const veille = creerVeille({ soins, memoire: etat.loumi.rappels, nom: id => monture(id).nom, fem: id => !!monture(id).fem });
+  const RAYON_RAPPEL = 16;
+  const bulleLoumi = (() => {
+    const c = document.createElement('canvas'); c.width = 512; c.height = 160; const g = c.getContext('2d');
+    const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace;
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false, depthTest: false, opacity: 0 })); sp.renderOrder = 20; sp.scale.set(4.8, 1.5, 1); sp.visible = false; scene.add(sp);
+    const etatB = { besoin: null, t: 0, duree: 0, id: null };
+    function ecrire(txt) {
+      g.clearRect(0, 0, 512, 160); g.fillStyle = 'rgba(255,250,235,0.96)'; g.strokeStyle = '#b9822a'; g.lineWidth = 6;
+      g.beginPath(); g.roundRect(6, 6, 500, 118, 28); g.fill(); g.stroke();
+      g.beginPath(); g.moveTo(236, 122); g.lineTo(256, 154); g.lineTo(276, 122); g.closePath(); g.fillStyle = 'rgba(255,250,235,0.96)'; g.fill();
+      g.fillStyle = '#3a2a14'; g.font = 'bold 27px Arial'; g.textAlign = 'center';
+      const mots = txt.split(' '); const lignes = []; let cur = '';
+      for (const w of mots) { if (g.measureText(cur + ' ' + w).width > 450 && cur) { lignes.push(cur); cur = w; } else cur = cur ? cur + ' ' + w : w; }
+      lignes.push(cur); const y0 = 65 - (lignes.length - 1) * 17;
+      lignes.forEach((ln, i) => g.fillText(ln, 256, y0 + i * 34 + 8)); tex.needsUpdate = true;
     }
-    majSoinsHUD(dt);
+    return {
+      etat: etatB, visible: () => etatB.besoin !== null,
+      montrer(besoin, txt, id, duree = 8) { ecrire(txt); etatB.besoin = besoin; etatB.id = id; etatB.t = 0; etatB.duree = duree; sp.visible = true; },
+      cacher() { etatB.besoin = null; sp.visible = false; sp.material.opacity = 0; },
+      maj(dt, t) {
+        if (etatB.besoin === null) return; etatB.t += dt;
+        const k = Math.min(1, etatB.t / 0.5, Math.max(0, (etatB.duree - etatB.t) / 0.7));       // apparaît et s'efface en douceur
+        sp.material.opacity = k; sp.position.set(LOUMI_POS.x, H(LOUMI_POS.x, LOUMI_POS.z) + 3.5 + Math.sin(t * 1.6) * 0.06, LOUMI_POS.z);
+        if (etatB.t >= etatB.duree) this.cacher();
+      }
+    };
+  })();
+  let veilleT = 0, veilleDepart = 0, saluee = false, besoinEnCours = null;
+  function majVeille(dt, t) {
+    bulleLoumi.maj(dt, t);
+    veilleDepart += dt; veilleT += dt; if (veilleDepart < 4 || veilleT < 0.5) return; veilleT = 0;
+    const dEnclos = Math.hypot(J.x - LOUMI_POS.x, J.z - LOUMI_POS.z);
+    // salutation : un petit saut de joie quand l'enfant arrive près d'elle (une seule fois par passage)
+    if (dEnclos < 6 && !saluee && !interface_ouverte) { saluee = true; loumi.reagir('joie'); } else if (dEnclos > 12) saluee = false;
+    besoinEnCours = dEnclos < RAYON_RAPPEL ? veille.prioritaire(AV.monture) : null;
+    if (bulleLoumi.visible()) {
+      const b = bulleLoumi.etat;
+      if (b.id !== AV.monture || !veille.encoreVrai(b.id, b.besoin) || dEnclos > RAYON_RAPPEL + 6 || interface_ouverte || monte) bulleLoumi.cacher();      // besoin satisfait / enfant parti : la bulle disparaît
+      return;
+    }
+    if (dEnclos > RAYON_RAPPEL || interface_ouverte || monte || sequence || soin) return;
+    const r = veille.aSignaler(AV.monture); if (!r) return;
+    veille.marquer(AV.monture, r.besoin, r.palier); enregistrer();       // une seule fois pour ce niveau de besoin
+    bulleLoumi.montrer(r.besoin, r.texte, AV.monture, 8);
+    loumi.reagir('surprise');
   }
-  function menuLoumi() {
-    if (interface_ouverte) return;
-    const obj = ($('suivi').classList.contains('cache') ? '' : $('suivi').textContent.trim());
-    const urgent = soins.urgent(AV.monture);
-    dialogue({ titre: 'Loumi', mascotte: 'nour',
-      texte: `Je suis Loumi, la petite lanterne du Monde de Nour. Je t'accompagne partout ! ${obj ? 'Ta mission : ' + obj + '.' : 'Qu\'est-ce que tu veux savoir ?'}${urgent ? ' ' + nomMonture() + ' ' + INFOS[urgent].texte + ' : on s\'en occupe ?' : ''}`,
-      boutons: [{ txt: '📜 Mes missions', fn: () => setTimeout(() => aventure.parlerNour(''), 60) }, { txt: `${monture(AV.monture).icone} ${nomMonture()}`, fn: () => setTimeout(() => parlerMonture(), 60) }, { txt: 'Merci !', fn: () => {} }] });
+
+  // NOUR (la goutte d'eau) : habitant FACULTATIF, désactivé par défaut (réglage `etat.options.nourHabitant`). Il garde son identité et ses anciens dialogues,
+  // mais n'est plus nécessaire à rien : les missions se commencent au carnet et se rendent au panier.
+  let nourSprite = null; const NOUR = { x: -8.4, z: 6.8 };
+  etat.options = Object.assign({ nourHabitant: false }, etat.options || {});
+  if (etat.options.nourHabitant === true) {
+    spriteMascotte(mascotte('ablutions')).then(sp => { if (sp) { sp.scale.set(1.25, 1.55, 1); scene.add(sp); nourSprite = sp; } });
+    habitants.ajouter({ id: 'nour', x: NOUR.x, z: NOUR.z, rayon: 3.6, label: 'Parler', icone: '💬', ouvrir: () => ouvrirLecture('nour') });
   }
-  function parlerMonture() {
-    const n = soins.niveaux(AV.monture), u = soins.urgent(AV.monture), m = monture(AV.monture);
-    const lieu = { soif: "à l'abreuvoir, près du puits", faim: 'à la mangeoire de foin, près du puits', energie: 'sur la litière de paille', repos: 'sur la litière de paille', bienEtre: 'avec un câlin : touche-' + (m.fem ? 'la' : 'le') };
-    dialogue({ titre: `${m.icone} ${m.nom}`, mascotte: 'nour',
-      texte: u ? `${m.nom} ${INFOS[u].texte}. Va ${lieu[u]} !` : `${m.nom} va très bien ! ${m.fem ? 'Elle' : 'Il'} est ${m.fem ? 'contente' : 'content'} : continue de prendre soin de ${m.fem ? 'elle' : 'lui'}.`,
-      boutons: [{ txt: 'Compris !', fn: () => {} }] });
-  }
-  ui_loumi.bouton.addEventListener('click', menuLoumi);
 
   // ============ soins de la monture ============
   let soin = null;                   // { type, lieu, phase: 'va' | 'soin', t }
@@ -220,18 +265,61 @@ async function demarrer() {
     }
     return best;
   }
+  // S'OCCUPER : près de sa monture dans l'enclos, un seul bouton — on choisit pour l'enfant le soin le plus utile (le besoin réel le plus bas), sinon un câlin.
+  function sOccuper() {
+    const b = veille.prioritaire(AV.monture);
+    const type = b === 'soif' ? 'boire' : b === 'faim' ? 'manger' : (b === 'repos' || b === 'energie') ? (nuitActuelle ? 'dormir' : 'repos') : null;
+    if (!type) { caresser(); return; }
+    lancerSoin(type, lieuDe(type));
+  }
+  // EXAMINER : près d'une monture qui se repose à sa place, on ouvre sa fiche (nom, histoire, « Partir avec … »)
+  function interactionMontures() {
+    if (monte || sequence || interface_ouverte || soin) return null;
+    const places = ecurie.placesRepos ? ecurie.placesRepos(AV.montures, AV.monture) : [];
+    const dAct = surSaPlace() ? Math.hypot(J.x - C.x, J.z - C.z) : Infinity;
+    let best = null;
+    for (const r of places) { const d = Math.hypot(J.x - r.x, J.z - r.z); if (d < (r.grande ? 3.6 : 2.6) && d < dAct && (!best || d < best.d)) best = { d, id: r.id }; }
+    return best ? { label: 'Examiner', icone: '🔍', d: best.d, faire: () => ficheMonture(best.id, () => {}) } : null;
+  }
   function lancerSoin(type, lieu) {
     if (soin || monte || sequence) return;
-    soin = { type, lieu, phase: 'va', t: 0 }; C.venir = false; enfant.faire('salut');
-    loumiDit(`${nomMonture()} arrive ! ${type === 'boire' ? 'Regarde-' + (monture(AV.monture).fem ? 'la' : 'le') + ' boire.' : type === 'manger' ? 'Bon appétit !' : type === 'dormir' ? 'Chut… on dort.' : 'Un peu de repos.'}`, 3000);
+    soin = { type, lieu, phase: 'va', t: 0 }; C.venir = false; C.rentre = false; enfant.faire('salut');
+    montrerIndice(`${nomMonture()} arrive ! ${type === 'boire' ? 'Regarde-' + (monture(AV.monture).fem ? 'la' : 'le') + ' boire.' : type === 'manger' ? 'Bon appétit !' : type === 'dormir' ? 'Chut… on dort.' : 'Un peu de repos.'}`, 3000);
+  }
+  // Les montures qui ne servent pas restent à leur place dans l'enclos. Seule l'enfant les en fait sortir (en montant dessus ou en les choisissant).
+  // La place se déduit de l'ordre de AV.montures : aucune donnée de sauvegarde nouvelle. Au désert (loin de l'écurie), une monture laissée là-bas n'est jamais rangée.
+  const placeActive = () => ecurie.placeDe(AV.monture, AV.montures);
+  const surSaPlace = () => { const p = placeActive(); return !!p && Math.hypot(C.x - p.x, C.z - p.z) < 0.9; };
+  function ranger(immediat) {            // pose la monture sur sa place (au chargement d'une ancienne sauvegarde)
+    const p = placeActive(); if (!p) return false; C.x = p.x; C.z = p.z; C.a = p.a; C.vit = 0; C.venir = false; C.rentre = false; return true;
+  }
+  function majRentree(dt) {
+    const p = placeActive();
+    const peut = p && !monte && !sequence && !soin && !C.venir && presEcurie(C.x, C.z) && Math.hypot(C.x - p.x, C.z - p.z) > 0.9
+      && (dansEnclos(C.x, C.z) || Math.hypot(J.x - C.x, J.z - C.z) > 14);
+    if (!peut && !C.rentre) return;
+    if (!peut) { C.rentre = false; return; }
+    if (!C.rentre) C.rentre = true;
+    const cib = etapeEnclos(C, p), final = cib === p || (cib.x === p.x && cib.z === p.z);
+    const ex = cib.x - C.x, ez = cib.z - C.z, dist = Math.hypot(ex, ez);
+    if (dist > 0.3 || !final) {
+      const ecart = angleVers(C.a, Math.atan2(ex, ez)); C.a += Math.sign(ecart) * Math.min(Math.abs(ecart), dt * 2.6);
+      C.vit += ((dist > 15 ? 6 : 3.4) - C.vit) * Math.min(1, dt * 3);
+      const pas = Math.min(dist, C.vit * dt); C.x += ex / dist * pas; C.z += ez / dist * pas;
+    } else {
+      C.vit *= Math.max(0, 1 - dt * 6);
+      const ecart = angleVers(C.a, p.a); C.a += Math.sign(ecart) * Math.min(Math.abs(ecart), dt * 2.6);
+      if (Math.abs(ecart) < 0.05 && C.vit < 0.2) { C.x = p.x; C.z = p.z; C.a = p.a; C.vit = 0; C.rentre = false; }
+    }
   }
   function avancerSoin(dt) {
     if (!soin) return;
     if (monte || sequence) { soin = null; return; }
     const l = LIEUX_SOINS[soin.lieu];
     if (soin.phase === 'va') {
-      const ex = l.stand.x - C.x, ez = l.stand.z - C.z, dist = Math.hypot(ex, ez);
-      if (dist > 0.3) {
+      const cib = etapeEnclos(C, l.stand), final = cib === l.stand;
+      const ex = cib.x - C.x, ez = cib.z - C.z, dist = Math.hypot(ex, ez);
+      if (dist > 0.3 || !final) {
         const ecart = angleVers(C.a, Math.atan2(ex, ez)); C.a += Math.sign(ecart) * Math.min(Math.abs(ecart), dt * 3.2);
         const v = dist > 25 ? 11 : 5; C.vit += (v - C.vit) * Math.min(1, dt * 3);
         const pas = Math.min(dist, C.vit * dt); C.x += ex / dist * pas; C.z += ez / dist * pas;
@@ -265,9 +353,9 @@ async function demarrer() {
   // récompense pédagogique : petites pièces (3 par jour et par soin au maximum) + un petit fait à apprendre
   function recompenseSoin(type) {
     const r = soins.appliquer(AV.monture, type, monture(AV.monture).espece); if (!r) return;
+    if (Math.hypot(J.x - LOUMI_POS.x, J.z - LOUMI_POS.z) < 12 && (type !== 'calin' || r.pieces)) loumi.reagir(type === 'calin' ? 'joie' : 'bravo');
     if (r.pieces) aventure.gagner(r.pieces, `Soin : ${nomMonture()}`, `soin:${type}:${date0()}:${Date.now()}`);
-    if (type !== 'calin' || r.pieces) loumi.reagir(type === 'calin' ? 'joie' : 'bravo');
-    if (type !== 'calin' && r.fait) { montrerIndice(`💡 ${r.fait}`, 7500); loumiDit(`Bravo ! ${nomMonture()} va mieux.`, 3500); }
+    if (type !== 'calin' && r.fait) { montrerIndice(`💡 ${r.fait}`, 7500); }
     majSoinsHUD(0, true);
   }
   // ---------- l'interface des besoins : cinq icônes illustrées avec leur jauge ----------
@@ -275,21 +363,22 @@ async function demarrer() {
   hudSoins.innerHTML = BESOINS.map(b => `<button class="besoin" data-b="${b}" aria-label="${INFOS[b].nom}"><span class="ib">${INFOS[b].icone}</span><span class="jauge"><i></i></span></button>`).join('');
   hudSoins.querySelectorAll('.besoin').forEach(btn => btn.onclick = () => {
     const b = btn.dataset.b, n = soins.niveau(AV.monture, b), m = monture(AV.monture);
-    loumiDit(n < BAS ? `${m.nom} ${INFOS[b].texte}. ${b === 'soif' ? "L'abreuvoir est près du puits !" : b === 'faim' ? 'La mangeoire est près du puits !' : b === 'bienEtre' ? 'Fais-lui un câlin !' : 'La litière de paille est à côté du puits.'}` : `${INFOS[b].nom} : ${m.nom} va bien.`, 4500);
+    montrerIndice(n < BAS ? `${m.nom} ${INFOS[b].texte}. ${b === 'soif' ? "L'abreuvoir est près du puits !" : b === 'faim' ? 'La mangeoire est près du puits !' : b === 'bienEtre' ? 'Fais-lui un câlin !' : 'La litière de paille est à côté du puits.'}` : `${INFOS[b].nom} : ${m.nom} va bien.`, 4500);
   });
+  // Les besoins : une petite carte au-dessus de la monture, seulement quand l'enfant est près d'elle (ou pendant un soin). Jamais de colonne à l'écran.
+  const vS = new THREE.Vector3();
   function majSoinsHUD(dt, force) {
+    const jeuVisible = !$('hud').classList.contains('cache') && $('perso').classList.contains('cache') && !interface_ouverte;
+    const pres = jeuVisible && !monte && !sequence && (soin || Math.hypot(J.x - C.x, J.z - C.z) < 6);
+    if (!pres) { hudSoins.classList.add('cache'); return; }
+    vS.set(C.x, H(C.x, C.z) + (chameau.espece === 'elephant' ? 4.2 : chameau.espece === 'cheval' ? 2.5 : 3.0), C.z).project(camera);
+    if (vS.z > 1 || Math.abs(vS.x) > 1.1 || Math.abs(vS.y) > 1.1) { hudSoins.classList.add('cache'); return; }
+    hudSoins.classList.remove('cache');
+    hudSoins.style.left = Math.max(110, Math.min(innerWidth - 110, (vS.x * 0.5 + 0.5) * innerWidth)) + 'px'; hudSoins.style.top = Math.max(60, (-vS.y * 0.5 + 0.5) * innerHeight) + 'px';
     derMaj += dt; if (!force && derMaj < 0.4) return; derMaj = 0;
-    const montre = !$('hud').classList.contains('cache') && $('perso').classList.contains('cache') && !interface_ouverte;
-    hudSoins.classList.toggle('cache', !montre); if (!montre) return;
     const n = soins.niveaux(AV.monture);
     hudSoins.querySelectorAll('.besoin').forEach(btn => { const b = btn.dataset.b, v = n[b]; btn.querySelector('i').style.height = Math.round(v) + '%'; btn.classList.toggle('bas', v < BAS); });
-    // un signal très doux (jamais plus d'une fois par besoin et par visite) quand un besoin est bas
-    const u = soins.urgent(AV.monture);
-    if (u && !dejaIndique[u] && tTotal > 20 && !soin && !interface_ouverte) { dejaIndique[u] = 1; loumiDit(`${nomMonture()} ${INFOS[u].texte}. ${u === 'soif' ? 'Allons à l\'abreuvoir !' : u === 'faim' ? 'Allons à la mangeoire !' : u === 'bienEtre' ? 'Un petit câlin ?' : 'Un peu de repos ?'}`, 5000); }
-    if (!u) dejaIndique = {};
   }
-  // accueil au début de la visite
-  setTimeout(() => { if (!$('hud').classList.contains('cache')) { loumi.reagir('joie'); loumiDit(etat.loumiVue ? 'Re-bonjour ! On repart à l\'aventure ?' : "Bonjour ! Je suis Loumi, la petite lanterne. Je t'accompagne dans le Monde de Nour !", 6000); etat.loumiVue = true; enregistrer(); } }, 6000);
 
   // ---------- commandes ----------
   let interface_ouverte = false;
@@ -315,6 +404,7 @@ async function demarrer() {
       }
     }
     for (const c of colliders) {
+      if (c.repos && o === C) continue;
       const ex = nx - c.x, ez = nz - c.z, r = c.r + rayon;
       if (Math.abs(ex) > r || Math.abs(ez) > r) continue;
       const d = Math.hypot(ex, ez);
@@ -339,7 +429,7 @@ async function demarrer() {
     if (interface_ouverte || sequence) return;
     S.demarrerSons();
     const d = Math.hypot(J.x - C.x, J.z - C.z);
-    C.vit = 0; C.venir = false;
+    C.vit = 0; C.venir = false; C.rentre = false;
     if (monte) sequence = { type: 'descendre', t: 0 };
     else if (d < (monture(AV.monture).espece === 'elephant' ? 5 : 4)) { sequence = { type: 'monter', t: 0, depart: { x: J.x, z: J.z } }; sonMonture(); }
     else { C.venir = true; sonMonture(); montrerIndice(`${monture(AV.monture).icone} ${nomMonture()} arrive !`, 2500); }
@@ -385,7 +475,7 @@ async function demarrer() {
     S.demarrerSons();
     if (procheAv && (!proche || procheAv.d < Math.hypot(proche.x - J.x, proche.z - J.z))) { if (!monte) enfant.faire(/Parler/.test(procheAv.label) ? 'salut' : 'prendre'); procheAv.faire(); }
     else if (proche) ouvrirLecture(proche.id);
-    else if (!monte && Math.hypot(J.x - C.x, J.z - C.z) < (monture(AV.monture).espece === 'elephant' ? 5 : 4)) caresser();
+    else if (!monte && Math.hypot(J.x - C.x, J.z - C.z) < (monture(AV.monture).espece === 'elephant' ? 5 : 4)) { if (dansEnclos(C.x, C.z)) sOccuper(); else caresser(); }
   }
 
   // Un câlin à Sablo : il baisse la tête, ronronne à sa façon ; la première fois, on apprend à prendre soin de lui
@@ -428,7 +518,7 @@ async function demarrer() {
   function dialogue(p) {
     interface_ouverte = true; ctl.bloque = true;
     $('lecture-titre').textContent = p.titre;
-    $('lecture-mascotte').innerHTML = p.mascotte === 'nour' ? mascotte('loumi') : p.image ? `<img class="fiche-image" src="${p.image}" alt="">` : p.icone ? `<span class="fiche-icone">${p.icone}</span>` : '';
+    $('lecture-mascotte').innerHTML = p.mascotte === 'nour' ? mascotte('ablutions') : p.mascotte === 'loumi' ? mascotte('loumi') : p.image ? `<img class="fiche-image" src="${p.image}" alt="">` : p.icone ? `<span class="fiche-icone">${p.icone}</span>` : '';
     $('lecture').style.setProperty('--r', p.couleur || 'transparent'); $('lecture').classList.toggle('fiche', !!p.couleur);
     $('lecture-arabe').textContent = p.arabe || ''; $('lecture-arabe').classList.toggle('cache', !p.arabe);
     p = { ...p, texte: accord(p.texte) };
@@ -456,8 +546,7 @@ async function demarrer() {
   // Pièces de Nour gagnées : petit « +n » qui monte, la bourse bondit
   let timerGain = null;
   function afficherGain(total, n, raison) {
-    try { loumiReagir(n >= 30 ? 'bravo' : 'joie', n >= 30 ? 'Bravo ! Quelle belle réussite !' : ''); } catch (e) {}
-    $('nb-pieces').textContent = total;
+    $('nb-pieces').textContent = total; hud.temporaire($('bourse'), 4500);
     const b = $('bourse'); b.classList.remove('bondit'); void b.offsetWidth; b.classList.add('bondit');
     const g = $('gain'); g.classList.add('cache'); void g.offsetWidth;
     g.innerHTML = `+${n} <span class="piece"></span><small>${raison || ''}</small>`; g.classList.remove('cache');
@@ -478,16 +567,17 @@ async function demarrer() {
     const s = $('suivi');
     const mj = quotidien ? quotidien.missions() : [], faitesJour = mj.filter(m => m.fini).length;
     const ligneJour = mj.length ? `<span class="sac">☀️ Missions du jour : ${faitesJour}/${mj.length}</span>` : '';
-    if (!enCours.length && !AV.sac.length && !ligneJour) { s.classList.add('cache'); return; }
+    if (!enCours.length && !AV.sac.length && !ligneJour) { hud.cacher(s); return; }
     const k = enCours.includes(AV.suiviPrefere) ? AV.suiviPrefere : enCours[0];
     const nomsSac = AV.sac.map(x => x.startsWith('dattes') ? '🌴' : x.startsWith('eau') ? '💧' : x === 'seau' ? '🪣' : x === 'gourde' ? '🫙' : '🚿').join(' ');
     s.innerHTML = (k ? `${MISSIONS[k].icone} <b>${MISSIONS[k].titre}</b> · ${AV.missions[k].n}/${MISSIONS[k].total}` : '') +
       (AV.sac.length ? `<span class="sac">🎒 ${nomsSac} (${AV.sac.length}/${AV.capacite})</span>` : '') + ligneJour;
-    s.classList.remove('cache');
+    if (suiviPret) hud.temporaire(s, 6500);        // seulement quand quelque chose change ; le carnet 📖 garde le détail
   }
   $('suivi').addEventListener('click', () => ouvrirCarnet('missions'));
   $('bourse').addEventListener('click', () => ouvrirCarnet('collection'));
   function fermerLecture() {
+    habitants.ferme();
     $('lecture').classList.add('cache'); interface_ouverte = false; ctl.bloque = false;
     try { speechSynthesis.cancel(); } catch (e) {} arreterVoixVoyage();
   }
@@ -536,6 +626,7 @@ async function demarrer() {
     if (z) quotidien.evenement('zone', z);
     const info = ZONES.find(o => o.id === z);
     $('lieu').textContent = info ? info.icone + ' ' + info.nom : (J.z < -140 ? '🪨 Le chemin du col' : '🐫 Le désert');
+    hud.temporaire($('lieu'), 4500); zoneVillage = z === 'village'; majJumelles();
     if (z && !etat.zones.includes(z)) {
       etat.zones.push(z); enregistrer();
       if (z === 'village') { bandeau('Tu découvres', info.nom); S.sonDecouverte(); }
@@ -593,6 +684,7 @@ async function demarrer() {
     cc.querySelectorAll('[data-basculer]').forEach(b => b.onclick = () => { const a = article(b.dataset.basculer); equiper(a, !estEquipe(a)); ouvrirCarnet(ongletCarnet); });
     cc.querySelectorAll('[data-fiche]').forEach(b => b.onclick = () => ficheObjet(article(b.dataset.fiche), () => ouvrirCarnet(ongletCarnet)));
     cc.querySelectorAll('[data-perso]').forEach(b => b.onclick = () => { fermerCarnet(); ouvrirPerso(false); });
+    cc.querySelectorAll('[data-commencer-mission]').forEach(b => b.onclick = () => { fermerCarnet(); setTimeout(() => aventure.proposer(b.dataset.commencerMission), 60); });
     cc.querySelectorAll('[data-guider-mission]').forEach(b => b.onclick = () => { fermerCarnet(); guiderMission(b.dataset.guiderMission); });
     cc.querySelectorAll('[data-guider-jour]').forEach(b => b.onclick = () => { fermerCarnet(); guiderJour(b.dataset.guiderJour); });
     cc.querySelectorAll('[data-guider-quete]').forEach(b => b.onclick = () => { fermerCarnet(); guiderQuete(b.dataset.guiderQuete); });
@@ -610,8 +702,8 @@ async function demarrer() {
       // toutes les quêtes, rangées de la même façon
       const toutes = [
         ...Object.keys(MISSIONS).map(k => { const m = AV.missions[k], M = MISSIONS[k], meta = META_MISSIONS[k];
-          return { id: k, sorte: 'mission', titre: M.titre, icone: M.icone, cat: meta.cat, diff: meta.diff, objectif: meta.objectif, desc: m ? M.resume : 'Parle aux habitants et explore pour découvrir cette mission.',
-            n: m ? m.n : 0, total: M.total, recompense: M.recompense, etat: !m ? 'decouvrir' : m.etat === 'finie' ? 'finie' : 'encours', guidable: m && m.etat !== 'finie' && !!aventure.prochaineCible(J, k) }; }),
+          return { id: k, sorte: 'mission', lot: !m && !!M.lot && acces.missionOuverte(k), titre: M.titre, icone: M.icone, cat: meta.cat, diff: meta.diff, objectif: meta.objectif, desc: m || (M.lot && acces.missionOuverte(k)) ? M.resume : 'Parle aux habitants et explore pour découvrir cette mission.',
+            n: m ? m.n : 0, total: M.total, recompense: M.recompense, etat: !m ? (M.lot && acces.missionOuverte(k) ? 'disponible' : 'decouvrir') : m.etat === 'finie' ? 'finie' : 'encours', guidable: m && m.etat !== 'finie' && !!aventure.prochaineCible(J, k) }; }),
         ...Object.entries(QUETES).map(([k, q]) => { const n = Math.min(q.total, quetes.nombre(k)), ferme = q.region && !regions.ouverte(q.region);
           return { id: k, sorte: 'quete', titre: q.titre, icone: q.icone, cat: q.cat, diff: q.diff, objectif: q.objectif, desc: ferme ? '🔒 ' + regions.explication(q.region) : q.desc, n, total: q.total, recompense: q.recompense,
             etat: quetes.fini(k) ? 'finie' : ferme ? 'decouvrir' : n > 0 ? 'encours' : 'disponible', guidable: !ferme && !quetes.fini(k) && !!quetes.destination(k, J) }; }),
@@ -621,7 +713,7 @@ async function demarrer() {
             etat: p.n === p.total ? 'finie' : p.n > 0 ? 'encours' : 'disponible', guidable: p.n < p.total }; })
       ];
       const filtre = filtreQuetes, liste = toutes.filter(q => filtre === 'toutes' || q.cat === filtre);
-      const carte = q => `<div class="carte-mission ${q.etat === 'finie' ? 'finie' : ''}">${q.guidable ? `<button class="me-guider" data-guider-quete="${q.sorte}:${q.id}">🧭 Me guider</button>` : ''}
+      const carte = q => `<div class="carte-mission ${q.etat === 'finie' ? 'finie' : ''}">${q.lot ? `<button class="me-guider" data-commencer-mission="${q.id}">▶ Commencer</button>` : ''}${q.guidable ? `<button class="me-guider" data-guider-quete="${q.sorte}:${q.id}">🧭 Me guider</button>` : ''}
           <h4>${q.icone} ${q.titre}${q.etat === 'finie' ? '<span class="etiquette">Réussie ✓</span>' : q.etat === 'decouvrir' ? '<span class="etiquette">À découvrir</span>' : ''}</h4>
           <p class="puces"><span class="puce">${CATEGORIES_QUETES[q.cat].icone} ${CATEGORIES_QUETES[q.cat].nom}</span>${etoiles(q.diff)}</p>
           <p>${q.desc}</p><p class="objectif">🎯 ${q.objectif}</p>
@@ -705,6 +797,7 @@ async function demarrer() {
   }
   function fermerCarnet() { if ($('carnet').classList.contains('cache')) return; $('carnet').classList.add('cache'); interface_ouverte = false; ctl.bloque = false; }
   $('btn-carnet').addEventListener('click', ouvrirCarnet);
+  $('btn-missions').addEventListener('click', () => ouvrirCarnet('missions'));      // bouton du haut : missions du jour + lanternes cachées, à la demande seulement
   $('carnet-fermer').addEventListener('click', fermerCarnet);
   $('carnet').addEventListener('click', e => { if (e.target.id === 'carnet') fermerCarnet(); });
 
@@ -723,7 +816,7 @@ async function demarrer() {
   };
   ['musique-active', 'vol-musique', 'vol-effets', 'vol-voix'].forEach(id => $(id).addEventListener('input', changerSons));
   function fermerPanneaux() { $('panneau-son').classList.add('cache'); $('panneau-reglages').classList.add('cache'); }
-  $('btn-son').addEventListener('click', () => { const ouvrir = $('panneau-son').classList.contains('cache'); fermerPanneaux(); if (ouvrir) { majPanneauSon(); $('panneau-son').classList.remove('cache'); } });
+  $('ouvrir-sons').addEventListener('click', () => { const ouvrir = $('panneau-son').classList.contains('cache'); fermerPanneaux(); if (ouvrir) { majPanneauSon(); $('panneau-son').classList.remove('cache'); } });
   $('son-fermer').addEventListener('click', fermerPanneaux);
   $('btn-reglages').addEventListener('click', () => {
     const ouvrir = $('panneau-reglages').classList.contains('cache'); fermerPanneaux();
@@ -802,6 +895,8 @@ async function demarrer() {
     else if (a.cat !== 'outil') E[a.id === 'lanterne-sablo' ? a.id : a.type] = oui;
     appliquerEquipement();
   }
+  // le faucon n'a de sens qu'en exploration : il n'encombre pas l'écran du village
+  function majJumelles() { $('btn-jumelles').classList.toggle('cache', !(AV.equipement && AV.equipement.jumelles) || zoneVillage); }
   function appliquerEquipement() {
     const E = AV.equipement, a = id => article(E[id]) || null;
     AV.capacite = E.sac ? 6 : 3;
@@ -814,7 +909,7 @@ async function demarrer() {
     nouveau.racine.position.copy(ancien.position); nouveau.racine.rotation.copy(ancien.rotation); nouveau.pose = pose;
     scene.remove(ancien); ancien.traverse(o => { if (o.geometry) o.geometry.dispose(); });
     scene.add(nouveau.racine); enfant = nouveau;
-    $('btn-jumelles').classList.toggle('cache', !E.jumelles);
+    majJumelles();
     if (E.lanterne && !lumiere) { lumiere = new THREE.PointLight('#ffc870', 0, 14, 1.6); scene.add(lumiere); }
     cour.maj(AV);
     enregistrer(); majSuivi();
@@ -985,7 +1080,7 @@ async function demarrer() {
           const r = bourse.acheter('monture-' + id, m.prix, m.nom);
           if (!r.ok) { montrerIndice(r.raison === 'deja' ? 'Cette monture est déjà à toi !' : 'Il te manque des Pièces de Nour.', 2500); setTimeout(retour, 50); return; }
           if (!AV.montures.includes(id)) AV.montures.push(id);
-          ecurie.maj(AV.montures.filter(k => k !== AV.monture));
+          ecurie.maj(AV.montures, AV.monture);
           AV.achats = (AV.achats || []).concat([{ id: 'monture-' + id, nom: m.nom, icone: m.icone, quand: Date.now() }]);
           $('nb-pieces').textContent = AV.pieces; S.sonPiece(50); enregistrer();
           const z = $('achat'); z.style.setProperty('--r', R.couleur);
@@ -1010,7 +1105,7 @@ async function demarrer() {
     scene.remove(chameau.racine); chameau.racine.traverse(o => { if (o.geometry) o.geometry.dispose(); });
     chameau = creerMonture(id, !!Q.ombres); scene.add(chameau.racine);
     C.x = ecurie.sortie.x; C.z = ecurie.sortie.z; C.a = 0; C.vit = 0; C.venir = false;
-    ecurie.maj(AV.montures.filter(k => k !== AV.monture));
+    ecurie.maj(AV.montures, AV.monture);
     appliquerEquipement(); cacheMonture.clear();
     $('btn-chameau').querySelector('.ico').textContent = monture(id).icone;
     sonMonture(monture(id).espece); bandeau('Ta monture', monture(id).nom);
@@ -1083,7 +1178,6 @@ async function demarrer() {
     cacheObjets.set(cle, url); return url;
   }
   function decouvrir(d) {
-    try { loumiReagir('surprise', d && d.nouveau ? 'Oh ! Une nouvelle découverte !' : ''); } catch (e) {}
     if (interface_ouverte && !d.forcer) { fileDecouvertes.push(d); return; }   // une autre fenêtre est ouverte : on attend
     interface_ouverte = true; ctl.bloque = true;
     if (d.nouveau) {
@@ -1366,11 +1460,13 @@ async function demarrer() {
           C.vit += ((dist > 20 ? 9 : 5) - C.vit) * Math.min(1, dt * 2);
           bouger(C, Math.sin(C.a) * C.vit * dt, Math.cos(C.a) * C.vit * dt, 1.1, dt);
         }
-      } else C.vit *= Math.max(0, 1 - dt * 4);
+      } else if (!C.rentre) C.vit *= Math.max(0, 1 - dt * 4);
     }
 
     // --- soins de la monture : besoins, marche d'approche, poses ---
-    soins.tick(AV.monture, dt, { monte, vit: C.vit }); avancerSoin(dt);
+    soins.tick(AV.monture, dt, { monte, vit: C.vit }); avancerSoin(dt); majRentree(dt);
+    majVeille(dt, tTotal); loumi.maj(dt, tTotal, J, besoinEnCours ? C : null); habitants.maj(J, () => fermerLecture()); majSoinsHUD(dt);
+    if (nourSprite) nourSprite.position.set(NOUR.x, H(NOUR.x, NOUR.z) + 1.6 + Math.sin(tTotal * 1.8) * 0.12, NOUR.z);
     // --- placer les modèles ---
     chameau.racine.position.set(C.x, H(C.x, C.z), C.z);
     chameau.racine.rotation.y = C.a;
@@ -1480,7 +1576,7 @@ async function demarrer() {
     proche = null;
     let meilleur = Infinity;
     for (const p of decor.points) { const dd = Math.hypot(p.x - J.x, p.z - J.z); if (dd < p.r && dd < meilleur) { meilleur = dd; proche = p; } }
-    procheAv = sequence || soin ? null : (() => { const t = [aventure.interaction(J), quetes.interaction(J), interactionSoins()].filter(Boolean); return t.length ? t.reduce((x, y) => (y.d < x.d ? y : x)) : null; })();
+    procheAv = sequence || soin ? null : (() => { const t = [aventure.interaction(J), quetes.interaction(J), interactionSoins(), interactionMontures(), habitants.interaction(J)].filter(Boolean); return t.length ? t.reduce((x, y) => (y.d < x.d ? y : x)) : null; })();
     aventure.maj(dt, tTotal, J, monte ? C.vit > 6 : J.vit > 4.2, nuit);
     quetes.maj(dt, tTotal, posGuide(), monte && !sequence);
     marche.maj(dt, tTotal, J); ecurie.animer(dt, tTotal, J); effetDecouverte.maj(dt);
@@ -1493,7 +1589,7 @@ async function demarrer() {
     if (lumiere) { lumiere.intensity = 2.2 * Math.max(nuit, 0.05); lumiere.position.set(enfant.racine.position.x, enfant.racine.position.y + 1.6, enfant.racine.position.z); }
     majBoussole();
     const pres = !monte && Math.hypot(J.x - C.x, J.z - C.z) < 4;
-    const loin = !monte && !C.venir && Math.hypot(J.x - C.x, J.z - C.z) > 18;
+    const loin = !monte && !C.venir && !dansEnclos(C.x, C.z) && Math.hypot(J.x - C.x, J.z - C.z) > 18;
     majBoutons(pres, loin);
 
     // --- sons d'ambiance ---
@@ -1521,8 +1617,6 @@ async function demarrer() {
     }
 
     renderer.render(scene, camera);
-    majLoumi(dt);
-    loumi.dessiner(renderer, camera);
     requestAnimationFrame(image);
   }
 
@@ -1539,13 +1633,13 @@ async function demarrer() {
   let dernierEtatBoutons = '';
   function majBoutons(pres, loin) {
     const avPrio = procheAv && (!proche || procheAv.d < Math.hypot(proche.x - J.x, proche.z - J.z));
-    const lire = avPrio ? procheAv.label : proche ? (proche.id === 'nour' || proche.id === 'sage' || proche.id === 'ecurie' ? 'Parler' : proche.id.startsWith('boutique-') ? 'Acheter' : proche.id === 'cour' ? 'Ma cour' : 'Lire') : (pres && !sequence ? 'Caresser' : null);
+    const lire = avPrio ? procheAv.label : proche ? (proche.id === 'nour' || proche.id === 'sage' || proche.id === 'ecurie' ? 'Parler' : proche.id.startsWith('boutique-') ? 'Acheter' : proche.id === 'cour' ? 'Ma cour' : 'Lire') : (pres && !sequence ? (dansEnclos(C.x, C.z) ? 'S\'occuper' : 'Caresser') : null);
     const cham = sequence ? null : monte ? 'Descendre' : pres ? 'Monter' : loin ? 'Appeler' : null;
     const cle = lire + '|' + cham + '|' + interface_ouverte;
     if (cle === dernierEtatBoutons) return;
     dernierEtatBoutons = cle;
     $('btn-action').classList.toggle('cache', !lire || interface_ouverte);
-    if (lire) { $('btn-action').querySelector('.txt').textContent = lire; const ic = (avPrio && procheAv.icone) || { Parler: '💬', Caresser: '🤲', Acheter: '🛍️', 'Ma cour': '🏡' }[lire] || '✋';
+    if (lire) { $('btn-action').querySelector('.txt').textContent = lire; const ic = (avPrio && procheAv.icone) || { Parler: '💬', Caresser: '🤲', 'S\'occuper': '🤲', Examiner: '🔍', Acheter: '🛍️', 'Ma cour': '🏡' }[lire] || '✋';
       if (ic === 'mots') $('btn-action').querySelector('.ico').innerHTML = ICONE_MOTS; else $('btn-action').querySelector('.ico').textContent = ic; }
     $('btn-chameau').classList.toggle('cache', !cham || interface_ouverte);
     if (cham) $('btn-chameau').querySelector('.txt').textContent = cham;
@@ -1561,7 +1655,8 @@ async function demarrer() {
   // ---------- prêt ----------
   // Première image avant d'enlever l'écran de chargement (évite un écran noir)
   appliquerEquipement();
-  ecurie.maj(AV.montures.filter(k => k !== AV.monture));
+  ecurie.maj(AV.montures, AV.monture);
+  if (!monte && presEcurie(C.x, C.z) && !dansEnclos(C.x, C.z)) ranger();
   verifierSucces(!Object.keys(AV.badges).length);
   regions.verifier();   // première fois : les badges déjà mérités sont donnés sans fanfare
   $('btn-chameau').querySelector('.ico').textContent = monture(AV.monture).icone;
@@ -1587,7 +1682,7 @@ async function demarrer() {
 
   // pour les tests
   window.__voyage = {
-    loumi, soins, faireSoin: (type) => lancerSoin(type, lieuDe(type)), soin: () => soin, pose: () => pose, nuit: () => nuitActuelle, menuLoumi, loumiDit, interactionSoins,
+    loumi, soins, faireSoin: (type) => lancerSoin(type, lieuDe(type)), soin: () => soin, pose: () => pose, nuit: () => nuitActuelle, habitants, parlerLoumi, LOUMI_POS, veille, bulleLoumi, ecurie, sOccuper, interactionMontures, interactionSoins, reglerOption: (k, v) => { etat.options[k] = v; enregistrer(); },
     etat, J, C, decor, ciel, H, cam, aventure, bourse, action: () => action(),
     teleporter(x, z) { J.x = x; J.z = z; if (monte) { C.x = x; C.z = z; } },
     monte: () => monte, sequence: () => sequence, proche: () => proche, zone: () => zoneActuelle,

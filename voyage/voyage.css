@@ -440,24 +440,21 @@ body.jumelles-actives #scene{filter:none}
 .carte-mot.cachee img{filter:grayscale(1) brightness(1.15) blur(3px);opacity:.45}
 .carte-mot.cachee .ar{color:#b8a888}
 
-/* ---- Loumi (bouton invisible posé sur la lanterne 3D, bulle de parole) et besoins de la monture ---- */
-#loumi-ui{position:fixed;z-index:11;width:0;height:0;pointer-events:none}
-#loumi-ui.cache{display:none}
-#btn-loumi{position:absolute;left:-46px;top:-60px;width:92px;height:120px;border:0;background:transparent;border-radius:50%;cursor:pointer;pointer-events:auto;-webkit-tap-highlight-color:transparent}
-#btn-loumi:focus-visible{outline:3px solid #ffd666;outline-offset:2px}
-#loumi-bulle{position:absolute;left:52px;top:-34px;width:max-content;max-width:min(260px,52vw);padding:10px 14px;border-radius:18px 18px 18px 4px;background:#fff8e6;color:#3b2a14;border:3px solid #e8b53a;font:700 15px/1.3 Nunito,system-ui,sans-serif;box-shadow:0 4px 14px rgba(0,0,0,.28);pointer-events:none}
-#loumi-bulle.cache{display:none}
-#soins{position:fixed;z-index:9;left:max(8px,env(safe-area-inset-left));top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:8px}
+/* ---- Besoins de la monture ---- */
+#soins{position:fixed;z-index:9;transform:translate(-50%,-100%);display:flex;flex-direction:row;gap:6px;padding:6px 8px;border-radius:26px;background:rgba(25,19,69,.55);pointer-events:auto}
 #soins.cache{display:none}
-#soins .besoin{position:relative;width:46px;height:46px;border-radius:50%;border:3px solid #e8b53a;background:rgba(25,19,69,.82);padding:0;cursor:pointer;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.35)}
-#soins .besoin .ib{position:relative;z-index:2;font-size:22px;line-height:40px;display:block}
+#soins .besoin{position:relative;width:38px;height:38px;border-radius:50%;border:3px solid #e8b53a;background:rgba(25,19,69,.82);padding:0;cursor:pointer;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.35)}
+#soins .besoin .ib{position:relative;z-index:2;font-size:18px;line-height:32px;display:block}
 #soins .besoin .jauge{position:absolute;inset:0;z-index:1}
 #soins .besoin .jauge i{position:absolute;left:0;right:0;bottom:0;height:80%;background:linear-gradient(#5fe0d2,#1fb8aa);opacity:.55;transition:height .6s}
 #soins .besoin.bas{border-color:#ffb36b;animation:besoin-doux 2.4s ease-in-out infinite}
 #soins .besoin.bas .jauge i{background:linear-gradient(#ffd08a,#f0a24a)}
 @keyframes besoin-doux{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 @media (prefers-reduced-motion:reduce){#soins .besoin.bas{animation:none}}
-@media (max-width:480px){#soins .besoin{width:40px;height:40px}#soins .besoin .ib{font-size:19px;line-height:34px}#soins{gap:6px}}
+@media (max-width:480px){#soins .besoin{width:34px;height:34px}#soins .besoin .ib{font-size:16px;line-height:28px}#soins{gap:4px;padding:5px 6px}}
 /* Réglages : le panneau défile quand il est plus haut que l'écran (la section « Compte » est tout en bas) */
 #panneau-reglages{max-height:calc(100% - 96px - var(--haut));overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 #panneau-reglages{z-index:60}
+
+/* Panneaux (réglages, sons, commandes…) : ils défilent verticalement quand ils dépassent de l'écran, au doigt comme à la souris */
+.panneau{max-height:calc(100% - 96px - var(--haut));overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y}

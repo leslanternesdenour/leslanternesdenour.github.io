@@ -3,7 +3,6 @@
 import * as THREE from 'three';
 import { piece, fusion, placer, hasard, materiau, temps, M } from './formes.js?v=4';
 import { LIEUX, CHEMINS, PISTES, distanceChemins, lisse, fbm, LIMITE } from './terrain.js?v=3';
-import { LIEUX_SOINS } from './soins.js?v=1';
 
 const deg = d => d * Math.PI / 180;
 const B = () => new THREE.BoxGeometry(1, 1, 1);
@@ -197,38 +196,6 @@ function geoPuits() {
   return fusion(p);
 }
 
-// Foin et végétaux pour les montures : une mangeoire de bois de palmier, des bottes de foin, des dattes et des feuilles vertes
-function geoFoin() {
-  const p = [], foin = '#d8b95a', foin2 = '#c9a748';
-  const bois = '#8a6440';
-  // la mangeoire (fond + parois) remplie de foin
-  p.push(piece(B(), bois, { p: [0, 0.28, 0], s: [2.0, 0.08, 0.9], m: M.bois }));
-  for (const sz of [-1, 1]) p.push(piece(B(), bois, { p: [0, 0.5, sz * 0.43], s: [2.0, 0.42, 0.07], m: M.bois }));
-  for (const sx of [-1, 1]) p.push(piece(B(), bois, { p: [sx * 0.97, 0.5, 0], s: [0.07, 0.42, 0.8], m: M.bois }));
-  for (const x of [-0.85, 0.85]) for (const z of [-0.35, 0.35]) p.push(piece(CYL(0.06, 0.07, 0.3, 6), bois, { p: [x, 0.14, z], m: M.bois }));
-  p.push(piece(B(), foin, { p: [0, 0.6, 0], s: [1.82, 0.3, 0.74] }));
-  for (let i = 0; i < 14; i++) p.push(piece(B(), i % 2 ? foin : foin2, { p: [-0.8 + (i % 7) * 0.27, 0.78, (i < 7 ? -0.18 : 0.2)], r: [0, i * 0.7, 0.3], s: [0.34, 0.05, 0.05] }));
-  // feuilles de palmier vertes et dattes posées sur le foin
-  for (let i = 0; i < 4; i++) p.push(piece(new THREE.ConeGeometry(0.1, 0.55, 4), i % 2 ? '#3f8f3a' : '#4fa645', { p: [-0.6 + i * 0.4, 0.86, 0.0], r: [0.2, i, 1.2 - i * 0.2] }));
-  for (let i = 0; i < 6; i++) p.push(piece(SPH(0.07, 6, 4), '#a85a22', { p: [0.1 + (i % 3) * 0.18, 0.79, -0.1 + Math.floor(i / 3) * 0.22] }));
-  // deux bottes de foin liées avec une corde, à côté
-  for (const [x, y, z, r] of [[1.55, 0.27, 0.3, 0.2], [1.55, 0.27, -0.45, -0.1], [1.5, 0.78, -0.08, 0.05]]) {
-    p.push(piece(B(), foin, { p: [x, y, z], r: [0, r, 0], s: [0.9, 0.5, 0.6] }));
-    p.push(piece(B(), '#8a7a52', { p: [x, y, z], r: [0, r, 0], s: [0.92, 0.52, 0.06] }));
-  }
-  return fusion(p);
-}
-
-// La litière de paille : un coin calme, bordé de bois de palmier, pour se reposer ou dormir
-function geoLitiere() {
-  const p = [], paille = '#d9bd6a', paille2 = '#c4a354';
-  p.push(piece(CYL(1.95, 2.0, 0.1, 20), paille, { p: [0, 0.05, 0] }));
-  p.push(piece(CYL(1.55, 1.6, 0.06, 20), paille2, { p: [0, 0.12, 0] }));
-  for (let i = 0; i < 12; i++) { const a = i / 12 * Math.PI * 2; p.push(piece(CYL(0.1, 0.11, 0.3, 6), '#8a6440', { p: [Math.cos(a) * 2.0, 0.15, Math.sin(a) * 2.0], m: M.bois })); }
-  for (let i = 0; i < 30; i++) { const a = i * 2.39, d = 0.3 + (i % 9) * 0.17; p.push(piece(B(), i % 2 ? paille : paille2, { p: [Math.cos(a) * d, 0.17, Math.sin(a) * d], r: [0, a, 0], s: [0.5, 0.03, 0.04] })); }
-  return fusion(p);
-}
-
 function geoLampadaire() {
   // un poteau de bois de palmier avec une petite niche et une lampe à huile en terre cuite
   return fusion([
@@ -396,11 +363,6 @@ export function creerDecor(scene, terrain, Q, TX = {}) {
       eauP.rotation.x = -Math.PI / 2; eauP.position.set(0, yb + EAU_PUITS.y, 0); eauP.name = 'eau-puits'; g.add(eauP);
       const eauA = new THREE.Mesh(new THREE.PlaneGeometry(EAU_ABREUVOIR.l, EAU_ABREUVOIR.w), matEau('#4fb3c4', 1));
       eauA.rotation.x = -Math.PI / 2; eauA.position.set(EAU_ABREUVOIR.x, yb + EAU_ABREUVOIR.y, EAU_ABREUVOIR.z); eauA.name = 'eau-abreuvoir'; g.add(eauA);
-      // foin (mangeoire) et litière de paille pour les soins des montures
-      const F = LIEUX_SOINS.foin.objet, Li = LIEUX_SOINS.litiere.objet;
-      ajouter(g, geoFoin(), matBase, F.x, F.z, { rot: 0, y: H(F.x, F.z) - 0.02 });
-      ajouter(g, geoLitiere(), matBase, Li.x, Li.z, { y: H(Li.x, Li.z) - 0.04 });
-      colliders.push({ x: F.x, z: F.z, r: 1.0 }, { x: F.x + 1.5, z: F.z, r: 0.6 });
     }
     colliders.push({ x: 0, z: 0, r: 1.9 }, { x: 0, z: 2.3, r: 1.0 }, { x: -0.8, z: 2.3, r: 0.7 }, { x: 0.8, z: 2.3, r: 0.7 });
 

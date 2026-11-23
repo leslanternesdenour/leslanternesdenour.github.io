@@ -5,24 +5,14 @@ import { piece, fusion, materiau } from './formes.js?v=4';
 import { Enfant } from './personnages.js?v=4';
 import { creerAnimaux, FICHES } from './animaux.js?v=4';
 import { LIEUX } from './terrain.js?v=3';
+import { MISSIONS, DONNEURS, LOTS, PANIER, TEXTES } from './missions.js?v=1';
 
 const mat = materiau({ finesse: 1.6 });
 const B = () => new THREE.BoxGeometry(1, 1, 1);
 const SPH = (r, w = 10, h = 8) => new THREE.SphereGeometry(r, w, h);
 const CYL = (a, b, h, s = 10) => new THREE.CylinderGeometry(a, b, h, s);
 
-export const MISSIONS = {
-  lanternes: { titre: 'Les lanternes cachées', icone: '🏮', total: 12, recompense: 200,
-    resume: 'Douze petites lanternes dorées se sont cachées dans tout le pays de Nour. Retrouve-les toutes !' },
-  objets: { titre: 'Les objets perdus de Nour', icone: '🧺', total: 3, recompense: 150,
-    resume: 'Nour a perdu son seau, sa gourde et son arrosoir près de l\'oasis. Retrouve-les et rapporte-les-lui au village.' },
-  tresor: { titre: 'Le trésor de l\'oasis', icone: '🗝️', total: 4, recompense: 250,
-    resume: 'Suis les petits tas de pierres au ruban turquoise : chacun donne un indice. Le dernier mène au coffre.' },
-  voyageur: { titre: 'Aider le voyageur', icone: '🤝', total: 4, recompense: 200,
-    resume: 'Salim, le voyageur du camp, a besoin de 2 paniers de dattes et de 2 outres d\'eau. Va les chercher à l\'oasis et apporte-les-lui.' },
-  animaux: { titre: 'Les animaux du désert', icone: '🦊', total: 7, recompense: 150,
-    resume: 'Observe sept animaux différents et découvre comment ils vivent. Approche doucement, sans courir !' }
-};
+export { MISSIONS };
 
 // Les objets à trouver (positions dans le monde)
 const LANTERNES = [[-14, -31], [37, 29], [216, 4], [199, 61], [-196, 77], [-158, 86], [82, 262], [-22, 300], [-250, -40], [26, -163], [-26, -236], [9, -272]];
@@ -90,6 +80,16 @@ export function creerAventure({ scene, terrain, colliders, etat, enregistrer, ui
   };
 
   LANTERNES.forEach(([x, z], i) => { const cle = 'lanterne' + i; if (!A.ramasses.includes(cle)) ajouterObjet(cle, geoLanterne, x, z, 'lanterne', { mat: matLanterne, halo: 1.6, flotte: true }); });
+  // le panier de rendu des objets perdus (au village, près de la fontaine) : un panier de roseau ; un halo doux le signale quand on porte les objets
+  const panierG = new THREE.Group(); panierG.position.set(PANIER.x, H(PANIER.x, PANIER.z), PANIER.z); groupe.add(panierG);
+  { const pm = new THREE.Mesh(fusion([
+      piece(CYL(0.5, 0.38, 0.55, 14), '#b08a4a', { p: [0, 0.28, 0] }), piece(new THREE.TorusGeometry(0.5, 0.045, 6, 16), '#8a6a32', { p: [0, 0.56, 0], r: [Math.PI / 2, 0, 0] }),
+      piece(new THREE.TorusGeometry(0.46, 0.025, 5, 16), '#9a7840', { p: [0, 0.2, 0], r: [Math.PI / 2, 0, 0] }), piece(new THREE.TorusGeometry(0.49, 0.025, 5, 16), '#9a7840', { p: [0, 0.4, 0], r: [Math.PI / 2, 0, 0] }),
+      piece(new THREE.TorusGeometry(0.5, 0.03, 6, 16, Math.PI), '#8a6a32', { p: [0, 0.56, 0], r: [0, 0, 0] }), piece(CYL(0.44, 0.44, 0.04, 14), '#2bb3c0', { p: [0, 0.5, 0] })]), mat);
+    pm.castShadow = ombres; panierG.add(pm); }
+  const panierHalo = new THREE.Sprite(new THREE.SpriteMaterial({ map: halo, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: 0.6 }));
+  panierHalo.scale.setScalar(2.4); panierHalo.position.y = 0.8; panierHalo.visible = false; panierG.add(panierHalo);
+  colliders.push({ x: PANIER.x, z: PANIER.z, r: 0.6 });
   const geos = {
     seau: fusion([piece(CYL(0.22, 0.17, 0.32, 12), '#8a5a35', { p: [0, 0.16, 0] }), piece(CYL(0.225, 0.225, 0.04, 12), '#5a3a22', { p: [0, 0.27, 0] }), piece(new THREE.TorusGeometry(0.2, 0.015, 5, 14, Math.PI), '#4a3a5a', { p: [0, 0.3, 0] })]),
     gourde: fusion([piece(SPH(0.2, 12, 8), '#a7744a', { p: [0, 0.2, 0], s: [1, 1.1, 0.6] }), piece(CYL(0.05, 0.06, 0.14, 8), '#6b4428', { p: [0, 0.44, 0] }), piece(new THREE.TorusGeometry(0.21, 0.015, 5, 16), '#c94f3c', { p: [0, 0.22, 0], r: [0, Math.PI / 2, 0] })]),
@@ -173,9 +173,11 @@ export function creerAventure({ scene, terrain, colliders, etat, enregistrer, ui
     essai(Math.hypot(grotte.x - J.x, grotte.z - J.z), 3.5, { label: 'Explorer', icone: '🪔', faire: explorerGrotte });
     if (mission('voyageur') && mission('voyageur').etat !== 'finie') essai(Math.hypot(EAU.x - J.x, EAU.z - J.z), 4, { label: 'Remplir', icone: '💧', faire: remplirEau });
     for (const a of animaux.liste) essai(Math.hypot(a.x - J.x, a.z - J.z), a.id === 'gazelle' ? 6 : 3, { label: 'Observer', icone: '🔍', faire: () => observer(a.id) });
+    if (objetsPortes().length) essai(Math.hypot(PANIER.x - J.x, PANIER.z - J.z), 3.2, { label: 'Déposer', icone: '🧺', faire: rendre });   // seulement quand on porte les objets perdus
     return best;
   }
 
+  const objetsPortes = () => A.sac.filter(k => OBJETS.some(o => o.id === k));
   function placeDansSac() { return A.sac.length < A.capacite; }
   function ramasser(o) {
     if (o.type === 'objet' || o.type === 'dattes') {
@@ -251,27 +253,41 @@ export function creerAventure({ scene, terrain, colliders, etat, enregistrer, ui
     else ui.dialogue({ titre: f.icone + ' ' + f.nom, texte: f.vie, sous: '🏠 Où il vit : ' + f.habitat });
   }
   // Nour : donne les missions des lanternes et des objets, reçoit les objets
-  function parlerNour(texteAccueil) {
-    const mo = mission('objets'), ml = mission('lanternes');
-    const objetsPortes = A.sac.filter(k => OBJETS.some(o => o.id === k));
-    if (objetsPortes.length) {
-      A.sac = A.sac.filter(k => !objetsPortes.includes(k));
-      avancer('objets', objetsPortes.length); enregistrer(); ui.majSuivi(); sons.sonDecouverte();
-      const reste = MISSIONS.objets.total - mission('objets').n;
-      ui.dialogue({ titre: 'Loumi', mascotte: 'nour', texte: reste ? `Merci, tu as retrouvé ${objetsPortes.length > 1 ? 'mes affaires' : 'une de mes affaires'} ! Il en manque encore ${reste}.` : 'Mon seau, ma gourde et mon arrosoir ! Merci mille fois. Grâce à toi, je peux arroser les fleurs du village.' });
-      return;
-    }
-    if (!mo || !ml) {
-      ui.dialogue({ titre: 'Loumi', mascotte: 'nour', texte: (texteAccueil ? texteAccueil + ' ' : '') + "J'ai besoin de toi ! Douze petites lanternes se sont cachées dans tout le pays… et j'ai perdu mon seau, ma gourde et mon arrosoir près de l'oasis. Tu veux bien m'aider ?",
-        boutons: [{ txt: 'Oui, je t\'aide !', fn: () => { commencer('lanternes', true); commencer('objets', true); ui.bandeau('Nouvelles missions', 'Lanternes et objets perdus'); sons.sonDecouverte(); } }, { txt: 'Plus tard', fn: () => {} }] });
-      return;
-    }
+  // ---------- missions : proposer, rendre, conseils (aucun personnage n'est requis ; le donneur n'est qu'une étiquette d'affichage) ----------
+  const dialogueDonneur = (lot, d) => ui.dialogue({ ...(DONNEURS[(LOTS[lot] || {}).donneur] || {}), ...d });
+  // Présente un lot de missions (carnet : bouton « Commencer » ; ou n'importe quel habitant qui voudra les proposer). Déjà commencées : des conseils.
+  function proposer(id, accueil) {
+    const m0 = MISSIONS[id], lot = m0 && LOTS[m0.lot]; if (!lot) return false;
+    if (lot.ids.every(k => mission(k))) { conseils(id); return true; }
+    dialogueDonneur(m0.lot, { texte: (accueil ? accueil + ' ' : '') + TEXTES.proposition,
+      boutons: [{ txt: 'Oui, je t\'aide !', fn: () => { for (const k of lot.ids) commencer(k, true); ui.bandeau('Nouvelles missions', 'Lanternes et objets perdus'); sons.sonDecouverte(); } }, { txt: 'Plus tard', fn: () => {} }] });
+    return true;
+  }
+  // Rend les objets perdus portés dans le sac, au point de rendu (le panier). Robuste : sans mission « objets » commencée, elle est créée et l'objet compté.
+  function rendre() {
+    const portes = objetsPortes();
+    if (!portes.length) { ui.indice('🧺 Tu n\'as rien à déposer pour le moment.', 2500); return false; }
+    if (!mission('objets')) commencer('objets', true);
+    A.sac = A.sac.filter(k => !portes.includes(k));
+    avancer('objets', portes.length); enregistrer(); ui.majSuivi(); sons.sonDecouverte();
+    const reste = MISSIONS.objets.total - mission('objets').n;
+    dialogueDonneur('nour', { texte: reste ? TEXTES.rendu(portes.length, reste) : TEXTES.renduFinal });
+    return true;
+  }
+  function conseils(id) {
     const enCours = Object.keys(MISSIONS).filter(k => mission(k) && mission(k).etat !== 'finie');
-    ui.dialogue({ titre: 'Loumi', mascotte: 'nour', texte: enCours.length ? `Courage ! Regarde ton carnet pour suivre tes missions : ${enCours.map(k => MISSIONS[k].titre.toLowerCase()).join(', ')}.` : 'Tu as réussi toutes les missions ! Tu es un vrai explorateur du pays de Nour.' });
+    dialogueDonneur((MISSIONS[id] || {}).lot || 'nour', { texte: enCours.length ? TEXTES.conseils(enCours.map(k => MISSIONS[k].titre.toLowerCase())) : TEXTES.toutesFinies });
+  }
+  // Ancien nom (habitant facultatif « Nour ») : la même chose, aucune dépendance du jeu de base.
+  function parlerNour(texteAccueil) {
+    if (objetsPortes().length) return rendre();
+    if (!mission('objets') || !mission('lanternes')) return proposer('objets', texteAccueil);
+    return conseils('objets');
   }
 
   // ---------- chaque image ----------
   function maj(dt, t, J, rapide, nuit) {
+    panierHalo.visible = objetsPortes().length > 0; if (panierHalo.visible) panierHalo.material.opacity = 0.45 + 0.25 * Math.sin(t * 3);
     for (const o of objets3d) {
       if (o.parti) continue;
       if (o.flotte) { o.g.position.y = H(o.x, o.z) + 0.6 + Math.sin(t * 2 + o.x) * 0.12; o.m.rotation.y = t * 0.8; }
@@ -304,7 +320,7 @@ export function creerAventure({ scene, terrain, colliders, etat, enregistrer, ui
   function prochaineCible(J, seule = null) {
     const cand = [], pour = id => !seule || seule === id;
     const ml = mission('lanternes'); if (pour('lanternes') && ml && ml.etat !== 'finie') objets3d.filter(o => o.type === 'lanterne' && !o.parti).forEach(o => cand.push(o));
-    const mo = mission('objets'); if (pour('objets') && mo && mo.etat !== 'finie') { if (A.sac.some(k => OBJETS.some(o => o.id === k)) && !placeDansSac()) cand.push({ x: -5.5, z: 5 }); else objets3d.filter(o => o.type === 'objet' && !o.parti).forEach(o => cand.push(o)); }
+    const mo = mission('objets'); if (pour('objets') && mo && mo.etat !== 'finie') { if (A.sac.some(k => OBJETS.some(o => o.id === k)) && !placeDansSac()) cand.push({ x: PANIER.x, z: PANIER.z }); else objets3d.filter(o => o.type === 'objet' && !o.parti).forEach(o => cand.push(o)); }
     const mt = mission('tresor'); if (pour('tresor') && mt && mt.etat !== 'finie') { const c = objets3d.find(o => o.type === 'cairn' && o.i === A.indices); cand.push(c || coffre); }
     const mv = mission('voyageur'); if (pour('voyageur') && mv && mv.etat !== 'finie') { if (A.sac.some(k => k.startsWith('dattes') || k.startsWith('eau'))) cand.push(pv); else { objets3d.filter(o => o.type === 'dattes' && !o.parti).forEach(o => cand.push(o)); cand.push(EAU); } }
     const ma = mission('animaux'); if (seule === 'animaux' && ma && ma.etat !== 'finie') animaux.liste.filter(o => !A.animaux.includes(o.id)).forEach(o => cand.push(o));
@@ -315,5 +331,5 @@ export function creerAventure({ scene, terrain, colliders, etat, enregistrer, ui
 
   // les jumelles font briller les lanternes cachées de loin
   function reperes(actif) { for (const o of objets3d) if (o.type === 'lanterne' && !o.parti && o.g.children[1]) o.g.children[1].scale.setScalar(actif ? 7 : 1.6); }
-  return { A, interaction, maj, parlerNour, gagner, prochaineCible, animaux, MISSIONS, objets3d, reperes, grotte, commencer };
+  return { A, interaction, maj, proposer, rendre, conseils, PANIER, parlerNour, gagner, prochaineCible, animaux, MISSIONS, objets3d, reperes, grotte, commencer };
 }
