@@ -1,6 +1,6 @@
 # E-mails des comptes envoyés par notre serveur (vérification, mot de passe oublié)
 
-État au 24/11/2026. Firebase Authentication reste le système des comptes (inscriptions, connexions, sessions, vérification, mots de passe). **Seul l'envoi des e-mails change** : Firebase génère le jeton, notre serveur envoie le message.
+État au 24/11/2026. **Resend est configuré en préproduction** (domaine leslanternesdenour.fr vérifié, DKIM, DMARC en observation, secret EMAIL_CLE_API dans Cloudflare Preview). Firebase Authentication reste le système des comptes (inscriptions, connexions, sessions, vérification, mots de passe). **Seul l'envoi des e-mails change** : Firebase génère le jeton, notre serveur envoie le message.
 
 ## Comment ça marche
 1. Le parent s'inscrit (Firebase). Aucun e-mail Firebase n'est envoyé.
