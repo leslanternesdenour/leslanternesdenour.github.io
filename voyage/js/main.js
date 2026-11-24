@@ -9,7 +9,7 @@ import { Enfant, Chameau } from './personnages.js?v=4';
 import { Controles, ACTIONS, nomTouche } from './controles.js?v=3';
 import { creerOiseaux } from './oiseaux.js?v=3';
 import { creerFaucon } from './faucon.js?v=4';
-import * as S from './sons.js?v=3';
+import * as S from './sons.js?v=5';
 import { etatAppel, pointDeRenfort } from './monture-appel.js?v=1';
 import { chargerVoixVoyage, direTextes, direIds, direMotArabe, arreterVoixVoyage, ajouterPhrases, aUneVoix, direApres } from './voix.js?v=5';
 import { chargerPremium, MESSAGE_FERME } from './premium.js?v=1';
@@ -43,6 +43,7 @@ import { creerLoumi } from './loumi.js?v=5';
 import { creerHabitants } from './habitants.js?v=2';
 import { creerHud } from './hud.js?v=1';
 import { routeActive } from './route/drapeau.js';
+import { pisteMusique } from './musique-zone.js?v=1';
 import { noeud as noeudLoumi, depart as departLoumi } from './loumi-dialogues.js?v=2';
 import { creerSoins, BESOINS, INFOS, LIEUX_SOINS, DUREES as DUREES_SOINS, poseSoin, PLANCHER, BAS } from './soins.js?v=2';
 
@@ -663,6 +664,7 @@ async function demarrer() {
   }
   let zoneActuelle = undefined;
   function verifierZone() {
+    S.choisirMusique(pisteMusique(!!(route && route.enRoute()), route && route.regionId()));
     if (route && route.enRoute()) { zoneActuelle = 'route'; return; }
     const z = zoneIci(J.x, J.z);
     if (z === zoneActuelle) return;

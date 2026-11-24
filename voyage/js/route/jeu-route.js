@@ -396,7 +396,7 @@ export function creerRoute(ctx) {
       J.x = 326; J.z = 50; if (ctx.monte()) { C.x = J.x; C.z = J.z; } ui.indice('🐪 Avance vers l' + String.fromCharCode(39) + 'est pour entrer sur la Route', 5000); } });
 
   return {
-    ville: V, voyageurs: W, enRoute: () => dans, facteurMarche: FACTEUR_MARCHE_ROUTE, ouvrirHistoire, fermerHistoire: () => recitUI.fermer(), histoireOuverte: () => recitUI.ouverte(), maj, bouger, ouvrirCarte, ouvrirSac, parlerGuide,
+    ville: V, voyageurs: W, enRoute: () => dans, regionId: () => regionActuelle, facteurMarche: FACTEUR_MARCHE_ROUTE, ouvrirHistoire, fermerHistoire: () => recitUI.fermer(), histoireOuverte: () => recitUI.ouverte(), maj, bouger, ouvrirCarte, ouvrirSac, parlerGuide,
     carte, monde, lieux3d: L, etat: R, fermerCarte: () => carte.fermer(), carteOuverte: () => carte.ouverte(),
     pageCarnet: () => pageCarnetRoute({ route: R, badges: AV.badges || {}, age: age() }),
     sauver() { if (dans) memoriserPosition(etat, dansMaison ? dansMaison.retour : J); },
