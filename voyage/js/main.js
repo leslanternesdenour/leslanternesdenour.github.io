@@ -10,7 +10,7 @@ import { Controles, ACTIONS, nomTouche } from './controles.js?v=3';
 import { creerOiseaux } from './oiseaux.js?v=3';
 import { creerFaucon } from './faucon.js?v=4';
 import * as S from './sons.js?v=3';
-import { chargerVoixVoyage, direTextes, direIds, direMotArabe, arreterVoixVoyage, ajouterPhrases } from './voix.js?v=5';
+import { chargerVoixVoyage, direTextes, direIds, direMotArabe, arreterVoixVoyage, ajouterPhrases, aUneVoix, direApres } from './voix.js?v=5';
 import { chargerPremium, MESSAGE_FERME } from './premium.js?v=1';
 import { ZONES, POINTS, BIENTOT, DESCRIPTIONS_LIEUX } from './contenu.js?v=4';
 import { sauvegarde } from '../../monde/socle/sauvegarde.js?v=3';
@@ -204,9 +204,10 @@ async function demarrer() {
   const route = ROUTE ? (await import('./route/jeu-route.js')).creerRoute({ regarder: (x, z, s) => { regard = { x, z, t: s }; }, scene, terrain, Q, TX, ombres: !!Q.ombres, etat, AV, enregistrer, habitants, regions, village, J, C,
     monte: () => monte, age: () => sauvegarde.get().age,
     donner: (id, n, raison) => bourse.recompense(id, n, raison, ouDonner()),
+    voixRoute: async () => { try { const [m, r] = await Promise.all([import('./route/voix-route.js'), fetch('../audio/route-voix.json', { cache: 'no-cache' }).then(x => x.json())]); ajouterPhrases(m.PHRASES_ROUTE, r); } catch (e) { /* sans voix : le jeu reste jouable */ } },
     arreterGuide: () => { guide.arreter(); etat.guidage = null; enregistrer(); majGuidage(null); },
     surSaut: () => { cam.cible.set(J.x, H(J.x, J.z) + 1.4, J.z); cam.distVue = null; cam.yawCible = cam.yaw = J.a + Math.PI; },
-    ui: { dialogue: p => dialogue(p), decouvrir: d => decouvrir(d), bandeau: (a, b) => { bandeau(a, b); S.sonDecouverte(); }, indice: (h, ms) => montrerIndice(h, ms),
+    ui: { dialogue: p => dialogue(p), decouvrir: d => decouvrir(d), bandeau: (a, b, silence) => { bandeau(a, b, silence); S.sonDecouverte(); }, indice: (h, ms) => montrerIndice(h, ms), dire: (seg, fini) => direTextes(seg, fini),
       lieu: t => { $('lieu').textContent = t; hud.temporaire($('lieu'), 4500); }, fondu,
       carteOuverte: () => { fermerPanneaux(); interface_ouverte = true; ctl.bloque = true; }, carteFermee: () => { interface_ouverte = false; ctl.bloque = false; dernierEtatBoutons = ''; } } }) : null;
   etat.loumi = Object.assign({ rencontre: false, vus: [], rappels: {} }, etat.loumi || {});
@@ -572,9 +573,10 @@ async function demarrer() {
     $('lecture').classList.remove('cache');
     (zone.querySelector('button.choix') || $('lecture-ok')).focus({ preventScroll: true });
     const voix = p.voix || (p.mascotte === 'nour' ? 'nour' : /Hakim/.test(p.titre) ? 'hakim' : /Salim/.test(p.titre) ? 'salim' : null);
-    $('lecture-ecouter').classList.toggle('cache', !!p.sansVoix);   // La Route : aucun audio pour un texte non validé
+    $('lecture-ecouter').classList.toggle('cache', !!p.sansVoix && !aUneVoix(p.texte));   // La Route : « Écouter » seulement s'il y a une voix Nour enregistrée (jamais de voix du navigateur)
+    if (p.auto) direTextes([{ t: p.texte }, ...(p.sousMuet || !p.sous ? [] : [{ t: p.sous, opt: true }])]);   // lecture automatique (La Route) : seulement si la phrase est enregistrée
     $('lecture-ecouter').onclick = p.ecouterArabe ? () => parlerArabe(p.ecouterArabe)
-      : () => direTextes([{ t: p.texte }, { t: p.sous, opt: true }, { t: p.sens }]) || parler(p.texte + (p.sous ? ' ' + p.sous.replace(/^[^\wÀ-ÿ]+/, '') : '') + (p.sens ? ' ' + p.sens.replace('Sens du verset : ', 'Le sens de ce verset : ') : ''), voix);
+      : () => direTextes([{ t: p.texte }, { t: p.sous, opt: !p.sousMuet }, { t: p.sens }]) || (p.sansVoix ? false : parler(p.texte + (p.sous ? ' ' + p.sous.replace(/^[^\wÀ-ÿ]+/, '') : '') + (p.sens ? ' ' + p.sens.replace('Sens du verset : ', 'Le sens de ce verset : ') : ''), voix));
   }
   // Pièces de Nour gagnées : petit « +n » qui monte, la bourse bondit
   let timerGain = null;
@@ -684,9 +686,9 @@ async function demarrer() {
   verifierCol(false);
   $('nb-pieces').textContent = AV.pieces;
   let timerBandeau = null;
-  function bandeau(petit, nom) {
+  function bandeau(petit, nom, silence) {
     const b = $('bandeau'); b.classList.add('cache'); void b.offsetWidth; petit = accord(petit);
-    direTextes([{ t: petit }, { t: nom, opt: true }]);   // seulement si la phrase est enregistrée
+    if (!silence) direTextes([{ t: petit }, { t: nom, opt: true }]);   // seulement si la phrase est enregistrée
     $('bandeau-petit').textContent = petit; $('bandeau-nom').textContent = nom; b.classList.remove('cache');
     clearTimeout(timerBandeau); timerBandeau = setTimeout(() => b.classList.add('cache'), 4300);
   }
@@ -694,7 +696,7 @@ async function demarrer() {
   let dernierIndiceDit = { t: '', quand: 0 };
   function montrerIndice(html, ms) {
     html = accord(html);
-    if (html !== dernierIndiceDit.t || performance.now() - dernierIndiceDit.quand > 8000) { dernierIndiceDit = { t: html, quand: performance.now() }; direTextes([{ t: html }]); }
+    if (html !== dernierIndiceDit.t || performance.now() - dernierIndiceDit.quand > 8000) { dernierIndiceDit = { t: html, quand: performance.now() }; direApres([{ t: html }]); }
     const i = $('indice'); i.innerHTML = html; i.classList.remove('cache'); indiceForce = true;
     clearTimeout(timerIndice); timerIndice = setTimeout(() => { indiceForce = false; i.classList.add('cache'); }, ms);
   }
@@ -1243,13 +1245,14 @@ async function demarrer() {
     $('dec-barre').style.transition = 'none'; $('dec-barre').style.width = p ? `${((d.nouveau ? p.n - 1 : p.n) / p.total) * 100}%` : '0';
     z.querySelector('.dec-progres').classList.toggle('cache', !p);
     setTimeout(() => { $('dec-barre').style.transition = 'width 1s ease'; $('dec-barre').style.width = p ? `${p.n / p.total * 100}%` : '0'; }, 450);
-    const b = $('dec-ecouter'); b.classList.toggle('cache', !!d.sansVoix);
+    const b = $('dec-ecouter'); b.classList.toggle('cache', !!d.sansVoix && !aUneVoix(d.texte));
     b.innerHTML = `${ICONE_SON}<span>${mot || d.arabe ? 'Écouter en arabe' : 'Écouter'}</span>`;
     b.onclick = () => { b.classList.add('parle'); setTimeout(() => b.classList.remove('parle'), 1800); if (mot || d.arabe) parlerArabe(d.arabe); else if (!direTextes([{ t: d.nom, opt: true }, { t: d.texte }])) parler(`${d.nom}. ${d.texte || ''}`); };
     z.classList.remove('cache', 'joue'); void z.offsetWidth; z.classList.add('joue');
     if (d.nouveau) {
       if (!monte) enfant.faire('joie');
-      if (!d.sansVoix && !direTextes([{ t: T[1] }, { t: mot ? d.arabe : d.nom, opt: !mot }])) parler(mot ? `Nouveau mot arabe : ${d.nom}.` : `${T[1].replace(' !', '')} : ${d.nom}.`);
+      if (d.sansVoix) { if (!direTextes([{ t: T[1] }, { t: d.nom, opt: true }, ...(d.auto ? [{ t: d.texte, opt: true }] : [])]) && d.auto) direTextes([{ t: d.texte }]); }
+      else if (!direTextes([{ t: T[1] }, { t: mot ? d.arabe : d.nom, opt: !mot }])) parler(mot ? `Nouveau mot arabe : ${d.nom}.` : `${T[1].replace(' !', '')} : ${d.nom}.`);
     }
     $('dec-ok').focus({ preventScroll: true });
   }

@@ -119,8 +119,21 @@ test('lieux de la cité : les quatre premières histoires sont placées dans leu
 test('aucune voix : dans la Route, aucun bouton « Écouter » ni synthèse vocale pour un texte non validé (dialogues et découvertes)', async () => {
   const fs = await import('node:fs');
   const main = fs.readFileSync(new URL('../../voyage/js/main.js', import.meta.url), 'utf8'), jeu = fs.readFileSync(new URL('../../voyage/js/route/jeu-route.js', import.meta.url), 'utf8');
-  assert.match(main, /lecture-ecouter'\)\.classList\.toggle\('cache', !!p\.sansVoix\)/, 'le dialogue masque Écouter quand sansVoix');
-  assert.match(main, /dec-ecouter'\); b\.classList\.toggle\('cache', !!d\.sansVoix\)/, 'la découverte masque Écouter quand sansVoix');
-  assert.match(main, /if \(!d\.sansVoix && !direTextes/, 'pas de synthèse vocale à l\'arrivée d\'une découverte sansVoix');
-  assert.match(jeu, /dialogue: p => ctx\.ui\.dialogue\(\{ sansVoix: true, \.\.\.p \}\)/); assert.match(jeu, /decouvrir: d => ctx\.ui\.decouvrir\(\{ sansVoix: true, \.\.\.d \}\)/);
+  assert.match(main, /lecture-ecouter'\)\.classList\.toggle\('cache', !!p\.sansVoix && !aUneVoix/, 'le dialogue masque Écouter quand il n\'y a pas de voix Nour enregistrée');
+  assert.match(main, /dec-ecouter'\); b\.classList\.toggle\('cache', !!d\.sansVoix && !aUneVoix/, 'la découverte masque Écouter quand il n\'y a pas de voix Nour enregistrée');
+  assert.match(main, /if \(d\.sansVoix\) \{ if \(!direTextes/, 'une découverte sansVoix n\'utilise que les voix enregistrées, jamais la synthèse du navigateur');
+  assert.match(jeu, /dialogue: p => ctx\.ui\.dialogue\(\{ sansVoix: true, auto: true, sousMuet: true, \.\.\.p \}\)/); assert.match(jeu, /decouvrir: d => ctx\.ui\.decouvrir\(\{ sansVoix: true, auto: true, \.\.\.d \}\)/);
+});
+
+test('voix de la Route : lecture automatique au bon moment avec les voix Nour enregistrées, réécoute possible, jamais de voix du navigateur, retours des activités parlés', async () => {
+  const fs = await import('node:fs');
+  const lire = f => fs.readFileSync(new URL('../../voyage/js/' + f, import.meta.url), 'utf8');
+  const main = lire('main.js'), jeu = lire('route/jeu-route.js'), ui = lire('route/recit-ui.js'), voix = lire('voix.js');
+  assert.match(voix, /export function aUneVoix\(/);
+  assert.match(main, /lecture-ecouter'\)\.classList\.toggle\('cache', !!p\.sansVoix && !aUneVoix\(p\.texte\)\)/, 'le bouton Écouter (réécoute) n\'apparaît que s\'il y a une voix enregistrée');
+  assert.match(main, /if \(p\.auto\) direTextes\(/, 'lecture automatique à l\'ouverture d\'un dialogue');
+  assert.match(main, /if \(d\.sansVoix\) \{ if \(!direTextes\(/, 'découverte : voix enregistrée seulement, jamais de synthèse du navigateur');
+  assert.match(main, /function bandeau\(petit, nom, silence\)/);
+  assert.match(jeu, /sansVoix: true, auto: true/); assert.match(jeu, /ui\.dire\(/); assert.match(jeu, /voixRoute/);
+  assert.match(ui, /FEEDBACK/); assert.match(ui, /dire\(\[\{ t: FEEDBACK\./);
 });

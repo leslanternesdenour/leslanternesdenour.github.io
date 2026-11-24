@@ -66,7 +66,8 @@ export const texteLieu = (id, age) => { const t = TEXTES_LIEUX[id]; return t ? (
 // Les personnages FICTIFS (aucun personnage historique ou religieux)
 export const GUIDE = { nom: 'Rachid', titre: '🧭 Rachid, le guide des caravanes',
   intro: { petit: 'Bonjour ! Je suis Rachid. Je connais la grande route. Prépare ton sac, puis suis-moi !', grand: 'Bonjour, voyageur ! Je m\'appelle Rachid et je guide les caravanes. La grande route est très longue : elle traverse des plaines, des dunes, des oasis et des montagnes. Prépare ton sac, et en route !' },
-  ferme: 'La grande route n\'est pas encore ouverte pour toi. Continue d\'explorer le village : ' };
+  ferme: 'La grande route n\'est pas encore ouverte pour toi. Continue d\'explorer le village : ',
+  fermeTexte: 'La grande route n\'est pas encore ouverte pour toi. Continue d\'explorer le village : découvre l\'oasis et le camp des caravanes, puis fais une activité de ton choix.' };
 export const VOYAGEUSE = { nom: 'Dalila', titre: '🧕 Dalila, une voyageuse',
   debut: { petit: 'Oh ! J\'ai perdu mes affaires. Tu peux m\'aider ?', grand: 'Bonjour ! Le vent a emporté mon tapis, ma jarre et mon petit sac quelque part autour du campement. Tu peux m\'aider à les retrouver ?' },
   attente: { petit: 'Cherche autour des tentes. Merci !', grand: 'Cherche autour du campement : des petites pierres dorées brillent là où mes affaires se cachent. Merci pour ton aide !' },
@@ -77,7 +78,21 @@ export const VOYAGEUSE = { nom: 'Dalila', titre: '🧕 Dalila, une voyageuse',
 export const MESSAGES = {
   mecque: 'La grande route vers La Mecque',
   sacDit: 'Chaque objet du sac sert à quelque chose, mais aucun n\'est obligatoire : tu peux partir comme tu veux.',
-  gourdePleine: 'Tu remplis ta gourde à l\'eau claire de l\'oasis. 💧',
-  gourdeAbsente: 'L\'eau de l\'oasis est claire et fraîche. (Pense à emporter ta gourde la prochaine fois !)',
-  chemin3: 'Les trois balises sont trouvées : tu as retrouvé le chemin de la grande route !'
+  gourdePleine: 'Tu remplis ta gourde à l\'eau claire de l\'oasis.',
+  gourdeAbsente: 'L\'eau de l\'oasis est claire et fraîche. Pense à emporter ta gourde la prochaine fois !',
+  chemin3: 'Les trois balises sont trouvées : tu as retrouvé le chemin de la grande route !',
+  sacTexte: 'Chaque objet du sac sert à quelque chose, mais aucun n\'est obligatoire : tu peux partir comme tu veux. Touche un objet pour le mettre dans ton sac, ou l\'en retirer.',
+  panneauOuvert: 'Une très longue piste part d\'ici, vers l\'est. Parle à Rachid pour préparer ton sac, puis suis la piste.',
+  panneauFerme: 'Une très longue piste part d\'ici, mais elle est encore fermée.',
+  lanterne: 'Une lanterne est allumée : une histoire à découvrir ici.',
+  affairesRetrouvees: 'Tu as tout retrouvé ! Rapporte les affaires à la voyageuse.',
+  fin: 'Ici s\'arrête le monde construit, pour l\'instant. Bravo pour ce long voyage !',
+  etape1: 'Bravo, tu as traversé les plaines et les dunes jusqu\'à l\'oasis !',
+  etape1Cadeau: 'Pour te remercier, un dromadaire de la grande route t\'attend dans ton écurie, au village.',
+  lanterneSac: 'Ta petite lanterne brille doucement.',
+  maisonNote: '(Illustration du jeu : la cité est une interprétation, pas une reconstitution exacte.)',
+  nouvelleMission: 'Nouvelle mission', histoireAjoutee: 'Histoire ajoutée à ton carnet', entreDans: 'Tu entres dans', citeApparait: 'La cité apparaît !', decouvres: 'Tu découvres', grandeRoute: 'La grande route',
+  heureux: 'Au revoir, et bonne route !'
 };
+// Les retours des activités et des questions : douceur, jamais de punition (voix possible : ce ne sont pas des contenus religieux)
+export const FEEDBACK = { ordreOk: 'Bravo, tout est dans l\'ordre !', ordreKo: 'Pas tout à fait, essaie encore doucement.', repOk: 'Bonne réponse !', repKo: 'Pas tout à fait, essaie encore.' };

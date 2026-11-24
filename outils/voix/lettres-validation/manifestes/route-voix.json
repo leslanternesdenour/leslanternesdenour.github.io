@@ -1,0 +1,1737 @@
+{
+ "jeu": "route-voix",
+ "base": "/audio",
+ "total": 173,
+ "phrases": [
+  {
+   "id": "NOUR-VOIX-RTE-924aa3cd",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Voici le début de la grande route. Bon voyage !",
+   "fichier": "fr/route/nour-voix-rte-924aa3cd.mp3",
+   "duree": 3.52,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-2c9d1581",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Ici commence la grande route. Elle est très longue : prends ton temps, regarde autour de toi et repose-toi quand tu veux.",
+   "fichier": "fr/route/nour-voix-rte-2c9d1581.mp3",
+   "duree": 7.92,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-5bc2e9d8",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Une vieille balise de pierre ! Une de trouvée.",
+   "fichier": "fr/route/nour-voix-rte-5bc2e9d8.mp3",
+   "duree": 3.28,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-b672da53",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Une vieille balise de pierre. Les voyageurs les posaient pour ne pas se perdre quand le vent effaçait la piste.",
+   "fichier": "fr/route/nour-voix-rte-b672da53.mp3",
+   "duree": 6.56,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-7331d85e",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Un grand rocher. Les grands oiseaux aiment s'y poser.",
+   "fichier": "fr/route/nour-voix-rte-7331d85e.mp3",
+   "duree": 3.92,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-6f4f1221",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Un grand rocher qui domine la plaine. Les grands oiseaux aiment s'y poser pour regarder au loin. De là-haut, on voit très loin !",
+   "fichier": "fr/route/nour-voix-rte-6f4f1221.mp3",
+   "duree": 8.64,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-49d5f4a2",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Une deuxième balise ! Bravo.",
+   "fichier": "fr/route/nour-voix-rte-49d5f4a2.mp3",
+   "duree": 2.64,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-3e838a83",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Une deuxième balise. Elle est alignée avec la première : la piste passe juste entre les deux.",
+   "fichier": "fr/route/nour-voix-rte-3e838a83.mp3",
+   "duree": 6.24,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-caa426f7",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Un coin pour se reposer. Ton voyage est gardé.",
+   "fichier": "fr/route/nour-voix-rte-caa426f7.mp3",
+   "duree": 3.52,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-87d8b1f8",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Un bon endroit pour se reposer à l'ombre. Ton voyage est sauvegardé : tu pourras reprendre ici.",
+   "fichier": "fr/route/nour-voix-rte-87d8b1f8.mp3",
+   "duree": 6,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-196c8cdd",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Un petit lézard est passé ici !",
+   "fichier": "fr/route/nour-voix-rte-196c8cdd.mp3",
+   "duree": 2.08,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-52c1e26e",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Ces traces fines, avec un sillon au milieu, viennent d'un lézard à queue épineuse. Il se réchauffe au soleil et se cache dans un terrier quand il fait trop chaud.",
+   "fichier": "fr/route/nour-voix-rte-52c1e26e.mp3",
+   "duree": 9.76,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-749379c7",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "La troisième balise ! Tu as retrouvé le chemin.",
+   "fichier": "fr/route/nour-voix-rte-749379c7.mp3",
+   "duree": 3.6,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-9519682c",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "La troisième balise. Les trois sont alignées : tu as bien retrouvé le chemin de la grande route.",
+   "fichier": "fr/route/nour-voix-rte-9519682c.mp3",
+   "duree": 6.32,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-4e9bb052",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Des acacias ! Leur ombre est fraîche.",
+   "fichier": "fr/route/nour-voix-rte-4e9bb052.mp3",
+   "duree": 3.04,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-3d1a18b9",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Des acacias. Leurs racines vont très profond pour trouver l'eau, et leurs épines protègent les feuilles. Leur ombre est précieuse dans la plaine.",
+   "fichier": "fr/route/nour-voix-rte-3d1a18b9.mp3",
+   "duree": 9.36,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-21d3f3b6",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Un campement de voyageurs !",
+   "fichier": "fr/route/nour-voix-rte-21d3f3b6.mp3",
+   "duree": 2.24,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-84ffd2a2",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Le campement des Trois Tentes (un lieu imaginaire). Les voyageurs s'y arrêtent pour se reposer, se nourrir et faire boire leurs animaux.",
+   "fichier": "fr/route/nour-voix-rte-84ffd2a2.mp3",
+   "duree": 8.88,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-c6238b45",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Un animal qui saute : une gerboise !",
+   "fichier": "fr/route/nour-voix-rte-c6238b45.mp3",
+   "duree": 3.2,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-e0e43a10",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Ces petites traces espacées, ce sont celles d'une gerboise. Elle saute sur ses longues pattes arrière et sort surtout la nuit.",
+   "fichier": "fr/route/nour-voix-rte-e0e43a10.mp3",
+   "duree": 7.6,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-c2345128",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Encore un coin tranquille pour souffler.",
+   "fichier": "fr/route/nour-voix-rte-c2345128.mp3",
+   "duree": 2.48,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-669dc07c",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Un replat abrité du vent, juste avant les dunes. Ton voyage est sauvegardé.",
+   "fichier": "fr/route/nour-voix-rte-669dc07c.mp3",
+   "duree": 5.28,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-fbdb4d9d",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Regarde les belles dunes !",
+   "fichier": "fr/route/nour-voix-rte-fbdb4d9d.mp3",
+   "duree": 2.24,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-e46a6bc9",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "De là-haut, on voit les dunes. C'est le vent qui déplace le sable, grain après grain, et qui dessine ces grandes vagues dorées.",
+   "fichier": "fr/route/nour-voix-rte-e46a6bc9.mp3",
+   "duree": 8.08,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-14ac91d8",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Un renard a marché par ici.",
+   "fichier": "fr/route/nour-voix-rte-14ac91d8.mp3",
+   "duree": 2.16,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-42bb2382",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Ces empreintes alignées viennent d'un renard des sables. Il a de grandes oreilles et des poils sous les pattes pour marcher sur le sable chaud.",
+   "fichier": "fr/route/nour-voix-rte-42bb2382.mp3",
+   "duree": 8,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-80353d75",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Une vieille citerne en pierre.",
+   "fichier": "fr/route/nour-voix-rte-80353d75.mp3",
+   "duree": 2.08,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-69032017",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Une vieille citerne de pierre (un lieu imaginaire). Elle gardait l'eau de la pluie : dans le désert, chaque goutte compte.",
+   "fichier": "fr/route/nour-voix-rte-69032017.mp3",
+   "duree": 8.96,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-ecdcd53d",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Dernier repos avant l'oasis.",
+   "fichier": "fr/route/nour-voix-rte-ecdcd53d.mp3",
+   "duree": 2.24,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-4fd78e51",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Le dernier replat avant l'oasis. On devine déjà les palmiers au loin. Ton voyage est sauvegardé.",
+   "fichier": "fr/route/nour-voix-rte-4fd78e51.mp3",
+   "duree": 6.48,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-7388e24a",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "L'oasis ! De l'eau, de l'ombre et des palmiers.",
+   "fichier": "fr/route/nour-voix-rte-7388e24a.mp3",
+   "duree": 4.08,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-8de3f7d9",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "L'oasis de la Source Claire (un lieu imaginaire). Dans une oasis, l'eau est proche de la surface : les palmiers et les plantes peuvent pousser au milieu du désert.",
+   "fichier": "fr/route/nour-voix-rte-8de3f7d9.mp3",
+   "duree": 11.12,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-c80e2df5",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Les palmiers donnent des dattes.",
+   "fichier": "fr/route/nour-voix-rte-c80e2df5.mp3",
+   "duree": 2.08,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-23f54b12",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Le palmier dattier donne des dattes, un fruit très nourrissant. Ses racines aiment l'eau, et son ombre abrite d'autres plantes.",
+   "fichier": "fr/route/nour-voix-rte-23f54b12.mp3",
+   "duree": 8,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-3e9abc11",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Un vieux puits de pierre pour les voyageurs.",
+   "fichier": "fr/route/nour-voix-rte-3e9abc11.mp3",
+   "duree": 2.8,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-fb1077fc",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Un puits de pierre (un lieu imaginaire). Les voyageurs y faisaient boire leurs animaux avant de quitter la plaine pour les montagnes.",
+   "fichier": "fr/route/nour-voix-rte-fb1077fc.mp3",
+   "duree": 8.32,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-bcfe0e0e",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Des pierres plates et lisses, comme un grand sol.",
+   "fichier": "fr/route/nour-voix-rte-bcfe0e0e.mp3",
+   "duree": 3.44,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-e9edaa19",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Un plateau de pierres plates. Le soleil, le vent et le sable les ont polies pendant très longtemps. Après lui, le chemin monte doucement vers les montagnes.",
+   "fichier": "fr/route/nour-voix-rte-e9edaa19.mp3",
+   "duree": 10.8,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-b69f95d0",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Les montagnes ! Le chemin entre dans la vallée.",
+   "fichier": "fr/route/nour-voix-rte-b69f95d0.mp3",
+   "duree": 3.52,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-c573316f",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Ici commencent les contreforts, les premières montagnes. Le sable se mêle de cailloux, la roche devient rouge et grise, et la vallée se resserre autour de toi.",
+   "fichier": "fr/route/nour-voix-rte-c573316f.mp3",
+   "duree": 10.96,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-8f9f0f82",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Une porte de pierre entre deux grands rochers.",
+   "fichier": "fr/route/nour-voix-rte-8f9f0f82.mp3",
+   "duree": 2.96,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-9844147c",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Deux grands rochers forment une porte naturelle (un lieu imaginaire). Un col est un passage entre deux montagnes : c'est souvent le chemin le plus facile pour les traverser.",
+   "fichier": "fr/route/nour-voix-rte-9844147c.mp3",
+   "duree": 11.44,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-0a29d8fd",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Un abri sous la falaise, au frais.",
+   "fichier": "fr/route/nour-voix-rte-0a29d8fd.mp3",
+   "duree": 2.64,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-092fca1d",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Un abri sous la falaise, à l'ombre et au frais. Ton voyage est sauvegardé.",
+   "fichier": "fr/route/nour-voix-rte-092fca1d.mp3",
+   "duree": 5.28,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-7e48b370",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Un lit de cailloux ronds : une rivière dormait ici.",
+   "fichier": "fr/route/nour-voix-rte-7e48b370.mp3",
+   "duree": 3.84,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-1ba0f74f",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Un wadi est un lit de rivière à sec. La pluie est rare, mais quand elle tombe en montagne, l'eau peut couler d'un coup. Les galets sont ronds parce que l'eau les a roulés.",
+   "fichier": "fr/route/nour-voix-rte-1ba0f74f.mp3",
+   "duree": 11.04,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-439e832f",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Regarde derrière toi : tout le chemin parcouru !",
+   "fichier": "fr/route/nour-voix-rte-439e832f.mp3",
+   "duree": 3.52,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-710b0a27",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Du haut du premier col, on voit toute la route : les dunes, l'oasis et la plaine. C'est un bon endroit pour se souvenir du chemin parcouru.",
+   "fichier": "fr/route/nour-voix-rte-710b0a27.mp3",
+   "duree": 9.04,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-1ceaf830",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Encore un coin calme dans la vallée.",
+   "fichier": "fr/route/nour-voix-rte-1ceaf830.mp3",
+   "duree": 2.32,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-21fbe9f7",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Un replat tranquille dans le fond de la vallée, près des galets. Ton voyage est sauvegardé.",
+   "fichier": "fr/route/nour-voix-rte-21fbe9f7.mp3",
+   "duree": 5.52,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-6d17132f",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Le haut du premier col : la cité n'est plus très loin.",
+   "fichier": "fr/route/nour-voix-rte-6d17132f.mp3",
+   "duree": 3.76,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-60924eb0",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Le grand cairn marque le haut du premier col. Après lui, la route redescend vers d'autres vallées, puis vers les chemins qui mènent à la cité.",
+   "fichier": "fr/route/nour-voix-rte-60924eb0.mp3",
+   "duree": 9.12,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-5c385607",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Un deuxième col, encore un passage entre les montagnes.",
+   "fichier": "fr/route/nour-voix-rte-5c385607.mp3",
+   "duree": 3.68,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-6ae6676f",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Un deuxième col. La route monte, puis redescend de l'autre côté. Regarde les couches de roche sur les parois : elles se sont empilées pendant très longtemps.",
+   "fichier": "fr/route/nour-voix-rte-6ae6676f.mp3",
+   "duree": 10.4,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-b2bba0ed",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Un coin pour souffler. Ton voyage est gardé.",
+   "fichier": "fr/route/nour-voix-rte-b2bba0ed.mp3",
+   "duree": 3.2,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-dd6e9816",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Un replat où les voyageurs se reposaient avant de repartir. Ton voyage est sauvegardé.",
+   "fichier": "fr/route/nour-voix-rte-dd6e9816.mp3",
+   "duree": 5.92,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-df00b4bc",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Un petit mur de pierres, sans ciment.",
+   "fichier": "fr/route/nour-voix-rte-df00b4bc.mp3",
+   "duree": 2.72,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-b9c201b4",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Un muret de pierres sèches : les pierres tiennent toutes seules, bien emboîtées, sans ciment. On en faisait pour border les chemins et les jardins.",
+   "fichier": "fr/route/nour-voix-rte-b9c201b4.mp3",
+   "duree": 8.56,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-236da7a1",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Un puits au bord du chemin.",
+   "fichier": "fr/route/nour-voix-rte-236da7a1.mp3",
+   "duree": 2.16,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-8e4e5116",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Un puits au bord du chemin (un lieu imaginaire) : les voyageurs et leurs animaux pouvaient s'y arrêter pour boire.",
+   "fichier": "fr/route/nour-voix-rte-8e4e5116.mp3",
+   "duree": 7.6,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-4feadab0",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Dernier coin calme avant la cité.",
+   "fichier": "fr/route/nour-voix-rte-4feadab0.mp3",
+   "duree": 2.56,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-65532a58",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Le dernier replat avant la cité. Ton voyage est sauvegardé.",
+   "fichier": "fr/route/nour-voix-rte-65532a58.mp3",
+   "duree": 4.16,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-9814b79b",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Un sentier part vers une grande montagne.",
+   "fichier": "fr/route/nour-voix-rte-9814b79b.mp3",
+   "duree": 2.88,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-fe021f1f",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Un carrefour : un sentier part vers le nord, vers une grande montagne. Tu peux le suivre pour aller voir, puis revenir sur la route.",
+   "fichier": "fr/route/nour-voix-rte-fe021f1f.mp3",
+   "duree": 8.96,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-e09e9a53",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "De petits jardins entourés de murets.",
+   "fichier": "fr/route/nour-voix-rte-e09e9a53.mp3",
+   "duree": 2.64,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-d36f8d19",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Les premiers jardins : de petits champs et des arbres protégés par des murets de pierre. Ils annoncent qu'une cité n'est plus très loin.",
+   "fichier": "fr/route/nour-voix-rte-d36f8d19.mp3",
+   "duree": 8.08,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-fdfabf4e",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "La porte de la cité.",
+   "fichier": "fr/route/nour-voix-rte-fdfabf4e.mp3",
+   "duree": 1.6,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-32084e99",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "La porte de la cité : deux gros piliers de pierre. Elle ouvre sur des ruelles, des cours et des places.",
+   "fichier": "fr/route/nour-voix-rte-32084e99.mp3",
+   "duree": 7.12,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-7116f57a",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Un atelier de potier : des jarres en terre cuite.",
+   "fichier": "fr/route/nour-voix-rte-7116f57a.mp3",
+   "duree": 3.84,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-d336def5",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "L'atelier du potier : on façonne des jarres et des bols en terre, que l'on fait cuire. Ils servent à garder l'eau, les dattes et le grain.",
+   "fichier": "fr/route/nour-voix-rte-d336def5.mp3",
+   "duree": 9.36,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-14558a98",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Regarde la colline devant toi.",
+   "fichier": "fr/route/nour-voix-rte-14558a98.mp3",
+   "duree": 2.16,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-51326b83",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Premier point d'observation : regarde la colline devant toi. Les deux collines sont assez proches pour que l'on puisse voir l'une depuis l'autre.",
+   "fichier": "fr/route/nour-voix-rte-51326b83.mp3",
+   "duree": 8.64,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-ee1a4e58",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Écoute le vent dans la vallée.",
+   "fichier": "fr/route/nour-voix-rte-ee1a4e58.mp3",
+   "duree": 1.84,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-2a18c18f",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Deuxième point : écoute le vent qui passe dans la vallée. Entre deux collines, l'air circule et rafraîchit un peu.",
+   "fichier": "fr/route/nour-voix-rte-2a18c18f.mp3",
+   "duree": 7.68,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-a8b08895",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Regarde le sol : du sable et des pierres.",
+   "fichier": "fr/route/nour-voix-rte-a8b08895.mp3",
+   "duree": 3.52,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-64e83392",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Troisième point : observe le sol, fait de sable, de petites pierres et de terre sèche. Il n'y a ni course ni chronomètre : on se promène à son rythme.",
+   "fichier": "fr/route/nour-voix-rte-64e83392.mp3",
+   "duree": 10.56,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-c8947e2b",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Le marché : des étals, des jarres, des tissus.",
+   "fichier": "fr/route/nour-voix-rte-c8947e2b.mp3",
+   "duree": 4.32,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-f7a63daa",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Le marché : des étals sous des auvents de tissu, des jarres, des paniers, des dattes. On y échange et on y bavarde.",
+   "fichier": "fr/route/nour-voix-rte-f7a63daa.mp3",
+   "duree": 8.8,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-fddce6fc",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Ici s'arrête le monde construit, pour l'instant.",
+   "fichier": "fr/route/nour-voix-rte-fddce6fc.mp3",
+   "duree": 3.36,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-f7dfcdce",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Ici s'arrête la partie du monde déjà construite. Bravo : tu as traversé les plaines, les montagnes et la cité !",
+   "fichier": "fr/route/nour-voix-rte-f7dfcdce.mp3",
+   "duree": 7.76,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-5517fc5d",
+   "role": "narrateur",
+   "langue": "fr",
+   "texte": "Bonjour ! Je suis Rachid. Je connais la grande route. Prépare ton sac, puis suis-moi !",
+   "fichier": "fr/route/nour-voix-rte-5517fc5d.mp3",
+   "duree": 5.44,
+   "prononciationVerifiee": false,
+   "voixId": "8aQsvxWbavqMpn00DVgR"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-52a5b6ca",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Oh ! J'ai perdu mes affaires. Tu peux m'aider ?",
+   "fichier": "fr/route/nour-voix-rte-52a5b6ca.mp3",
+   "duree": 3.12,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-9402e902",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Cherche autour des tentes. Merci !",
+   "fichier": "fr/route/nour-voix-rte-9402e902.mp3",
+   "duree": 2.24,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-fde592f2",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Tu as tout trouvé ! Rapporte-moi mes affaires.",
+   "fichier": "fr/route/nour-voix-rte-fde592f2.mp3",
+   "duree": 3.04,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-b14749e4",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Merci beaucoup ! Tu es très gentil.",
+   "fichier": "fr/route/nour-voix-rte-b14749e4.mp3",
+   "duree": 2.88,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-8deb1a83",
+   "role": "narrateur",
+   "langue": "fr",
+   "texte": "Bonjour, voyageur ! Je m'appelle Rachid et je guide les caravanes. La grande route est très longue : elle traverse des plaines, des dunes, des oasis et des montagnes. Prépare ton sac, et en route !",
+   "fichier": "fr/route/nour-voix-rte-8deb1a83.mp3",
+   "duree": 12.4,
+   "prononciationVerifiee": false,
+   "voixId": "8aQsvxWbavqMpn00DVgR"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-ffc956bd",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Bonjour ! Le vent a emporté mon tapis, ma jarre et mon petit sac quelque part autour du campement. Tu peux m'aider à les retrouver ?",
+   "fichier": "fr/route/nour-voix-rte-ffc956bd.mp3",
+   "duree": 8,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-8ec05c07",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Cherche autour du campement : des petites pierres dorées brillent là où mes affaires se cachent. Merci pour ton aide !",
+   "fichier": "fr/route/nour-voix-rte-8ec05c07.mp3",
+   "duree": 6.56,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-8aea1bca",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Tu as retrouvé mes trois affaires ! Rapporte-les-moi, je t'attends au campement.",
+   "fichier": "fr/route/nour-voix-rte-8aea1bca.mp3",
+   "duree": 4.48,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-7c5afbb8",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Merci mille fois ! Sans toi, je serais repartie sans mon tapis ni ma jarre. Tu es un vrai ami des voyageurs !",
+   "fichier": "fr/route/nour-voix-rte-7c5afbb8.mp3",
+   "duree": 7.2,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-49a756af",
+   "role": "narrateur",
+   "langue": "fr",
+   "texte": "La grande route n'est pas encore ouverte pour toi. Continue d'explorer le village : découvre l'oasis et le camp des caravanes, puis fais une activité de ton choix.",
+   "fichier": "fr/route/nour-voix-rte-49a756af.mp3",
+   "duree": 9.2,
+   "prononciationVerifiee": false,
+   "voixId": "8aQsvxWbavqMpn00DVgR"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-8d6d93a0",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Tu partages l'eau de ta gourde avec elle. « Merci, c'est très gentil ! »",
+   "fichier": "fr/route/nour-voix-rte-8d6d93a0.mp3",
+   "duree": 4.88,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-0b8c29cd",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Tu partages tes provisions avec elle. « Quelle bonne idée, merci ! »",
+   "fichier": "fr/route/nour-voix-rte-0b8c29cd.mp3",
+   "duree": 4.56,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-b3b014c5",
+   "role": "perso-karim",
+   "langue": "fr",
+   "texte": "Bonjour ! Mes dattes viennent d'une oasis lointaine.",
+   "fichier": "fr/route/nour-voix-rte-b3b014c5.mp3",
+   "duree": 3.6,
+   "prononciationVerifiee": false,
+   "voixId": "lM87a4ey2IQxE37nDvti"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-016b591e",
+   "role": "perso-karim",
+   "langue": "fr",
+   "texte": "Bonjour, voyageur ! Mes dattes viennent d'une oasis lointaine. Elles se conservent longtemps : c'est parfait pour les longs voyages.",
+   "fichier": "fr/route/nour-voix-rte-016b591e.mp3",
+   "duree": 8,
+   "prononciationVerifiee": false,
+   "voixId": "lM87a4ey2IQxE37nDvti"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-5aebeb80",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Je tisse la laine pour faire des tentes et des tapis.",
+   "fichier": "fr/route/nour-voix-rte-5aebeb80.mp3",
+   "duree": 2.96,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-0b68b3be",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Je tisse la laine des moutons pour faire un tissu solide : les tentes, les tapis et les vêtements sont faits ainsi. Chaque couleur vient d'une plante ou d'une terre.",
+   "fichier": "fr/route/nour-voix-rte-0b68b3be.mp3",
+   "duree": 9.36,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-e68409ed",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Avec de l'argile et du feu, je fais des jarres.",
+   "fichier": "fr/route/nour-voix-rte-e68409ed.mp3",
+   "duree": 3.04,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-aaac4d5e",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Avec de l'argile et du feu, je fais des jarres. Une jarre en terre cuite garde l'eau fraîche, même quand il fait très chaud.",
+   "fichier": "fr/route/nour-voix-rte-aaac4d5e.mp3",
+   "duree": 7.12,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-e3b3be73",
+   "role": "perso-salma",
+   "langue": "fr",
+   "texte": "Je viens du campement des Trois Tentes. Là-bas, on partage l'eau.",
+   "fichier": "fr/route/nour-voix-rte-e3b3be73.mp3",
+   "duree": 3.68,
+   "prononciationVerifiee": false,
+   "voixId": "HAjl4nFl1aflZ2gaim1o"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-f1434bf0",
+   "role": "perso-salma",
+   "langue": "fr",
+   "texte": "Je viens du campement des Trois Tentes, très loin d'ici. Là-bas, on partage toujours l'eau et le pain avec les voyageurs : c'est une belle habitude.",
+   "fichier": "fr/route/nour-voix-rte-f1434bf0.mp3",
+   "duree": 7.6,
+   "prononciationVerifiee": false,
+   "voixId": "HAjl4nFl1aflZ2gaim1o"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-32b08824",
+   "role": "perso-samir",
+   "langue": "fr",
+   "texte": "Je porte l'eau du puits jusqu'au marché.",
+   "fichier": "fr/route/nour-voix-rte-32b08824.mp3",
+   "duree": 2.24,
+   "prononciationVerifiee": false,
+   "voixId": "4sifSi2zIrBX7VkoWfjD"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-b9ba7cfc",
+   "role": "perso-samir",
+   "langue": "fr",
+   "texte": "Je porte l'eau du puits jusqu'au marché, dans des jarres. L'eau est précieuse : on ne la gaspille jamais.",
+   "fichier": "fr/route/nour-voix-rte-b9ba7cfc.mp3",
+   "duree": 6.24,
+   "prononciationVerifiee": false,
+   "voixId": "4sifSi2zIrBX7VkoWfjD"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-5e913c6f",
+   "role": "narrateur",
+   "langue": "fr",
+   "texte": "Je viens de traverser les montagnes. Quel long chemin !",
+   "fichier": "fr/route/nour-voix-rte-5e913c6f.mp3",
+   "duree": 3.76,
+   "prononciationVerifiee": false,
+   "voixId": "8aQsvxWbavqMpn00DVgR"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-4cfde4ec",
+   "role": "narrateur",
+   "langue": "fr",
+   "texte": "Je viens de traverser les montagnes et le désert. Le chemin est long, mais on y fait de belles rencontres et on apprend beaucoup.",
+   "fichier": "fr/route/nour-voix-rte-4cfde4ec.mp3",
+   "duree": 6.8,
+   "prononciationVerifiee": false,
+   "voixId": "8aQsvxWbavqMpn00DVgR"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-eb118d0e",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Une maison de pierre : ses murs épais gardent la fraîcheur.",
+   "fichier": "fr/route/nour-voix-rte-eb118d0e.mp3",
+   "duree": 4.32,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-eb27581e",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Une maison de pierre : ses murs épais gardent la fraîcheur le jour et la chaleur la nuit. Ses petites fenêtres laissent peu entrer le soleil brûlant.",
+   "fichier": "fr/route/nour-voix-rte-eb27581e.mp3",
+   "duree": 9.44,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-98119703",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Cette maison a un étage plus étroit, avec un toit plat.",
+   "fichier": "fr/route/nour-voix-rte-98119703.mp3",
+   "duree": 3.92,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-e3e08f14",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Cette maison a un étage plus étroit. Sur le toit plat, on pouvait faire sécher des dattes, ou dormir quand il faisait trop chaud.",
+   "fichier": "fr/route/nour-voix-rte-e3e08f14.mp3",
+   "duree": 8.24,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-a2bc6c29",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Une maison en L : deux ailes autour d'un coin à l'ombre.",
+   "fichier": "fr/route/nour-voix-rte-a2bc6c29.mp3",
+   "duree": 4.56,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-66bebc51",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Une maison en forme de L : les deux ailes protègent un petit coin à l'ombre, où l'on pouvait s'asseoir à la fraîche.",
+   "fichier": "fr/route/nour-voix-rte-66bebc51.mp3",
+   "duree": 6.96,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-96f75b6b",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Un escalier à l'extérieur mène au toit.",
+   "fichier": "fr/route/nour-voix-rte-96f75b6b.mp3",
+   "duree": 2.96,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-58c07a62",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Un escalier extérieur mène au toit : on monte sans traverser la maison, et l'on garde la pièce du bas fraîche et tranquille.",
+   "fichier": "fr/route/nour-voix-rte-58c07a62.mp3",
+   "duree": 7.68,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-fad91583",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Une maison avec une cour au milieu.",
+   "fichier": "fr/route/nour-voix-rte-fad91583.mp3",
+   "duree": 2.48,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-5f4d44eb",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Une maison à cour : au milieu, un espace ouvert où l'on travaille à l'abri du vent et de la poussière, avec les murs tout autour.",
+   "fichier": "fr/route/nour-voix-rte-5f4d44eb.mp3",
+   "duree": 8.72,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-5faf18bc",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Une échoppe : un auvent de tissu donne de l'ombre.",
+   "fichier": "fr/route/nour-voix-rte-5faf18bc.mp3",
+   "duree": 3.84,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-244b36a7",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Une échoppe : l'auvent de tissu protège du soleil, et les marchandises sont posées devant la porte, bien visibles.",
+   "fichier": "fr/route/nour-voix-rte-244b36a7.mp3",
+   "duree": 7.84,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-03f8c1f7",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Une petite tour pour ranger les provisions.",
+   "fichier": "fr/route/nour-voix-rte-03f8c1f7.mp3",
+   "duree": 2.64,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-97987339",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Une petite tour basse : on y rangeait les provisions, dans la fraîcheur des murs épais.",
+   "fichier": "fr/route/nour-voix-rte-97987339.mp3",
+   "duree": 5.6,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-82185454",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Un enclos avec une petite cabane.",
+   "fichier": "fr/route/nour-voix-rte-82185454.mp3",
+   "duree": 2.56,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-96348f20",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Un enclos avec une cabane : un abri pour les animaux de la famille, à l'ombre d'un mur.",
+   "fichier": "fr/route/nour-voix-rte-96348f20.mp3",
+   "duree": 6.24,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-b00d68c6",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Retrouver le chemin de la grande route",
+   "fichier": "fr/route/nour-voix-rte-b00d68c6.mp3",
+   "duree": 2.56,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-17bac5de",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Cherche les trois vieilles balises de pierre.",
+   "fichier": "fr/route/nour-voix-rte-17bac5de.mp3",
+   "duree": 2.64,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-be469e22",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Le chemin de la grande route s'efface par endroits. Retrouve les trois vieilles balises de pierre pour ne pas te perdre.",
+   "fichier": "fr/route/nour-voix-rte-be469e22.mp3",
+   "duree": 6.64,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-268a89fd",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Les traces dans le sable",
+   "fichier": "fr/route/nour-voix-rte-268a89fd.mp3",
+   "duree": 1.92,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-ded7ca58",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Regarde les traces dans le sable. Qui est passé ici ?",
+   "fichier": "fr/route/nour-voix-rte-ded7ca58.mp3",
+   "duree": 3.52,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-d7ebdf85",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Trois animaux du désert sont passés par là. Observe leurs traces et devine qui les a laissées.",
+   "fichier": "fr/route/nour-voix-rte-d7ebdf85.mp3",
+   "duree": 5.92,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-765ba50a",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Les affaires de la voyageuse",
+   "fichier": "fr/route/nour-voix-rte-765ba50a.mp3",
+   "duree": 2.16,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-bba19697",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Aide la voyageuse : retrouve ses trois affaires autour du campement.",
+   "fichier": "fr/route/nour-voix-rte-bba19697.mp3",
+   "duree": 4.4,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-526ee29b",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Une voyageuse a perdu un tapis, une jarre et un petit sac près du campement. Retrouve-les et rapporte-les-lui.",
+   "fichier": "fr/route/nour-voix-rte-526ee29b.mp3",
+   "duree": 7.36,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-e214ef3f",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Découvrir la cité ancienne",
+   "fichier": "fr/route/nour-voix-rte-e214ef3f.mp3",
+   "duree": 2.24,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-5fc1602f",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Visite la porte, l'atelier, la grande place et le marché de la cité.",
+   "fichier": "fr/route/nour-voix-rte-5fc1602f.mp3",
+   "duree": 5.28,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-7b0782c0",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "La cité est faite de maisons de pierre, de ruelles et de places. Visite la porte, l'atelier du potier, la grande place et le marché pour la découvrir.",
+   "fichier": "fr/route/nour-voix-rte-7b0782c0.mp3",
+   "duree": 10.16,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-ede1135c",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Les deux collines",
+   "fichier": "fr/route/nour-voix-rte-ede1135c.mp3",
+   "duree": 1.6,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-2e90331e",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Va voir les deux collines, tranquillement.",
+   "fichier": "fr/route/nour-voix-rte-2e90331e.mp3",
+   "duree": 2.88,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-36348258",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Deux petites collines dominent la cité. Va les observer l'une après l'autre, à ton rythme : il n'y a ni course ni chronomètre.",
+   "fichier": "fr/route/nour-voix-rte-36348258.mp3",
+   "duree": 8.4,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-947c1987",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Le chemin entre les deux collines",
+   "fichier": "fr/route/nour-voix-rte-947c1987.mp3",
+   "duree": 2.4,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-bab7febb",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Marche tranquillement entre les deux collines et regarde bien autour de toi.",
+   "fichier": "fr/route/nour-voix-rte-bab7febb.mp3",
+   "duree": 4.64,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-11533aa6",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Un chemin plat relie les deux collines. Marche tranquillement et fais trois pauses d'observation : la colline, le vent, le sol. Il n'y a ni course, ni chronomètre, ni classement.",
+   "fichier": "fr/route/nour-voix-rte-11533aa6.mp3",
+   "duree": 13.12,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-d537dcf6",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Les voyageurs de la cité",
+   "fichier": "fr/route/nour-voix-rte-d537dcf6.mp3",
+   "duree": 2,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-ac8c6865",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Dis bonjour à trois voyageurs de la cité.",
+   "fichier": "fr/route/nour-voix-rte-ac8c6865.mp3",
+   "duree": 2.88,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-0c99d98f",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "La cité est pleine de voyageurs et d'artisans venus de loin. Parle à trois d'entre eux pour apprendre comment ils vivent, ce qu'ils font et d'où ils viennent.",
+   "fichier": "fr/route/nour-voix-rte-0c99d98f.mp3",
+   "duree": 9.44,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-e0aac09a",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "La piste de sortie",
+   "fichier": "fr/route/nour-voix-rte-e0aac09a.mp3",
+   "duree": 1.68,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-3cc95c55",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Les grandes plaines",
+   "fichier": "fr/route/nour-voix-rte-3cc95c55.mp3",
+   "duree": 1.6,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-6d5efe32",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Les dunes et les vallées",
+   "fichier": "fr/route/nour-voix-rte-6d5efe32.mp3",
+   "duree": 1.76,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-293fe9b4",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "L'oasis de la Source Claire",
+   "fichier": "fr/route/nour-voix-rte-293fe9b4.mp3",
+   "duree": 2.24,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-5032069f",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Les montagnes et les cols",
+   "fichier": "fr/route/nour-voix-rte-5032069f.mp3",
+   "duree": 2.16,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-3a4a60f1",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Les chemins vers la cité",
+   "fichier": "fr/route/nour-voix-rte-3a4a60f1.mp3",
+   "duree": 1.76,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-8fded789",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "La vallée de l'arrivée",
+   "fichier": "fr/route/nour-voix-rte-8fded789.mp3",
+   "duree": 1.84,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-739d8bf3",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "La cité ancienne",
+   "fichier": "fr/route/nour-voix-rte-739d8bf3.mp3",
+   "duree": 1.68,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-0c6bbf8c",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Chaque objet du sac sert à quelque chose, mais aucun n'est obligatoire : tu peux partir comme tu veux. Touche un objet pour le mettre dans ton sac, ou l'en retirer.",
+   "fichier": "fr/route/nour-voix-rte-0c6bbf8c.mp3",
+   "duree": 9.92,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-720eef4d",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Une très longue piste part d'ici, vers l'est. Parle à Rachid pour préparer ton sac, puis suis la piste.",
+   "fichier": "fr/route/nour-voix-rte-720eef4d.mp3",
+   "duree": 7.04,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-aaa128d4",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Une très longue piste part d'ici, mais elle est encore fermée.",
+   "fichier": "fr/route/nour-voix-rte-aaa128d4.mp3",
+   "duree": 3.92,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-884c0be5",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Une lanterne est allumée : une histoire à découvrir ici.",
+   "fichier": "fr/route/nour-voix-rte-884c0be5.mp3",
+   "duree": 4.24,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-363e89fc",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Tu as tout retrouvé ! Rapporte les affaires à la voyageuse.",
+   "fichier": "fr/route/nour-voix-rte-363e89fc.mp3",
+   "duree": 3.92,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-9b100313",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Ici s'arrête le monde construit, pour l'instant. Bravo pour ce long voyage !",
+   "fichier": "fr/route/nour-voix-rte-9b100313.mp3",
+   "duree": 5.6,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-7931fc71",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Bravo, tu as traversé les plaines et les dunes jusqu'à l'oasis !",
+   "fichier": "fr/route/nour-voix-rte-7931fc71.mp3",
+   "duree": 4.56,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-743c9fcb",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Pour te remercier, un dromadaire de la grande route t'attend dans ton écurie, au village.",
+   "fichier": "fr/route/nour-voix-rte-743c9fcb.mp3",
+   "duree": 5.36,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-05a4f94a",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Ta petite lanterne brille doucement.",
+   "fichier": "fr/route/nour-voix-rte-05a4f94a.mp3",
+   "duree": 2.64,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-0eec909b",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "(Illustration du jeu : la cité est une interprétation, pas une reconstitution exacte.)",
+   "fichier": "fr/route/nour-voix-rte-0eec909b.mp3",
+   "duree": 4.4,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-c6739fed",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Nouvelle mission",
+   "fichier": "fr/route/nour-voix-rte-c6739fed.mp3",
+   "duree": 1.36,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-c8e98407",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Histoire ajoutée à ton carnet",
+   "fichier": "fr/route/nour-voix-rte-c8e98407.mp3",
+   "duree": 2.24,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-709b83e5",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Tu entres dans",
+   "fichier": "fr/route/nour-voix-rte-709b83e5.mp3",
+   "duree": 1.6,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-20b23ddc",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "La cité apparaît !",
+   "fichier": "fr/route/nour-voix-rte-20b23ddc.mp3",
+   "duree": 1.68,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-cd3b2d5f",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Tu découvres",
+   "fichier": "fr/route/nour-voix-rte-cd3b2d5f.mp3",
+   "duree": 1.44,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-1b5e6e5e",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "La grande route",
+   "fichier": "fr/route/nour-voix-rte-1b5e6e5e.mp3",
+   "duree": 1.6,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-226dcf87",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Tu remplis ta gourde à l'eau claire de l'oasis.",
+   "fichier": "fr/route/nour-voix-rte-226dcf87.mp3",
+   "duree": 3.04,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-7449beb5",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "L'eau de l'oasis est claire et fraîche. Pense à emporter ta gourde la prochaine fois !",
+   "fichier": "fr/route/nour-voix-rte-7449beb5.mp3",
+   "duree": 5.2,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-7fc0ec04",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Les trois balises sont trouvées : tu as retrouvé le chemin de la grande route !",
+   "fichier": "fr/route/nour-voix-rte-7fc0ec04.mp3",
+   "duree": 4.56,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-1c8cfd4c",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Bravo, tout est dans l'ordre !",
+   "fichier": "fr/route/nour-voix-rte-1c8cfd4c.mp3",
+   "duree": 2.4,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-1913ceea",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Pas tout à fait, essaie encore doucement.",
+   "fichier": "fr/route/nour-voix-rte-1913ceea.mp3",
+   "duree": 2.8,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-9ee11364",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Bonne réponse !",
+   "fichier": "fr/route/nour-voix-rte-9ee11364.mp3",
+   "duree": 1.44,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-8fbb07a2",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Pas tout à fait, essaie encore.",
+   "fichier": "fr/route/nour-voix-rte-8fbb07a2.mp3",
+   "duree": 2.4,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  }
+ ]
+}

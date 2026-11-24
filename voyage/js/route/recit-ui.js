@@ -3,6 +3,7 @@
 import { recit, ORIGINES, STATUT } from './recits-a-valider.js';
 import { illustrationSvg } from './recits-illustrations.js';
 import { questionsPour, etatRecit, ouvrirRecit, avancer, repondre, ajouterAuCarnet } from './recits-route.js';
+import { FEEDBACK } from './textes-route.js';
 
 const CSS = `#recit-panneau{position:fixed;inset:0;z-index:80;background:rgba(40,28,16,.72);display:flex;align-items:center;justify-content:center;padding:10px;font-family:inherit}
 #recit-panneau .carte{background:#fff8e6;color:#3a2a1a;border-radius:18px;max-width:600px;width:100%;max-height:96vh;overflow:auto;padding:14px 16px;position:relative;box-shadow:0 10px 40px rgba(0,0,0,.4)}
@@ -20,7 +21,7 @@ const CSS = `#recit-panneau{position:fixed;inset:0;z-index:80;background:rgba(40
 @keyframes rr-jet{0%,100%{transform:scaleY(.55);opacity:.7}50%{transform:scaleY(1);opacity:1}} @keyframes rr-onde{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
 @media (prefers-reduced-motion:reduce){#recit-panneau .eau,#recit-panneau .jet{animation:none}}`;
 
-export function creerRecitUI({ route, age, surCarnet, surFermer, surChange }) {
+export function creerRecitUI({ route, age, surCarnet, surFermer, surChange, dire = () => {} }) {
   let el = null, cible = null, etape = 0;
   const A = () => age();   // '3-5' ou '6-10'
   function monter() {
@@ -58,9 +59,9 @@ export function creerRecitUI({ route, age, surCarnet, surFermer, surChange }) {
   // activité « remets dans l'ordre » : douce, sans chronomètre ; une erreur n'est jamais une punition
   function activite(r) {
     const zone = el.querySelector('#rr-act'), vrai = r.activite.etapes, melange = vrai.map((t, i) => ({ t, i })).sort((a, b) => ((a.i * 7 + 3) % vrai.length) - ((b.i * 7 + 3) % vrai.length));
-    let prochain = 0; const fait = []; const ee = etatRecit(route, cible);
-    const rendre = () => { zone.innerHTML = `<p>${fait.map((t, k) => `${k + 1}. ${t}`).join('<br>') || '…'}</p>` + (prochain < vrai.length ? melange.filter(m => m.i >= prochain).map(m => `<button class="petit choix" data-i="${m.i}">${m.t}</button>`).join('') : '<p><b>🌟 Bravo, tout est dans l\'ordre !</b></p>');
-      zone.querySelectorAll('button').forEach(b => b.onclick = () => { const i = +b.dataset.i; if (i === prochain) { fait.push(vrai[i]); prochain++; if (prochain === vrai.length) { ouvrirRecit(route, cible).activite = true; surChange && surChange(); } } else { b.classList.add('doux'); b.textContent += ' — essaie encore doucement'; } rendre(); }); };
+    let prochain = 0, retour = ''; const fait = []; const ee = etatRecit(route, cible);
+    const rendre = () => { zone.innerHTML = `<p>${fait.map((t, k) => `${k + 1}. ${t}`).join('<br>') || '…'}</p>` + (prochain < vrai.length ? melange.filter(m => m.i >= prochain).map(m => `<button class="petit choix" data-i="${m.i}">${m.t}</button>`).join('') : `<p><b>🌟 ${FEEDBACK.ordreOk}</b></p>`) + (retour ? `<p class="retour"><b>${retour}</b></p>` : '');
+      zone.querySelectorAll('button').forEach(b => b.onclick = () => { const i = +b.dataset.i; if (i === prochain) { fait.push(vrai[i]); prochain++; retour = ''; if (prochain === vrai.length) { ouvrirRecit(route, cible).activite = true; surChange && surChange(); dire([{ t: FEEDBACK.ordreOk }]); } } else { retour = FEEDBACK.ordreKo; dire([{ t: FEEDBACK.ordreKo }]); } rendre(); }); };
     if (ee && ee.activite) { fait.push(...vrai); prochain = vrai.length; }
     rendre();
   }
@@ -68,7 +69,8 @@ export function creerRecitUI({ route, age, surCarnet, surFermer, surChange }) {
     const zone = el.querySelector('#rr-q'), liste = questionsPour(r.id, A());
     zone.innerHTML = liste.map(q => `<div class="enonce"><b>${q.texte}</b>${q.choix.map((c, i) => `<button class="petit choix" data-q="${q.id}" data-i="${i}">${c}</button>`).join('')}</div>`).join('');
     zone.querySelectorAll('button').forEach(b => b.onclick = () => { const res = repondre(route, cible, b.dataset.q, +b.dataset.i); surChange && surChange();
-      if (res.juste) { b.classList.add('juste'); b.textContent += ' ✓'; } else { b.classList.add('doux'); b.textContent += ' — pas tout à fait, essaie encore'; } });
+      let ligne = zone.querySelector('.retour'); if (!ligne) { ligne = document.createElement('p'); ligne.className = 'retour'; ligne.setAttribute('role', 'status'); zone.appendChild(ligne); }
+      if (res.juste) { b.classList.add('juste'); b.textContent += ' ✓'; ligne.textContent = FEEDBACK.repOk; dire([{ t: FEEDBACK.repOk }]); } else { b.classList.add('doux'); ligne.textContent = FEEDBACK.repKo; dire([{ t: FEEDBACK.repKo }]); } });
     liste.forEach(q => { const e = etatRecit(route, cible); if (e && e.reponses[q.id] !== undefined) { const b = zone.querySelector(`button[data-q="${q.id}"][data-i="${e.reponses[q.id]}"]`); if (b) { b.classList.add('juste'); } } });
   }
   function ouvrir(id) { cible = id; const e = ouvrirRecit(route, id); etape = Math.min(e.etape, etapes(recit(id)).length - 1); if (!el) monter(); el.style.display = 'flex'; dessiner(); el.querySelector('.fermer').focus(); }

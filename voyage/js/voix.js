@@ -58,16 +58,25 @@ export function idsPour(texte, prof = 0) {
   return [];
 }
 const enregistres = ids => ids.length > 0 && ids.every(id => id && existe(id));
+// ce texte a-t-il une voix enregistrée ? (pour n'afficher « Écouter » que s'il y a quelque chose à écouter)
+export function aUneVoix(texte) { return !!pret && enregistres(idsPour(texte)); }
 
 // Joue une suite d'identifiants, l'un après l'autre. Une nouvelle voix coupe la précédente.
-let jeton = 0;
+let jeton = 0, actif = false, attente = null;
 export function direIds(ids, fini) {
   if (!pret || !enregistres(ids)) return false;
   try { speechSynthesis.cancel(); } catch (e) {}
   const moi = ++jeton; let i = 0;
-  const suivant = ok => { if (moi !== jeton) return; if (ok === false || i >= ids.length) { fini && fini(); return; } dire(ids[i++], suivant); };
+  actif = true;
+  const suivant = ok => { if (moi !== jeton) return; if (ok === false || i >= ids.length) { actif = false; fini && fini(); if (attente) { const a = attente; attente = null; direTextes(a); } return; } dire(ids[i++], suivant); };
   suivant(true);
   return true;
+}
+
+// un message court (indice) ne coupe jamais une voix en cours : il attend la fin de celle-ci (le dernier message en attente remplace les autres)
+export function direApres(segments) {
+  if (actif) { attente = segments; return true; }
+  return direTextes(segments);
 }
 
 // segments : [{ t: texte, opt: true si on peut le sauter }] → true si la voix enregistrée a été lancée
@@ -91,4 +100,4 @@ export function direMotArabe(mot) {
   return direIds(s && existe(s) ? [ids[0], s] : ids);
 }
 
-export function arreterVoixVoyage() { jeton++; arreterVoix(); }
+export function arreterVoixVoyage() { jeton++; actif = false; attente = null; arreterVoix(); }

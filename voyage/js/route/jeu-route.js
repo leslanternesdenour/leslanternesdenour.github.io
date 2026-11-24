@@ -25,7 +25,8 @@ const lisse = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a)
 export function creerRoute(ctx) {
   const { scene, terrain, etat, AV, enregistrer, habitants, donner, J, C, village } = ctx;
   // dans la Route, jamais de voix ni de synthèse vocale pour un texte non validé : les dialogues et découvertes sont silencieux
-  const ui = { ...ctx.ui, dialogue: p => ctx.ui.dialogue({ sansVoix: true, ...p }), decouvrir: d => ctx.ui.decouvrir({ sansVoix: true, ...d }) };
+  const ui = { ...ctx.ui, dialogue: p => ctx.ui.dialogue({ sansVoix: true, auto: true, sousMuet: true, ...p }), decouvrir: d => ctx.ui.decouvrir({ sansVoix: true, auto: true, ...d }) };
+  if (ctx.voixRoute) ctx.voixRoute();   // les voix Nour enregistrées de la Route (phrases + fichiers) : seulement des textes non religieux et validés pour l'écoute
   const R = preparerRoute(etat);
   const age = () => ctx.age() === 'petits' ? '3-5' : '6-10';
   const monde = creerMondeRoute({ scene, Q: ctx.Q, TX: ctx.TX, ombres: ctx.ombres });
@@ -57,11 +58,11 @@ export function creerRoute(ctx) {
     enregistrer();
     if (!r.nouveau) return r;
     L.retirerGemme(lieuId);
-    if (neuve) ui.bandeau('Nouvelle mission', M.icone + ' ' + M.titre);
+    if (neuve) { ui.bandeau(MESSAGES.nouvelleMission, M.icone + ' ' + M.titre, true); ui.dire([{ t: MESSAGES.nouvelleMission }, { t: M.titre }, { t: age() === '3-5' ? M.simple : M.resume, opt: true }]); }
     const p = progression(R, missionId);
     setTimeout(() => ui.indice(`${M.icone} ${M.titre} : ${p.n} sur ${p.total}`, 3500), neuve ? 1800 : 300);
     if (r.termine && missionId !== 'campement') { gagner('mission:' + missionId, M.recompense, 'Mission réussie : ' + M.titre); setTimeout(() => ui.bandeau('Mission réussie !', M.icone + ' ' + M.titre), 900); }
-    if (r.termine && missionId === 'campement') { R.vu.campementPret = true; enregistrer(); setTimeout(() => ui.indice('🎒 Tu as tout retrouvé ! Rapporte les affaires à la voyageuse.', 5000), 900); }
+    if (r.termine && missionId === 'campement') { R.vu.campementPret = true; enregistrer(); setTimeout(() => ui.indice('🎒 ' + MESSAGES.affairesRetrouvees, 5000), 900); }
     return r;
   }
   const lieu = id => LIEUX_ROUTE.find(l => l.id === id);
@@ -98,7 +99,7 @@ export function creerRoute(ctx) {
       const neuf = !R.repos.includes(l.id);
       if (neuf) { R.repos.push(l.id); setTimeout(() => gagner('repos:' + l.id, 20, 'Une halte : ' + l.nom), 600); }
       memoriserPosition(etat, J); enregistrer();
-      ui.dialogue({ titre: `${l.icone} ${l.nom}`, texte: texteLieu(l.id, age()) + (R.sac.lanterne ? ' Ta petite lanterne brille doucement.' : ''), icone: l.icone, boutons: [{ txt: 'Continuer le voyage', fn: () => {} }] });
+      ui.dialogue({ titre: `${l.icone} ${l.nom}`, texte: texteLieu(l.id, age()) + (R.sac.lanterne ? ' ' + MESSAGES.lanterneSac : ''), icone: l.icone, boutons: [{ txt: 'Continuer le voyage', fn: () => {} }] });
     } });
     else if (l.type === 'decouverte') ajouter(l.id, { ...base, rayon: l.id === 'rocher-aigle' ? 5 : 4, label: 'Regarder', icone: '👀', ouvrir: () => { decouvrirLieu(l.id); if (l.mission) etape(l.mission, l.id); } });
     else if (l.type === 'objet') ajouter(l.id, { ...base, rayon: 2.6, label: 'Ramasser', icone: '🤲', actif: () => !R.objets.includes(l.id), ouvrir: () => {
@@ -130,8 +131,8 @@ export function creerRoute(ctx) {
   }
 
   // ---------- les récits : une lanterne dans le lieu, un bouton « Découvrir cette histoire », un panneau, le carnet ----------
-  const recitUI = creerRecitUI({ route: R, age,
-    surCarnet: id => { gagner('recit:' + id, 30, 'Une histoire découverte : ' + recit(id).titre); ui.bandeau('Histoire ajoutée à ton carnet', '📜 ' + recit(id).titre); },
+  const recitUI = creerRecitUI({ route: R, age, dire: seg => ui.dire(seg),
+    surCarnet: id => { gagner('recit:' + id, 30, 'Une histoire découverte : ' + recit(id).titre); ui.bandeau(MESSAGES.histoireAjoutee, '📜 ' + recit(id).titre); },
     surFermer: () => { ui.carteFermee && ui.carteFermee(); enregistrer(); }, surChange: () => enregistrer() });
   const ouvrirHistoire = id => { ui.carteOuverte && ui.carteOuverte(); recitUI.ouvrir(id); };
   const annonce = new Set();
@@ -142,7 +143,7 @@ export function creerRoute(ctx) {
       else ui.dialogue({ titre: '📜 ' + infoLieu(l.id).nom, texte: 'Plusieurs histoires se découvrent ici. Laquelle veux-tu lire ?', petitsBoutons: true, boutons: [...rs.map(id => ({ txt: recit(id).titre, fn: () => setTimeout(() => ouvrirHistoire(id), 60) })), { txt: 'Plus tard', fn: () => {} }] }); } });
   }
   const lanternesProches = () => { for (const l of LIEUX_ROUTE.filter(o => recitsDe(o).length)) { const lan = L.lanternes[l.id]; if (!lan) continue; const d = Math.hypot(J.x - lan.x, J.z - lan.z); lan.allumer(d < 70);
-    if (d < 20 && !annonce.has(l.id) && !recitUI.ouverte()) { annonce.add(l.id); ui.indice('📜 Une lanterne est allumée : une histoire à découvrir ici.', 4500); } } };
+    if (d < 20 && !annonce.has(l.id) && !recitUI.ouverte()) { annonce.add(l.id); ui.indice('📜 ' + MESSAGES.lanterne, 4500); } } };
 
   // ---------- la cité vivante : des voyageurs à qui parler (mission « rencontres »), des maisons à observer ----------
   const parlerVoyageur = n => { W.saluer(n.v.id); ui.dialogue({ titre: '💬 ' + n.v.role, texte: age() === '3-5' ? n.v.texte.petit : n.v.texte.grand, boutons: [{ txt: 'Merci, bonne route !', fn: () => {} }] }); if (n.v.mission) etape(n.v.mission, n.v.id); };
@@ -163,14 +164,14 @@ export function creerRoute(ctx) {
     return `Pour ouvrir la grande route : ${k.requis.ok ? '✓ ' : ''}${k.requis.txt}, puis au choix : ${k.auChoix.map(x => (x.ok ? '✓ ' : '') + x.txt).join(' ; ou ')}.`;
   }
   function ouvrirSac() {
-    ui.dialogue({ titre: '🎒 Préparer mon sac', texte: MESSAGES.sacDit + ' Touche un objet pour le mettre dans ton sac, ou l\'en retirer.', petitsBoutons: true,
+    ui.dialogue({ titre: '🎒 Préparer mon sac', texte: MESSAGES.sacTexte, petitsBoutons: true,
       sous: SAC_ROUTE.map(o => `${o.icone} ${o.utilite}`).join('   '),
       boutons: [...SAC_ROUTE.map(o => ({ txt: `${R.sac[o.id] ? '✅' : '⬜'} ${o.icone} ${o.nom}`, fn: () => { R.sac[o.id] = !R.sac[o.id]; enregistrer(); setTimeout(ouvrirSac, 40); } })),
         { txt: 'J\'ai fini mon sac', fn: () => { R.vu.sacFait = true; enregistrer(); } }] });
   }
   function parlerGuide() {
     const a = age() === '3-5' ? 'petit' : 'grand';
-    if (!regionOuverte()) { ui.dialogue({ titre: GUIDE.titre, texte: GUIDE.ferme + conditionsTexte(), boutons: [{ txt: 'D\'accord !', fn: () => {} }] }); return; }
+    if (!regionOuverte()) { ui.dialogue({ titre: GUIDE.titre, texte: GUIDE.fermeTexte, sous: conditionsTexte(), boutons: [{ txt: 'D\'accord !', fn: () => {} }] }); return; }
     const fiche = CONTENU['intro-grande-route'];
     if (!R.connaissances.includes('intro-grande-route')) { R.connaissances.push('intro-grande-route'); }
     R.vu.intro = true; enregistrer();
@@ -197,7 +198,7 @@ export function creerRoute(ctx) {
     monde.preparer(J); montrer(true); brumeVillage = false;
     R.monde = 'route'; memoriserPosition(etat, J); enregistrer();
     ctx.arreterGuide(); ctx.surSaut();
-    if (!R.decouvertes.includes('seuil')) { R.decouvertes.push('seuil'); enregistrer(); ui.bandeau('Tu découvres', '🚏 La grande route'); setTimeout(() => gagner('lieu:seuil', 50, 'Tu quittes le village : la grande route'), 900); }
+    if (!R.decouvertes.includes('seuil')) { R.decouvertes.push('seuil'); enregistrer(); ui.bandeau(MESSAGES.decouvres, '🚏 ' + MESSAGES.grandeRoute); setTimeout(() => gagner('lieu:seuil', 50, 'Tu quittes le village : la grande route'), 900); }
   }
   function sortir() {
     const p = versLeVillage({ x: J.x, z: J.z, a: J.a });
@@ -216,7 +217,7 @@ export function creerRoute(ctx) {
     setTimeout(() => {
       gagner('etape1', 100, 'Première grande étape : l\'oasis de la Source Claire');
       const neuf = !AV.montures.includes('route'); if (neuf) { AV.montures.push('route'); enregistrer(); }
-      ui.dialogue({ titre: '🌴 Première grande étape !', icone: '🐪', texte: `Bravo, tu as traversé les plaines et les dunes jusqu'à l'oasis ! ${neuf ? 'Pour te remercier, un dromadaire de la grande route t\'attend dans ton écurie, au village.' : ''}`, boutons: [{ txt: 'Merci !', fn: () => {} }] });
+      ui.dialogue({ titre: '🌴 Première grande étape !', icone: '🐪', texte: MESSAGES.etape1 + (neuf ? ' ' + MESSAGES.etape1Cadeau : ''), boutons: [{ txt: 'Merci !', fn: () => {} }] });
     }, 2600);
   }
 
@@ -242,7 +243,7 @@ export function creerRoute(ctx) {
     o.x = nx; o.z = nz;
   }
   let dernierFin = 0;
-  function avertirFin() { const t = performance.now(); if (t - dernierFin > 9000) { dernierFin = t; ui.indice('🪨 Ici s\'arrête le monde construit, pour l\'instant. Bravo pour ce long voyage !', 5000); } }
+  function avertirFin() { const t = performance.now(); if (t - dernierFin > 9000) { dernierFin = t; ui.indice('🪨 ' + MESSAGES.fin, 5000); } }
 
   // ---------- chaque image ----------
   let tDecouverte = 0;
@@ -259,11 +260,11 @@ export function creerRoute(ctx) {
     monde.maj(J); L.animer(dt, t, J); lanternesProches(); V.obstacles(J); W.maj(dt, t, J);
     tVoy += dt; if (tVoy > 0.35) { tVoy = 0; for (const n of W.liste) if (n.v.trajet && n.e.racine.visible) regV(n); }
     // l'arrivée : la dernière crête ouvre la vue sur la cité ; la caméra se tourne doucement vers elle (sans jamais bloquer l'enfant)
-    if (!R.vu.arrivee) { const c = L.lieux['crete-vue']; if (c && Math.hypot(J.x - c.x, J.z - c.z) < 30) { R.vu.arrivee = true; enregistrer(); ui.bandeau('La cité apparaît !', '🌅 ' + infoLieu('crete-vue').nom); if (ctx.regarder) ctx.regarder(CITE.t, DEC + CITE.s, 9); } }
+    if (!R.vu.arrivee) { const c = L.lieux['crete-vue']; if (c && Math.hypot(J.x - c.x, J.z - c.z) < 30) { R.vu.arrivee = true; enregistrer(); ui.bandeau(MESSAGES.citeApparait, '🌅 ' + infoLieu('crete-vue').nom); if (ctx.regarder) ctx.regarder(CITE.t, DEC + CITE.s, 9); } }
     const { s } = versRoute(J.x, J.z), reg = regionA(s);
     if (reg.id !== regionActuelle) {
       regionActuelle = reg.id; ui.lieu(`${reg.icone} ${reg.nom}`);
-      if (!R.decouvertes.includes('region:' + reg.id)) { R.decouvertes.push('region:' + reg.id); enregistrer(); if (reg.id !== 'sortie') ui.bandeau('Tu entres dans', `${reg.icone} ${reg.nom}`); }
+      if (!R.decouvertes.includes('region:' + reg.id)) { R.decouvertes.push('region:' + reg.id); enregistrer(); if (reg.id !== 'sortie') ui.bandeau(MESSAGES.entreDans, `${reg.icone} ${reg.nom}`); }
     }
     // ambiance : brume et lumière propres à chaque région
     const A = reg.ambiance, near = A.proche, far = A.loin * (ctx.Q.leger ? 1.3 : 1.7);
