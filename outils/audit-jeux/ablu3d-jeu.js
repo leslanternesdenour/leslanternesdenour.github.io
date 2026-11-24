@@ -5,6 +5,7 @@ const taille = process.argv[2] || 'pc';
 (async () => {
   const b = await chromium.launch({ args: ['--use-gl=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--autoplay-policy=no-user-gesture-required'] });
   const { ctx, page, log } = await ouvrir(b, taille, '/ablutions/jeu3d/', { attente: 4000 });
+  { const clic = page.click.bind(page); page.click = (sel, o) => clic(sel, { force: true, ...(o || {}) }); }   // les boutons pulsent (animation) : Playwright les croit « instables »
   await page.evaluate(() => { localStorage.clear(); }); await page.reload(); await page.waitForTimeout(4000);
   t('chargement terminé, écran d\'accueil des modes', (await page.isVisible('#accueil')) && !(await page.isVisible('#chargement')));
   await page.screenshot({ path: `/tmp/claude-0/aud/abl3d-${taille}-accueil.png` });
@@ -31,7 +32,7 @@ const taille = process.argv[2] || 'pc';
     const suiv = await page.waitForSelector('#actions .suivant', { timeout: 15000 }).catch(() => null);
     t(`apprendre étape ${i + 1} : bouton suivant après les gestes`, !!suiv);
     if (i === 4) { const etat = await page.evaluate(() => ({ panneau: document.getElementById('panneau').className, bulle: document.getElementById('bulle').innerHTML.slice(0, 120), vis: document.getElementById('bulle').offsetWidth + 'x' + document.getElementById('bulle').offsetHeight, actions: document.getElementById('actions').innerHTML.slice(0, 160) })); console.log('ÉTAT étape 5:', JSON.stringify(etat)); await page.screenshot({ path: `/tmp/claude-0/aud/abl3d-${taille}-etape5.png` }); const vis = await page.isVisible('#bulle'); t('apprendre : bulle visible à l\'étape 5', vis, JSON.stringify(etat).slice(0, 200)); if (vis) { await page.click('#bulle'); await page.waitForTimeout(300); } }
-    if (suiv) { await page.waitForTimeout(300); await suiv.click(); await page.waitForTimeout(500); }
+    if (suiv) { await page.waitForTimeout(300); await suiv.click({ force: true }); await page.waitForTimeout(500); }
   }
   await page.waitForSelector('#fin:not(.cache)', { timeout: 15000 }).catch(() => {});
   t('apprendre : écran de fin « Machâ\'Allah »', (await page.isVisible('#fin')) && /Mach/.test(await page.textContent('#fin-titre')));

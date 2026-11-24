@@ -6,6 +6,7 @@ const PRIERE2 = ['takbir', 'mains', 'roukou', 'debout', 'soujoud', 'assis', 'sou
 (async () => {
   const b = await chromium.launch({ args: ['--use-gl=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--autoplay-policy=no-user-gesture-required'] });
   const { ctx, page, log } = await ouvrir(b, taille, '/priere/jeu3d/', { attente: 4000 });
+  { const clic = page.click.bind(page); page.click = (sel, o) => clic(sel, { force: true, ...(o || {}) }); }   // les boutons pulsent (animation) : Playwright les croit « instables »
   await page.evaluate(() => { localStorage.clear(); }); await page.reload(); await page.waitForTimeout(4000);
   t("chargement terminé, écran d'accueil des modes", (await page.isVisible('#accueil')) && !(await page.isVisible('#chargement')));
   await page.screenshot({ path: `/tmp/claude-0/aud/pri3d-${taille}-accueil.png` });
