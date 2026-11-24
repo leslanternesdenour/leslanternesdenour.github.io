@@ -50,6 +50,13 @@
     b.appendChild(a); var p = b.querySelector('a'); if (p) p.focus();
   }
 
+  function ecranIndisponible() {
+    var b = ouvrirBoite(AccesLogique.textes.indisponible), a = el('div', 'actions');
+    var r = el('button', 'p', '↻ Réessayer'); r.type = 'button'; r.onclick = function () { location.reload(); };
+    a.appendChild(r); a.appendChild(el('a', 'l', 'Voir la présentation du village', racine + 'decouvrir/')); a.appendChild(el('a', 'l', "Retour à l'accueil", racine));
+    b.appendChild(a); r.focus();
+  }
+
   function ecranProfil() {
     var b = ouvrirBoite(AccesLogique.textes.profil), liste = el('div', 'actions'), etat = el('div', 'etat'); etat.setAttribute('role', 'status');
     b.appendChild(liste); b.appendChild(etat);
@@ -72,14 +79,20 @@
     }).catch(function () { etat.textContent = 'Impossible de charger les profils. Réessaie dans un instant.'; pied(); });
   }
 
+  // Fail-closed : une réponse absente, en erreur ou inattendue (service indisponible, réseau coupé) ferme le jeu, sauf en développement local.
   function lancer() {
+    if (document.getElementById('ldn-acces')) return;
     fetch(racine + 'api/moi', { credentials: 'same-origin', cache: 'no-store' })
       .then(function (r) { return r.ok ? r.json() : null; })
+      .catch(function () { return null; })
       .then(function (j) {
         var ouverts = !!(j && typeof j.connecte === 'boolean');
-        var d = AccesLogique.decision({ comptesOuverts: ouverts, connecte: !!(j && j.connecte), profil: profil() });
-        if (d === 'connexion') ecranConnexion(); else if (d === 'profil') ecranProfil();
-      }).catch(function () {});
+        var d = AccesLogique.decision({ comptesOuverts: ouverts, connecte: !!(j && j.connecte), profil: profil(), hoteLocal: AccesLogique.estHoteLocal(location.hostname) });
+        if (d === 'indisponible') ecranIndisponible(); else if (d === 'connexion') ecranConnexion(); else if (d === 'profil') ecranProfil();
+      });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', lancer); else lancer();
+  // Session expirée pendant qu'un onglet reste ouvert : la garde revérifie au retour sur la page.
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') lancer(); });
+  window.addEventListener('pageshow', function (e) { if (e.persisted) lancer(); });
 })();

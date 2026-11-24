@@ -10,7 +10,7 @@ test('accès : un visiteur non connecté, alors que les comptes sont ouverts, do
 
 test('accès : si les comptes ne sont pas ouverts (serveur absent), le jeu n\'est pas bloqué', () => {
   const { decision } = require('../../compte/acces-logique.js');
-  assert.equal(decision({ comptesOuverts: false, connecte: false, profil: null }), 'libre');
+  assert.equal(decision({ comptesOuverts: false, connecte: false, profil: null }), 'indisponible'); assert.equal(decision({ comptesOuverts: false, connecte: false, profil: null, hoteLocal: true }), 'libre');
 });
 
 test('accès : un parent connecté sans profil enfant choisi doit choisir (ou créer) un profil', () => {

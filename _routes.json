@@ -1,0 +1,5 @@
+{
+  "version": 1,
+  "include": ["/api/*", "/monde", "/monde/", "/monde/index.html", "/voyage", "/voyage/", "/voyage/index.html", "/ablutions", "/ablutions/", "/ablutions/index.html", "/priere", "/priere/", "/priere/index.html", "/calendrier", "/calendrier/", "/calendrier/index.html", "/ecole-arabe/chiffres", "/ecole-arabe/chiffres/", "/ecole-arabe/chiffres/index.html"],
+  "exclude": []
+}
