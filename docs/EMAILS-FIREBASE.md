@@ -11,7 +11,7 @@
 Console Firebase → projet `lanternes-de-nour` → **Authentication**.
 
 1. **Paramètres → Nom public du projet** : `Les Lanternes de Nour` (il remplace `%APP_NAME%` dans les e-mails et s'affiche sur l'écran Google).
-2. **Paramètres → Domaines autorisés** : vérifier la présence de `leslanternesdenour.fr`, `www.leslanternesdenour.fr` et `preproduction.lanternes-de-nour.pages.dev`.
+2. **Paramètres → Domaines autorisés** (**constaté en réel le 24/11 : `preproduction.lanternes-de-nour.pages.dev` est REFUSÉ par Firebase (auth/unauthorized-continue-uri) ; il faut l'ajouter**) : vérifier la présence de `leslanternesdenour.fr`, `www.leslanternesdenour.fr` et `preproduction.lanternes-de-nour.pages.dev`.
 3. **Modèles (Templates) → choisir la langue « Français »** dans le sélecteur du modèle, puis modifier **le modèle français** (le modèle anglais est un autre modèle) :
 
 **Vérification de l'adresse e-mail**
