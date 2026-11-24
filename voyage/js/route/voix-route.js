@@ -807,6 +807,66 @@ export const PHRASES_ROUTE = [
   "exact"
  ],
  [
+  "NOUR-VOIX-RTE-26424b77",
+  "Un petit replat pour reprendre son souffle.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-0dfc113e",
+  "Un petit replat pour reprendre son souffle. On monte mieux à petits pas réguliers, en buvant un peu d'eau.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-33d47d5f",
+  "Des petites plantes poussent entre les pierres.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-b5525cb0",
+  "Entre les pierres, de petites plantes épineuses poussent : leurs longues racines vont chercher l'eau très profond.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-b9901b35",
+  "D'ici, on voit toute la cité et la plaine !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-f75163d4",
+  "D'ici, on voit toute la cité, ses maisons serrées, et la grande plaine tout autour. Plus on monte, plus on voit loin.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-cdc6356d",
+  "Ici, le vent souffle plus fort.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-100e8efe",
+  "Plus on monte, plus le vent est frais et fort. Depuis très longtemps, il polit les rochers.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-42bb8bb8",
+  "Les roches ont des couleurs : rouge, jaune, gris.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-3cf6ef96",
+  "Regarde les couleurs de la roche : le rouge vient du fer, le jaune du sable, le gris de la pierre dure.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-5627dad9",
+  "D'ici, on voit les chemins et les jardins.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-8f5d80e3",
+  "D'ici, on voit les chemins des caravanes, les jardins et la cité au loin. Les montagnes servent de repères aux voyageurs.",
+  "exact"
+ ],
+ [
   "NOUR-VOIX-RTE-203f5d9e",
   "Je donne un tissu contre deux dattes. D'accord ?",
   "exact"
@@ -1259,6 +1319,21 @@ export const PHRASES_ROUTE = [
  [
   "NOUR-VOIX-RTE-e436bc44",
   "Dans la cité, chaque maison a ses habitants. Frappe à quatre portes différentes, poliment, pour savoir qui vit là et ce qu'ils font.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-cdf98318",
+  "Monter doucement",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-8f3c5b60",
+  "Monte sur les deux montagnes, doucement, et regarde la vue.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-2d0d6043",
+  "Un sentier monte sur chacune des deux grandes montagnes. Monte tranquillement, observe à chaque halte et regarde la vue du belvédère. Il n'y a ni course ni chronomètre.",
   "exact"
  ],
  [

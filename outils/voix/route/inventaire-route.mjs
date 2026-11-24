@@ -24,6 +24,8 @@ export async function inventaire() {
   for (const [id, f] of Object.entries(T.FAITS_ATELIER)) { ajouter('narratrice', f.petit, 'atelier:' + id); ajouter('narratrice', f.grand, 'atelier:' + id); }   // dans l'atelier du potier : le tour et le four
   for (const [g, f] of Object.entries(T.FAITS_INTERIEURS)) for (const o of f.objets) { const v = D.HABITANTS_MAISONS[g].voix; ajouter(v, o.petit, 'interieur:' + g); ajouter(v, o.grand, 'interieur:' + g); }   // dans les maisons : chaque objet est décrit par l'habitant
   for (const [g, h] of Object.entries(D.HABITANTS_MAISONS)) { ajouter(h.voix, h.petit, 'porte:' + g); ajouter(h.voix, h.grand, 'porte:' + g); }   // les habitants derrière les portes : chacun sa voix
+  // les haltes du sentier de montée des deux montagnes (nature et géographie seulement)
+  for (const [id, liste] of Object.entries(T.HALTES_MONTAGNE)) for (const x of liste) { ajouter('narratrice', x.petit, 'montee:' + id); ajouter('narratrice', x.grand, 'montee:' + id); }
   // le troc du marché : chaque marchand dit son offre, la réussite, le manque (et le cadeau de départ)
   for (const [id, t] of Object.entries(TR.TROCS)) for (const k of ['offre', 'ok', 'manque', 'cadeau']) if (t[k]) for (const a of ['petit', 'grand']) ajouter(t.voix, t[k][a], 'troc:' + id);
   // les activités des métiers : présentation, questions, explications, fin (chaque métier a sa voix)

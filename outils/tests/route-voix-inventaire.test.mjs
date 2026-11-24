@@ -70,3 +70,10 @@ test('inventaire : chaque marchand du troc dit son offre, la réussite, le manqu
   const parTexte = new Map((await inventaire()).map(p => [normaliserTexte(p.texte), p]));
   for (const [id, t] of Object.entries(TROCS)) for (const k of ['offre', 'ok', 'manque', 'cadeau']) { if (!t[k]) continue; for (const a of ['petit', 'grand']) { const p = parTexte.get(normaliserTexte(t[k][a])); assert.ok(p, `${id}.${k}.${a} sans voix`); assert.equal(p.role, t.voix); } }
 });
+
+test('inventaire : les haltes du sentier de montée sont dites par la narratrice (3–5 ans et 6–10 ans)', async () => {
+  const { inventaire, normaliserTexte } = await import('../voix/route/inventaire-route.mjs');
+  const { HALTES_MONTAGNE } = await import('../../voyage/js/route/textes-route.js');
+  const parTexte = new Map((await inventaire()).map(p => [normaliserTexte(p.texte), p]));
+  for (const liste of Object.values(HALTES_MONTAGNE)) for (const x of liste) for (const t of [x.petit, x.grand]) { const p = parTexte.get(normaliserTexte(t)); assert.ok(p, 'sans voix : ' + t.slice(0, 40)); assert.equal(p.role, 'narratrice'); }
+});

@@ -1,7 +1,7 @@
 {
  "jeu": "route-voix",
  "base": "/audio",
- "total": 286,
+ "total": 301,
  "phrases": [
   {
    "id": "NOUR-VOIX-RTE-924aa3cd",
@@ -1614,6 +1614,126 @@
    "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
+   "id": "NOUR-VOIX-RTE-26424b77",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Un petit replat pour reprendre son souffle.",
+   "fichier": "fr/route/nour-voix-rte-26424b77.mp3",
+   "duree": 2.88,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-0dfc113e",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Un petit replat pour reprendre son souffle. On monte mieux à petits pas réguliers, en buvant un peu d'eau.",
+   "fichier": "fr/route/nour-voix-rte-0dfc113e.mp3",
+   "duree": 6.48,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-33d47d5f",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Des petites plantes poussent entre les pierres.",
+   "fichier": "fr/route/nour-voix-rte-33d47d5f.mp3",
+   "duree": 2.56,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-b5525cb0",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Entre les pierres, de petites plantes épineuses poussent : leurs longues racines vont chercher l'eau très profond.",
+   "fichier": "fr/route/nour-voix-rte-b5525cb0.mp3",
+   "duree": 7.04,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-b9901b35",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "D'ici, on voit toute la cité et la plaine !",
+   "fichier": "fr/route/nour-voix-rte-b9901b35.mp3",
+   "duree": 3.28,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-f75163d4",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "D'ici, on voit toute la cité, ses maisons serrées, et la grande plaine tout autour. Plus on monte, plus on voit loin.",
+   "fichier": "fr/route/nour-voix-rte-f75163d4.mp3",
+   "duree": 8.24,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-cdc6356d",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Ici, le vent souffle plus fort.",
+   "fichier": "fr/route/nour-voix-rte-cdc6356d.mp3",
+   "duree": 2.56,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-100e8efe",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Plus on monte, plus le vent est frais et fort. Depuis très longtemps, il polit les rochers.",
+   "fichier": "fr/route/nour-voix-rte-100e8efe.mp3",
+   "duree": 6.48,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-42bb8bb8",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Les roches ont des couleurs : rouge, jaune, gris.",
+   "fichier": "fr/route/nour-voix-rte-42bb8bb8.mp3",
+   "duree": 4.32,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-3cf6ef96",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Regarde les couleurs de la roche : le rouge vient du fer, le jaune du sable, le gris de la pierre dure.",
+   "fichier": "fr/route/nour-voix-rte-3cf6ef96.mp3",
+   "duree": 7.92,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-5627dad9",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "D'ici, on voit les chemins et les jardins.",
+   "fichier": "fr/route/nour-voix-rte-5627dad9.mp3",
+   "duree": 2.96,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-8f5d80e3",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "D'ici, on voit les chemins des caravanes, les jardins et la cité au loin. Les montagnes servent de repères aux voyageurs.",
+   "fichier": "fr/route/nour-voix-rte-8f5d80e3.mp3",
+   "duree": 8.08,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
    "id": "NOUR-VOIX-RTE-203f5d9e",
    "role": "perso-warda",
    "langue": "fr",
@@ -2520,6 +2640,36 @@
    "texte": "Dans la cité, chaque maison a ses habitants. Frappe à quatre portes différentes, poliment, pour savoir qui vit là et ce qu'ils font.",
    "fichier": "fr/route/nour-voix-rte-e436bc44.mp3",
    "duree": 8.88,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-cdf98318",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Monter doucement",
+   "fichier": "fr/route/nour-voix-rte-cdf98318.mp3",
+   "duree": 1.68,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-8f3c5b60",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Monte sur les deux montagnes, doucement, et regarde la vue.",
+   "fichier": "fr/route/nour-voix-rte-8f3c5b60.mp3",
+   "duree": 4.4,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-2d0d6043",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Un sentier monte sur chacune des deux grandes montagnes. Monte tranquillement, observe à chaque halte et regarde la vue du belvédère. Il n'y a ni course ni chronomètre.",
+   "fichier": "fr/route/nour-voix-rte-2d0d6043.mp3",
+   "duree": 11.92,
    "prononciationVerifiee": false,
    "voixId": "hddT377hAwvRoOKqMj0E"
   },

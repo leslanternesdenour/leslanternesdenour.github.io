@@ -134,6 +134,9 @@ export const MISSIONS_ROUTE = {
   portes: { titre: 'Frapper aux portes', icone: '🚪', total: 4, recompense: 120, categorie: 'connaissance',
     simple: 'Frappe à quatre portes de la cité et dis bonjour.',
     resume: 'Dans la cité, chaque maison a ses habitants. Frappe à quatre portes différentes, poliment, pour savoir qui vit là et ce qu\'ils font.' },
+  montees: { titre: 'Monter doucement', icone: '⛰️', total: 6, recompense: 200, categorie: 'exploration',
+    simple: 'Monte sur les deux montagnes, doucement, et regarde la vue.',
+    resume: 'Un sentier monte sur chacune des deux grandes montagnes. Monte tranquillement, observe à chaque halte et regarde la vue du belvédère. Il n\'y a ni course ni chronomètre.' },
   troc: { titre: 'Au marché : échanger', icone: '🤝', total: 3, recompense: 180, categorie: 'connaissance',
     simple: 'Fais un échange avec trois marchands.',
     resume: 'Au marché, chacun a ce qui manque à l\'autre. Fais un échange avec trois marchands différents : à chaque fois, tout le monde y gagne.' }

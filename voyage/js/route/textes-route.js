@@ -87,6 +87,17 @@ export const FAITS_INTERIEURS = {
     { nom: 'Le blé', icone: '🌾', label: 'Observer le blé', forme: 'sacs', petit: `Des sacs de blé pour toute l'année.`, grand: `Des sacs de blé et d'orge : ces provisions permettent de nourrir tout le monde, même quand la récolte est mauvaise.` },
     { nom: "L'étagère", icone: '🍯', label: "Observer l'étagère", forme: 'etagere', petit: `Une étagère avec des jarres de miel et d'huile.`, grand: `Une étagère de jarres de miel, d'huile et de dattes pressées, bien fermées pour ne pas se gâter.` }] }
 };
+// Les haltes du sentier de montée des deux grandes montagnes (nature et géographie seulement ; la 3e halte est le belvédère). Les histoires liées au pied des montagnes restent « À VALIDER » ailleurs.
+export const HALTES_MONTAGNE = {
+  nord: [
+    { nom: 'Le premier replat', icone: '🪨', label: 'Reprendre son souffle', petit: `Un petit replat pour reprendre son souffle.`, grand: `Un petit replat pour reprendre son souffle. On monte mieux à petits pas réguliers, en buvant un peu d'eau.` },
+    { nom: 'Les plantes du rocher', icone: '🌿', label: 'Observer les plantes', petit: `Des petites plantes poussent entre les pierres.`, grand: `Entre les pierres, de petites plantes épineuses poussent : leurs longues racines vont chercher l'eau très profond.` },
+    { nom: 'Le belvédère du nord', icone: '🌅', label: 'Regarder la vue', petit: `D'ici, on voit toute la cité et la plaine !`, grand: `D'ici, on voit toute la cité, ses maisons serrées, et la grande plaine tout autour. Plus on monte, plus on voit loin.` }],
+  sud: [
+    { nom: 'Le vent de la montagne', icone: '💨', label: 'Écouter le vent', petit: `Ici, le vent souffle plus fort.`, grand: `Plus on monte, plus le vent est frais et fort. Depuis très longtemps, il polit les rochers.` },
+    { nom: 'Les roches de couleur', icone: '🎨', label: 'Observer les roches', petit: `Les roches ont des couleurs : rouge, jaune, gris.`, grand: `Regarde les couleurs de la roche : le rouge vient du fer, le jaune du sable, le gris de la pierre dure.` },
+    { nom: 'Le belvédère du sud', icone: '🌅', label: 'Regarder la vue', petit: `D'ici, on voit les chemins et les jardins.`, grand: `D'ici, on voit les chemins des caravanes, les jardins et la cité au loin. Les montagnes servent de repères aux voyageurs.` }]
+};
 export const texteLieu = (id, age) => { const t = TEXTES_LIEUX[id]; return t ? (age === '3-5' ? t.petit : t.grand) : ''; };
 
 // Les personnages FICTIFS (aucun personnage historique ou religieux)

@@ -5,6 +5,7 @@ import { creerMondeRoute } from './monde.js';
 import { creerLieux3D } from './lieux-3d.js';
 import { creerVille3D } from './ville-3d.js';
 import { creerInterieur3D } from './interieur-3d.js';
+import { creerMontee3D } from './montee-3d.js';
 import { creerVoyageurs3D } from './voyageurs-3d.js';
 import { maisonsVille, portesJouables } from './ville-plan.js';
 import { ACTIVITES_METIERS, questionsMetier } from './activites-route.js';
@@ -14,7 +15,7 @@ import { preparerRoute, memoriserPosition, positionDeReprise } from './etat-rout
 import { faireEtape, progression } from './missions-route.js';
 import { DEC, versRoute, S_DEBUT, S_FIN_TRANCHE, LARGEUR, OASIS, CITE, pointChemin } from './relief.js';
 import { FACTEUR_MARCHE_ROUTE, HABITANTS_MAISONS, regionA, LIEUX_ROUTE, MISSIONS_ROUTE, SAC_ROUTE, RELAIS_VILLAGE, auSeuilVillage, versLaRoute, auRetourRoute, versLeVillage } from './donnees.js';
-import { texteLieu, GUIDE, VOYAGEUSE, MESSAGES, FAITS_MAISONS, FAITS_ATELIER, FAITS_INTERIEURS } from './textes-route.js';
+import { texteLieu, GUIDE, VOYAGEUSE, MESSAGES, FAITS_MAISONS, FAITS_ATELIER, FAITS_INTERIEURS, HALTES_MONTAGNE } from './textes-route.js';
 import { CONTENU, etiquette, texteDe } from './contenu-a-valider.js';
 import { pageCarnetRoute } from './carnet-route.js';
 import { creerRecitUI } from './recit-ui.js';
@@ -38,6 +39,7 @@ export function creerRoute(ctx) {
   const V = creerVille3D({ scene, hauteur: monde.hauteur, ombres: ctx.ombres });          // la cité ancienne
   const W = creerVoyageurs3D({ scene, hauteur: monde.hauteur, leger: !!ctx.Q.leger });   // ses voyageurs fictifs animés
   const I = creerInterieur3D({ scene, hauteur: monde.hauteur, ombres: ctx.ombres });   // la pièce d'une maison : invisible tant qu'on n'y entre pas
+  const M3 = creerMontee3D({ scene, hauteur: monde.hauteur, ombres: ctx.ombres });          // les sentiers de montée des deux grandes montagnes
   let dansMaison = null;                                                                  // { gabarit, retour : devant la porte }
   const Couleur = scene.fog.color.constructor, cible = new Couleur();
   const fog0 = { near: scene.fog.near, far: scene.fog.far };
@@ -49,7 +51,7 @@ export function creerRoute(ctx) {
   const h0 = terrain.hauteur.bind(terrain), m0 = terrain.matiere.bind(terrain);
   terrain.hauteur = (x, z) => z > SEUIL_Z ? monde.hauteur(x, z) : h0(x, z);
   terrain.matiere = (x, z) => z > SEUIL_Z ? monde.matiere(x, z) : m0(x, z);
-  const montrer = v => { monde.montrer(v); L.groupe.visible = v; V.montrer(v); terrain.mesh.visible = !v; if (!v) for (const n of W.liste) n.e.racine.visible = false; };
+  const montrer = v => { monde.montrer(v); L.groupe.visible = v; V.montrer(v); M3.groupe.visible = v; terrain.mesh.visible = !v; if (!v) for (const n of W.liste) n.e.racine.visible = false; };
   montrer(false);
 
   // ---------- les lieux déjà faits (reprise d'une sauvegarde) ----------
@@ -151,6 +153,10 @@ export function creerRoute(ctx) {
     if (d < 20 && !annonce.has(l.id) && !recitUI.ouverte()) { annonce.add(l.id); ui.indice('📜 ' + MESSAGES.lanterne, 4500); } } };
 
   // ---------- la cité vivante : des voyageurs à qui parler (mission « rencontres »), des maisons à observer ----------
+  // les haltes du sentier de montée : de la nature à observer, puis la vue du belvédère (mission « Monter doucement », sans course ni chronomètre)
+  for (const id of Object.keys(HALTES_MONTAGNE)) HALTES_MONTAGNE[id].forEach((h, k) => { const p = M3.haltes[id + ':' + k];
+    habitants.ajouter({ id: 'route:montee:' + id + ':' + k, x: p.x + 1.5, z: p.z, rayon: 3.6, label: h.label, icone: h.icone, ouvrir: () => {
+      ui.dialogue({ titre: h.icone + ' ' + h.nom, texte: age() === '3-5' ? h.petit : h.grand, icone: h.icone, boutons: [{ txt: 'Merci !', fn: () => {} }] }); etape('montees', id + ':' + k); } }); });
   // dans l'atelier du potier : on entre, on observe le tour et le four (une petite découverte la première fois)
   if (L.atelier) for (const o of L.atelier.objets) { const f = FAITS_ATELIER[o.id];
     habitants.ajouter({ id: 'route:atelier:' + o.id, x: o.poseX, z: o.poseZ, rayon: 1.9, label: f.label, icone: f.icone, ouvrir: () => {
