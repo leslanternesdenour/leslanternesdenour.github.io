@@ -113,13 +113,17 @@ function bornesBoucle(b) {
   let z = n - 1; while (z > n - 6000 && z > a && !fort(z)) z--;
   return [a / b.sampleRate, (z + 1) / b.sampleRate];
 }
-// Deux pistes, chemins relatifs à la page /voyage/ : le Grand Voyage, et La Mecque (seulement à l'arrivée sur la Route, voir musique-zone.js).
+// Trois musiques, chemins relatifs à la page /voyage/ (voir musique-zone.js pour savoir laquelle joue où) :
+//   jeu    = « Glowing Village », le nasheed du village : le jeu habituel, au début
+//   route  = « Golden Hour Hum » : dès qu'on arrive sur la Route vers La Mecque
+//   mecque = « Sacred City at Dusk » : l'arrivée à La Mecque
 const PISTES = {
-  voyage: 'musique/grand-voyage-golden-hour.mp3?v=1',
-  mecque: 'musique/mecque-sacred-city-at-dusk.mp3?v=1'
+  jeu: '../monde/musique/village-nasheed.mp3?v=1',
+  route: 'musique/grand-voyage-golden-hour.mp3?v=2',
+  mecque: 'musique/mecque-sacred-city-at-dusk.mp3?v=2'
 };
 const chargees = {};                       // nom → promesse de { tampon, bornes }, ou false si le fichier est indisponible
-let pisteVoulue = 'voyage', dernierChangement = -1e9;
+let pisteVoulue = 'jeu', dernierChangement = -1e9;
 const PAUSE_ENTRE_CHANGEMENTS = 6;         // secondes : pas d'aller-retour entre deux musiques à la frontière d'une région
 function chargerPiste(nom) {
   if (!chargees[nom]) {

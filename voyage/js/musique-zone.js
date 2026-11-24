@@ -1,6 +1,9 @@
 // Quelle musique joue où (sans navigateur : testable seul).
-// Le Grand Voyage a sa musique ; celle de La Mecque ne démarre qu'à l'arrivée sur la Route (vallée de l'arrivée, puis cité).
+// - le jeu habituel (village, désert) : « Glowing Village » ('jeu')
+// - dès qu'on arrive sur la Route vers La Mecque : « Golden Hour Hum » ('route')
+// - à l'arrivée à La Mecque (vallée de l'arrivée, puis cité) : « Sacred City at Dusk » ('mecque')
 export const REGIONS_MUSIQUE_MECQUE = ['arrivee', 'cite'];
 export function pisteMusique(enRoute, regionId) {
-  return enRoute && REGIONS_MUSIQUE_MECQUE.includes(regionId) ? 'mecque' : 'voyage';
+  if (!enRoute) return 'jeu';
+  return REGIONS_MUSIQUE_MECQUE.includes(regionId) ? 'mecque' : 'route';
 }
