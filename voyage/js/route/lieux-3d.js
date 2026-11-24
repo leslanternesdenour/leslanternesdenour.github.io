@@ -177,6 +177,9 @@ export function creerLieux3D({ scene, hauteur, colliders, ombres, TX }) {
     monter(fusion(g), mat, p.x, p.z, { rot: -0.4 }); bloquer(p.x, p.z, 2.8); lieux['cite-atelier'] = { x: p.x - 1.5, z: p.z + 4.8 }; }
   for (const id of ['cite-colline-a', 'cite-colline-b']) { const p = pos(id), g = [piece(B(), '#a8906e', { p: [0, 0.2, 0], s: [3, 0.4, 1.2], m: M.pierre }), piece(B(), '#6b4a30', { p: [-1.8, 1.1, 0], s: [0.14, 2.2, 0.14], m: M.bois }), piece(B(), '#c9a26a', { p: [-1.8, 2.0, 0.05], s: [1.2, 0.5, 0.07], m: M.bois })];
     monter(fusion(g), mat, p.x, p.z, { rot: 0.2 }); lieux[id] = { x: p.x + 1, z: p.z + 1.4 }; }
+  // le chemin entre les deux collines : trois petits cairns le long d'une bande de pierres claires (un chemin plat à parcourir tranquillement)
+  for (const id of ['collines-chemin-1', 'collines-chemin-2', 'collines-chemin-3']) { const p = pos(id), g = [piece(DOD(0.55), '#a8906e', { p: [0, 0.3, 0] }), piece(DOD(0.4), '#9a8062', { p: [0.1, 0.75, 0.05] }), piece(DOD(0.28), '#b8a07a', { p: [0, 1.05, 0] }), piece(B(), '#6b4a30', { p: [0.9, 0.9, 0], s: [0.1, 1.8, 0.1], m: M.bois }), piece(B(), '#c9a26a', { p: [0.9, 1.7, 0.04], s: [0.9, 0.4, 0.06], m: M.bois })];
+    monter(fusion(g), mat, p.x, p.z); bloquer(p.x, p.z, 0.6); gemme(id, p.x, p.z, 2.3); lieux[id] = { x: p.x + 1.6, z: p.z }; }
   { const p = pos('cite-place'), g = [];
     for (let k = 0; k < 3; k++) g.push(piece(B(), '#b09672', { p: [-2.2 + k * 2.2, 0.28, 0], s: [2, 0.56, 0.9], m: M.pierre }));
     g.push(piece(B(), '#6b4a30', { p: [3.4, 1.2, 0], s: [0.14, 2.4, 0.14], m: M.bois }), piece(B(), '#c9a26a', { p: [3.4, 2.2, 0.05], s: [1.6, 0.55, 0.07], m: M.bois }));

@@ -3,7 +3,7 @@
 // Cette cité est une INTERPRÉTATION artistique, jamais une reconstitution exacte.
 import * as THREE from 'three';
 import { piece, fusion, materiau, M } from '../formes.js?v=4';
-import { DEC, CITE } from './relief.js';
+import { DEC, CITE, COLLINES_CITE } from './relief.js';
 import { maisonsVille, PLACETTES, GABARITS } from './ville-plan.js';
 
 const B = () => new THREE.BoxGeometry(1, 1, 1), CYL = (a, b, h, s = 8) => new THREE.CylinderGeometry(a, b, h, s);
@@ -50,6 +50,12 @@ export function creerVille3D({ scene, hauteur, ombres }) {
   const RB = 16.5;
   { const g = []; for (let k = 0; k < 28; k++) { const a = k / 28 * Math.PI * 2, x = Math.cos(a) * RB, z = Math.sin(a) * RB; g.push(piece(CYL(0.16, 0.2, 0.9, 6), '#a8906e', { p: [x, 0.45 + (hauteur(cx + x, cz + z) - y0), z], m: M.pierre })); fixes.push({ x: cx + x, z: cz + z, r: 0.5 }); }
     for (let k = 0; k < 28; k++) { const a = (k + 0.5) / 28 * Math.PI * 2, x = Math.cos(a) * RB, z = Math.sin(a) * RB; g.push(piece(B(), '#e8dcc4', { p: [x, 0.75 + (hauteur(cx + x, cz + z) - y0), z], s: [0.1, 0.06, 2.1], r: [0, -a, 0], m: M.tissu })); }
+    const o = new THREE.Mesh(fusion(g), mat); o.position.set(cx, y0, cz); groupe.add(o); }
+  // ---- le chemin plat entre les deux collines : deux rangées de petites pierres claires, pour le parcourir tranquillement (ni course, ni chronomètre) ----
+  { const [a, b] = COLLINES_CITE, L = Math.hypot(b.s - a.s, b.t - a.t), n = Math.floor(L / 3.2), g = [];
+    for (let k = 1; k < n; k++) for (const cote of [-2.4, 2.4]) { const f = k / n, s = a.s + (b.s - a.s) * f, t = a.t + (b.t - a.t) * f + cote, x = t, z = DEC + s;
+      if (Math.hypot(s - a.s, t - a.t) < a.r * 0.8 || Math.hypot(s - b.s, t - b.t) < b.r * 0.8) continue;
+      g.push(piece(B(), '#e6dcc4', { p: [x - cx, hauteur(x, z) - y0 + 0.07, z - cz], s: [0.55, 0.14, 0.55], r: [0, k * 0.7, 0], m: M.pierre })); }
     const o = new THREE.Mesh(fusion(g), mat); o.position.set(cx, y0, cz); groupe.add(o); }
   // ---- les placettes : quelques jarres et un petit muret de pierres, pour que la place ne soit pas vide ----
   for (const p of PLACETTES) { const x = p.t, z = DEC + p.s, g = []; for (let k = 0; k < 4; k++) g.push(piece(CYL(0.25, 0.32, 0.6, 8), k % 2 ? '#b0643c' : '#a35a34', { p: [Math.cos(k * 1.6) * (p.r * 0.5), 0.3 + (hauteur(x + Math.cos(k * 1.6) * p.r * 0.5, z + Math.sin(k * 1.6) * p.r * 0.5) - hauteur(x, z)), Math.sin(k * 1.6) * (p.r * 0.5)], m: M.terre }));

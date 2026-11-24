@@ -94,7 +94,7 @@ test('monde : les histoires se découvrent dans les lieux (lanterne + bouton « 
   const { recit } = await import('../../voyage/js/route/recits-a-valider.js');
   const fs = await import('node:fs');
   const avec = LIEUX_ROUTE.filter(l => l.recit);
-  assert.deepEqual(avec.map(l => l.id).sort(), ['campement', 'oasis'], 'les deux découvertes générales sont placées dans les lieux qui existent déjà');
+  assert.deepEqual(avec.map(l => l.id).sort(), ['campement', 'cite-atelier', 'cite-marche', 'oasis'], 'les découvertes générales (eau, caravanes, potier, marché) sont placées dans les lieux qui existent');
   for (const l of avec) assert.ok(recit(l.recit), `${l.id} : histoire inconnue ${l.recit}`);
   const jeu = fs.readFileSync(new URL('../../voyage/js/route/jeu-route.js', import.meta.url), 'utf8'), l3 = fs.readFileSync(new URL('../../voyage/js/route/lieux-3d.js', import.meta.url), 'utf8');
   assert.match(jeu, /Découvrir cette histoire/); assert.match(jeu, /creerRecitUI/); assert.match(jeu, /'recit:'/);
@@ -112,6 +112,15 @@ test('lieux de la cité : les quatre premières histoires sont placées dans leu
     assert.ok(!/[«»"“”]/.test(s.petit + s.grand), `${id} : aucune parole rapportée`);
     for (const r of s.recits || []) { assert.ok(recit(r), `${id} : histoire inconnue ${r}`); places.add(r); }
   }
-  for (const r of ['hajar-ismail-zamzam', 'safa-marwa', 'communaute-mecque', 'fondations-kaaba', 'quraysh-reconstruction']) assert.ok(places.has(r), `${r} n'est placée dans aucun lieu du monde`);
+  for (const r of ['hajar-ismail-zamzam', 'safa-marwa', 'communaute-mecque', 'fondations-kaaba', 'quraysh-reconstruction', 'redecouverte-zamzam', 'jabal-an-nour', 'jabal-thawr']) assert.ok(places.has(r), `${r} n'est placée dans aucun lieu du monde`);
   assert.ok(LIEUX_SACRES['montagne-nord-pied'].nom && LIEUX_SACRES['montagne-sud-pied'].nom, 'les deux montagnes ont leur nom');
+});
+
+test('aucune voix : dans la Route, aucun bouton « Écouter » ni synthèse vocale pour un texte non validé (dialogues et découvertes)', async () => {
+  const fs = await import('node:fs');
+  const main = fs.readFileSync(new URL('../../voyage/js/main.js', import.meta.url), 'utf8'), jeu = fs.readFileSync(new URL('../../voyage/js/route/jeu-route.js', import.meta.url), 'utf8');
+  assert.match(main, /lecture-ecouter'\)\.classList\.toggle\('cache', !!p\.sansVoix\)/, 'le dialogue masque Écouter quand sansVoix');
+  assert.match(main, /dec-ecouter'\); b\.classList\.toggle\('cache', !!d\.sansVoix\)/, 'la découverte masque Écouter quand sansVoix');
+  assert.match(main, /if \(!d\.sansVoix && !direTextes/, 'pas de synthèse vocale à l\'arrivée d\'une découverte sansVoix');
+  assert.match(jeu, /dialogue: p => ctx\.ui\.dialogue\(\{ sansVoix: true, \.\.\.p \}\)/); assert.match(jeu, /decouvrir: d => ctx\.ui\.decouvrir\(\{ sansVoix: true, \.\.\.d \}\)/);
 });

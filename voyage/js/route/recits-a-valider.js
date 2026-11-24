@@ -115,7 +115,73 @@ export const RECITS = [
       e('k3', 'illustration', [], 'Dans le jeu, le campement des Trois Tentes est un lieu imaginaire.', 'Dans le jeu, le campement des Trois Tentes est un lieu imaginaire : il sert à illustrer la vie des caravanes, pas un endroit réel.')
     ],
     illustration: { scene: 'campement', figure: false, description: 'Un campement de tentes au bord d\'une piste de caravane' }, animation: 'aucune', activite: null, mots: [],
-    questions: [{ id: 'q1', enonce: 'k2', ages: ['3-5', '6-10'], petit: 'Que faisait-on pour les voyageurs fatigués ?', grand: 'Selon la tradition, comment accueillait-on les voyageurs ?', choix: ['On les accueillait avec générosité', 'On les renvoyait'], bonne: 0 }] }
+    questions: [{ id: 'q1', enonce: 'k2', ages: ['3-5', '6-10'], petit: 'Que faisait-on pour les voyageurs fatigués ?', grand: 'Selon la tradition, comment accueillait-on les voyageurs ?', choix: ['On les accueillait avec générosité', 'On les renvoyait'], bonne: 0 }] },
+
+  // ===== 8. La redécouverte de Zamzam (Abd al-Muttalib) =====
+  { id: 'redecouverte-zamzam', lieuNom: 'Le puits de Zamzam', titre: 'La redécouverte du puits de Zamzam', lieu: 'zamzam', periode: 'Bien après Hajar et Ismaïl, avant la mission prophétique de Muhammad ﷺ (aucune date précisée ici)', statut: STATUT,
+    sources: [src('sira:ibn-ishaq', 'tradition', 'La Sira transmise par Ibn Ishaq et Ibn Hisham, récit d\'Abd al-Muttalib et du puits de Zamzam')],
+    enonces: [
+      e('z1', 'tradition', ['sira:ibn-ishaq'], 'Selon la tradition historique, le puits de Zamzam avait été comblé et oublié avec le temps.', 'Selon les récits de la tradition historique (la Sira), avec le temps le puits de Zamzam avait été comblé et son emplacement était oublié.'),
+      e('z2', 'tradition', ['sira:ibn-ishaq'], 'Selon la tradition, Abd al-Muttalib a reçu en rêve l\'indication de creuser à nouveau.', 'Selon la tradition historique, Abd al-Muttalib, un chef de Quraysh, a vu en rêve qu\'il devait creuser à nouveau pour retrouver le puits de Zamzam.'),
+      e('z3', 'tradition', ['sira:ibn-ishaq'], 'Selon la tradition, il a creusé jusqu\'à retrouver le puits.', 'Selon la tradition historique, il a creusé avec des outils jusqu\'à retrouver le puits de Zamzam.'),
+      e('z4', 'discute', ['sira:ibn-ishaq'], 'On ne sait pas tous les détails : les récits ne sont pas tous d\'accord.', 'Les détails (l\'endroit exact, ce qui a été trouvé, le déroulement précis) sont discutés selon les récits et ne sont pas connus avec certitude.'),
+      e('z5', 'illustration', [], 'Dans le jeu, on voit un puits, des outils et des paniers : c\'est un dessin du jeu.', 'Dans le jeu, on ne voit qu\'un puits, des outils et des paniers dessinés par le jeu : personne n\'est représenté, et les outils sont un choix artistique, pas un fait rapporté.')
+    ],
+    illustration: { scene: 'puits-outils', figure: false, description: 'Un puits de pierre entouré d\'outils anciens et de paniers, sans personne : image symbolique de la redécouverte du puits' }, animation: 'aucune', mots: [],
+    activite: { type: 'ordre', consigne_petit: 'Remets les images dans l\'ordre de l\'histoire.', consigne_grand: 'Remets les étapes dans l\'ordre du récit traditionnel.', etapes: ['Le puits est comblé et oublié', 'Un rêve indique où creuser', 'On creuse avec des outils', 'Le puits est retrouvé', 'L\'eau de Zamzam coule de nouveau'] },
+    questions: [{ id: 'q1', enonce: 'z2', ages: ['3-5', '6-10'], petit: 'Que fait Abd al-Muttalib pour retrouver le puits ?', grand: 'Selon la tradition, que doit faire Abd al-Muttalib pour retrouver le puits de Zamzam ?', choix: ['Il creuse à nouveau', 'Il construit une tour'], bonne: 0 }] },
+
+  // ===== 9. Jabal an-Nour et la grotte de Hira =====
+  { id: 'jabal-an-nour', lieuNom: 'Jabal an-Nour et la grotte de Hira', titre: 'Jabal an-Nour et la grotte de Hira', lieu: 'jabal-nour', periode: 'Avant et au début de la mission prophétique de Muhammad ﷺ (aucune date précisée ici)', statut: STATUT,
+    sources: [src('hadith:bukhari:aicha', 'hadith', 'Sahih al-Bukhari : récit rapporté par Aïcha sur le début de la révélation'), src('coran:96:1-5', 'coran', 'Sourate Al-Alaq (96), versets 1 à 5 (début de la sourate)'), src('histoire:hira', 'tradition', 'Présentation de Jabal an-Nour et de la grotte de Hira (ouvrage de référence à choisir et à faire valider)')],
+    enonces: [
+      e('n1', 'hadith', ['hadith:bukhari:aicha'], 'Un hadith raconte que le Prophète ﷺ se retirait parfois dans la grotte de Hira pour réfléchir.', 'Un hadith (rapporté par Aïcha) raconte qu\'avant la révélation, le Prophète ﷺ aimait se retirer dans la grotte de Hira, sur Jabal an-Nour, pour réfléchir et adorer Allah.'),
+      e('n2', 'hadith', ['hadith:bukhari:aicha'], 'Selon ce hadith, c\'est là que la révélation du Coran a commencé.', 'Selon ce hadith, c\'est dans cette grotte que la révélation du Coran a commencé pour le Prophète ﷺ. Le jeu ne montre aucune scène de ce moment.'),
+      e('n3', 'tradition', ['histoire:hira', 'coran:96:1-5'], 'Selon la tradition, les premiers versets révélés sont ceux de la sourate Al-Alaq.', 'Selon la tradition islamique, les premiers versets révélés sont le début de la sourate Al-Alaq (sourate 96).'),
+      e('n4', 'discute', ['histoire:hira'], 'Le Coran ne dit pas où : ce lieu vient des récits, on ne sait pas tout.', 'Le Coran ne nomme pas la grotte : ce lien avec Hira vient des récits de hadith et de la tradition. Les détails ne sont pas connus avec certitude.'),
+      e('n5', 'illustration', [], 'Dans le jeu, on voit la montagne et l\'entrée de la grotte de loin : c\'est un dessin du jeu.', 'Dans le jeu, on observe seulement la montagne et l\'extérieur de la grotte. Aucune scène n\'est montrée, personne n\'est représenté et rien n\'est inventé : c\'est une illustration du jeu.')
+    ],
+    illustration: { scene: 'montagne-grotte', figure: false, description: 'Une grande montagne sous un ciel étoilé, avec l\'entrée sombre d\'une grotte vue de loin, sans personne : image symbolique' }, animation: 'aucune', activite: null, mots: [],
+    questions: [{ id: 'q1', enonce: 'n5', ages: ['3-5', '6-10'], petit: 'Que voit-on dans le jeu ?', grand: 'Dans le jeu, que voit-on de la grotte ?', choix: ['La montagne et l\'extérieur de la grotte', 'Une scène avec des personnages'], bonne: 0 },
+      { id: 'q2', enonce: 'n1', ages: ['6-10'], petit: '', grand: 'Sur quelle montagne se trouve la grotte de Hira, selon la tradition ?', choix: ['Jabal an-Nour', 'Jabal Thawr'], bonne: 0 }] },
+
+  // ===== 10. Jabal Thawr et la Hijra =====
+  { id: 'jabal-thawr', lieuNom: 'Jabal Thawr et la Hijra', titre: 'Jabal Thawr et la Hijra', lieu: 'jabal-thawr', periode: 'Au moment de la Hijra, le départ de La Mecque vers Médine (aucune date précisée ici)', statut: STATUT,
+    sources: [src('coran:9:40', 'coran', 'Sourate At-Tawba (9), verset 40'), src('sira:ibn-ishaq', 'tradition', 'La Sira transmise par Ibn Ishaq et Ibn Hisham, récit de la Hijra')],
+    enonces: [
+      e('h1', 'coran', ['coran:9:40'], 'Dans le Coran, il est question de deux personnes qui se trouvent dans une grotte.', 'Dans le Coran (sourate At-Tawba, verset 40), il est question de deux personnes qui se trouvent dans une grotte.'),
+      e('h2', 'tradition', ['sira:ibn-ishaq'], 'Selon la tradition, cela se rapporte à la Hijra, le départ vers Médine.', 'Selon la tradition islamique, ce passage se rapporte à la Hijra, le départ du Prophète ﷺ de La Mecque vers Médine, avec son compagnon Abu Bakr.'),
+      e('h3', 'tradition', ['sira:ibn-ishaq'], 'Selon la tradition, ils se sont abrités dans une grotte du Jabal Thawr.', 'Selon la tradition historique (la Sira), ils se sont abrités quelque temps dans une grotte du Jabal Thawr avant de continuer leur route vers Médine.'),
+      e('h4', 'discute', ['sira:ibn-ishaq'], 'On ne sait pas tous les détails du voyage : ils sont discutés.', 'Les détails du voyage (le trajet exact, la durée précise) sont discutés selon les récits et ne sont pas connus avec certitude.'),
+      e('h5', 'illustration', [], 'Dans le jeu, on voit la montagne et la grotte de loin : c\'est un dessin du jeu.', 'Dans le jeu, on observe seulement la montagne et l\'extérieur de la grotte. Aucune scène n\'est montrée, personne n\'est représenté et aucune parole n\'est inventée : c\'est une illustration du jeu.')
+    ],
+    illustration: { scene: 'montagne-grotte', figure: false, description: 'Une grande montagne avec l\'entrée sombre d\'une grotte vue de loin, sans personne : image symbolique' }, animation: 'aucune', activite: null, mots: [],
+    questions: [{ id: 'q1', enonce: 'h2', ages: ['3-5', '6-10'], petit: 'La Hijra, c\'est un départ vers...', grand: 'Que désigne la Hijra, selon la tradition ?', choix: ['Le départ de La Mecque vers Médine', 'Une fête au marché'], bonne: 0 },
+      { id: 'q2', enonce: 'h5', ages: ['6-10'], petit: '', grand: 'Dans le jeu, que voit-on de la grotte ?', choix: ['Seulement l\'extérieur', 'L\'intérieur'], bonne: 0 }] },
+
+  // ===== 11. Le métier de potier (découverte à l'atelier de la cité) =====
+  { id: 'metier-potier', lieuNom: 'L\'atelier du potier', titre: 'Le métier de potier', lieu: 'atelier', periode: 'Depuis très longtemps (aucune date)', statut: STATUT,
+    sources: [src('histoire:vie-desert', 'tradition', 'Ouvrage sur la vie et les métiers dans l\'Arabie ancienne (référence à choisir et à faire valider)')],
+    enonces: [
+      e('p1', 'tradition', ['histoire:vie-desert'], 'Selon les récits historiques, les potiers faisaient des jarres avec de l\'argile.', 'Selon les récits historiques sur les métiers de l\'Arabie ancienne, les potiers façonnaient des jarres et des bols avec de l\'argile, puis les faisaient cuire.'),
+      e('p2', 'tradition', ['histoire:vie-desert'], 'Selon l\'histoire, ces jarres servaient à garder l\'eau et les dattes.', 'Selon l\'histoire, ces récipients servaient à garder l\'eau fraîche, les dattes, le grain et l\'huile.'),
+      e('p3', 'illustration', [], 'Dans le jeu, l\'atelier est un dessin imaginaire pour comprendre le métier.', 'Dans le jeu, l\'atelier du potier est un lieu imaginaire : il illustre le métier, sans prétendre montrer un atelier réel.')
+    ],
+    illustration: { scene: 'atelier', figure: false, description: 'Un four de terre et des jarres en terre cuite alignées, sans personne : image du métier de potier' }, animation: 'aucune', mots: [],
+    activite: { type: 'ordre', consigne_petit: 'Fabrique une jarre : mets les gestes dans l\'ordre.', consigne_grand: 'Remets les étapes de la fabrication d\'une jarre dans l\'ordre.', etapes: ['Prendre l\'argile', 'Façonner la jarre', 'La laisser sécher', 'La faire cuire', 'La remplir d\'eau'] },
+    questions: [{ id: 'q1', enonce: 'p2', ages: ['3-5', '6-10'], petit: 'Que garde une jarre en terre cuite ?', grand: 'Selon l\'histoire, à quoi servaient ces jarres ?', choix: ['L\'eau fraîche et les dattes', 'Le feu'], bonne: 0 }] },
+
+  // ===== 12. Le marché et les échanges (découverte au marché de la cité) =====
+  { id: 'marche-echanges', lieuNom: 'Le marché', titre: 'Le marché et les échanges', lieu: 'marche', periode: 'Depuis très longtemps (aucune date)', statut: STATUT,
+    sources: [src('histoire:vie-desert', 'tradition', 'Ouvrage sur la vie et le commerce dans l\'Arabie ancienne (référence à choisir et à faire valider)')],
+    enonces: [
+      e('m1', 'tradition', ['histoire:vie-desert'], 'Selon les récits historiques, on échangeait au marché des dattes, des tissus et des jarres.', 'Selon les récits historiques sur l\'Arabie ancienne, les marchés étaient des lieux d\'échange : on y trouvait des dattes, des tissus, des jarres, du grain et des produits venus de loin avec les caravanes.'),
+      e('m2', 'tradition', ['histoire:vie-desert'], 'Selon la tradition, le marché était aussi un lieu de rencontre.', 'Selon la tradition de l\'hospitalité, le marché était aussi un lieu de rencontre : les voyageurs s\'y reposaient, se renseignaient et partageaient les nouvelles.'),
+      e('m3', 'illustration', [], 'Dans le jeu, le marché est un dessin imaginaire pour comprendre.', 'Dans le jeu, le marché est un lieu imaginaire : il illustre la vie d\'une cité ancienne, sans prétendre être une reconstitution exacte.')
+    ],
+    illustration: { scene: 'marche', figure: false, description: 'Des étals sous des auvents de tissu, avec des jarres, des paniers et des dattes, sans personne : image d\'un marché' }, animation: 'aucune', mots: [],
+    activite: { type: 'ordre', consigne_petit: 'Mets les moments du marché dans l\'ordre.', consigne_grand: 'Remets dans l\'ordre une journée de marché.', etapes: ['Les caravanes arrivent', 'On installe les étals', 'On échange des produits', 'On partage les nouvelles', 'On repart avec de nouveaux produits'] },
+    questions: [{ id: 'q1', enonce: 'm1', ages: ['3-5', '6-10'], petit: 'Que trouve-t-on au marché ?', grand: 'Selon les récits, que trouvait-on au marché ?', choix: ['Des dattes, des tissus et des jarres', 'Des voitures'], bonne: 0 }] }
 ];
 
 export const recit = id => RECITS.find(r => r.id === id) || null;

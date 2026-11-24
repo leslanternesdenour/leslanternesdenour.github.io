@@ -1,7 +1,7 @@
 // Le plan de la cité ancienne (pur, sans Three.js) : des maisons de pierre et de terre sur une trame irrégulière, des ruelles étroites, des places dégagées.
 // Toujours la même cité (graine fixe). Aucune architecture moderne : 1 à 2 étages, toits plats, murs épais, petites fenêtres.
 import { CITE, distanceChemin, COLLINES_CITE } from './relief.js';
-import { LIEUX_ROUTE, positionDeLieu } from './donnees.js';
+import { LIEUX_ROUTE, positionDeLieu, VOYAGEURS_VILLE } from './donnees.js';
 
 export const GABARITS = 8;                                  // formes de maisons différentes (bloc, étage en retrait, plan en L, escalier extérieur, cour, échoppe à auvent, tour basse, enclos)
 const CELLULE = 24;
@@ -9,6 +9,8 @@ function hasard(graine) { let s = graine >>> 0 || 1; return () => { s = (Math.im
 // les places dégagées (marchés, placettes) : jamais de maison dedans
 export const PLACETTES = [{ s: 5790, t: 60, r: 26 }, { s: 5520, t: 78, r: 16 }, { s: 5620, t: -92, r: 18 }, { s: 5760, t: -60, r: 14 }];
 
+// distance d'un point à une ligne brisée (les trajets des voyageurs restent libres de maisons)
+function distanceTrajet(s, t, pts) { let best = Infinity; for (let i = 0; i < pts.length - 1; i++) { const [as, at] = pts[i], [bs, bt] = pts[i + 1], ds = bs - as, dt = bt - at, l2 = ds * ds + dt * dt || 1, u = Math.max(0, Math.min(1, ((s - as) * ds + (t - at) * dt) / l2)); best = Math.min(best, Math.hypot(as + u * ds - s, at + u * dt - t)); } return best; }
 let cache = null;
 export function maisonsVille() {
   if (cache) return cache;
@@ -26,6 +28,7 @@ export function maisonsVille() {
     // le chemin plat entre les deux collines reste libre
     { const ux = b.s - a.s, ut = b.t - a.t, l2 = ux * ux + ut * ut, k = Math.max(0, Math.min(1, ((s - a.s) * ux + (t - a.t) * ut) / l2)), dd = Math.hypot(s - (a.s + ux * k), t - (a.t + ut * k)); if (dd < 12 + r * 0.6) continue; }
     if (PLACETTES.some(p => Math.hypot(s - p.s, t - p.t) < p.r + r * 0.6)) continue;
+    if (VOYAGEURS_VILLE.some(v => distanceTrajet(s, t, v.trajet || [[v.s, v.t], [v.s, v.t]]) < r * 0.6 + 4)) continue;
     if (lieux.some(p => Math.hypot(s - p.s, t - p.t) < r * 0.6 + 5)) continue;
     if (liste.some(o => Math.hypot(o.s - s, o.t - t) < (Math.hypot(o.l, o.w) + Math.hypot(l, w)) * 0.36 + 1.2)) continue;
     const etage = R() < 0.3 + 0.25 * (1 - d / CITE.rayon) ? 2 : 1;

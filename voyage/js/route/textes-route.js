@@ -40,6 +40,9 @@ export const TEXTES_LIEUX = {
   'cite-porte': { petit: 'La porte de la cité.', grand: 'La porte de la cité : deux gros piliers de pierre. Elle ouvre sur des ruelles, des cours et des places.' },
   'cite-atelier': { petit: 'Un atelier de potier : des jarres en terre cuite.', grand: 'L\'atelier du potier : on façonne des jarres et des bols en terre, que l\'on fait cuire. Ils servent à garder l\'eau, les dattes et le grain.' },
   'cite-colline-b': { petit: 'Une petite colline de pierre.', grand: 'Une petite colline rocheuse à l\'intérieur de la cité. De là-haut, on voit les toits plats et les ruelles.' },
+  'collines-chemin-1': { petit: 'Regarde la colline devant toi.', grand: 'Premier point d\'observation : regarde la colline devant toi. Les deux collines sont assez proches pour que l\'on puisse voir l\'une depuis l\'autre.' },
+  'collines-chemin-2': { petit: 'Écoute le vent dans la vallée.', grand: 'Deuxième point : écoute le vent qui passe dans la vallée. Entre deux collines, l\'air circule et rafraîchit un peu.' },
+  'collines-chemin-3': { petit: 'Regarde le sol : du sable et des pierres.', grand: 'Troisième point : observe le sol, fait de sable, de petites pierres et de terre sèche. Il n\'y a ni course ni chronomètre : on se promène à son rythme.' },
   'cite-place': { petit: 'La grande place, au centre de la cité.', grand: 'La grande place, au centre de la cité : un grand espace dégagé, sans étal ni obstacle, entouré de maisons de pierre.' },
   'cite-puits': { petit: 'Un puits de pierre sur la place.', grand: 'Un puits de pierre avec une margelle basse et une jarre. L\'eau est précieuse dans toute la cité.' },
   'cite-colline-a': { petit: 'Une autre petite colline de pierre.', grand: 'Une autre petite colline rocheuse, de l\'autre côté de la cité. On peut aller de l\'une à l\'autre en marchant tranquillement.' },
@@ -47,6 +50,17 @@ export const TEXTES_LIEUX = {
   'montagne-sud-pied': { petit: 'Une autre grande montagne, plus au sud.', grand: 'Au pied d\'une autre grande montagne, plus massive et à plusieurs sommets. De loin, ses crêtes se découpent sur le ciel.' },
   'cite-fin': { petit: 'Ici s\'arrête le monde construit, pour l\'instant.', grand: 'Ici s\'arrête la partie du monde déjà construite. Bravo : tu as traversé les plaines, les montagnes et la cité !' }
 };
+// Les maisons de la cité : un fait court par forme de maison (illustration du jeu : la cité est une interprétation, pas une reconstitution exacte)
+export const FAITS_MAISONS = [
+  { petit: 'Une maison de pierre : ses murs épais gardent la fraîcheur.', grand: 'Une maison de pierre : ses murs épais gardent la fraîcheur le jour et la chaleur la nuit. Ses petites fenêtres laissent peu entrer le soleil brûlant.' },
+  { petit: 'Cette maison a un étage plus étroit, avec un toit plat.', grand: 'Cette maison a un étage plus étroit. Sur le toit plat, on pouvait faire sécher des dattes, ou dormir quand il faisait trop chaud.' },
+  { petit: 'Une maison en L : deux ailes autour d\'un coin à l\'ombre.', grand: 'Une maison en forme de L : les deux ailes protègent un petit coin à l\'ombre, où l\'on pouvait s\'asseoir à la fraîche.' },
+  { petit: 'Un escalier à l\'extérieur mène au toit.', grand: 'Un escalier extérieur mène au toit : on monte sans traverser la maison, et l\'on garde la pièce du bas fraîche et tranquille.' },
+  { petit: 'Une maison avec une cour au milieu.', grand: 'Une maison à cour : au milieu, un espace ouvert où l\'on travaille à l\'abri du vent et de la poussière, avec les murs tout autour.' },
+  { petit: 'Une échoppe : un auvent de tissu donne de l\'ombre.', grand: 'Une échoppe : l\'auvent de tissu protège du soleil, et les marchandises sont posées devant la porte, bien visibles.' },
+  { petit: 'Une petite tour pour ranger les provisions.', grand: 'Une petite tour basse : on y rangeait les provisions, dans la fraîcheur des murs épais.' },
+  { petit: 'Un enclos avec une petite cabane.', grand: 'Un enclos avec une cabane : un abri pour les animaux de la famille, à l\'ombre d\'un mur.' }
+];
 export const texteLieu = (id, age) => { const t = TEXTES_LIEUX[id]; return t ? (age === '3-5' ? t.petit : t.grand) : ''; };
 
 // Les personnages FICTIFS (aucun personnage historique ou religieux)

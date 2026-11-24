@@ -33,3 +33,30 @@ test('cité 3D : maisons en instances (peu d\'appels de dessin), obstacles seule
   assert.ok(!/(moderne|minaret|dôme|dome|verre|glass|neon)/i.test(v), 'aucune architecture moderne');
   assert.ok(!/(fenetre.*emissive|emissive)/i.test(v), 'pas de lumière électrique');
 });
+
+test('voyageurs fictifs : trajets libres de maisons, aller-retour continu, aucun personnage historique ni religieux, textes sans religion', async () => {
+  const { VOYAGEURS_VILLE } = await import('../../voyage/js/route/donnees.js');
+  const { positionSur, longueur } = await import('../../voyage/js/route/voyageurs-plan.js');
+  const { maisonsVille } = await import('../../voyage/js/route/ville-plan.js');
+  const maisons = maisonsVille();
+  assert.ok(VOYAGEURS_VILLE.length >= 6 && VOYAGEURS_VILLE.some(v => v.trajet) && VOYAGEURS_VILLE.some(v => !v.trajet));
+  const libre = (s, t) => maisons.every(m => Math.hypot(m.s - s, m.t - t) > Math.hypot(m.l, m.w) * 0.5 + 0.8);
+  for (const v of VOYAGEURS_VILLE) {
+    assert.ok(v.id && v.role && v.texte.petit && v.texte.grand && v.tenue, `${v.id} incomplet`);
+    assert.ok(!/(proph|compagnon|imam|calife|sahaba|abu |ali |omar|uthman|khadija|aicha|muhammad|ibrahim|ismaïl|hajar|allah|coran|kaaba)/i.test(v.role + v.texte.petit + v.texte.grand), `${v.id} : aucun personnage ni sujet religieux`);
+    const pts = v.trajet || [[v.s, v.t]];
+    if (v.trajet) { assert.ok(longueur(v.trajet) >= 20); const a = positionSur(v.trajet, 0), b = positionSur(v.trajet, longueur(v.trajet)), c = positionSur(v.trajet, 2 * longueur(v.trajet)); assert.deepEqual([b.s, b.t], [v.trajet.at(-1)[0], v.trajet.at(-1)[1]]); assert.ok(Math.hypot(a.s - c.s, a.t - c.t) < 1e-6, 'aller-retour continu'); }
+    for (let k = 0; k <= (v.trajet ? 40 : 0); k++) { const p = v.trajet ? positionSur(v.trajet, longueur(v.trajet) * k / 40) : { s: v.s, t: v.t }; assert.ok(libre(p.s, p.t), `${v.id} traverse une maison à ${p.s.toFixed(0)},${p.t.toFixed(0)}`); }
+  }
+});
+
+test('interactions de la cité : un fait court pour chaque forme de maison (illustration du jeu), voyageurs à qui parler, chemin des collines dessiné', async () => {
+  const { FAITS_MAISONS } = await import('../../voyage/js/route/textes-route.js');
+  const { GABARITS } = await import('../../voyage/js/route/ville-plan.js');
+  const fs = await import('node:fs');
+  assert.equal(FAITS_MAISONS.length, GABARITS);
+  for (const f of FAITS_MAISONS) { assert.ok(f.petit.length <= 110 && f.grand.length <= 330 && f.grand.length > 30); assert.ok(!/(proph|allah|coran|kaaba|zamzam)/i.test(f.petit + f.grand)); }
+  const j = fs.readFileSync(new URL('../../voyage/js/route/jeu-route.js', import.meta.url), 'utf8'), v = fs.readFileSync(new URL('../../voyage/js/route/ville-3d.js', import.meta.url), 'utf8');
+  assert.match(j, /creerVoyageurs3D/); assert.match(j, /Observer la maison/); assert.match(j, /'route:v:'/); assert.match(j, /rencontres/);
+  assert.match(v, /COLLINES_CITE/, 'le chemin plat entre les deux collines est dessiné');
+});

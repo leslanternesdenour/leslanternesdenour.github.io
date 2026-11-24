@@ -572,6 +572,7 @@ async function demarrer() {
     $('lecture').classList.remove('cache');
     (zone.querySelector('button.choix') || $('lecture-ok')).focus({ preventScroll: true });
     const voix = p.voix || (p.mascotte === 'nour' ? 'nour' : /Hakim/.test(p.titre) ? 'hakim' : /Salim/.test(p.titre) ? 'salim' : null);
+    $('lecture-ecouter').classList.toggle('cache', !!p.sansVoix);   // La Route : aucun audio pour un texte non validé
     $('lecture-ecouter').onclick = p.ecouterArabe ? () => parlerArabe(p.ecouterArabe)
       : () => direTextes([{ t: p.texte }, { t: p.sous, opt: true }, { t: p.sens }]) || parler(p.texte + (p.sous ? ' ' + p.sous.replace(/^[^\wÀ-ÿ]+/, '') : '') + (p.sens ? ' ' + p.sens.replace('Sens du verset : ', 'Le sens de ce verset : ') : ''), voix);
   }
@@ -1242,13 +1243,13 @@ async function demarrer() {
     $('dec-barre').style.transition = 'none'; $('dec-barre').style.width = p ? `${((d.nouveau ? p.n - 1 : p.n) / p.total) * 100}%` : '0';
     z.querySelector('.dec-progres').classList.toggle('cache', !p);
     setTimeout(() => { $('dec-barre').style.transition = 'width 1s ease'; $('dec-barre').style.width = p ? `${p.n / p.total * 100}%` : '0'; }, 450);
-    const b = $('dec-ecouter');
+    const b = $('dec-ecouter'); b.classList.toggle('cache', !!d.sansVoix);
     b.innerHTML = `${ICONE_SON}<span>${mot || d.arabe ? 'Écouter en arabe' : 'Écouter'}</span>`;
     b.onclick = () => { b.classList.add('parle'); setTimeout(() => b.classList.remove('parle'), 1800); if (mot || d.arabe) parlerArabe(d.arabe); else if (!direTextes([{ t: d.nom, opt: true }, { t: d.texte }])) parler(`${d.nom}. ${d.texte || ''}`); };
     z.classList.remove('cache', 'joue'); void z.offsetWidth; z.classList.add('joue');
     if (d.nouveau) {
       if (!monte) enfant.faire('joie');
-      if (!direTextes([{ t: T[1] }, { t: mot ? d.arabe : d.nom, opt: !mot }])) parler(mot ? `Nouveau mot arabe : ${d.nom}.` : `${T[1].replace(' !', '')} : ${d.nom}.`);
+      if (!d.sansVoix && !direTextes([{ t: T[1] }, { t: mot ? d.arabe : d.nom, opt: !mot }])) parler(mot ? `Nouveau mot arabe : ${d.nom}.` : `${T[1].replace(' !', '')} : ${d.nom}.`);
     }
     $('dec-ok').focus({ preventScroll: true });
   }

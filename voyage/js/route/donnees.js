@@ -73,12 +73,15 @@ export const LIEUX_ROUTE = [
   { id: 'jardins', type: 'decouverte', s: 5260, dt: 14, nom: 'Les premiers jardins', icone: '🌿' },
   { id: 'crete-vue', type: 'decouverte', s: 5380, dt: 0, nom: 'La dernière crête', icone: '🌅' },
   { id: 'cite-porte', type: 'decouverte', s: 5470, dt: 0, nom: 'La porte de la cité', icone: '🚪', mission: 'cite' },
-  { id: 'cite-atelier', type: 'decouverte', s: 5530, dt: 22, nom: 'L\'atelier du potier', icone: '🏺', mission: 'cite' },
+  { id: 'cite-atelier', type: 'decouverte', s: 5530, dt: 22, nom: 'L\'atelier du potier', icone: '🏺', mission: 'cite', recit: 'metier-potier' },
   { id: 'cite-colline-b', type: 'decouverte', s: 5540, dt: -208, nom: 'La première colline', icone: '⛰️', mission: 'collines' },
+  { id: 'collines-chemin-1', type: 'decouverte', s: 5600, t: -157, nom: 'Premier point d\'observation', icone: '👀', mission: 'parcours-collines' },
+  { id: 'collines-chemin-2', type: 'decouverte', s: 5640, t: -155, nom: 'Deuxième point d\'observation', icone: '👂', mission: 'parcours-collines' },
+  { id: 'collines-chemin-3', type: 'decouverte', s: 5688, t: -152, nom: 'Troisième point d\'observation', icone: '🪨', mission: 'parcours-collines' },
   { id: 'cite-place', type: 'decouverte', s: 5606, dt: 14, nom: 'La grande place', icone: '🕌', mission: 'cite' },
   { id: 'cite-puits', type: 'decouverte', s: 5690, dt: 30, nom: 'Le puits de la place', icone: '🏺' },
   { id: 'cite-colline-a', type: 'decouverte', s: 5740, dt: -198, nom: 'La seconde colline', icone: '⛰️', mission: 'collines' },
-  { id: 'cite-marche', type: 'decouverte', s: 5800, dt: 60, nom: 'Le marché', icone: '🛍️', mission: 'cite' },
+  { id: 'cite-marche', type: 'decouverte', s: 5800, dt: 60, nom: 'Le marché', icone: '🛍️', mission: 'cite', recit: 'marche-echanges' },
   { id: 'montagne-sud-pied', type: 'decouverte', s: 5840, t: 420, nom: 'Au pied de la grande montagne du sud', icone: '⛰️' },
   { id: 'cite-fin', type: 'cairn', s: 5880, dt: 0, nom: 'La limite de la cité', icone: '🪨' }
 ];
@@ -118,7 +121,13 @@ export const MISSIONS_ROUTE = {
     resume: 'La cité est faite de maisons de pierre, de ruelles et de places. Visite la porte, l\'atelier du potier, la grande place et le marché pour la découvrir.' },
   collines: { titre: 'Les deux collines', icone: '⛰️', total: 2, recompense: 150, categorie: 'observation',
     simple: 'Va voir les deux collines, tranquillement.',
-    resume: 'Deux petites collines dominent la cité. Va les observer l\'une après l\'autre, à ton rythme : il n\'y a ni course ni chronomètre.' }
+    resume: 'Deux petites collines dominent la cité. Va les observer l\'une après l\'autre, à ton rythme : il n\'y a ni course ni chronomètre.' },
+  'parcours-collines': { titre: 'Le chemin entre les deux collines', icone: '🚶', total: 3, recompense: 120, categorie: 'observation',
+    simple: 'Marche tranquillement entre les deux collines et regarde bien autour de toi.',
+    resume: 'Un chemin plat relie les deux collines. Marche tranquillement et fais trois pauses d\'observation : la colline, le vent, le sol. Il n\'y a ni course, ni chronomètre, ni classement.' },
+  rencontres: { titre: 'Les voyageurs de la cité', icone: '💬', total: 3, recompense: 150, categorie: 'connaissance',
+    simple: 'Dis bonjour à trois voyageurs de la cité.',
+    resume: 'La cité est pleine de voyageurs et d\'artisans venus de loin. Parle à trois d\'entre eux pour apprendre comment ils vivent, ce qu\'ils font et d\'où ils viennent.' }
 };
 
 // ---------- le village : la sortie, le seuil et l'ouverture ----------
@@ -153,3 +162,21 @@ export const RELAIS_VILLAGE = { x: 64, z: 30 };
 // Marche plus naturelle sur la Route (demande du créateur) : à pied seulement, légèrement plus lente que dans le village. La distance du voyage ne change pas.
 export const FACTEUR_MARCHE_ROUTE = 0.88;
 export const VITESSES_ROUTE = { marche: VITESSES.marche * FACTEUR_MARCHE_ROUTE, course: VITESSES.course * FACTEUR_MARCHE_ROUTE };
+
+// Les voyageurs FICTIFS de la cité (aucun personnage historique ni religieux) : certains restent à leur poste, d'autres marchent le long d'un trajet (s, t).
+// tenue : couleurs du personnage (modèle du jeu). mission : « rencontres » (parler à trois d'entre eux).
+export const VOYAGEURS_VILLE = [
+  { id: 'marchand-dattes', role: 'Un marchand de dattes', s: 5797, t: 67, tenue: { tunique: '#7a5a3a', pantalon: '#cfc2a8', cheche: '#e8dcc4', peau: '#b57e58', sac: false, barbe: '#3a2a20' }, mission: 'rencontres',
+    texte: { petit: 'Bonjour ! Mes dattes viennent d\'une oasis lointaine.', grand: 'Bonjour, voyageur ! Mes dattes viennent d\'une oasis lointaine. Elles se conservent longtemps : c\'est parfait pour les longs voyages.' } },
+  { id: 'tisserande', role: 'Une tisserande', s: 5783, t: 51, tenue: { tunique: '#46587a', pantalon: '#cdbb96', cheche: '#e8dcc4', voile: '#46587a', peau: '#c08a62', sac: false }, mission: 'rencontres',
+    texte: { petit: 'Je tisse la laine pour faire des tentes et des tapis.', grand: 'Je tisse la laine des moutons pour faire un tissu solide : les tentes, les tapis et les vêtements sont faits ainsi. Chaque couleur vient d\'une plante ou d\'une terre.' } },
+  { id: 'potier', role: 'Un potier', s: 5537, t: 30, tenue: { tunique: '#a85a40', pantalon: '#cfc2a8', cheche: '#e8dcc4', peau: '#b57e58', sac: false }, mission: 'rencontres',
+    texte: { petit: 'Avec de l\'argile et du feu, je fais des jarres.', grand: 'Avec de l\'argile et du feu, je fais des jarres. Une jarre en terre cuite garde l\'eau fraîche, même quand il fait très chaud.' } },
+  { id: 'voyageuse-oasis', role: 'Une voyageuse', tenue: { tunique: '#7a3b4d', pantalon: '#cdbb96', cheche: '#e8dcc4', voile: '#7a3b4d', peau: '#c08a62', sac: true }, mission: 'rencontres', vitesse: 1.1,
+    trajet: [[5778, 48], [5790, 38], [5802, 48], [5790, 78], [5778, 70]],
+    texte: { petit: 'Je viens du campement des Trois Tentes. Là-bas, on partage l\'eau.', grand: 'Je viens du campement des Trois Tentes, très loin d\'ici. Là-bas, on partage toujours l\'eau et le pain avec les voyageurs : c\'est une belle habitude.' } },
+  { id: 'porteur-eau', role: 'Un porteur d\'eau', tenue: { tunique: '#6b4a30', pantalon: '#cfc2a8', cheche: '#c9a26a', peau: '#a56a48', sac: true }, vitesse: 1.2, trajet: [[5692, 34], [5736, 40], [5772, 52]],
+    texte: { petit: 'Je porte l\'eau du puits jusqu\'au marché.', grand: 'Je porte l\'eau du puits jusqu\'au marché, dans des jarres. L\'eau est précieuse : on ne la gaspille jamais.' } },
+  { id: 'marcheur-rue', role: 'Un voyageur', tenue: { tunique: '#2bb3c0', pantalon: '#3a4f7a', cheche: '#fff3dc', peau: '#d9a27a', sac: true }, vitesse: 1.3, trajet: [[5486, 2], [5540, 3], [5596, 2]],
+    texte: { petit: 'Je viens de traverser les montagnes. Quel long chemin !', grand: 'Je viens de traverser les montagnes et le désert. Le chemin est long, mais on y fait de belles rencontres et on apprend beaucoup.' } }
+];

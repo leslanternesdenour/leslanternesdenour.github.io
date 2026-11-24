@@ -54,9 +54,9 @@ test('sac : les six objets du voyage, chacun avec son utilité, sans aucune jaug
 
 test('missions : trois missions de la première tranche, chacune réalisable avec les lieux qui existent', async () => {
   const { MISSIONS_ROUTE, LIEUX_ROUTE } = await import('../../voyage/js/route/donnees.js');
-  assert.deepEqual(Object.keys(MISSIONS_ROUTE), ['chemin', 'traces', 'campement', 'cite', 'collines']);
+  assert.deepEqual(Object.keys(MISSIONS_ROUTE), ['chemin', 'traces', 'campement', 'cite', 'collines', 'parcours-collines', 'rencontres']);
   for (const [id, m] of Object.entries(MISSIONS_ROUTE)) {
-    const n = LIEUX_ROUTE.filter(l => l.mission === id).length;
+    const n = LIEUX_ROUTE.filter(l => l.mission === id).length + (id === 'rencontres' ? 3 : 0);   // « rencontres » : trois voyageurs (voir le test dédié)
     assert.equal(m.total, n, `${id} : ${m.total} étapes annoncées, ${n} lieux`);
     assert.ok(m.recompense > 0 && m.titre && m.icone && m.resume && m.simple, `${id} incomplète (le texte « simple » est pour les 3–5 ans)`);
     assert.ok(['exploration', 'entraide', 'observation', 'connaissance'].includes(m.categorie));
@@ -121,4 +121,11 @@ test('marche naturelle : sur la Route, la marche à pied est légèrement plus l
   const fs = await import('node:fs');
   const main = fs.readFileSync(new URL('../../voyage/js/main.js', import.meta.url), 'utf8');
   assert.ok(main.includes(`(d.course ? ${VITESSES.course} : ${VITESSES.marche}) * (d.analogique || 0) * (route && route.enRoute() ? route.facteurMarche : 1)`), 'le facteur ne s\'applique qu\'à pied et sur la Route');
+});
+
+test('mission « rencontres » : parler à des voyageurs fictifs de la cité, réalisable avec ceux qui existent', async () => {
+  const { MISSIONS_ROUTE, VOYAGEURS_VILLE } = await import('../../voyage/js/route/donnees.js');
+  const m = MISSIONS_ROUTE.rencontres, n = VOYAGEURS_VILLE.filter(v => v.mission === 'rencontres').length;
+  assert.ok(m && m.categorie === 'connaissance' && m.recompense > 0 && m.simple && m.resume, 'mission complète');
+  assert.equal(m.total, 3); assert.ok(n >= m.total, `${n} voyageurs pour ${m.total} rencontres`);
 });

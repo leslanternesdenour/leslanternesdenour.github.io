@@ -4,12 +4,14 @@
 import { creerMondeRoute } from './monde.js';
 import { creerLieux3D } from './lieux-3d.js';
 import { creerVille3D } from './ville-3d.js';
+import { creerVoyageurs3D } from './voyageurs-3d.js';
+import { maisonsVille } from './ville-plan.js';
 import { LIEUX_SACRES } from './lieux-mecque-a-valider.js';
 import { preparerRoute, memoriserPosition, positionDeReprise } from './etat-route.js';
 import { faireEtape, progression } from './missions-route.js';
-import { DEC, versRoute, S_DEBUT, S_FIN_TRANCHE, LARGEUR, OASIS, CITE } from './relief.js';
+import { DEC, versRoute, S_DEBUT, S_FIN_TRANCHE, LARGEUR, OASIS, CITE, pointChemin } from './relief.js';
 import { FACTEUR_MARCHE_ROUTE, regionA, LIEUX_ROUTE, MISSIONS_ROUTE, SAC_ROUTE, RELAIS_VILLAGE, auSeuilVillage, versLaRoute, auRetourRoute, versLeVillage } from './donnees.js';
-import { texteLieu, GUIDE, VOYAGEUSE, MESSAGES } from './textes-route.js';
+import { texteLieu, GUIDE, VOYAGEUSE, MESSAGES, FAITS_MAISONS } from './textes-route.js';
 import { CONTENU, etiquette, texteDe } from './contenu-a-valider.js';
 import { pageCarnetRoute } from './carnet-route.js';
 import { creerRecitUI } from './recit-ui.js';
@@ -21,13 +23,16 @@ const NOMS_ANIMAUX = { lezard: ['Lézard à queue épineuse', '🦎'], gerboise:
 const lisse = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
 
 export function creerRoute(ctx) {
-  const { scene, terrain, etat, AV, enregistrer, habitants, donner, ui, J, C, village } = ctx;
+  const { scene, terrain, etat, AV, enregistrer, habitants, donner, J, C, village } = ctx;
+  // dans la Route, jamais de voix ni de synthèse vocale pour un texte non validé : les dialogues et découvertes sont silencieux
+  const ui = { ...ctx.ui, dialogue: p => ctx.ui.dialogue({ sansVoix: true, ...p }), decouvrir: d => ctx.ui.decouvrir({ sansVoix: true, ...d }) };
   const R = preparerRoute(etat);
   const age = () => ctx.age() === 'petits' ? '3-5' : '6-10';
   const monde = creerMondeRoute({ scene, Q: ctx.Q, TX: ctx.TX, ombres: ctx.ombres });
   const fixes = [];                                      // les obstacles des lieux (tentes, rochers…) : ne changent jamais
   const L = creerLieux3D({ scene, hauteur: monde.hauteur, colliders: fixes, ombres: ctx.ombres, TX: ctx.TX });
   const V = creerVille3D({ scene, hauteur: monde.hauteur, ombres: ctx.ombres });          // la cité ancienne
+  const W = creerVoyageurs3D({ scene, hauteur: monde.hauteur, leger: !!ctx.Q.leger });   // ses voyageurs fictifs animés
   const Couleur = scene.fog.color.constructor, cible = new Couleur();
   const fog0 = { near: scene.fog.near, far: scene.fog.far };
   let dans = false, brumeVillage = false, regionActuelle = null;
@@ -38,7 +43,7 @@ export function creerRoute(ctx) {
   const h0 = terrain.hauteur.bind(terrain), m0 = terrain.matiere.bind(terrain);
   terrain.hauteur = (x, z) => z > SEUIL_Z ? monde.hauteur(x, z) : h0(x, z);
   terrain.matiere = (x, z) => z > SEUIL_Z ? monde.matiere(x, z) : m0(x, z);
-  const montrer = v => { monde.montrer(v); L.groupe.visible = v; V.montrer(v); terrain.mesh.visible = !v; };
+  const montrer = v => { monde.montrer(v); L.groupe.visible = v; V.montrer(v); terrain.mesh.visible = !v; if (!v) for (const n of W.liste) n.e.racine.visible = false; };
   montrer(false);
 
   // ---------- les lieux déjà faits (reprise d'une sauvegarde) ----------
@@ -138,6 +143,18 @@ export function creerRoute(ctx) {
   }
   const lanternesProches = () => { for (const l of LIEUX_ROUTE.filter(o => recitsDe(o).length)) { const lan = L.lanternes[l.id]; if (!lan) continue; const d = Math.hypot(J.x - lan.x, J.z - lan.z); lan.allumer(d < 70);
     if (d < 20 && !annonce.has(l.id) && !recitUI.ouverte()) { annonce.add(l.id); ui.indice('📜 Une lanterne est allumée : une histoire à découvrir ici.', 4500); } } };
+
+  // ---------- la cité vivante : des voyageurs à qui parler (mission « rencontres »), des maisons à observer ----------
+  const parlerVoyageur = n => { W.saluer(n.v.id); ui.dialogue({ titre: '💬 ' + n.v.role, texte: age() === '3-5' ? n.v.texte.petit : n.v.texte.grand, boutons: [{ txt: 'Merci, bonne route !', fn: () => {} }] }); if (n.v.mission) etape(n.v.mission, n.v.id); };
+  const regV = n => habitants.ajouter({ id: 'route:v:' + n.v.id, x: n.x, z: n.z, rayon: 3.4, label: 'Parler', icone: '💬', ouvrir: () => parlerVoyageur(n) });
+  for (const n of W.liste) regV(n);
+  { const vus = new Set(), tri = [...maisonsVille()].sort((a, b) => Math.abs(a.t - pointChemin(a.s).t) - Math.abs(b.t - pointChemin(b.s).t));
+    for (const m of tri) { if (vus.has(m.gabarit)) continue; vus.add(m.gabarit);
+      const sens = Math.sign(pointChemin(m.s).t - m.t) || 1, x = m.t + sens * (Math.min(m.l, m.w) * 0.5 + 1.6), z = DEC + m.s;
+      habitants.ajouter({ id: 'route:maison:' + m.gabarit, x, z, rayon: 3.2, label: 'Observer la maison', icone: '🏠', ouvrir: () => {
+        const f = FAITS_MAISONS[m.gabarit]; ui.dialogue({ titre: '🏠 Une maison de la cité', texte: age() === '3-5' ? f.petit : f.grand, sous: '(Illustration du jeu : la cité est une interprétation, pas une reconstitution exacte.)', boutons: [{ txt: 'Merci !', fn: () => {} }] });
+        if (!R.decouvertes.includes('maison:' + m.gabarit)) { R.decouvertes.push('maison:' + m.gabarit); enregistrer(); gagner('maison:' + m.gabarit, 10, 'Tu as observé une maison de la cité'); } } }); } }
+  let tVoy = 0;
 
   // ---------- au village : le guide, le panneau, le sac ----------
   const pg = village.positionGuide, pp = village.panneau;
@@ -239,7 +256,8 @@ export function creerRoute(ctx) {
       return;
     }
     if (auRetourRoute(J.z)) { sortir(); return; }
-    monde.maj(J); L.animer(dt, t, J); lanternesProches(); V.obstacles(J);
+    monde.maj(J); L.animer(dt, t, J); lanternesProches(); V.obstacles(J); W.maj(dt, t, J);
+    tVoy += dt; if (tVoy > 0.35) { tVoy = 0; for (const n of W.liste) if (n.v.trajet && n.e.racine.visible) regV(n); }
     // l'arrivée : la dernière crête ouvre la vue sur la cité ; la caméra se tourne doucement vers elle (sans jamais bloquer l'enfant)
     if (!R.vu.arrivee) { const c = L.lieux['crete-vue']; if (c && Math.hypot(J.x - c.x, J.z - c.z) < 30) { R.vu.arrivee = true; enregistrer(); ui.bandeau('La cité apparaît !', '🌅 ' + infoLieu('crete-vue').nom); if (ctx.regarder) ctx.regarder(CITE.t, DEC + CITE.s, 9); } }
     const { s } = versRoute(J.x, J.z), reg = regionA(s);
@@ -263,7 +281,7 @@ export function creerRoute(ctx) {
   }
 
   return {
-    ville: V, enRoute: () => dans, facteurMarche: FACTEUR_MARCHE_ROUTE, ouvrirHistoire, fermerHistoire: () => recitUI.fermer(), histoireOuverte: () => recitUI.ouverte(), maj, bouger, ouvrirCarte, ouvrirSac, parlerGuide,
+    ville: V, voyageurs: W, enRoute: () => dans, facteurMarche: FACTEUR_MARCHE_ROUTE, ouvrirHistoire, fermerHistoire: () => recitUI.fermer(), histoireOuverte: () => recitUI.ouverte(), maj, bouger, ouvrirCarte, ouvrirSac, parlerGuide,
     carte, monde, lieux3d: L, etat: R, fermerCarte: () => carte.fermer(), carteOuverte: () => carte.ouverte(),
     pageCarnet: () => pageCarnetRoute({ route: R, badges: AV.badges || {}, age: age() }),
     sauver() { if (dans) memoriserPosition(etat, J); },
