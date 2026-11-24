@@ -1,7 +1,7 @@
 {
  "jeu": "route-voix",
  "base": "/audio",
- "total": 188,
+ "total": 232,
  "phrases": [
   {
    "id": "NOUR-VOIX-RTE-924aa3cd",
@@ -1332,6 +1332,446 @@
    "duree": 7.2,
    "prononciationVerifiee": false,
    "voixId": "8aQsvxWbavqMpn00DVgR"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-7f5c5194",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Je suis potier. Veux-tu apprendre à faire une jarre ?",
+   "fichier": "fr/route/nour-voix-rte-7f5c5194.mp3",
+   "duree": 3.04,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-bb6191a7",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Bravo, tu sais faire une jarre !",
+   "fichier": "fr/route/nour-voix-rte-bb6191a7.mp3",
+   "duree": 2.32,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-c58e621a",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Je suis potier : je fabrique des jarres avec de l'argile. Veux-tu apprendre mon métier ? Réponds à mes trois questions, sans te presser.",
+   "fichier": "fr/route/nour-voix-rte-c58e621a.mp3",
+   "duree": 8.08,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-58ede511",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Bravo, tu connais maintenant le métier de potier. Une bonne jarre garde l'eau fraîche pendant tout le voyage.",
+   "fichier": "fr/route/nour-voix-rte-58ede511.mp3",
+   "duree": 6.32,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-79c7c463",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Pour faire une jarre, on commence par quoi ?",
+   "fichier": "fr/route/nour-voix-rte-79c7c463.mp3",
+   "duree": 2.4,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-fdd2186d",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Oui ! L'argile mouillée se modèle très bien.",
+   "fichier": "fr/route/nour-voix-rte-fdd2186d.mp3",
+   "duree": 2.96,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-17a605a3",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Pas encore : le feu vient à la fin. D'abord, on mouille l'argile.",
+   "fichier": "fr/route/nour-voix-rte-17a605a3.mp3",
+   "duree": 4.88,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-eecfb014",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Quand la jarre est modelée, où la laisse-t-on sécher ?",
+   "fichier": "fr/route/nour-voix-rte-eecfb014.mp3",
+   "duree": 2.96,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-fb44ae7c",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Oui ! À l'ombre, elle sèche doucement.",
+   "fichier": "fr/route/nour-voix-rte-fb44ae7c.mp3",
+   "duree": 3.12,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-330695d8",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Pas tout à fait : dans l'eau, elle redeviendrait molle. On la laisse sécher à l'ombre.",
+   "fichier": "fr/route/nour-voix-rte-330695d8.mp3",
+   "duree": 5.12,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-c02c8128",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Pourquoi les voyageurs aiment-ils les jarres ?",
+   "fichier": "fr/route/nour-voix-rte-c02c8128.mp3",
+   "duree": 2.56,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-0c503d3a",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Oui ! Dans une jarre, l'eau reste fraîche.",
+   "fichier": "fr/route/nour-voix-rte-0c503d3a.mp3",
+   "duree": 3.2,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-51cefd9a",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Pas tout à fait : ce qui compte, c'est que l'eau reste fraîche dans la jarre.",
+   "fichier": "fr/route/nour-voix-rte-51cefd9a.mp3",
+   "duree": 4.32,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-e985040f",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Pour faire une jarre, par quoi commence-t-on ?",
+   "fichier": "fr/route/nour-voix-rte-e985040f.mp3",
+   "duree": 2.48,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-1232bbed",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Exactement ! L'argile mouillée devient une pâte douce, que l'on peut modeler avec les mains.",
+   "fichier": "fr/route/nour-voix-rte-1232bbed.mp3",
+   "duree": 5.44,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-ca9c6638",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Pas encore : on ne peut pas cuire une jarre qui n'existe pas. D'abord, on prépare l'argile avec de l'eau.",
+   "fichier": "fr/route/nour-voix-rte-ca9c6638.mp3",
+   "duree": 6.24,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-d66a02c1",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Quand la jarre est modelée, que faut-il faire avant de la cuire ?",
+   "fichier": "fr/route/nour-voix-rte-d66a02c1.mp3",
+   "duree": 3.44,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-8217ac11",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Oui ! Si elle sèche trop vite, elle se fendille. L'ombre la fait sécher doucement.",
+   "fichier": "fr/route/nour-voix-rte-8217ac11.mp3",
+   "duree": 5.68,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-9e8d914a",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Pas tout à fait : trop d'eau ou trop de soleil la fendillerait. Il faut la laisser sécher doucement à l'ombre.",
+   "fichier": "fr/route/nour-voix-rte-9e8d914a.mp3",
+   "duree": 6.64,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-c9eab654",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Pourquoi les voyageurs aiment-ils tant les jarres en argile ?",
+   "fichier": "fr/route/nour-voix-rte-c9eab654.mp3",
+   "duree": 3.28,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-d26c49f9",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Oui ! L'argile laisse passer un peu d'eau, qui s'évapore : cela rafraîchit l'eau qui reste dans la jarre.",
+   "fichier": "fr/route/nour-voix-rte-d26c49f9.mp3",
+   "duree": 6.24,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-13d01167",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Pas tout à fait : une jarre est lourde et elle peut se casser. Mais l'argile garde l'eau fraîche, et c'est le plus précieux.",
+   "fichier": "fr/route/nour-voix-rte-13d01167.mp3",
+   "duree": 7.44,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-c67b110f",
+   "role": "perso-karim",
+   "langue": "fr",
+   "texte": "Je vends des dattes. Veux-tu apprendre mon métier ?",
+   "fichier": "fr/route/nour-voix-rte-c67b110f.mp3",
+   "duree": 3.04,
+   "prononciationVerifiee": false,
+   "voixId": "lM87a4ey2IQxE37nDvti"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-1956fbbe",
+   "role": "perso-karim",
+   "langue": "fr",
+   "texte": "Bravo, tu connais le métier de marchand !",
+   "fichier": "fr/route/nour-voix-rte-1956fbbe.mp3",
+   "duree": 3.04,
+   "prononciationVerifiee": false,
+   "voixId": "lM87a4ey2IQxE37nDvti"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-4a0ad5ca",
+   "role": "perso-karim",
+   "langue": "fr",
+   "texte": "Je suis marchand de dattes. Au marché, on apprend à échanger et à voyager ensemble. Veux-tu apprendre mon métier ? Réponds à mes trois questions.",
+   "fichier": "fr/route/nour-voix-rte-4a0ad5ca.mp3",
+   "duree": 8.96,
+   "prononciationVerifiee": false,
+   "voixId": "lM87a4ey2IQxE37nDvti"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-5cbbae18",
+   "role": "perso-karim",
+   "langue": "fr",
+   "texte": "Bravo, tu connais maintenant le métier de marchand : bien choisir, échanger honnêtement et voyager ensemble.",
+   "fichier": "fr/route/nour-voix-rte-5cbbae18.mp3",
+   "duree": 7.2,
+   "prononciationVerifiee": false,
+   "voixId": "lM87a4ey2IQxE37nDvti"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-e121667f",
+   "role": "perso-karim",
+   "langue": "fr",
+   "texte": "Un voyageur part dans le désert. Que lui conseilles-tu d'emporter ?",
+   "fichier": "fr/route/nour-voix-rte-e121667f.mp3",
+   "duree": 4.16,
+   "prononciationVerifiee": false,
+   "voixId": "lM87a4ey2IQxE37nDvti"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-82a2ae7c",
+   "role": "perso-karim",
+   "langue": "fr",
+   "texte": "Oui ! Les dattes et l'eau sont parfaites pour la route.",
+   "fichier": "fr/route/nour-voix-rte-82a2ae7c.mp3",
+   "duree": 3.52,
+   "prononciationVerifiee": false,
+   "voixId": "lM87a4ey2IQxE37nDvti"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-91d62ce5",
+   "role": "perso-karim",
+   "langue": "fr",
+   "texte": "Pas tout à fait : un gros coffre est lourd. Les dattes et l'eau sont plus utiles.",
+   "fichier": "fr/route/nour-voix-rte-91d62ce5.mp3",
+   "duree": 5.44,
+   "prononciationVerifiee": false,
+   "voixId": "lM87a4ey2IQxE37nDvti"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-558b2d7b",
+   "role": "perso-karim",
+   "langue": "fr",
+   "texte": "Au marché, on peut échanger des dattes contre quoi ?",
+   "fichier": "fr/route/nour-voix-rte-558b2d7b.mp3",
+   "duree": 3.36,
+   "prononciationVerifiee": false,
+   "voixId": "lM87a4ey2IQxE37nDvti"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-b9d4e3dc",
+   "role": "perso-karim",
+   "langue": "fr",
+   "texte": "Oui ! Le tissu et les dattes s'échangent bien.",
+   "fichier": "fr/route/nour-voix-rte-b9d4e3dc.mp3",
+   "duree": 3.36,
+   "prononciationVerifiee": false,
+   "voixId": "lM87a4ey2IQxE37nDvti"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-2860a0b0",
+   "role": "perso-karim",
+   "langue": "fr",
+   "texte": "Pas tout à fait : un nuage ne s'échange pas ! Un beau tissu, oui.",
+   "fichier": "fr/route/nour-voix-rte-2860a0b0.mp3",
+   "duree": 4.96,
+   "prononciationVerifiee": false,
+   "voixId": "lM87a4ey2IQxE37nDvti"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-2fb2d31b",
+   "role": "perso-karim",
+   "langue": "fr",
+   "texte": "Pourquoi les marchands voyagent-ils ensemble ?",
+   "fichier": "fr/route/nour-voix-rte-2fb2d31b.mp3",
+   "duree": 2.48,
+   "prononciationVerifiee": false,
+   "voixId": "lM87a4ey2IQxE37nDvti"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-96d719b7",
+   "role": "perso-karim",
+   "langue": "fr",
+   "texte": "Oui ! Ensemble, on s'entraide.",
+   "fichier": "fr/route/nour-voix-rte-96d719b7.mp3",
+   "duree": 2.64,
+   "prononciationVerifiee": false,
+   "voixId": "lM87a4ey2IQxE37nDvti"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-238dac1b",
+   "role": "perso-karim",
+   "langue": "fr",
+   "texte": "Pas tout à fait : on voyage ensemble pour s'entraider.",
+   "fichier": "fr/route/nour-voix-rte-238dac1b.mp3",
+   "duree": 3.6,
+   "prononciationVerifiee": false,
+   "voixId": "lM87a4ey2IQxE37nDvti"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-6c277efe",
+   "role": "perso-karim",
+   "langue": "fr",
+   "texte": "Un voyageur part pour une longue route dans le désert. Que lui conseilles-tu d'emporter ?",
+   "fichier": "fr/route/nour-voix-rte-6c277efe.mp3",
+   "duree": 5.36,
+   "prononciationVerifiee": false,
+   "voixId": "lM87a4ey2IQxE37nDvti"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-01576457",
+   "role": "perso-karim",
+   "langue": "fr",
+   "texte": "Bien vu ! Les dattes se gardent longtemps et donnent de l'énergie, et l'eau est la chose la plus précieuse du désert.",
+   "fichier": "fr/route/nour-voix-rte-01576457.mp3",
+   "duree": 7.2,
+   "prononciationVerifiee": false,
+   "voixId": "lM87a4ey2IQxE37nDvti"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-f26473e5",
+   "role": "perso-karim",
+   "langue": "fr",
+   "texte": "Pas tout à fait : le coffre et le tapis sont lourds à porter. Des dattes et une gourde d'eau sont bien plus utiles.",
+   "fichier": "fr/route/nour-voix-rte-f26473e5.mp3",
+   "duree": 6.96,
+   "prononciationVerifiee": false,
+   "voixId": "lM87a4ey2IQxE37nDvti"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-78fa9304",
+   "role": "perso-karim",
+   "langue": "fr",
+   "texte": "Au marché, on échange parfois sans pièces : on troque. Que peut-on échanger contre un sac de dattes ?",
+   "fichier": "fr/route/nour-voix-rte-78fa9304.mp3",
+   "duree": 6.32,
+   "prononciationVerifiee": false,
+   "voixId": "lM87a4ey2IQxE37nDvti"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-1a1f8c30",
+   "role": "perso-karim",
+   "langue": "fr",
+   "texte": "Oui ! Chacun a ce qui manque à l'autre : en échangeant, tout le monde est content.",
+   "fichier": "fr/route/nour-voix-rte-1a1f8c30.mp3",
+   "duree": 5.36,
+   "prononciationVerifiee": false,
+   "voixId": "lM87a4ey2IQxE37nDvti"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-3ef0dc8a",
+   "role": "perso-karim",
+   "langue": "fr",
+   "texte": "Pas tout à fait : on ne peut pas échanger un nuage ni une ombre. Un beau tissu, par contre, oui.",
+   "fichier": "fr/route/nour-voix-rte-3ef0dc8a.mp3",
+   "duree": 6.4,
+   "prononciationVerifiee": false,
+   "voixId": "lM87a4ey2IQxE37nDvti"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-c8ed43b4",
+   "role": "perso-karim",
+   "langue": "fr",
+   "texte": "Pourquoi les marchands voyagent-ils en caravane, tous ensemble ?",
+   "fichier": "fr/route/nour-voix-rte-c8ed43b4.mp3",
+   "duree": 3.44,
+   "prononciationVerifiee": false,
+   "voixId": "lM87a4ey2IQxE37nDvti"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-569a518c",
+   "role": "perso-karim",
+   "langue": "fr",
+   "texte": "Oui ! Ensemble, on se protège, on partage l'eau et les provisions, et le chemin paraît moins long.",
+   "fichier": "fr/route/nour-voix-rte-569a518c.mp3",
+   "duree": 6.08,
+   "prononciationVerifiee": false,
+   "voixId": "lM87a4ey2IQxE37nDvti"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-35c8c1c3",
+   "role": "perso-karim",
+   "langue": "fr",
+   "texte": "Pas tout à fait : une caravane ne va pas plus vite, mais on s'y entraide et on y partage l'eau et les provisions.",
+   "fichier": "fr/route/nour-voix-rte-35c8c1c3.mp3",
+   "duree": 6.72,
+   "prononciationVerifiee": false,
+   "voixId": "lM87a4ey2IQxE37nDvti"
   },
   {
    "id": "NOUR-VOIX-RTE-b00d68c6",

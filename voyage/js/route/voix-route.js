@@ -667,6 +667,226 @@ export const PHRASES_ROUTE = [
   "exact"
  ],
  [
+  "NOUR-VOIX-RTE-7f5c5194",
+  "Je suis potier. Veux-tu apprendre à faire une jarre ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-bb6191a7",
+  "Bravo, tu sais faire une jarre !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-c58e621a",
+  "Je suis potier : je fabrique des jarres avec de l'argile. Veux-tu apprendre mon métier ? Réponds à mes trois questions, sans te presser.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-58ede511",
+  "Bravo, tu connais maintenant le métier de potier. Une bonne jarre garde l'eau fraîche pendant tout le voyage.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-79c7c463",
+  "Pour faire une jarre, on commence par quoi ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-fdd2186d",
+  "Oui ! L'argile mouillée se modèle très bien.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-17a605a3",
+  "Pas encore : le feu vient à la fin. D'abord, on mouille l'argile.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-eecfb014",
+  "Quand la jarre est modelée, où la laisse-t-on sécher ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-fb44ae7c",
+  "Oui ! À l'ombre, elle sèche doucement.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-330695d8",
+  "Pas tout à fait : dans l'eau, elle redeviendrait molle. On la laisse sécher à l'ombre.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-c02c8128",
+  "Pourquoi les voyageurs aiment-ils les jarres ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-0c503d3a",
+  "Oui ! Dans une jarre, l'eau reste fraîche.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-51cefd9a",
+  "Pas tout à fait : ce qui compte, c'est que l'eau reste fraîche dans la jarre.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-e985040f",
+  "Pour faire une jarre, par quoi commence-t-on ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-1232bbed",
+  "Exactement ! L'argile mouillée devient une pâte douce, que l'on peut modeler avec les mains.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-ca9c6638",
+  "Pas encore : on ne peut pas cuire une jarre qui n'existe pas. D'abord, on prépare l'argile avec de l'eau.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-d66a02c1",
+  "Quand la jarre est modelée, que faut-il faire avant de la cuire ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-8217ac11",
+  "Oui ! Si elle sèche trop vite, elle se fendille. L'ombre la fait sécher doucement.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-9e8d914a",
+  "Pas tout à fait : trop d'eau ou trop de soleil la fendillerait. Il faut la laisser sécher doucement à l'ombre.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-c9eab654",
+  "Pourquoi les voyageurs aiment-ils tant les jarres en argile ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-d26c49f9",
+  "Oui ! L'argile laisse passer un peu d'eau, qui s'évapore : cela rafraîchit l'eau qui reste dans la jarre.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-13d01167",
+  "Pas tout à fait : une jarre est lourde et elle peut se casser. Mais l'argile garde l'eau fraîche, et c'est le plus précieux.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-c67b110f",
+  "Je vends des dattes. Veux-tu apprendre mon métier ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-1956fbbe",
+  "Bravo, tu connais le métier de marchand !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-4a0ad5ca",
+  "Je suis marchand de dattes. Au marché, on apprend à échanger et à voyager ensemble. Veux-tu apprendre mon métier ? Réponds à mes trois questions.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-5cbbae18",
+  "Bravo, tu connais maintenant le métier de marchand : bien choisir, échanger honnêtement et voyager ensemble.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-e121667f",
+  "Un voyageur part dans le désert. Que lui conseilles-tu d'emporter ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-82a2ae7c",
+  "Oui ! Les dattes et l'eau sont parfaites pour la route.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-91d62ce5",
+  "Pas tout à fait : un gros coffre est lourd. Les dattes et l'eau sont plus utiles.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-558b2d7b",
+  "Au marché, on peut échanger des dattes contre quoi ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-b9d4e3dc",
+  "Oui ! Le tissu et les dattes s'échangent bien.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-2860a0b0",
+  "Pas tout à fait : un nuage ne s'échange pas ! Un beau tissu, oui.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-2fb2d31b",
+  "Pourquoi les marchands voyagent-ils ensemble ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-96d719b7",
+  "Oui ! Ensemble, on s'entraide.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-238dac1b",
+  "Pas tout à fait : on voyage ensemble pour s'entraider.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-6c277efe",
+  "Un voyageur part pour une longue route dans le désert. Que lui conseilles-tu d'emporter ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-01576457",
+  "Bien vu ! Les dattes se gardent longtemps et donnent de l'énergie, et l'eau est la chose la plus précieuse du désert.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-f26473e5",
+  "Pas tout à fait : le coffre et le tapis sont lourds à porter. Des dattes et une gourde d'eau sont bien plus utiles.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-78fa9304",
+  "Au marché, on échange parfois sans pièces : on troque. Que peut-on échanger contre un sac de dattes ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-1a1f8c30",
+  "Oui ! Chacun a ce qui manque à l'autre : en échangeant, tout le monde est content.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-3ef0dc8a",
+  "Pas tout à fait : on ne peut pas échanger un nuage ni une ombre. Un beau tissu, par contre, oui.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-c8ed43b4",
+  "Pourquoi les marchands voyagent-ils en caravane, tous ensemble ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-569a518c",
+  "Oui ! Ensemble, on se protège, on partage l'eau et les provisions, et le chemin paraît moins long.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-35c8c1c3",
+  "Pas tout à fait : une caravane ne va pas plus vite, mais on s'y entraide et on y partage l'eau et les provisions.",
+  "exact"
+ ],
+ [
   "NOUR-VOIX-RTE-b00d68c6",
   "Retrouver le chemin de la grande route",
   "exact"

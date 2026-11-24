@@ -38,3 +38,13 @@ test('inventaire : chaque habitant de maison parle avec sa propre voix Nour (3�
   const parTexte = new Map((await inventaire()).map(p => [normaliserTexte(p.texte), p]));
   for (const h of Object.values(HABITANTS_MAISONS)) for (const t of [h.petit, h.grand]) { const p = parTexte.get(normaliserTexte(t)); assert.ok(p, 'sans voix : ' + t.slice(0, 40)); assert.equal(p.role, h.voix, `${h.role} : mauvaise voix`); }
 });
+
+test('inventaire : chaque texte d\'une activité de métier (présentation, questions, explications, fin) a la voix de son métier', async () => {
+  const { inventaire, normaliserTexte } = await import('../voix/route/inventaire-route.mjs');
+  const { ACTIVITES_METIERS, questionsMetier } = await import('../../voyage/js/route/activites-route.js');
+  const parTexte = new Map((await inventaire()).map(p => [normaliserTexte(p.texte), p]));
+  for (const [id, a] of Object.entries(ACTIVITES_METIERS)) {
+    const textes = [a.intro.petit, a.intro.grand, a.fin.petit, a.fin.grand, ...['3-5', '6-10'].flatMap(age => questionsMetier(id, age).flatMap(q => [q.question, q.ok, q.ko]))];
+    for (const t of textes) { const p = parTexte.get(normaliserTexte(t)); assert.ok(p, `${id} : sans voix : ${t.slice(0, 40)}`); assert.equal(p.role, a.voix, `${id} : mauvaise voix`); }
+  }
+});

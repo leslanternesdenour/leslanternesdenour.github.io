@@ -6,6 +6,7 @@ import { creerLieux3D } from './lieux-3d.js';
 import { creerVille3D } from './ville-3d.js';
 import { creerVoyageurs3D } from './voyageurs-3d.js';
 import { maisonsVille, portesJouables } from './ville-plan.js';
+import { ACTIVITES_METIERS, questionsMetier } from './activites-route.js';
 import { LIEUX_SACRES } from './lieux-mecque-a-valider.js';
 import { preparerRoute, memoriserPosition, positionDeReprise } from './etat-route.js';
 import { faireEtape, progression } from './missions-route.js';
@@ -146,7 +147,20 @@ export function creerRoute(ctx) {
     if (d < 20 && !annonce.has(l.id) && !recitUI.ouverte()) { annonce.add(l.id); ui.indice('📜 ' + MESSAGES.lanterne, 4500); } } };
 
   // ---------- la cité vivante : des voyageurs à qui parler (mission « rencontres »), des maisons à observer ----------
-  const parlerVoyageur = n => { W.saluer(n.v.id); ui.dialogue({ titre: '💬 ' + n.v.role, texte: age() === '3-5' ? n.v.texte.petit : n.v.texte.grand, boutons: [{ txt: 'Merci, bonne route !', fn: () => {} }] }); if (n.v.mission) etape(n.v.mission, n.v.id); };
+  // les métiers : le potier et le marchand t'apprennent leur métier en trois questions douces (ni chronomètre ni pénalité : on réessaie après l'explication)
+  function lancerMetier(id) {
+    const a = ACTIVITES_METIERS[id], g = age() === '3-5', qs = questionsMetier(id, age()), titre = a.icone + ' ' + a.titre;
+    const poser = k => {
+      if (k >= qs.length) { const neuf = !R.vu['metier_' + id]; R.vu['metier_' + id] = true; enregistrer(); if (neuf) setTimeout(() => gagner('metier:' + id, a.recompense, 'Tu as appris : ' + a.titre), 900);
+        ui.dialogue({ titre, texte: g ? a.fin.petit : a.fin.grand, icone: a.icone, boutons: [{ txt: 'Merci !', fn: () => {} }] }); return; }
+      const q = qs[k], n = q.choix.length, ordre = q.choix.map((_, i) => (i + k + 1) % n);   // la bonne réponse n'est pas toujours au même endroit
+      ui.dialogue({ titre, texte: q.question, icone: a.icone, petitsBoutons: true, boutons: ordre.map(i => ({ txt: q.choix[i], fn: () => setTimeout(() => (i === q.bonne ? ok : ko)(k), 60) })) });
+    };
+    const ok = k => ui.dialogue({ titre, texte: qs[k].ok, icone: a.icone, boutons: [{ txt: k + 1 < qs.length ? 'Question suivante ▶' : 'Terminer', fn: () => setTimeout(() => poser(k + 1), 60) }] });
+    const ko = k => ui.dialogue({ titre, texte: qs[k].ko, icone: a.icone, boutons: [{ txt: 'Réessayer', fn: () => setTimeout(() => poser(k), 60) }] });
+    ui.dialogue({ titre, texte: g ? a.intro.petit : a.intro.grand, icone: a.icone, boutons: [{ txt: 'Je suis prêt !', fn: () => setTimeout(() => poser(0), 60) }, { txt: 'Plus tard', fn: () => {} }] });
+  }
+  const parlerVoyageur = n => { W.saluer(n.v.id); ui.dialogue({ titre: '💬 ' + n.v.role, texte: age() === '3-5' ? n.v.texte.petit : n.v.texte.grand, boutons: [...(ACTIVITES_METIERS[n.v.id] ? [{ txt: ACTIVITES_METIERS[n.v.id].icone + ' Apprendre son métier', fn: () => setTimeout(() => lancerMetier(n.v.id), 60) }] : []), { txt: 'Merci, bonne route !', fn: () => {} }] }); if (n.v.mission) etape(n.v.mission, n.v.id); };
   const regV = n => habitants.ajouter({ id: 'route:v:' + n.v.id, x: n.x, z: n.z, rayon: 3.4, label: 'Parler', icone: '💬', ouvrir: () => parlerVoyageur(n) });
   for (const n of W.liste) regV(n);
   const faitMaison = g => {
