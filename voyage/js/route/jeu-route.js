@@ -8,6 +8,7 @@ import { creerInterieur3D } from './interieur-3d.js';
 import { creerMontee3D } from './montee-3d.js';
 import { suivreTraversee } from './traversees-route.js';
 import { sandboxActif } from './bac-a-sable.js';
+import { loinDeLaPiste } from './piste-plan.js';
 import { creerVerificationUI } from './verification-ui.js';
 import { creerVoyageurs3D } from './voyageurs-3d.js';
 import { maisonsVille, portesJouables, villeVisible } from './ville-plan.js';
@@ -43,6 +44,7 @@ export function creerRoute(ctx) {
   const W = creerVoyageurs3D({ scene, hauteur: monde.hauteur, leger: !!ctx.Q.leger });   // ses voyageurs fictifs animés
   const I = creerInterieur3D({ scene, hauteur: monde.hauteur, ombres: ctx.ombres });   // la pièce d'une maison : invisible tant qu'on n'y entre pas
   const M3 = creerMontee3D({ scene, hauteur: monde.hauteur, ombres: ctx.ombres });          // les sentiers de montée des deux grandes montagnes
+  let tHors = 0, cooldownHors = 0;                                                        // « reviens vers la piste » : au plus une fois toutes les 40 s
   let villeAffichee = false;                                                              // la cité est-elle dessinée ? (seulement quand elle peut être vue)
   let dansMaison = null;                                                                  // { gabarit, retour : devant la porte }
   const Couleur = scene.fog.color.constructor, cible = new Couleur();
@@ -343,6 +345,7 @@ export function creerRoute(ctx) {
     }
     if (auRetourRoute(J.z)) { sortir(); return; }
     monde.maj(J); L.animer(dt, t, J); lanternesProches(); parcoursCollines();
+    tHors += dt; if (tHors > 1) { tHors = 0; if (cooldownHors > 0) cooldownHors -= 1; else if (!dansMaison && loinDeLaPiste(J.z - DEC, J.x)) { cooldownHors = 40; ui.indice('🧭 ' + MESSAGES.horsPiste, 6000); } }
     { const p = villeVisible(J.x, J.z); if (p !== villeAffichee) { villeAffichee = p; V.montrer(dans && villeVisible(J.x, J.z)); } } V.obstacles(J); W.maj(dt, t, J);
     tVoy += dt; if (tVoy > 0.35) { tVoy = 0; for (const n of W.liste) if (n.v.trajet && n.e.racine.visible) regV(n); }
     // l'arrivée : la dernière crête ouvre la vue sur la cité ; la caméra se tourne doucement vers elle (sans jamais bloquer l'enfant)

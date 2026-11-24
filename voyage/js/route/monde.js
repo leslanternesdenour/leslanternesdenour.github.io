@@ -13,7 +13,7 @@ import { semerTuile } from './decor-plan.js';
 const PAS = 4, N = TAILLE_TUILE / PAS;
 const TUILES_PAR_IMAGE = 1;                     // budget : une tuile construite par image au plus (jamais de gel)
 const C = n => new THREE.Color(n);
-const sable = C('#e9c88f'), sable2 = C('#dcb06f'), clair = C('#f3dfb2'), ocre = C('#d39a5c'), chemin = C('#d8b07a'),
+const sable = C('#e9c88f'), sable2 = C('#dcb06f'), clair = C('#f3dfb2'), ocre = C('#d39a5c'), chemin = C('#f4ead2'),
   terreBattue = C('#b79f78'), dalle = C('#d8c9a8'), herbe = C('#93bd5f'), herbe2 = C('#6d9a45'), roche = C('#94705c'), roche2 = C('#5d4f48'), mouille = C('#8c7650');
 const teintes = REGIONS_ROUTE.map(r => C(r.couleur)), t1 = new THREE.Color(), t2 = new THREE.Color();
 
@@ -38,7 +38,7 @@ function colorier(s, t, r, out, mat) {
   if (r.lac > 0.05) out.lerp(mouille, Math.min(1, r.lac * 1.6));
   if (r.cite > 0) out.lerp(terreBattue, r.cite * 0.75);                    // la cité : terre battue
   if (r.plaza > 0) out.lerp(dalle, r.plaza * 0.9);                         // la grande place : dalles claires
-  if (r.surChemin > 0) out.lerp(chemin, r.surChemin * 0.8 * (1 - r.plaza * 0.6));
+  if (r.surChemin > 0) out.lerp(chemin, r.surChemin * 0.9 * (1 - r.plaza * 0.6));
   mat[0] = Math.max(0, 1 - vert - roc); mat[1] = vert * (1 - r.surChemin); mat[2] = roc * (1 - r.surChemin * 0.6);
   return { herbe: vert, roche: roc };
 }
@@ -112,6 +112,7 @@ export function creerMondeRoute({ scene, Q, TX, ombres = false }) {
     rocher: { cap: 1200, mat, ombre: true, geos: [
       fusion([piece(DOD(1), '#a38868', { p: [0, 0.35, 0], s: [1.1, 0.75, 0.95], r: [0.3, 0.4, 0] }), piece(DOD(0.6), '#8f7a5e', { p: [0.9, 0.15, 0.3], s: [1, 0.8, 1] })]),
       fusion([piece(DOD(1), '#9a8062', { p: [0, 0.5, 0], s: [0.8, 1.0, 0.85], r: [0.8, 0.1, 0.4] }), piece(DOD(0.5), '#b09672', { p: [-0.7, 0.1, 0.4], s: [1, 0.7, 1] })])] },
+    poteau: { cap: 900, mat, ombre: false, geos: [fusion([piece(B(), '#6e4e34', { p: [0, 0.8, 0], s: [0.16, 1.6, 0.16] }), piece(B(), '#f3ecd8', { p: [0, 1.45, 0], s: [0.21, 0.34, 0.21] }), piece(B(), '#c0392b', { p: [0, 1.72, 0], s: [0.24, 0.14, 0.24] })])] },
     caillou: { cap: 2000, mat, ombre: false, geos: [fusion([piece(DOD(0.22), '#a8906e', { p: [0, 0.08, 0], s: [1, 0.6, 1] }), piece(DOD(0.14), '#8f7a5e', { p: [0.3, 0.05, 0.1], s: [1, 0.6, 1] })])] },
     buisson: { cap: 1200, mat: matVent, ombre: false, geos: [fusion([piece(ICO(0.5), '#8a7a4a', { p: [0, 0.3, 0], s: [1.2, 0.7, 1.1] }), piece(ICO(0.35), '#9a8c58', { p: [0.4, 0.2, 0.2], s: [1, 0.7, 1] }), piece(ICO(0.3), '#7d6e40', { p: [-0.35, 0.18, -0.2] })])] },
     acacia: { cap: 150, mat: matVent, ombre: true, geos: [fusion([piece(CYL(0.12, 0.2, 3, 5), '#6b4a30', { p: [0, 1.5, 0] }), piece(new THREE.SphereGeometry(2.1, 7, 4), '#7d8a45', { p: [0, 3.2, 0], s: [1.2, 0.32, 1.2] }), piece(new THREE.SphereGeometry(1.3, 6, 4), '#8a9650', { p: [0.9, 2.6, 0.3], s: [1, 0.3, 1] })])] },

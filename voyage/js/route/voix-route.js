@@ -2252,6 +2252,11 @@ export const PHRASES_ROUTE = [
   "exact"
  ],
  [
+  "NOUR-VOIX-RTE-0ebb39ee",
+  "Tu t'éloignes de la grande piste. Reviens vers les poteaux rouges, ou ouvre ta carte.",
+  "exact"
+ ],
+ [
   "NOUR-VOIX-RTE-1c8cfd4c",
   "Bravo, tout est dans l'ordre !",
   "exact"

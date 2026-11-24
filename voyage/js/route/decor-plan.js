@@ -1,7 +1,7 @@
 // Le semis du décor de La Route, tuile par tuile (pur, sans Three.js) : toujours le même pour la même tuile, léger, et la piste reste libre.
 // Le décor de chaque tuile est choisi selon la région (rochers à la sortie, buissons dans la plaine, palmiers à l'oasis…).
 import { TAILLE_TUILE } from './tuiles-plan.js';
-import { relief, distanceChemin, OASIS, CAMP, CITE } from './relief.js';
+import { relief, distanceChemin, pointChemin, S_DEBUT, OASIS, CAMP, CITE } from './relief.js';
 import { lisse } from './bruit.js';
 import { regionA, LIEUX_ROUTE, positionDeLieu } from './donnees.js';
 
@@ -56,6 +56,12 @@ export function semerTuile(i, j) {
   if (dO < OASIS.r + 50) {
     poser('palmier', 9, 0.55, 0.85, 1.3, s0, t0, s0 + TAILLE_TUILE, t0 + TAILLE_TUILE);
     poser('roseau', 6, 0, 0.8, 1.3, s0, t0, s0 + TAILLE_TUILE, t0 + TAILLE_TUILE);
+  }
+  // le balisage de la grande piste : un poteau tous les 30 m, d'un côté puis de l'autre, bien visible de loin (bois, bande crème, sommet rouge) : l'enfant ne se perd pas
+  for (let k = Math.ceil(Math.max(s0, S_DEBUT) / 30); k * 30 < s0 + TAILLE_TUILE; k++) {
+    const s = k * 30, t = pointChemin(s).t + (k % 2 ? 4.5 : -4.5);
+    if (t < t0 || t >= t0 + TAILLE_TUILE || Math.hypot(s - CITE.s, t - CITE.t) < CITE.rayon + 20 || relief(s, t).lac > 0.02) continue;
+    sortie.push({ type: 'poteau', s, t: +t.toFixed(2), rot: 0, sc: 1, r: 0.2 });
   }
   // un palmier ou un roseau ne doit pas être loin de l'eau : on retire ceux qui sont trop éloignés
   return sortie.filter(o => (o.type !== 'palmier' && o.type !== 'roseau') || (Math.hypot(o.s - OASIS.s, o.t - OASIS.t) > OASIS.lac + 4 && Math.hypot(o.s - OASIS.s, o.t - OASIS.t) < OASIS.r + 30));

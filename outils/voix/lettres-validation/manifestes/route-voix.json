@@ -1,7 +1,7 @@
 {
  "jeu": "route-voix",
  "base": "/audio",
- "total": 454,
+ "total": 455,
  "phrases": [
   {
    "id": "NOUR-VOIX-RTE-924aa3cd",
@@ -4500,6 +4500,16 @@
    "texte": "Il ne reste plus de dattes mûres : laisse le reste aux oiseaux !",
    "fichier": "fr/route/nour-voix-rte-2ca9634e.mp3",
    "duree": 3.6,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-0ebb39ee",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Tu t'éloignes de la grande piste. Reviens vers les poteaux rouges, ou ouvre ta carte.",
+   "fichier": "fr/route/nour-voix-rte-0ebb39ee.mp3",
+   "duree": 5.28,
    "prononciationVerifiee": false,
    "voixId": "hddT377hAwvRoOKqMj0E"
   },
