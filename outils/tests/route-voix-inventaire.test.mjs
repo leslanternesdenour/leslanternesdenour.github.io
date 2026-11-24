@@ -31,3 +31,10 @@ test('production des voix : refuse toute voix hors des 10 voix Nour, ne régén�
   assert.ok(!/speechSynthesis/.test(s));
   assert.match(s, /eleven_|model_id/); assert.match(s, /audio\/route-voix\.json/);
 });
+
+test('inventaire : chaque habitant de maison parle avec sa propre voix Nour (3–5 ans et 6–10 ans)', async () => {
+  const { inventaire, normaliserTexte } = await import('../voix/route/inventaire-route.mjs');
+  const { HABITANTS_MAISONS } = await import('../../voyage/js/route/donnees.js');
+  const parTexte = new Map((await inventaire()).map(p => [normaliserTexte(p.texte), p]));
+  for (const h of Object.values(HABITANTS_MAISONS)) for (const t of [h.petit, h.grand]) { const p = parTexte.get(normaliserTexte(t)); assert.ok(p, 'sans voix : ' + t.slice(0, 40)); assert.equal(p.role, h.voix, `${h.role} : mauvaise voix`); }
+});

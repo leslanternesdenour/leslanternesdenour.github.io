@@ -2,6 +2,7 @@
 // Toujours la même cité (graine fixe). Aucune architecture moderne : 1 à 2 étages, toits plats, murs épais, petites fenêtres.
 import { CITE, distanceChemin, COLLINES_CITE } from './relief.js';
 import { LIEUX_ROUTE, positionDeLieu, VOYAGEURS_VILLE } from './donnees.js';
+import { DEC } from './relief.js';
 
 export const GABARITS = 8;                                  // formes de maisons différentes (bloc, étage en retrait, plan en L, escalier extérieur, cour, échoppe à auvent, tour basse, enclos)
 const CELLULE = 24;
@@ -12,6 +13,20 @@ export const PLACETTES = [{ s: 5790, t: 60, r: 26 }, { s: 5520, t: 78, r: 16 }, 
 // distance d'un point à une ligne brisée (les trajets des voyageurs restent libres de maisons)
 function distanceTrajet(s, t, pts) { let best = Infinity; for (let i = 0; i < pts.length - 1; i++) { const [as, at] = pts[i], [bs, bt] = pts[i + 1], ds = bs - as, dt = bt - at, l2 = ds * ds + dt * dt || 1, u = Math.max(0, Math.min(1, ((s - as) * ds + (t - at) * dt) / l2)); best = Math.min(best, Math.hypot(as + u * ds - s, at + u * dt - t)); } return best; }
 let cache = null;
+// les formes de maisons qui ont une vraie porte dessinée (l'échoppe et l'enclos n'en ont pas) ; la tour basse est plus étroite : sa face avant est à 0,4
+export const GABARITS_AVEC_PORTE = [0, 1, 2, 3, 4, 6];
+// la porte d'une maison, en coordonnées du monde : même repère que ville-3d.js (la face avant est le +z local, tourné de m.rot) ; (nx, nz) sort de la maison
+export function porteDe(m) {
+  const c = Math.cos(m.rot), s = Math.sin(m.rot), lx = (m.gabarit === 4 ? 0 : 0.1) * m.w, lz = (m.gabarit === 6 ? 0.4 : 0.5) * m.l;
+  return { x: m.t + lx * c + lz * s, z: DEC + m.s - lx * s + lz * c, nx: s, nz: c };
+}
+// pour chaque forme de maison à porte : la maison la plus proche du chemin dont la porte est accessible (jamais collée à une autre maison). x, z : où se tenir pour frapper (1,3 m devant la porte).
+export function portesJouables() {
+  const toutes = maisonsVille();
+  return GABARITS_AVEC_PORTE.map(g => toutes.filter(m => m.gabarit === g).map(m => { const p = porteDe(m); return { gabarit: g, maison: m, porte: p, x: p.x + p.nx * 1.3, z: p.z + p.nz * 1.3, d: distanceChemin(m.s, m.t) }; })
+    .filter(c => toutes.every(o => o === c.maison || Math.hypot(c.x - o.t, c.z - (DEC + o.s)) > Math.hypot(o.l, o.w) / 2 + 0.5))
+    .sort((a, b) => a.d - b.d)[0]);
+}
 export function maisonsVille() {
   if (cache) return cache;
   const R = hasard(0x4d454343), liste = [], lieux = LIEUX_ROUTE.map(positionDeLieu);

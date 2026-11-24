@@ -14,7 +14,7 @@ function gabarits() {
   const pierre = '#b8a98f', roof = '#a8996f', porte = '#4a3322', fen = '#3a2e24', tissu = '#b5654a', bois = '#6e4e34';
   const mur = (x, y, z, sx, sy, sz, c = pierre) => piece(B(), c, { p: [x, y, z], s: [sx, sy, sz], m: M.pierre });
   const parapet = (y, w = 1, d = 1) => [mur(0, y, d / 2 - 0.02, w, 0.06, 0.06, roof), mur(0, y, -d / 2 + 0.02, w, 0.06, 0.06, roof), mur(w / 2 - 0.02, y, 0, 0.06, 0.06, d, roof), mur(-w / 2 + 0.02, y, 0, 0.06, 0.06, d, roof)];
-  const ouvertures = (h = 0.5) => [piece(B(), porte, { p: [0.1, h / 2, 0.505], s: [0.16, h, 0.02], m: M.bois }), piece(B(), fen, { p: [-0.28, 0.62, 0.505], s: [0.1, 0.1, 0.02] }), piece(B(), fen, { p: [0.36, 0.7, 0.505], s: [0.08, 0.09, 0.02] })];
+  const ouvertures = (h = 0.5, zf = 0.505) => [piece(B(), porte, { p: [0.1, h / 2, zf], s: [0.16, h, 0.02], m: M.bois }), piece(B(), fen, { p: [-0.28, 0.62, zf], s: [0.1, 0.1, 0.02] }), piece(B(), fen, { p: [0.36, 0.7, zf], s: [0.08, 0.09, 0.02] })];
   return [
     fusion([mur(0, 0.5, 0, 1, 1, 1), ...parapet(1.02), ...ouvertures()]),                                                           // 0 : bloc
     fusion([mur(0, 0.31, 0, 1, 0.62, 1), mur(-0.08, 0.81, 0.05, 0.78, 0.38, 0.78, '#c4a77d'), ...parapet(0.64), ...parapet(1.02, 0.78, 0.78).map(g => g), ...ouvertures(0.4)]),   // 1 : étage en retrait
@@ -22,7 +22,7 @@ function gabarits() {
     fusion([mur(0, 0.5, 0, 1, 1, 1), ...parapet(1.02), mur(0.55, 0.12, 0.25, 0.14, 0.24, 0.5, '#a8906e'), mur(0.55, 0.3, 0.05, 0.14, 0.6, 0.12, '#a8906e'), ...ouvertures()]),    // 3 : escalier extérieur
     fusion([mur(0, 0.35, 0.46, 1, 0.7, 0.08), mur(0, 0.35, -0.46, 1, 0.7, 0.08), mur(0.46, 0.35, 0, 0.08, 0.7, 0.84), mur(-0.46, 0.35, 0, 0.08, 0.7, 0.84), mur(-0.22, 0.45, -0.2, 0.4, 0.9, 0.4, '#c4a77d'), piece(B(), porte, { p: [0, 0.2, 0.5], s: [0.2, 0.4, 0.02], m: M.bois })]),  // 4 : cour
     fusion([mur(0, 0.4, 0, 1, 0.8, 1), ...parapet(0.82), piece(B(), tissu, { p: [0, 0.62, 0.7], s: [0.96, 0.04, 0.42], r: [0.35, 0, 0], m: M.tissu }), piece(B(), bois, { p: [-0.46, 0.3, 0.88], s: [0.04, 0.6, 0.04], m: M.bois }), piece(B(), bois, { p: [0.46, 0.3, 0.88], s: [0.04, 0.6, 0.04], m: M.bois }), piece(B(), '#8a6440', { p: [0, 0.24, 0.8], s: [0.7, 0.12, 0.2], m: M.bois })]),   // 5 : échoppe à auvent
-    fusion([mur(0, 0.35, 0, 0.8, 0.7, 0.8), mur(0, 0.85, 0, 0.58, 0.3, 0.58, '#c4a77d'), ...parapet(0.71, 0.8, 0.8), ...parapet(1.01, 0.58, 0.58), ...ouvertures(0.35)]),             // 6 : tour basse
+    fusion([mur(0, 0.35, 0, 0.8, 0.7, 0.8), mur(0, 0.85, 0, 0.58, 0.3, 0.58, '#c4a77d'), ...parapet(0.71, 0.8, 0.8), ...parapet(1.01, 0.58, 0.58), ...ouvertures(0.35, 0.405)]),             // 6 : tour basse
     fusion([mur(0.46, 0.2, 0, 0.08, 0.4, 1, '#a8906e'), mur(-0.46, 0.2, 0, 0.08, 0.4, 1, '#a8906e'), mur(0, 0.2, 0.46, 1, 0.4, 0.08, '#a8906e'), mur(0, 0.2, -0.46, 1, 0.4, 0.08, '#a8906e'), mur(0.15, 0.4, -0.12, 0.44, 0.8, 0.44, '#c4a77d'), ...parapet(0.82, 0.44, 0.44).map(g => g)])   // 7 : enclos et cabane
   ];
 }

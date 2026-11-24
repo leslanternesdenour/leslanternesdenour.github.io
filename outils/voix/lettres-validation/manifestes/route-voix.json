@@ -1,7 +1,7 @@
 {
  "jeu": "route-voix",
  "base": "/audio",
- "total": 173,
+ "total": 188,
  "phrases": [
   {
    "id": "NOUR-VOIX-RTE-924aa3cd",
@@ -1214,6 +1214,126 @@
    "voixId": "hddT377hAwvRoOKqMj0E"
   },
   {
+   "id": "NOUR-VOIX-RTE-c90be256",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Bonjour ! Entre dans l'ombre : chez moi, il fait frais.",
+   "fichier": "fr/route/nour-voix-rte-c90be256.mp3",
+   "duree": 3.92,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-494d5a5d",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Bonjour, petit voyageur ! Ne reste pas au soleil. Mes murs sont épais : ils gardent la fraîcheur toute la journée. Assieds-toi un instant, je t'apporte de l'eau.",
+   "fichier": "fr/route/nour-voix-rte-494d5a5d.mp3",
+   "duree": 10,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-b0dfa427",
+   "role": "perso-karim",
+   "langue": "fr",
+   "texte": "Regarde sur mon toit : des dattes qui sèchent au soleil !",
+   "fichier": "fr/route/nour-voix-rte-b0dfa427.mp3",
+   "duree": 3.6,
+   "prononciationVerifiee": false,
+   "voixId": "lM87a4ey2IQxE37nDvti"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-22dd1f03",
+   "role": "perso-karim",
+   "langue": "fr",
+   "texte": "Sur mon toit plat, je fais sécher les dattes de l'oasis. Au soleil, elles se gardent des mois : c'est parfait pour les longs voyages.",
+   "fichier": "fr/route/nour-voix-rte-22dd1f03.mp3",
+   "duree": 7.68,
+   "prononciationVerifiee": false,
+   "voixId": "lM87a4ey2IQxE37nDvti"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-91df1373",
+   "role": "perso-salma",
+   "langue": "fr",
+   "texte": "Je couds à l'ombre, dans le coin de ma maison.",
+   "fichier": "fr/route/nour-voix-rte-91df1373.mp3",
+   "duree": 2.48,
+   "prononciationVerifiee": false,
+   "voixId": "HAjl4nFl1aflZ2gaim1o"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-266b9c8f",
+   "role": "perso-salma",
+   "langue": "fr",
+   "texte": "Je couds des manteaux pour les voyageurs, à l'ombre du coin de ma maison. Un bon manteau protège du soleil le jour et du froid la nuit.",
+   "fichier": "fr/route/nour-voix-rte-266b9c8f.mp3",
+   "duree": 7.28,
+   "prononciationVerifiee": false,
+   "voixId": "HAjl4nFl1aflZ2gaim1o"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-67106e5e",
+   "role": "perso-samir",
+   "langue": "fr",
+   "texte": "Je monte sur mon toit pour surveiller mes moutons !",
+   "fichier": "fr/route/nour-voix-rte-67106e5e.mp3",
+   "duree": 2.48,
+   "prononciationVerifiee": false,
+   "voixId": "4sifSi2zIrBX7VkoWfjD"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-c95a797a",
+   "role": "perso-samir",
+   "langue": "fr",
+   "texte": "Mon escalier est dehors : je monte sur le toit pour surveiller mes moutons. De là-haut, on voit toute la plaine et on repère les voyageurs de loin.",
+   "fichier": "fr/route/nour-voix-rte-c95a797a.mp3",
+   "duree": 8,
+   "prononciationVerifiee": false,
+   "voixId": "4sifSi2zIrBX7VkoWfjD"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-0c94973d",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Dans ma cour, je répare des jarres et des outils.",
+   "fichier": "fr/route/nour-voix-rte-0c94973d.mp3",
+   "duree": 2.96,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-9b9fff09",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Dans ma cour, à l'abri du vent, je répare les jarres et les outils de mes voisins. Chacun a son savoir-faire, et on s'entraide.",
+   "fichier": "fr/route/nour-voix-rte-9b9fff09.mp3",
+   "duree": 7.52,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-49777354",
+   "role": "narrateur",
+   "langue": "fr",
+   "texte": "Dans ma tour, il fait frais : je range le blé et les dattes.",
+   "fichier": "fr/route/nour-voix-rte-49777354.mp3",
+   "duree": 3.76,
+   "prononciationVerifiee": false,
+   "voixId": "8aQsvxWbavqMpn00DVgR"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-3d1dd58e",
+   "role": "narrateur",
+   "langue": "fr",
+   "texte": "Dans ma petite tour, les murs épais gardent le blé et les dattes au frais. Ces provisions sont partagées avec ceux qui en ont besoin.",
+   "fichier": "fr/route/nour-voix-rte-3d1dd58e.mp3",
+   "duree": 7.2,
+   "prononciationVerifiee": false,
+   "voixId": "8aQsvxWbavqMpn00DVgR"
+  },
+  {
    "id": "NOUR-VOIX-RTE-b00d68c6",
    "role": "narratrice",
    "langue": "fr",
@@ -1420,6 +1540,36 @@
    "texte": "La cité est pleine de voyageurs et d'artisans venus de loin. Parle à trois d'entre eux pour apprendre comment ils vivent, ce qu'ils font et d'où ils viennent.",
    "fichier": "fr/route/nour-voix-rte-0c99d98f.mp3",
    "duree": 9.44,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-9abd0080",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Frapper aux portes",
+   "fichier": "fr/route/nour-voix-rte-9abd0080.mp3",
+   "duree": 1.52,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-8b3f6475",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Frappe à quatre portes de la cité et dis bonjour.",
+   "fichier": "fr/route/nour-voix-rte-8b3f6475.mp3",
+   "duree": 3.44,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-e436bc44",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Dans la cité, chaque maison a ses habitants. Frappe à quatre portes différentes, poliment, pour savoir qui vit là et ce qu'ils font.",
+   "fichier": "fr/route/nour-voix-rte-e436bc44.mp3",
+   "duree": 8.88,
    "prononciationVerifiee": false,
    "voixId": "hddT377hAwvRoOKqMj0E"
   },

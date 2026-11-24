@@ -28,3 +28,15 @@ test('voix de la Route : un message-indice n\'interrompt jamais une voix en cour
   assert.match(voix, /export function direApres\(/);
   assert.match(main, /direApres\(\[\{ t: html \}\]\)/, 'montrerIndice parle après la voix en cours');
 });
+
+test('voix de la Route : l\'annonce d\'une mission ou un retour d\'activité attend la voix de l\'habitant, il ne la coupe pas', () => {
+  const main = fs.readFileSync(new URL('../../voyage/js/main.js', import.meta.url), 'utf8');
+  assert.match(main, /dire: seg => direApres\(seg\)/);
+});
+
+test('voix de la Route : un texte sans voix ne remplace jamais une annonce en attente ; les annonces s\'enchaînent dans l\'ordre', () => {
+  const voix = fs.readFileSync(new URL('../../voyage/js/voix.js', import.meta.url), 'utf8');
+  assert.match(voix, /function idsDe\(segments\)/);
+  assert.match(voix, /if \(actif\) \{ if \(idsDe\(segments\)\) \{ attente\.push\(segments\)/, 'seuls les textes enregistrés entrent dans la file');
+  assert.match(voix, /attente = \[\]/); assert.match(voix, /attente\.shift\(\)/, 'dans l\'ordre d\'arrivée');
+});

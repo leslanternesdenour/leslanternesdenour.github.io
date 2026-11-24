@@ -60,3 +60,39 @@ test('interactions de la cité : un fait court pour chaque forme de maison (illu
   assert.match(j, /creerVoyageurs3D/); assert.match(j, /Observer la maison/); assert.match(j, /'route:v:'/); assert.match(j, /rencontres/);
   assert.match(v, /COLLINES_CITE/, 'le chemin plat entre les deux collines est dessiné');
 });
+
+test('portes : chaque maison à porte a une porte exacte sur sa face avant, avec une normale qui sort de la maison', async () => {
+  const { maisonsVille, porteDe, GABARITS_AVEC_PORTE } = await import('../../voyage/js/route/ville-plan.js');
+  const { DEC } = await import('../../voyage/js/route/relief.js');
+  assert.deepEqual(GABARITS_AVEC_PORTE, [0, 1, 2, 3, 4, 6]);
+  let n = 0;
+  for (const m of maisonsVille().filter(x => GABARITS_AVEC_PORTE.includes(x.gabarit))) {
+    const p = porteDe(m), dx = p.x - m.t, dz = p.z - (DEC + m.s), c = Math.cos(m.rot), s = Math.sin(m.rot);
+    const lx = dx * c - dz * s, lz = dx * s + dz * c;                               // la porte, dans le repère de la maison
+    assert.ok(Math.abs(Math.abs(lz) - (m.gabarit === 6 ? 0.4 : 0.5) * m.l) < 0.1, `porte hors de la face avant (${m.gabarit})`);
+    assert.ok(Math.abs(lx) <= 0.5 * m.w, 'porte dans la largeur de la maison');
+    assert.ok(Math.abs(Math.hypot(p.nx, p.nz) - 1) < 1e-6);
+    assert.ok(p.nx * dx + p.nz * dz > 0, 'la normale sort de la maison'); n++;
+  }
+  assert.ok(n > 40, `${n} maisons à porte`);
+});
+
+test('portes jouables : une porte accessible pour chaque forme de maison à porte, près du chemin, jamais collée à une autre maison', async () => {
+  const { maisonsVille, portesJouables, GABARITS_AVEC_PORTE } = await import('../../voyage/js/route/ville-plan.js');
+  const { DEC, CITE, distanceChemin } = await import('../../voyage/js/route/relief.js');
+  const liste = portesJouables(), toutes = maisonsVille();
+  assert.deepEqual(liste.map(p => p.gabarit), GABARITS_AVEC_PORTE);
+  for (const p of liste) {
+    for (const o of toutes) if (o !== p.maison) assert.ok(Math.hypot(p.x - o.t, p.z - (DEC + o.s)) > Math.hypot(o.l, o.w) / 2 + 0.5, `la porte ${p.gabarit} est collée à une autre maison`);
+    assert.ok(Math.hypot(p.x - CITE.t, p.z - (DEC + CITE.s)) < CITE.rayon, 'dans la cité');
+    assert.ok(distanceChemin(p.maison.s, p.maison.t) < 90, `la porte ${p.gabarit} est trop loin du chemin (${distanceChemin(p.maison.s, p.maison.t).toFixed(0)} m)`);
+  }
+});
+
+test('portes : on frappe à la vraie porte, l\'habitant répond avec sa voix, la mission « portes » avance, la maison reste observable', async () => {
+  const fs = await import('node:fs');
+  const j = fs.readFileSync(new URL('../../voyage/js/route/jeu-route.js', import.meta.url), 'utf8');
+  assert.match(j, /portesJouables\(\)/); assert.match(j, /HABITANTS_MAISONS\[/);
+  assert.match(j, /label: 'Frapper à la porte'/); assert.match(j, /etape\('portes', 'porte:' \+ /);
+  assert.match(j, /Et ta maison \?/, 'après avoir frappé, on peut en apprendre plus sur la maison');
+});

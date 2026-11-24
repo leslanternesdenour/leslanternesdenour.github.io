@@ -607,6 +607,66 @@ export const PHRASES_ROUTE = [
   "exact"
  ],
  [
+  "NOUR-VOIX-RTE-c90be256",
+  "Bonjour ! Entre dans l'ombre : chez moi, il fait frais.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-494d5a5d",
+  "Bonjour, petit voyageur ! Ne reste pas au soleil. Mes murs sont épais : ils gardent la fraîcheur toute la journée. Assieds-toi un instant, je t'apporte de l'eau.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-b0dfa427",
+  "Regarde sur mon toit : des dattes qui sèchent au soleil !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-22dd1f03",
+  "Sur mon toit plat, je fais sécher les dattes de l'oasis. Au soleil, elles se gardent des mois : c'est parfait pour les longs voyages.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-91df1373",
+  "Je couds à l'ombre, dans le coin de ma maison.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-266b9c8f",
+  "Je couds des manteaux pour les voyageurs, à l'ombre du coin de ma maison. Un bon manteau protège du soleil le jour et du froid la nuit.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-67106e5e",
+  "Je monte sur mon toit pour surveiller mes moutons !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-c95a797a",
+  "Mon escalier est dehors : je monte sur le toit pour surveiller mes moutons. De là-haut, on voit toute la plaine et on repère les voyageurs de loin.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-0c94973d",
+  "Dans ma cour, je répare des jarres et des outils.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-9b9fff09",
+  "Dans ma cour, à l'abri du vent, je répare les jarres et les outils de mes voisins. Chacun a son savoir-faire, et on s'entraide.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-49777354",
+  "Dans ma tour, il fait frais : je range le blé et les dattes.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-3d1dd58e",
+  "Dans ma petite tour, les murs épais gardent le blé et les dattes au frais. Ces provisions sont partagées avec ceux qui en ont besoin.",
+  "exact"
+ ],
+ [
   "NOUR-VOIX-RTE-b00d68c6",
   "Retrouver le chemin de la grande route",
   "exact"
@@ -709,6 +769,21 @@ export const PHRASES_ROUTE = [
  [
   "NOUR-VOIX-RTE-0c99d98f",
   "La cité est pleine de voyageurs et d'artisans venus de loin. Parle à trois d'entre eux pour apprendre comment ils vivent, ce qu'ils font et d'où ils viennent.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-9abd0080",
+  "Frapper aux portes",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-8b3f6475",
+  "Frappe à quatre portes de la cité et dis bonjour.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-e436bc44",
+  "Dans la cité, chaque maison a ses habitants. Frappe à quatre portes différentes, poliment, pour savoir qui vit là et ce qu'ils font.",
   "exact"
  ],
  [

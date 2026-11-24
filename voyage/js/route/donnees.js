@@ -127,7 +127,20 @@ export const MISSIONS_ROUTE = {
     resume: 'Un chemin plat relie les deux collines. Marche tranquillement et fais trois pauses d\'observation : la colline, le vent, le sol. Il n\'y a ni course, ni chronomètre, ni classement.' },
   rencontres: { titre: 'Les voyageurs de la cité', icone: '💬', total: 3, recompense: 150, categorie: 'connaissance',
     simple: 'Dis bonjour à trois voyageurs de la cité.',
-    resume: 'La cité est pleine de voyageurs et d\'artisans venus de loin. Parle à trois d\'entre eux pour apprendre comment ils vivent, ce qu\'ils font et d\'où ils viennent.' }
+    resume: 'La cité est pleine de voyageurs et d\'artisans venus de loin. Parle à trois d\'entre eux pour apprendre comment ils vivent, ce qu\'ils font et d\'où ils viennent.' },
+  portes: { titre: 'Frapper aux portes', icone: '🚪', total: 4, recompense: 120, categorie: 'connaissance',
+    simple: 'Frappe à quatre portes de la cité et dis bonjour.',
+    resume: 'Dans la cité, chaque maison a ses habitants. Frappe à quatre portes différentes, poliment, pour savoir qui vit là et ce qu\'ils font.' }
+};
+
+// Les habitants fictifs des maisons à porte (un par forme de maison ; aucun personnage historique ou religieux). Chacun parle avec une voix Nour déjà attribuée à un rôle du jeu.
+export const HABITANTS_MAISONS = {
+  0: { role: 'Une grand-mère', voix: 'perso-warda', petit: `Bonjour ! Entre dans l'ombre : chez moi, il fait frais.`, grand: `Bonjour, petit voyageur ! Ne reste pas au soleil. Mes murs sont épais : ils gardent la fraîcheur toute la journée. Assieds-toi un instant, je t'apporte de l'eau.` },
+  1: { role: 'Un vendeur de dattes', voix: 'perso-karim', petit: `Regarde sur mon toit : des dattes qui sèchent au soleil !`, grand: `Sur mon toit plat, je fais sécher les dattes de l'oasis. Au soleil, elles se gardent des mois : c'est parfait pour les longs voyages.` },
+  2: { role: 'Une couturière', voix: 'perso-salma', petit: `Je couds à l'ombre, dans le coin de ma maison.`, grand: `Je couds des manteaux pour les voyageurs, à l'ombre du coin de ma maison. Un bon manteau protège du soleil le jour et du froid la nuit.` },
+  3: { role: 'Un berger', voix: 'perso-samir', petit: `Je monte sur mon toit pour surveiller mes moutons !`, grand: `Mon escalier est dehors : je monte sur le toit pour surveiller mes moutons. De là-haut, on voit toute la plaine et on repère les voyageurs de loin.` },
+  4: { role: 'Un artisan', voix: 'perso-yacine', petit: `Dans ma cour, je répare des jarres et des outils.`, grand: `Dans ma cour, à l'abri du vent, je répare les jarres et les outils de mes voisins. Chacun a son savoir-faire, et on s'entraide.` },
+  6: { role: 'Un gardien des provisions', voix: 'narrateur', petit: `Dans ma tour, il fait frais : je range le blé et les dattes.`, grand: `Dans ma petite tour, les murs épais gardent le blé et les dattes au frais. Ces provisions sont partagées avec ceux qui en ont besoin.` }
 };
 
 // ---------- le village : la sortie, le seuil et l'ouverture ----------

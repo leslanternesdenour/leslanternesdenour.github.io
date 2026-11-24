@@ -54,9 +54,9 @@ test('sac : les six objets du voyage, chacun avec son utilité, sans aucune jaug
 
 test('missions : trois missions de la première tranche, chacune réalisable avec les lieux qui existent', async () => {
   const { MISSIONS_ROUTE, LIEUX_ROUTE } = await import('../../voyage/js/route/donnees.js');
-  assert.deepEqual(Object.keys(MISSIONS_ROUTE), ['chemin', 'traces', 'campement', 'cite', 'collines', 'parcours-collines', 'rencontres']);
+  assert.deepEqual(Object.keys(MISSIONS_ROUTE), ['chemin', 'traces', 'campement', 'cite', 'collines', 'parcours-collines', 'rencontres', 'portes']);
   for (const [id, m] of Object.entries(MISSIONS_ROUTE)) {
-    const n = LIEUX_ROUTE.filter(l => l.mission === id).length + (id === 'rencontres' ? 3 : 0);   // « rencontres » : trois voyageurs (voir le test dédié)
+    const n = LIEUX_ROUTE.filter(l => l.mission === id).length + (id === 'rencontres' ? 3 : 0) + (id === 'portes' ? 4 : 0);   // « rencontres » : trois voyageurs, « portes » : quatre portes (voir les tests dédiés)
     assert.equal(m.total, n, `${id} : ${m.total} étapes annoncées, ${n} lieux`);
     assert.ok(m.recompense > 0 && m.titre && m.icone && m.resume && m.simple, `${id} incomplète (le texte « simple » est pour les 3–5 ans)`);
     assert.ok(['exploration', 'entraide', 'observation', 'connaissance'].includes(m.categorie));
@@ -128,4 +128,19 @@ test('mission « rencontres » : parler à des voyageurs fictifs de la cité, r�
   const m = MISSIONS_ROUTE.rencontres, n = VOYAGEURS_VILLE.filter(v => v.mission === 'rencontres').length;
   assert.ok(m && m.categorie === 'connaissance' && m.recompense > 0 && m.simple && m.resume, 'mission complète');
   assert.equal(m.total, 3); assert.ok(n >= m.total, `${n} voyageurs pour ${m.total} rencontres`);
+});
+
+test('mission « portes » : frapper à quatre portes de la cité, des habitants fictifs et sobres, une voix Nour existante chacun', async () => {
+  const { MISSIONS_ROUTE, HABITANTS_MAISONS } = await import('../../voyage/js/route/donnees.js');
+  const { GABARITS_AVEC_PORTE } = await import('../../voyage/js/route/ville-plan.js');
+  const roles = JSON.parse((await import('node:fs')).readFileSync(new URL('../voix/jeux/voix-roles.json', import.meta.url), 'utf8'));
+  const m = MISSIONS_ROUTE.portes;
+  assert.ok(m && m.categorie === 'connaissance' && m.recompense > 0 && m.simple && m.resume && m.icone === '🚪');
+  assert.deepEqual(Object.keys(HABITANTS_MAISONS).map(Number), GABARITS_AVEC_PORTE, 'un habitant par forme de maison à porte');
+  assert.ok(m.total === 4 && Object.keys(HABITANTS_MAISONS).length >= m.total);
+  for (const h of Object.values(HABITANTS_MAISONS)) {
+    assert.ok(h.role && h.petit && h.grand && roles[h.voix], `${h.role} : texte ou voix manquant`);
+    assert.ok(h.petit.length <= 120 && h.grand.length > 60 && h.grand.length <= 330, `${h.role} : longueur`);
+    assert.ok(!/(allah|coran|kaaba|zamzam|prophète|proph|hadith|prière|mecque)/i.test(h.petit + h.grand), `${h.role} : rien de religieux dans un dialogue de maison`);
+  }
 });

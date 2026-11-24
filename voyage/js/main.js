@@ -207,7 +207,7 @@ async function demarrer() {
     voixRoute: async () => { try { const [m, r] = await Promise.all([import('./route/voix-route.js'), fetch('../audio/route-voix.json', { cache: 'no-cache' }).then(x => x.json())]); ajouterPhrases(m.PHRASES_ROUTE, r); } catch (e) { /* sans voix : le jeu reste jouable */ } },
     arreterGuide: () => { guide.arreter(); etat.guidage = null; enregistrer(); majGuidage(null); },
     surSaut: () => { cam.cible.set(J.x, H(J.x, J.z) + 1.4, J.z); cam.distVue = null; cam.yawCible = cam.yaw = J.a + Math.PI; },
-    ui: { dialogue: p => dialogue(p), decouvrir: d => decouvrir(d), bandeau: (a, b, silence) => { bandeau(a, b, silence); S.sonDecouverte(); }, indice: (h, ms) => montrerIndice(h, ms), dire: (seg, fini) => direTextes(seg, fini),
+    ui: { dialogue: p => dialogue(p), decouvrir: d => decouvrir(d), bandeau: (a, b, silence) => { bandeau(a, b, silence); S.sonDecouverte(); }, indice: (h, ms) => montrerIndice(h, ms), dire: seg => direApres(seg),
       lieu: t => { $('lieu').textContent = t; hud.temporaire($('lieu'), 4500); }, fondu,
       carteOuverte: () => { fermerPanneaux(); interface_ouverte = true; ctl.bloque = true; }, carteFermee: () => { interface_ouverte = false; ctl.bloque = false; dernierEtatBoutons = ''; } } }) : null;
   etat.loumi = Object.assign({ rencontre: false, vus: [], rappels: {} }, etat.loumi || {});

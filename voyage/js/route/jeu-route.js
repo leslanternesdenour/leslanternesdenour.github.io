@@ -5,12 +5,12 @@ import { creerMondeRoute } from './monde.js';
 import { creerLieux3D } from './lieux-3d.js';
 import { creerVille3D } from './ville-3d.js';
 import { creerVoyageurs3D } from './voyageurs-3d.js';
-import { maisonsVille } from './ville-plan.js';
+import { maisonsVille, portesJouables } from './ville-plan.js';
 import { LIEUX_SACRES } from './lieux-mecque-a-valider.js';
 import { preparerRoute, memoriserPosition, positionDeReprise } from './etat-route.js';
 import { faireEtape, progression } from './missions-route.js';
 import { DEC, versRoute, S_DEBUT, S_FIN_TRANCHE, LARGEUR, OASIS, CITE, pointChemin } from './relief.js';
-import { FACTEUR_MARCHE_ROUTE, regionA, LIEUX_ROUTE, MISSIONS_ROUTE, SAC_ROUTE, RELAIS_VILLAGE, auSeuilVillage, versLaRoute, auRetourRoute, versLeVillage } from './donnees.js';
+import { FACTEUR_MARCHE_ROUTE, HABITANTS_MAISONS, regionA, LIEUX_ROUTE, MISSIONS_ROUTE, SAC_ROUTE, RELAIS_VILLAGE, auSeuilVillage, versLaRoute, auRetourRoute, versLeVillage } from './donnees.js';
 import { texteLieu, GUIDE, VOYAGEUSE, MESSAGES, FAITS_MAISONS } from './textes-route.js';
 import { CONTENU, etiquette, texteDe } from './contenu-a-valider.js';
 import { pageCarnetRoute } from './carnet-route.js';
@@ -149,12 +149,20 @@ export function creerRoute(ctx) {
   const parlerVoyageur = n => { W.saluer(n.v.id); ui.dialogue({ titre: '💬 ' + n.v.role, texte: age() === '3-5' ? n.v.texte.petit : n.v.texte.grand, boutons: [{ txt: 'Merci, bonne route !', fn: () => {} }] }); if (n.v.mission) etape(n.v.mission, n.v.id); };
   const regV = n => habitants.ajouter({ id: 'route:v:' + n.v.id, x: n.x, z: n.z, rayon: 3.4, label: 'Parler', icone: '💬', ouvrir: () => parlerVoyageur(n) });
   for (const n of W.liste) regV(n);
+  const faitMaison = g => {
+    const f = FAITS_MAISONS[g]; ui.dialogue({ titre: '🏠 Une maison de la cité', texte: age() === '3-5' ? f.petit : f.grand, sous: '(Illustration du jeu : la cité est une interprétation, pas une reconstitution exacte.)', boutons: [{ txt: 'Merci !', fn: () => {} }] });
+    if (!R.decouvertes.includes('maison:' + g)) { R.decouvertes.push('maison:' + g); enregistrer(); gagner('maison:' + g, 10, 'Tu as observé une maison de la cité'); } };
+  // les maisons qui ont une porte : on frappe à la VRAIE porte (devant elle), un habitant fictif répond avec sa voix ; mission « portes »
+  const portes = new Map(portesJouables().map(p => [p.gabarit, p]));
+  for (const p of portes.values()) { const h = HABITANTS_MAISONS[p.gabarit];
+    habitants.ajouter({ id: 'route:porte:' + p.gabarit, x: p.x, z: p.z, rayon: 2.8, label: 'Frapper à la porte', icone: '🚪', ouvrir: () => {
+      ui.dialogue({ titre: '🚪 ' + h.role, texte: age() === '3-5' ? h.petit : h.grand, icone: '🚪', boutons: [{ txt: '🏠 Et ta maison ?', fn: () => setTimeout(() => faitMaison(p.gabarit), 60) }, { txt: 'Merci, au revoir !', fn: () => {} }] });
+      etape('portes', 'porte:' + p.gabarit); } }); }
+  // les autres formes (l'échoppe, l'enclos) : un fait à observer, sans porte
   { const vus = new Set(), tri = [...maisonsVille()].sort((a, b) => Math.abs(a.t - pointChemin(a.s).t) - Math.abs(b.t - pointChemin(b.s).t));
-    for (const m of tri) { if (vus.has(m.gabarit)) continue; vus.add(m.gabarit);
+    for (const m of tri) { if (vus.has(m.gabarit) || portes.has(m.gabarit)) continue; vus.add(m.gabarit);
       const sens = Math.sign(pointChemin(m.s).t - m.t) || 1, x = m.t + sens * (Math.min(m.l, m.w) * 0.5 + 1.6), z = DEC + m.s;
-      habitants.ajouter({ id: 'route:maison:' + m.gabarit, x, z, rayon: 3.2, label: 'Observer la maison', icone: '🏠', ouvrir: () => {
-        const f = FAITS_MAISONS[m.gabarit]; ui.dialogue({ titre: '🏠 Une maison de la cité', texte: age() === '3-5' ? f.petit : f.grand, sous: '(Illustration du jeu : la cité est une interprétation, pas une reconstitution exacte.)', boutons: [{ txt: 'Merci !', fn: () => {} }] });
-        if (!R.decouvertes.includes('maison:' + m.gabarit)) { R.decouvertes.push('maison:' + m.gabarit); enregistrer(); gagner('maison:' + m.gabarit, 10, 'Tu as observé une maison de la cité'); } } }); } }
+      habitants.ajouter({ id: 'route:maison:' + m.gabarit, x, z, rayon: 3.2, label: 'Observer la maison', icone: '🏠', ouvrir: () => faitMaison(m.gabarit) }); } }
   let tVoy = 0;
 
   // ---------- au village : le guide, le panneau, le sac ----------
