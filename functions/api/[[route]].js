@@ -16,6 +16,9 @@ export function stockagePremium(env) {
   if (env.R2_PREMIUM) return {
     type: 'r2',
     async get(cle) { const o = await env.R2_PREMIUM.get(cle); return o && { body: o.body, type: o.httpMetadata && o.httpMetadata.contentType }; },
+    // Écriture réservée à l'import du Créateur (PUT /api/admin/premium/<chemin>) : le type du fichier est conservé avec lui.
+    async put(cle, corps, type) { await env.R2_PREMIUM.put(cle, corps, { httpMetadata: { contentType: type } }); },
+    async supprimer(cle) { await env.R2_PREMIUM.delete(cle); },
     async lister() { const out = []; let curseur; do { const r = await env.R2_PREMIUM.list({ cursor: curseur, limit: 1000 }); for (const o of r.objects) out.push({ cle: o.key, taille: o.size, date: o.uploaded }); curseur = r.truncated ? r.cursor : null; } while (curseur); return out; }
   };
   return { type: 'aucun', async get() { return null; }, async lister() { return []; } };

@@ -431,6 +431,8 @@ export async function supprimerToutesLesDonnees(ctx, uid) {
 }
 
 // ======================================================================
+const TYPES_PACK_PREMIUM = ['application/json', 'audio/mpeg', 'text/html', 'text/css', 'text/javascript', 'application/javascript', 'image/png', 'image/jpeg', 'image/svg+xml', 'image/webp'];   // ce que contient le pack (voyage/<zone>/…, maisons/…)
+const TAILLE_MAX_PACK_PREMIUM = 25 * 1024 * 1024;   // une voix ou une page du pack : 25 Mo au plus par fichier
 async function administration(req, ctx, session, chemin, url) {
   const m = req.method, ecriture = m !== 'GET';
   const refus = exigerCreateur(ctx, session, { recent: ecriture }); if (refus) return refus;
@@ -545,6 +547,22 @@ async function administration(req, ctx, session, chemin, url) {
     const cat = catalogueEffectif((await ctx.base.lire('catalogue', 'etat')) || {});
     const fichiers = (await ctx.stockage.lister()).map(f => ({ ...f, niveau: niveauDuFichier(f.cle, cat) }));
     return json({ disponible: true, fichiers });
+  }
+  // Import d'un fichier du pack Premium par le Créateur (sans ligne de commande) : le fichier va dans le stockage privé, au même chemin.
+  if (chemin.startsWith('/api/admin/premium/') && (m === 'PUT' || m === 'DELETE')) {
+    let cle; try { cle = decodeURIComponent(url.pathname.slice('/api/admin/premium/'.length)); } catch (e) { return erreur(400, 'chemin'); }
+    if (!/^[a-z0-9][a-z0-9/_.-]{0,200}$/.test(cle) || cle.includes('..') || cle.includes('//') || cle.endsWith('/')) return erreur(400, 'chemin');   // mêmes règles que la lecture (niveauDuFichier)
+    if (!ctx.stockage.put) return erreur(503, 'stockage-non-branche');   // R2 pas encore lié au projet : rien ne peut être importé
+    if (m === 'DELETE') { await ctx.stockage.supprimer(cle); await journal(ctx, 'premium-supprime', { cle }); return json({ ok: true, cle }); }
+    const type = String(req.headers.get('Content-Type') || '').split(';')[0].trim();
+    if (!TYPES_PACK_PREMIUM.includes(type)) return erreur(415, 'type-non-autorise');
+    if (Number(req.headers.get('Content-Length') || 0) > TAILLE_MAX_PACK_PREMIUM) return erreur(413, 'trop-gros');   // refusé avant de lire le corps
+    const corps = new Uint8Array(await req.arrayBuffer());
+    if (!corps.length) return erreur(400, 'vide');
+    if (corps.length > TAILLE_MAX_PACK_PREMIUM) return erreur(413, 'trop-gros');
+    await ctx.stockage.put(cle, corps, type);
+    await journal(ctx, 'premium-import', { cle, taille: corps.length });
+    return json({ ok: true, cle, taille: corps.length });
   }
   if (chemin === '/api/admin/journal' && m === 'GET') {
     const pg = await ctx.base.lister('admin_logs', { limite: 50, apres });

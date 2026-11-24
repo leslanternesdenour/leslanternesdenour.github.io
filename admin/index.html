@@ -125,6 +125,10 @@ td button{font-size:13px;padding:6px 9px;box-shadow:none;margin:2px}
       <div class="tableau"><table><tbody id="t-contenus"></tbody></table></div>
       <h2>Bandeau d'annonce</h2>
       <form id="f-bandeau" class="choix" novalidate><label>Texte (vide pour retirer)<input type="text" id="bandeau" maxlength="200"></label><button class="doux" type="submit">Enregistrer</button></form>
+      <h2>Importer le pack Premium</h2>
+      <p class="petit">Choisissez le dossier du pack (celui qui contient « voyage » et « maisons »). Chaque fichier est envoyé au stockage privé, au même chemin. Le stockage R2 doit être lié au projet. Un fichier déjà présent est remplacé.</p>
+      <div class="choix"><label>Dossier du pack<input type="file" id="pi-dossier" webkitdirectory multiple></label><button class="doux" id="pi-envoyer" type="button">Envoyer le pack</button></div>
+      <p class="petit" id="pi-resultat"></p>
     </section>
 
     <section class="carte cache" data-p="journal"><h2>Journal</h2>
@@ -201,6 +205,30 @@ const CHARGER = {
   journal: paginer('/api/admin/journal', 'journal', $('t-journal'), $('plus-journal'), j => { const { id, t, action, ...rest } = j;
     return ligne(new Date(t).toLocaleString('fr-FR'), action, Object.entries(rest).map(([k, v]) => k + ' : ' + (typeof v === 'string' && v.length > 24 ? v.slice(0, 12) + '…' : v)).join(' · ')); })
 };
+// Import du pack Premium : un envoi par fichier, au chemin du dossier choisi (sans le nom du dossier lui-même).
+const TYPES_PACK = { json: 'application/json', mp3: 'audio/mpeg', html: 'text/html', css: 'text/css', js: 'text/javascript', png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', svg: 'image/svg+xml', webp: 'image/webp' };
+async function envoyerFichierPack(chemin, fichier, type) {
+  const r = await fetch('/api/admin/premium/' + chemin.split('/').map(encodeURIComponent).join('/'), { method: 'PUT', credentials: 'same-origin', headers: { 'X-LDN': '1', 'Content-Type': type }, body: fichier });
+  let j = null; try { j = await r.json(); } catch (e) {}
+  if (!r.ok) throw new C.ErreurApi(r.status, j && j.erreur);
+}
+$('pi-envoyer').onclick = e => occupe(e.target, async () => {
+  const fichiers = [...$('pi-dossier').files]; if (!fichiers.length) return etat('Choisissez d\'abord le dossier du pack.', true);
+  const ignores = []; let envoyes = 0;
+  for (const f of fichiers) {
+    const chemin = f.webkitRelativePath.split('/').slice(1).join('/'), type = TYPES_PACK[chemin.split('.').pop().toLowerCase()];
+    if (!type || chemin.split('/').some(p => p.startsWith('.'))) { ignores.push(chemin); continue; }
+    $('pi-resultat').textContent = 'Envoi de ' + chemin + ' (' + (envoyes + 1) + ')…';
+    try { await envoyerFichierPack(chemin, f, type); envoyes++; }
+    catch (err) {
+      const MSG = { 'stockage-non-branche': 'Le stockage privé (R2) n\'est pas encore lié au projet : rien n\'a été envoyé.', 'trop-gros': chemin + ' dépasse 25 Mo.', 'type-non-autorise': chemin + ' : type de fichier non autorisé.', chemin: chemin + ' : nom de fichier non autorisé (minuscules, chiffres, / _ . - seulement).' };
+      if (MSG[err.raison]) { $('pi-resultat').textContent = envoyes + ' fichier(s) envoyé(s) avant l\'arrêt.'; return etat(MSG[err.raison], true); }
+      throw err;
+    }
+  }
+  $('pi-resultat').textContent = envoyes + ' fichier(s) envoyé(s)' + (ignores.length ? ', ' + ignores.length + ' ignoré(s) (type non pris en charge ou fichier caché)' : '') + '.';
+  etat('Pack importé.'); await CHARGER.contenus();
+});
 async function prolonger(a, jours) {
   const base = a.actif && a.fin ? a.fin : Date.now();
   await C.api('/api/admin/acces/' + a.id + '/prolonger', { methode: 'POST', corps: jours === null ? { permanent: true } : { fin: base + jours * 86400000 } });
