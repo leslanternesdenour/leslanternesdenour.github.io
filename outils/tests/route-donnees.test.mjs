@@ -54,9 +54,9 @@ test('sac : les six objets du voyage, chacun avec son utilité, sans aucune jaug
 
 test('missions : trois missions de la première tranche, chacune réalisable avec les lieux qui existent', async () => {
   const { MISSIONS_ROUTE, LIEUX_ROUTE } = await import('../../voyage/js/route/donnees.js');
-  assert.deepEqual(Object.keys(MISSIONS_ROUTE), ['chemin', 'traces', 'campement', 'cite', 'collines', 'parcours-collines', 'rencontres', 'portes']);
+  assert.deepEqual(Object.keys(MISSIONS_ROUTE), ['chemin', 'traces', 'campement', 'cite', 'collines', 'parcours-collines', 'rencontres', 'interieurs', 'portes']);
   for (const [id, m] of Object.entries(MISSIONS_ROUTE)) {
-    const n = LIEUX_ROUTE.filter(l => l.mission === id).length + (id === 'rencontres' ? 3 : 0) + (id === 'portes' ? 4 : 0);   // « rencontres » : trois voyageurs, « portes » : quatre portes (voir les tests dédiés)
+    const n = LIEUX_ROUTE.filter(l => l.mission === id).length + (id === 'rencontres' ? 3 : 0) + (id === 'portes' ? 4 : 0) + (id === 'interieurs' ? 3 : 0);   // « rencontres » : trois voyageurs, « portes » : quatre portes, « interieurs » : trois maisons (voir les tests dédiés)
     assert.equal(m.total, n, `${id} : ${m.total} étapes annoncées, ${n} lieux`);
     assert.ok(m.recompense > 0 && m.titre && m.icone && m.resume && m.simple, `${id} incomplète (le texte « simple » est pour les 3–5 ans)`);
     assert.ok(['exploration', 'entraide', 'observation', 'connaissance'].includes(m.categorie));

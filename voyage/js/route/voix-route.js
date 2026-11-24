@@ -627,6 +627,126 @@ export const PHRASES_ROUTE = [
   "exact"
  ],
  [
+  "NOUR-VOIX-RTE-d0ca058a",
+  "Une grande jarre d'eau : l'eau y reste fraîche.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-8db72c08",
+  "Une grande jarre d'eau, couverte d'un linge humide : l'eau y reste fraîche même quand il fait très chaud dehors.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-5db995c1",
+  "Un tapis de laine pour s'asseoir tous ensemble.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-a6f5799f",
+  "Un tapis de laine épais : on s'y assoit en famille pour partager le repas et se reposer.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-b0e6a283",
+  "Des sacs pleins de dattes bien rangés.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-47b87a80",
+  "Des sacs de dattes, bien fermés et rangés au frais : ainsi, elles se gardent longtemps.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-bf859551",
+  "Une balance pour peser les dattes.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-647e5dc0",
+  "Une balance en bois : le marchand pèse les dattes pour que chacun reçoive exactement la bonne quantité, sans tricher.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-c9eb0d5d",
+  "Un métier à tisser : les fils se croisent pour faire un tissu.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-2f618eae",
+  "Un métier à tisser : en croisant les fils de laine, un à un, on fabrique un tissu solide et chaud.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-aac220c1",
+  "Des tissus de toutes les couleurs.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-6476a954",
+  "Des tissus de toutes les couleurs, teints avec des plantes et de la terre : bleu, rouge, jaune.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-f3651542",
+  "De la laine de mouton, toute douce.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-afe24521",
+  "De la laine de mouton : on la lave, on la peigne, puis on la file pour en faire des vêtements et des tapis.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-9396ff78",
+  "Une outre en peau pour porter l'eau.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-fb69e443",
+  "Une outre en peau de chèvre : elle porte l'eau pendant les voyages et la garde fraîche.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-ce0d408d",
+  "Des outils pour réparer : un marteau et une lime.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-675b457c",
+  "Des outils bien rangés : avec un marteau et une lime, l'artisan répare ce qui est cassé, au lieu de le jeter.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-adde3cfb",
+  "Des cordes tressées, très solides.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-29f92372",
+  "Des cordes tressées à la main avec des fibres de palmier : elles servent à puiser l'eau et à attacher les charges.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-ee133108",
+  "Des sacs de blé pour toute l'année.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-2ea87e3a",
+  "Des sacs de blé et d'orge : ces provisions permettent de nourrir tout le monde, même quand la récolte est mauvaise.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-223c3de0",
+  "Une étagère avec des jarres de miel et d'huile.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-59a7884f",
+  "Une étagère de jarres de miel, d'huile et de dattes pressées, bien fermées pour ne pas se gâter.",
+  "exact"
+ ],
+ [
   "NOUR-VOIX-RTE-c90be256",
   "Bonjour ! Entre dans l'ombre : chez moi, il fait frais.",
   "exact"
@@ -1009,6 +1129,21 @@ export const PHRASES_ROUTE = [
  [
   "NOUR-VOIX-RTE-0c99d98f",
   "La cité est pleine de voyageurs et d'artisans venus de loin. Parle à trois d'entre eux pour apprendre comment ils vivent, ce qu'ils font et d'où ils viennent.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-7e727a2d",
+  "Dans les maisons",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-1c23b104",
+  "Entre dans trois maisons de la cité.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-1f121d42",
+  "Les habitants t'invitent chez eux. Entre dans trois maisons différentes de la cité pour découvrir comment on y vit.",
   "exact"
  ],
  [

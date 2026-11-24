@@ -55,3 +55,11 @@ test('inventaire : le tour et le four de l\'atelier sont dits par la narratrice 
   const parTexte = new Map((await inventaire()).map(p => [normaliserTexte(p.texte), p]));
   for (const f of Object.values(FAITS_ATELIER)) for (const t of [f.petit, f.grand]) { const p = parTexte.get(normaliserTexte(t)); assert.ok(p, 'sans voix : ' + t.slice(0, 40)); assert.equal(p.role, 'narratrice'); }
 });
+
+test('inventaire : les objets des intérieurs de maisons sont dits par la voix de l\'habitant de la maison (3–5 ans et 6–10 ans)', async () => {
+  const { inventaire, normaliserTexte } = await import('../voix/route/inventaire-route.mjs');
+  const { FAITS_INTERIEURS } = await import('../../voyage/js/route/textes-route.js');
+  const { HABITANTS_MAISONS } = await import('../../voyage/js/route/donnees.js');
+  const parTexte = new Map((await inventaire()).map(p => [normaliserTexte(p.texte), p]));
+  for (const [g, f] of Object.entries(FAITS_INTERIEURS)) for (const o of f.objets) for (const t of [o.petit, o.grand]) { const p = parTexte.get(normaliserTexte(t)); assert.ok(p, 'sans voix : ' + t.slice(0, 40)); assert.equal(p.role, HABITANTS_MAISONS[g].voix, `${g} : la voix de l'habitant`); }
+});

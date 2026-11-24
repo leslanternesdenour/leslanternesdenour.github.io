@@ -82,3 +82,11 @@ test('montagnes isolées : les deux sentiers se marchent jusqu\'à une terrasse 
   assert.ok(pire < 0.45, `pente max sur les sentiers ${pire.toFixed(2)} à ${ou}`);
   for (const T of TERRASSES) { const h = hauteur(T.s, T.t); for (const a of [0, 1.6, 3.2, 4.8]) assert.ok(Math.abs(hauteur(T.s + Math.cos(a) * 12, T.t + Math.sin(a) * 12) - h) < 0.7, `la terrasse ${T.id} est plate`); }
 });
+
+test('intérieurs : un plateau plat, à l\'écart de la cité, pour les pièces des maisons (le sol sous l\'enfant est le sol de la pièce)', async () => {
+  const { hauteur, PLATEAU_INTERIEURS, CITE } = await import('../../voyage/js/route/relief.js');
+  const P = PLATEAU_INTERIEURS, h0 = hauteur(P.s, P.t);
+  assert.ok(Math.hypot(P.s - CITE.s, P.t - CITE.t) > CITE.rayon + 60, 'loin des maisons de la cité');
+  for (let a = 0; a < 6.3; a += 0.7) for (const d of [0, 5, 10, P.r]) assert.ok(Math.abs(hauteur(P.s + Math.cos(a) * d, P.t + Math.sin(a) * d) - h0) < 0.02, `plat à ${d} m`);
+  assert.ok(Math.abs(hauteur(P.s + P.r + 40, P.t) - h0) < 14, 'pas de falaise autour');
+});

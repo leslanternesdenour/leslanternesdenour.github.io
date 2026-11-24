@@ -66,6 +66,27 @@ export const FAITS_ATELIER = {
   tour: { nom: 'Le tour du potier', icone: '🌀', label: 'Observer le tour', petit: `Le potier fait tourner le plateau et modèle l'argile avec ses mains.`, grand: `Le tour du potier : le plateau tourne, et le potier modèle l'argile avec ses mains mouillées. Peu à peu, la motte devient une jarre bien ronde.` },
   four: { nom: 'Le four à argile', icone: '🔥', label: 'Observer le four', petit: `Dans le four, la chaleur rend la jarre dure comme une pierre.`, grand: `Le four à argile : la grande chaleur durcit les jarres. Une fois cuites, elles ne se déforment plus et peuvent garder l'eau.` }
 };
+// Dans les maisons : deux objets à observer par pièce (un par habitant fictif). forme : le modèle 3D de l'objet (voir interieur-3d.js).
+export const FAITS_INTERIEURS = {
+  0: { titre: 'Chez la grand-mère', icone: '🏠', objets: [
+    { nom: 'La grande jarre', icone: '🏺', label: 'Observer la jarre', forme: 'jarre', petit: `Une grande jarre d'eau : l'eau y reste fraîche.`, grand: `Une grande jarre d'eau, couverte d'un linge humide : l'eau y reste fraîche même quand il fait très chaud dehors.` },
+    { nom: 'Le tapis de laine', icone: '🧶', label: 'Observer le tapis', forme: 'tapis', petit: `Un tapis de laine pour s'asseoir tous ensemble.`, grand: `Un tapis de laine épais : on s'y assoit en famille pour partager le repas et se reposer.` }] },
+  1: { titre: 'Chez le vendeur de dattes', icone: '🌴', objets: [
+    { nom: 'Les sacs de dattes', icone: '🛍️', label: 'Observer les sacs', forme: 'sacs', petit: `Des sacs pleins de dattes bien rangés.`, grand: `Des sacs de dattes, bien fermés et rangés au frais : ainsi, elles se gardent longtemps.` },
+    { nom: 'La balance', icone: '⚖️', label: 'Observer la balance', forme: 'balance', petit: `Une balance pour peser les dattes.`, grand: `Une balance en bois : le marchand pèse les dattes pour que chacun reçoive exactement la bonne quantité, sans tricher.` }] },
+  2: { titre: 'Chez la couturière', icone: '🧵', objets: [
+    { nom: 'Le métier à tisser', icone: '🧵', label: 'Observer le métier', forme: 'metier', petit: `Un métier à tisser : les fils se croisent pour faire un tissu.`, grand: `Un métier à tisser : en croisant les fils de laine, un à un, on fabrique un tissu solide et chaud.` },
+    { nom: 'Les tissus', icone: '🎨', label: 'Observer les tissus', forme: 'tissus', petit: `Des tissus de toutes les couleurs.`, grand: `Des tissus de toutes les couleurs, teints avec des plantes et de la terre : bleu, rouge, jaune.` }] },
+  3: { titre: 'Chez le berger', icone: '🐑', objets: [
+    { nom: 'La laine', icone: '🐑', label: 'Observer la laine', forme: 'laine', petit: `De la laine de mouton, toute douce.`, grand: `De la laine de mouton : on la lave, on la peigne, puis on la file pour en faire des vêtements et des tapis.` },
+    { nom: "L'outre en peau", icone: '💧', label: "Observer l'outre", forme: 'outre', petit: `Une outre en peau pour porter l'eau.`, grand: `Une outre en peau de chèvre : elle porte l'eau pendant les voyages et la garde fraîche.` }] },
+  4: { titre: "Chez l'artisan", icone: '🔨', objets: [
+    { nom: 'Les outils', icone: '🔨', label: 'Observer les outils', forme: 'outils', petit: `Des outils pour réparer : un marteau et une lime.`, grand: `Des outils bien rangés : avec un marteau et une lime, l'artisan répare ce qui est cassé, au lieu de le jeter.` },
+    { nom: 'Les cordes', icone: '🪢', label: 'Observer les cordes', forme: 'cordes', petit: `Des cordes tressées, très solides.`, grand: `Des cordes tressées à la main avec des fibres de palmier : elles servent à puiser l'eau et à attacher les charges.` }] },
+  6: { titre: 'Chez le gardien des provisions', icone: '🌾', objets: [
+    { nom: 'Le blé', icone: '🌾', label: 'Observer le blé', forme: 'sacs', petit: `Des sacs de blé pour toute l'année.`, grand: `Des sacs de blé et d'orge : ces provisions permettent de nourrir tout le monde, même quand la récolte est mauvaise.` },
+    { nom: "L'étagère", icone: '🍯', label: "Observer l'étagère", forme: 'etagere', petit: `Une étagère avec des jarres de miel et d'huile.`, grand: `Une étagère de jarres de miel, d'huile et de dattes pressées, bien fermées pour ne pas se gâter.` }] }
+};
 export const texteLieu = (id, age) => { const t = TEXTES_LIEUX[id]; return t ? (age === '3-5' ? t.petit : t.grand) : ''; };
 
 // Les personnages FICTIFS (aucun personnage historique ou religieux)

@@ -128,6 +128,9 @@ export const MISSIONS_ROUTE = {
   rencontres: { titre: 'Les voyageurs de la cité', icone: '💬', total: 3, recompense: 150, categorie: 'connaissance',
     simple: 'Dis bonjour à trois voyageurs de la cité.',
     resume: 'La cité est pleine de voyageurs et d\'artisans venus de loin. Parle à trois d\'entre eux pour apprendre comment ils vivent, ce qu\'ils font et d\'où ils viennent.' },
+  interieurs: { titre: 'Dans les maisons', icone: '🏡', total: 3, recompense: 150, categorie: 'exploration',
+    simple: 'Entre dans trois maisons de la cité.',
+    resume: 'Les habitants t\'invitent chez eux. Entre dans trois maisons différentes de la cité pour découvrir comment on y vit.' },
   portes: { titre: 'Frapper aux portes', icone: '🚪', total: 4, recompense: 120, categorie: 'connaissance',
     simple: 'Frappe à quatre portes de la cité et dis bonjour.',
     resume: 'Dans la cité, chaque maison a ses habitants. Frappe à quatre portes différentes, poliment, pour savoir qui vit là et ce qu\'ils font.' }

@@ -4,6 +4,7 @@
 import { creerMondeRoute } from './monde.js';
 import { creerLieux3D } from './lieux-3d.js';
 import { creerVille3D } from './ville-3d.js';
+import { creerInterieur3D } from './interieur-3d.js';
 import { creerVoyageurs3D } from './voyageurs-3d.js';
 import { maisonsVille, portesJouables } from './ville-plan.js';
 import { ACTIVITES_METIERS, questionsMetier } from './activites-route.js';
@@ -12,7 +13,7 @@ import { preparerRoute, memoriserPosition, positionDeReprise } from './etat-rout
 import { faireEtape, progression } from './missions-route.js';
 import { DEC, versRoute, S_DEBUT, S_FIN_TRANCHE, LARGEUR, OASIS, CITE, pointChemin } from './relief.js';
 import { FACTEUR_MARCHE_ROUTE, HABITANTS_MAISONS, regionA, LIEUX_ROUTE, MISSIONS_ROUTE, SAC_ROUTE, RELAIS_VILLAGE, auSeuilVillage, versLaRoute, auRetourRoute, versLeVillage } from './donnees.js';
-import { texteLieu, GUIDE, VOYAGEUSE, MESSAGES, FAITS_MAISONS, FAITS_ATELIER } from './textes-route.js';
+import { texteLieu, GUIDE, VOYAGEUSE, MESSAGES, FAITS_MAISONS, FAITS_ATELIER, FAITS_INTERIEURS } from './textes-route.js';
 import { CONTENU, etiquette, texteDe } from './contenu-a-valider.js';
 import { pageCarnetRoute } from './carnet-route.js';
 import { creerRecitUI } from './recit-ui.js';
@@ -35,6 +36,8 @@ export function creerRoute(ctx) {
   const L = creerLieux3D({ scene, hauteur: monde.hauteur, colliders: fixes, ombres: ctx.ombres, TX: ctx.TX });
   const V = creerVille3D({ scene, hauteur: monde.hauteur, ombres: ctx.ombres });          // la cité ancienne
   const W = creerVoyageurs3D({ scene, hauteur: monde.hauteur, leger: !!ctx.Q.leger });   // ses voyageurs fictifs animés
+  const I = creerInterieur3D({ scene, hauteur: monde.hauteur, ombres: ctx.ombres });   // la pièce d'une maison : invisible tant qu'on n'y entre pas
+  let dansMaison = null;                                                                  // { gabarit, retour : devant la porte }
   const Couleur = scene.fog.color.constructor, cible = new Couleur();
   const fog0 = { near: scene.fog.near, far: scene.fog.far };
   let dans = false, brumeVillage = false, regionActuelle = null;
@@ -171,11 +174,26 @@ export function creerRoute(ctx) {
   const faitMaison = g => {
     const f = FAITS_MAISONS[g]; ui.dialogue({ titre: '🏠 Une maison de la cité', texte: age() === '3-5' ? f.petit : f.grand, sous: '(Illustration du jeu : la cité est une interprétation, pas une reconstitution exacte.)', boutons: [{ txt: 'Merci !', fn: () => {} }] });
     if (!R.decouvertes.includes('maison:' + g)) { R.decouvertes.push('maison:' + g); enregistrer(); gagner('maison:' + g, 10, 'Tu as observé une maison de la cité'); } };
+  // dans les maisons : la pièce est posée sur le plateau plat, loin de la cité ; on y entre et on en sort par la porte (la sauvegarde ramène devant la porte)
+  function entrerMaison(g, retour) {
+    dansMaison = { gabarit: g, retour }; I.construire(g); I.montrer(true);
+    J.x = I.plan.entree.x; J.z = I.plan.entree.z; if (ctx.monte()) { C.x = J.x + 1.2; C.z = J.z; }
+    monde.preparer(J); ui.indice('🏠 ' + FAITS_INTERIEURS[g].titre, 3500); etape('interieurs', 'maison:' + g);
+  }
+  function sortirMaison() {
+    if (!dansMaison) return;
+    const r = dansMaison.retour; dansMaison = null; I.montrer(false); J.x = r.x; J.z = r.z; if (ctx.monte()) { C.x = J.x; C.z = J.z; } monde.preparer(J);
+  }
+  for (const g of Object.keys(FAITS_INTERIEURS).map(Number)) FAITS_INTERIEURS[g].objets.forEach((o, i) => { const ob = I.plan.objets[i];
+    habitants.ajouter({ id: 'route:interieur:' + g + ':' + i, x: ob.poseX, z: ob.poseZ, rayon: 1.5, label: o.label, icone: o.icone, actif: () => !!dansMaison && dansMaison.gabarit === g, ouvrir: () => {
+      ui.dialogue({ titre: o.icone + ' ' + o.nom, texte: age() === '3-5' ? o.petit : o.grand, icone: o.icone, boutons: [{ txt: 'Merci !', fn: () => {} }] });
+      const cle = 'interieur:' + g + ':' + i; if (!R.decouvertes.includes(cle)) { R.decouvertes.push(cle); enregistrer(); gagner(cle, 10, 'Tu as observé : ' + o.nom); } } }); });
+  habitants.ajouter({ id: 'route:interieur:sortie', x: I.plan.sortie.x, z: I.plan.sortie.z, rayon: 1.3, label: 'Sortir', icone: '🚪', actif: () => !!dansMaison, ouvrir: sortirMaison });
   // les maisons qui ont une porte : on frappe à la VRAIE porte (devant elle), un habitant fictif répond avec sa voix ; mission « portes »
   const portes = new Map(portesJouables().map(p => [p.gabarit, p]));
   for (const p of portes.values()) { const h = HABITANTS_MAISONS[p.gabarit];
     habitants.ajouter({ id: 'route:porte:' + p.gabarit, x: p.x, z: p.z, rayon: 2.8, label: 'Frapper à la porte', icone: '🚪', ouvrir: () => {
-      ui.dialogue({ titre: '🚪 ' + h.role, texte: age() === '3-5' ? h.petit : h.grand, icone: '🚪', boutons: [{ txt: '🏠 Et ta maison ?', fn: () => setTimeout(() => faitMaison(p.gabarit), 60) }, { txt: 'Merci, au revoir !', fn: () => {} }] });
+      ui.dialogue({ titre: '🚪 ' + h.role, texte: age() === '3-5' ? h.petit : h.grand, icone: '🚪', boutons: [{ txt: '🚪 Entrer', fn: () => setTimeout(() => entrerMaison(p.gabarit, { x: p.x, z: p.z, a: J.a }), 60) }, { txt: '🏠 Et ta maison ?', fn: () => setTimeout(() => faitMaison(p.gabarit), 60) }, { txt: 'Merci, au revoir !', fn: () => {} }] });
       etape('portes', 'porte:' + p.gabarit); } }); }
   // les autres formes (l'échoppe, l'enclos) : un fait à observer, sans porte
   { const vus = new Set(), tri = [...maisonsVille()].sort((a, b) => Math.abs(a.t - pointChemin(a.s).t) - Math.abs(b.t - pointChemin(b.s).t));
@@ -256,7 +274,7 @@ export function creerRoute(ctx) {
       const trop = (x, z) => (monde.hauteur(x, z) - h0p) / pas > 1.05;
       if (trop(nx, nz)) { if (!trop(o.x + dx, o.z)) nz = o.z; else if (!trop(o.x, o.z + dz)) nx = o.x; else { nx = o.x; nz = o.z; } }
     }
-    for (const liste of [fixes, monde.colliders, V.colliders]) for (const c of liste) {
+    for (const liste of [fixes, monde.colliders, V.colliders, I.colliders]) for (const c of liste) {
       if (c.repos && o === C) continue;
       const ex = nx - c.x, ez = nz - c.z, r = c.r + rayon;
       if (Math.abs(ex) > r || Math.abs(ez) > r) continue;
@@ -265,7 +283,7 @@ export function creerRoute(ctx) {
     }
     nx = Math.max(-LARGEUR + 20, Math.min(LARGEUR - 20, nx));
     const sMax = DEC + S_FIN_TRANCHE + 25;
-    if (nz > sMax) { nz = sMax; avertirFin(); }
+    if (nz > sMax && !dansMaison) { nz = sMax; avertirFin(); }
     nz = Math.max(DEC + S_DEBUT, nz);
     o.x = nx; o.z = nz;
   }
@@ -312,7 +330,7 @@ export function creerRoute(ctx) {
     ville: V, voyageurs: W, enRoute: () => dans, facteurMarche: FACTEUR_MARCHE_ROUTE, ouvrirHistoire, fermerHistoire: () => recitUI.fermer(), histoireOuverte: () => recitUI.ouverte(), maj, bouger, ouvrirCarte, ouvrirSac, parlerGuide,
     carte, monde, lieux3d: L, etat: R, fermerCarte: () => carte.fermer(), carteOuverte: () => carte.ouverte(),
     pageCarnet: () => pageCarnetRoute({ route: R, badges: AV.badges || {}, age: age() }),
-    sauver() { if (dans) memoriserPosition(etat, J); },
+    sauver() { if (dans) memoriserPosition(etat, dansMaison ? dansMaison.retour : J); },
     procheEau: () => dans ? Math.max(0, 1 - (Math.hypot(J.x - OASIS.t, J.z - (DEC + OASIS.s)) - OASIS.lac) / 50) : null,
     vers(s, t) { J.x = t; J.z = DEC + s; if (ctx.monte()) { C.x = J.x; C.z = J.z; } if (!dans) { dans = true; monde.preparer(J); montrer(true); } else monde.preparer(J); }   // pour les tests : aller à un endroit de la Route (jamais utilisé par le jeu)
   };
