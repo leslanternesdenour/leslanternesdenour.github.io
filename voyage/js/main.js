@@ -1,15 +1,17 @@
 // Le Grand Voyage de Nour : un monde à explorer à pied et à dos de chameau.
 // Ce fichier relie tout : terrain, décors, ciel, personnages, commandes, sons, découvertes et carnet.
+import './route/bac-a-sable-demarrage.js';   // mode test isolé (?sandbox=1) : doit rester le PREMIER import
 import * as THREE from 'three';
-import { Terrain, LIEUX, LIMITE, lisse } from './terrain.js?v=3';
-import { creerDecor } from './decor.js?v=5';
+import { Terrain, LIEUX, LIMITE, lisse, activerSortieRoute } from './terrain.js?v=3';
+import { creerDecor } from './decor.js?v=6';
 import { Ciel } from './ciel.js?v=3';
 import { Enfant, Chameau } from './personnages.js?v=4';
 import { Controles, ACTIONS, nomTouche } from './controles.js?v=3';
 import { creerOiseaux } from './oiseaux.js?v=3';
 import { creerFaucon } from './faucon.js?v=4';
 import * as S from './sons.js?v=3';
-import { chargerVoixVoyage, direTextes, direIds, direMotArabe, arreterVoixVoyage, ajouterPhrases } from './voix.js?v=5';
+import { etatAppel, pointDeRenfort } from './monture-appel.js?v=1';
+import { chargerVoixVoyage, direTextes, direIds, direMotArabe, arreterVoixVoyage, ajouterPhrases, aUneVoix, direApres } from './voix.js?v=5';
 import { chargerPremium, MESSAGE_FERME } from './premium.js?v=1';
 import { ZONES, POINTS, BIENTOT, DESCRIPTIONS_LIEUX } from './contenu.js?v=4';
 import { sauvegarde } from '../../monde/socle/sauvegarde.js?v=3';
@@ -23,7 +25,7 @@ import { RARETES, articlesDuJour, modeleObjet } from './catalogue.js?v=3';
 import { Voyageur, TENUES, PEAUX, convient } from './voyageur.js?v=9';
 import { creerCour } from './cour.js?v=3';
 import { MONTURES, monture, creerMonture, creerEcurie, FICHES_ESPECES } from './montures.js?v=5';
-import { ECURIE as ECURIE_PLAN, NID_LOUMI, dansEnclos, pres as presEcurie, etape as etapeEnclos } from './enclos-plan.js?v=1';
+import { ECURIE as ECURIE_PLAN, NID_LOUMI, dansEnclos, pres as presEcurie, etape as etapeEnclos, sortie as sortieEnclos } from './enclos-plan.js?v=3';
 import { creerVeille } from './veille.js?v=1';
 import { COLLECTIONS, BADGES, progressionCollection } from './succes.js?v=3';
 import { creerGuide } from './guide.js?v=3';
@@ -40,6 +42,7 @@ import { mascotte } from '../../monde/mascottes.js?v=3';
 import { creerLoumi } from './loumi.js?v=5';
 import { creerHabitants } from './habitants.js?v=2';
 import { creerHud } from './hud.js?v=1';
+import { routeActive } from './route/drapeau.js';
 import { noeud as noeudLoumi, depart as departLoumi } from './loumi-dialogues.js?v=2';
 import { creerSoins, BESOINS, INFOS, LIEUX_SOINS, DUREES as DUREES_SOINS, poseSoin, PLANCHER, BAS } from './soins.js?v=2';
 
@@ -78,6 +81,18 @@ async function demarrer() {
     .catch(() => ({ zoneOuverte: id => !['camp', 'dunes', 'col', 'montagnes', 'wadi', 'rochers'].includes(id), missionOuverte: id => !['lanternes', 'tresor', 'voyageur', 'animaux'].includes(id) }));
   $('chargement-detail').textContent = 'On dessine le désert et les montagnes';
   await attendre();
+  // La Route vers La Mecque : préproduction et machine locale seulement (voir route/drapeau.js). Sur le vrai site, rien de tout cela n'existe.
+  const ROUTE = routeActive();
+  let donneesRoute = null;
+  if (ROUTE) {
+    donneesRoute = await import('./route/donnees.js');
+    activerSortieRoute(donneesRoute.SORTIE_VILLAGE);
+    LIEUX.route = { x: 352, z: 50, r: 30 };
+    REGIONS.route = donneesRoute.REGION_ROUTE;
+    BADGES.push(...(await import('./route/badges-route.js')).BADGES_ROUTE);
+    if (!MONTURES.some(m => m.id === 'route')) MONTURES.push({ id: 'route', fem: true, nom: 'Rihla', espece: 'dromadaire', race: 'Dromadaire de la grande route', icone: '🐪', rarete: 'peu', prix: 0, offerte: true, hist: 'attesté',
+      robe: ['#d9b27a', '#c99a60', '#7a5636'], desc: 'Offerte à la fin de la première grande étape de la route. Calme et endurante, elle adore les longues routes.', vitesse: [5.8, 11.5] });
+  }
   const terrain = new Terrain(Q.terrain, TX.sol);
   scene.add(terrain.mesh);
   const H = (x, z) => terrain.hauteur(x, z);
@@ -128,6 +143,9 @@ async function demarrer() {
   const quetes = creerQuetes({ scene, terrain, colliders: decor.colliders, AV, etat, enregistrer, ombres: !!Q.ombres,
     donner: (id, n, raison) => bourse.recompense(id, n, raison, ouDonner()),
     ui: { dialogue: p => dialogue(p), decouverte: d => decouvrir(d), bandeau: (a, b) => { bandeau(a, b); S.sonDecouverte(); }, evenement: t => quotidien.evenement(t) } });
+  // La Route : le relais du guide, le panneau et l'éboulis du seuil (la barrière s'ouvre comme celles du wadi et des rochers)
+  const village = ROUTE ? (await import('./route/village-route.js')).creerVillageRoute({ scene, H, colliders: decor.colliders, ombres: !!Q.ombres }) : null;
+  if (village) decor.barrieres.route = village.barriere;
   // les régions à débloquer (le wadi, les rochers gravés)
   const regions = creerRegions({ etat, AV, enregistrer, barrieres: decor.barrieres, acces,
     ui: { debloquee: (id, R) => { setTimeout(() => { bandeau('Nouvelle région débloquée !', `${R.icone} ${R.nom}`); S.sonPorte(); montrerIndice(`🗺️ ${R.nom} est ouvert : regarde ta carte !`, 4000); }, 600); } } });
@@ -178,6 +196,21 @@ async function demarrer() {
   const LOUMI_POS = { x: NID_LOUMI.x, z: NID_LOUMI.z };      // son nid, dans l'enclos de l'écurie, à côté des montures (enclos-plan.js)
   const loumi = creerLoumi({ scene, terrain, ombres: !!Q.ombres, x: LOUMI_POS.x, z: LOUMI_POS.z, regard: NID_LOUMI.regard });
   decor.colliders.push({ x: LOUMI_POS.x, z: LOUMI_POS.z, r: 0.7 });
+  // La Route vers La Mecque : un second monde chargé à la demande (aucun système du village n'est dupliqué : bourse, habitants, dialogues, régions, montures)
+  function fondu() {
+    let f = $('fondu-route'); if (!f) { f = document.createElement('div'); f.id = 'fondu-route'; f.style.cssText = 'position:fixed;inset:0;z-index:60;background:#ecd9ac;opacity:0;pointer-events:none'; document.body.appendChild(f); }
+    f.style.transition = 'none'; f.style.opacity = '0.96'; void f.offsetWidth; f.style.transition = 'opacity 1s ease'; f.style.opacity = '0';
+  }
+  let regard = null;   // la caméra se tourne doucement vers un point (arrivée dans la cité) ; l'enfant garde la main
+  const route = ROUTE ? (await import('./route/jeu-route.js')).creerRoute({ regarder: (x, z, s) => { regard = { x, z, t: s }; }, scene, terrain, Q, TX, ombres: !!Q.ombres, etat, AV, enregistrer, habitants, regions, village, J, C,
+    monte: () => monte, age: () => sauvegarde.get().age,
+    donner: (id, n, raison) => bourse.recompense(id, n, raison, ouDonner()),
+    voixRoute: async () => { try { const [m, rc, r] = await Promise.all([import('./route/voix-route.js'), import('./route/voix-recits-a-valider.js').catch(() => ({ PHRASES_RECITS: [] })), fetch('../audio/route-voix.json', { cache: 'no-cache' }).then(x => x.json())]); ajouterPhrases([...m.PHRASES_ROUTE, ...rc.PHRASES_RECITS], r); } catch (e) { /* sans voix : le jeu reste jouable */ } },
+    arreterGuide: () => { guide.arreter(); etat.guidage = null; enregistrer(); majGuidage(null); },
+    surSaut: () => { cam.cible.set(J.x, H(J.x, J.z) + 1.4, J.z); cam.distVue = null; cam.yawCible = cam.yaw = J.a + Math.PI; },
+    ui: { dialogue: p => dialogue(p), decouvrir: d => decouvrir(d), bandeau: (a, b, silence) => { bandeau(a, b, silence); S.sonDecouverte(); }, indice: (h, ms) => montrerIndice(h, ms), dire: seg => direApres(seg),
+      lieu: t => { $('lieu').textContent = t; hud.temporaire($('lieu'), 4500); }, fondu,
+      carteOuverte: () => { fermerPanneaux(); interface_ouverte = true; ctl.bloque = true; }, carteFermee: () => { interface_ouverte = false; ctl.bloque = false; dernierEtatBoutons = ''; } } }) : null;
   etat.loumi = Object.assign({ rencontre: false, vus: [], rappels: {} }, etat.loumi || {});
   if (!etat.loumi.rappels || typeof etat.loumi.rappels !== 'object') etat.loumi.rappels = {};
   function parlerLoumi(id) {
@@ -394,6 +427,7 @@ async function demarrer() {
   // ---------- déplacements ----------
   const colliders = decor.colliders;
   function bouger(o, dx, dz, rayon, dt) {
+    if (route && route.enRoute() && o.z > 10000) return route.bouger(o, dx, dz, rayon);
     let nx = o.x + dx, nz = o.z + dz;
     // pente trop raide : on glisse le long
     const h0 = H(o.x, o.z), pas = Math.hypot(dx, dz);
@@ -429,10 +463,17 @@ async function demarrer() {
     if (interface_ouverte || sequence) return;
     S.demarrerSons();
     const d = Math.hypot(J.x - C.x, J.z - C.z);
+    const e = etatAppel({ monte, sequence: !!sequence, venir: !!C.venir, soin: !!soin, rentre: !!C.rentre, dist: d, seuilMonter: monture(AV.monture).espece === 'elephant' ? 5 : 4 });
+    if (e.mode === 'indisponible') { montrerIndice(`${monture(AV.monture).icone} ${e.raison}`, 3500); return; }   // occupée : on explique pourquoi
+    if (e.mode === 'arrive') { montrerIndice(`${monture(AV.monture).icone} ${nomMonture()} arrive déjà !`, 1800); return; }   // elle vient déjà : pas de nouvel appel
     C.vit = 0; C.venir = false; C.rentre = false;
     if (monte) sequence = { type: 'descendre', t: 0 };
-    else if (d < (monture(AV.monture).espece === 'elephant' ? 5 : 4)) { sequence = { type: 'monter', t: 0, depart: { x: J.x, z: J.z } }; sonMonture(); }
-    else { C.venir = true; sonMonture(); montrerIndice(`${monture(AV.monture).icone} ${nomMonture()} arrive !`, 2500); }
+    else if (e.mode === 'monter') { sequence = { type: 'monter', t: 0, depart: { x: J.x, z: J.z } }; sonMonture(); }
+    else {
+      // de très loin (ou d'un autre monde : village ↔ Route) : la monture est ramenée à 60 m, derrière le joueur (hors de l'écran), sur un terrain praticable, puis elle court jusqu'à lui
+      if (d > 120) { const h0 = H(J.x, J.z), p = pointDeRenfort(J, { yaw: cam.yaw, distance: 60, acceptable: (x, z) => H(x, z) > -0.05 && Math.abs(H(x, z) - h0) < 8 }); C.x = p.x; C.z = p.z; C.a = Math.atan2(J.x - p.x, J.z - p.z); bouger(C, 0, 0, 1.1, 0.016); }   // bouger : la repousse hors des obstacles
+      C.venir = true; sonMonture(); montrerIndice(`${monture(AV.monture).icone} ${nomMonture()} arrive !`, 2500);
+    }
   }
   function avancerSequence(dt) {
     const s = sequence; s.t += dt;
@@ -540,8 +581,10 @@ async function demarrer() {
     $('lecture').classList.remove('cache');
     (zone.querySelector('button.choix') || $('lecture-ok')).focus({ preventScroll: true });
     const voix = p.voix || (p.mascotte === 'nour' ? 'nour' : /Hakim/.test(p.titre) ? 'hakim' : /Salim/.test(p.titre) ? 'salim' : null);
+    $('lecture-ecouter').classList.toggle('cache', !!p.sansVoix && !aUneVoix(p.texte));   // La Route : « Écouter » seulement s'il y a une voix Nour enregistrée (jamais de voix du navigateur)
+    if (p.auto) direTextes([{ t: p.texte }, ...(p.sousMuet || !p.sous ? [] : [{ t: p.sous, opt: true }])]);   // lecture automatique (La Route) : seulement si la phrase est enregistrée
     $('lecture-ecouter').onclick = p.ecouterArabe ? () => parlerArabe(p.ecouterArabe)
-      : () => direTextes([{ t: p.texte }, { t: p.sous, opt: true }, { t: p.sens }]) || parler(p.texte + (p.sous ? ' ' + p.sous.replace(/^[^\wÀ-ÿ]+/, '') : '') + (p.sens ? ' ' + p.sens.replace('Sens du verset : ', 'Le sens de ce verset : ') : ''), voix);
+      : () => direTextes([{ t: p.texte }, { t: p.sous, opt: !p.sousMuet }, { t: p.sens }]) || (p.sansVoix ? false : parler(p.texte + (p.sous ? ' ' + p.sous.replace(/^[^\wÀ-ÿ]+/, '') : '') + (p.sens ? ' ' + p.sens.replace('Sens du verset : ', 'Le sens de ce verset : ') : ''), voix));
   }
   // Pièces de Nour gagnées : petit « +n » qui monte, la bourse bondit
   let timerGain = null;
@@ -569,7 +612,7 @@ async function demarrer() {
     const ligneJour = mj.length ? `<span class="sac">☀️ Missions du jour : ${faitesJour}/${mj.length}</span>` : '';
     if (!enCours.length && !AV.sac.length && !ligneJour) { hud.cacher(s); return; }
     const k = enCours.includes(AV.suiviPrefere) ? AV.suiviPrefere : enCours[0];
-    const nomsSac = AV.sac.map(x => x.startsWith('dattes') ? '🌴' : x.startsWith('eau') ? '💧' : x === 'seau' ? '🪣' : x === 'gourde' ? '🫙' : '🚿').join(' ');
+    const nomsSac = AV.sac.map(x => x.startsWith('dattes') ? '🌴' : x.startsWith('eau') ? '💧' : x === 'seau' ? '🚰' : x === 'gourde' ? '🏺' : '🚿').join(' ');
     s.innerHTML = (k ? `${MISSIONS[k].icone} <b>${MISSIONS[k].titre}</b> · ${AV.missions[k].n}/${MISSIONS[k].total}` : '') +
       (AV.sac.length ? `<span class="sac">🎒 ${nomsSac} (${AV.sac.length}/${AV.capacite})</span>` : '') + ligneJour;
     if (suiviPret) hud.temporaire(s, 6500);        // seulement quand quelque chose change ; le carnet 📖 garde le détail
@@ -620,12 +663,13 @@ async function demarrer() {
   }
   let zoneActuelle = undefined;
   function verifierZone() {
+    if (route && route.enRoute()) { zoneActuelle = 'route'; return; }
     const z = zoneIci(J.x, J.z);
     if (z === zoneActuelle) return;
     zoneActuelle = z;
     if (z) quotidien.evenement('zone', z);
     const info = ZONES.find(o => o.id === z);
-    $('lieu').textContent = info ? info.icone + ' ' + info.nom : (J.z < -140 ? '🪨 Le chemin du col' : '🐫 Le désert');
+    $('lieu').textContent = info ? info.icone + ' ' + info.nom : (J.z < -140 ? '⛰️ Le chemin du col' : '🐫 Le désert');
     hud.temporaire($('lieu'), 4500); zoneVillage = z === 'village'; majJumelles();
     if (z && !etat.zones.includes(z)) {
       etat.zones.push(z); enregistrer();
@@ -650,9 +694,9 @@ async function demarrer() {
   verifierCol(false);
   $('nb-pieces').textContent = AV.pieces;
   let timerBandeau = null;
-  function bandeau(petit, nom) {
+  function bandeau(petit, nom, silence) {
     const b = $('bandeau'); b.classList.add('cache'); void b.offsetWidth; petit = accord(petit);
-    direTextes([{ t: petit }, { t: nom, opt: true }]);   // seulement si la phrase est enregistrée
+    if (!silence) direTextes([{ t: petit }, { t: nom, opt: true }]);   // seulement si la phrase est enregistrée
     $('bandeau-petit').textContent = petit; $('bandeau-nom').textContent = nom; b.classList.remove('cache');
     clearTimeout(timerBandeau); timerBandeau = setTimeout(() => b.classList.add('cache'), 4300);
   }
@@ -660,7 +704,7 @@ async function demarrer() {
   let dernierIndiceDit = { t: '', quand: 0 };
   function montrerIndice(html, ms) {
     html = accord(html);
-    if (html !== dernierIndiceDit.t || performance.now() - dernierIndiceDit.quand > 8000) { dernierIndiceDit = { t: html, quand: performance.now() }; direTextes([{ t: html }]); }
+    if (html !== dernierIndiceDit.t || performance.now() - dernierIndiceDit.quand > 8000) { dernierIndiceDit = { t: html, quand: performance.now() }; direApres([{ t: html }]); }
     const i = $('indice'); i.innerHTML = html; i.classList.remove('cache'); indiceForce = true;
     clearTimeout(timerIndice); timerIndice = setTimeout(() => { indiceForce = false; i.classList.add('cache'); }, ms);
   }
@@ -695,7 +739,14 @@ async function demarrer() {
     $('carnet').classList.remove('cache');
   }
   document.querySelectorAll('.onglets button').forEach(b => b.addEventListener('click', () => ouvrirCarnet(b.dataset.onglet)));
+  if (route) {   // l'onglet « Itinéraire » de La Route, et le bouton de sa carte dans la carte du pays
+    const b = document.createElement('button'); b.setAttribute('role', 'tab'); b.dataset.onglet = 'route'; b.textContent = '🐪 Itinéraire';
+    document.querySelector('.onglets').appendChild(b); b.addEventListener('click', () => ouvrirCarnet('route'));
+    const c = document.createElement('button'); c.textContent = '🐪'; c.setAttribute('aria-label', 'Carte de la grande route vers La Mecque'); c.title = 'La grande route';
+    c.addEventListener('click', () => { fermerCarte(); setTimeout(() => route.ouvrirCarte(), 60); }); document.querySelector('.carte-outils').appendChild(c);
+  }
   function pageCarnet(o) {
+    if (o === 'route' && route) return route.pageCarnet();
     if (o === 'missions') {
       const etoiles = n => `<span class="diff" title="Difficulté">${'★'.repeat(n)}<i>${'★'.repeat(3 - n)}</i></span>`;
       const piece = '<span class="piece" style="width:16px;height:16px;vertical-align:-3px"></span>';
@@ -734,7 +785,7 @@ async function demarrer() {
     }
     if (o === 'collection') {
       const l = i => AV.ramasses.includes('lanterne' + i);
-      const objets = [['seau', '🪣', 'Le seau'], ['gourde', '🫙', 'La gourde'], ['arrosoir', '🚿', 'L\'arrosoir'], ['medaillon', '⭐', 'Le médaillon de l\'oasis'], ['jarre', '🏺', 'La jarre de la grotte']];
+      const objets = [['seau', '🚰', 'Le seau'], ['gourde', '🏺', 'La gourde'], ['arrosoir', '🚿', 'L\'arrosoir'], ['medaillon', '⭐', 'Le médaillon de l\'oasis'], ['jarre', '🏺', 'La jarre de la grotte']];
       return `<h3>🏮 Les lanternes cachées</h3><div class="grille-collection">${Array.from({ length: 12 }, (_, i) => `<div class="${l(i) ? '' : 'manque'}"><span>🏮</span>${l(i) ? 'Trouvée' : '?'}</div>`).join('')}</div>
         <h3>🧺 Objets trouvés</h3><div class="grille-collection">${objets.map(([k, ic, nom]) => `<div class="${AV.ramasses.includes(k) ? '' : 'manque'}"><span>${ic}</span>${AV.ramasses.includes(k) ? nom : '?'}</div>`).join('')}</div>
         ` + pageSucces();
@@ -763,7 +814,7 @@ async function demarrer() {
             : `<span class="ou">${MARCHANDS[a.marchand] ? MARCHANDS[a.marchand].nom.split(',')[0] : ''} · <span class="piece"></span> ${a.prix}</span>`}</div>`;
       };
       const GROUPES = [['coiffe', g === 'fille' ? '🧕 Voiles' : '🧢 Coiffes'], ['corps', g === 'fille' ? '👗 Robes' : '👕 Tuniques'], ['manteau', '🧥 Manteaux et capes'], ['ceinture', '🎗️ Ceintures'],
-        ['pieds', '🩴 Sandales'], ['sac', '🎒 Sacs'], ['main', '🧺 Dans la main'], ['hanche', '🫗 À la ceinture'], ['poignets', '📿 Bracelets']];
+        ['pieds', '👡 Sandales'], ['sac', '🎒 Sacs'], ['main', '🧺 Dans la main'], ['hanche', '💧 À la ceinture'], ['poignets', '📿 Bracelets']];
       const habits = GROUPES.map(([e, titre]) => {
         const l = ARTICLES.filter(a => a.emplacement === e && convient(a, g));
         return l.length ? `<h3>${titre}</h3><div class="etal-grille">${l.map(carte).join('')}</div>` : '';
@@ -781,7 +832,7 @@ async function demarrer() {
       const items = ARTICLES.filter(a => a.cat === 'monture');
       const mo = monture(AV.monture);
       return `<p>${mo.icone} <b>${mo.nom}</b> voyage avec toi. Prends soin de ${mo.fem ? 'elle' : 'lui'} : de l'eau, de l'ombre, du repos et de la douceur.</p>
-        <h3>🐾 Mes montures</h3><div class="etal-grille">${MONTURES.map(m => { const R = RARETES[m.rarete], avoir = AV.montures.includes(m.id);
+        <h3>🐾 Mes montures</h3><div class="etal-grille">${MONTURES.filter(m => !m.offerte || AV.montures.includes(m.id)).map(m => { const R = RARETES[m.rarete], avoir = AV.montures.includes(m.id);
           return `<div class="objet ${avoir ? '' : 'pas-a-toi'}" style="--r:${R.couleur};--f:${R.fond}"><button class="voir" data-fiche-monture="${m.id}"><span class="vignette"><i>${m.icone}</i></span><b>${m.nom}</b><span style="font-size:12px">${m.race}</span><span class="badge-rarete" style="--r:${R.couleur}">${R.nom}</span></button>
             <span class="ou">${AV.monture === m.id ? '✓ En voyage' : avoir ? 'À l\'écurie' : `Écurie · <span class="piece"></span> ${m.prix}`}</span></div>`; }).join('')}</div>
         <p class="note">Pour changer de monture, va voir Nabil à l'écurie, près de l'enclos, à l'est du village.</p>
@@ -1059,7 +1110,7 @@ async function demarrer() {
     $('boutique-icone').textContent = '🐎'; $('boutique-nom').textContent = 'Nabil, le gardien de l\'écurie';
     $('boutique-accueil').textContent = 'Bienvenue à l\'écurie ! Ici, tes montures se reposent, boivent et mangent. Choisis celle qui partira en voyage avec toi.'; direTextes([{ t: $('boutique-accueil').textContent }]);
     $('boutique-pieces').textContent = AV.pieces;
-    $('boutique-articles').innerHTML = `<div class="etal-grille">${MONTURES.map(m => {
+    $('boutique-articles').innerHTML = `<div class="etal-grille">${MONTURES.filter(m => !m.offerte || AV.montures.includes(m.id)).map(m => {
       const R = RARETES[m.rarete], avoir = AV.montures.includes(m.id), actif = AV.monture === m.id;
       const etiq = actif ? '<span class="etat-obj porte">✓ En voyage avec toi</span>' : avoir ? '<span class="etat-obj">À l\'écurie</span>' : `<span class="etat-obj prix-obj ${AV.pieces < m.prix ? 'cher' : ''}"><span class="piece"></span> ${m.prix}</span>`;
       return `<button class="objet" data-monture="${m.id}" style="--r:${R.couleur};--f:${R.fond}"><span class="vignette"><img data-apercu-monture="${m.id}" alt=""><i>${m.icone}</i></span><b>${m.nom}</b><span style="font-size:12px">${m.race}</span><span class="badge-rarete" style="--r:${R.couleur}">${R.nom}</span>${etiq}</button>`;
@@ -1159,7 +1210,7 @@ async function demarrer() {
   let focus = null;                            // la caméra se tourne doucement vers ce qu'on découvre
   const fileDecouvertes = [];
   const TYPES = { mot: [ICONE_MOTS, 'Nouveau mot arabe !', 'Mot arabe'], plante: ['🌿', 'Nouvelle plante observée !', 'Plante'], animal: ['🔍', 'Nouvel animal observé !', 'Animal'],
-    gravure: ['🪨', 'Gravure découverte !', 'Gravure'], nature: ['✨', 'Nouvelle découverte !', 'Découverte'], lieu: ['🗺️', 'Nouveau lieu découvert !', 'Lieu'] };
+    gravure: ['⛰️', 'Gravure découverte !', 'Gravure'], nature: ['✨', 'Nouvelle découverte !', 'Découverte'], lieu: ['🗺️', 'Nouveau lieu découvert !', 'Lieu'] };
   // une image d'un modèle du jeu (pour les animaux)
   const cacheObjets = new Map();
   function rendreObjet(obj, cle) {
@@ -1202,13 +1253,14 @@ async function demarrer() {
     $('dec-barre').style.transition = 'none'; $('dec-barre').style.width = p ? `${((d.nouveau ? p.n - 1 : p.n) / p.total) * 100}%` : '0';
     z.querySelector('.dec-progres').classList.toggle('cache', !p);
     setTimeout(() => { $('dec-barre').style.transition = 'width 1s ease'; $('dec-barre').style.width = p ? `${p.n / p.total * 100}%` : '0'; }, 450);
-    const b = $('dec-ecouter');
+    const b = $('dec-ecouter'); b.classList.toggle('cache', !!d.sansVoix && !aUneVoix(d.texte));
     b.innerHTML = `${ICONE_SON}<span>${mot || d.arabe ? 'Écouter en arabe' : 'Écouter'}</span>`;
     b.onclick = () => { b.classList.add('parle'); setTimeout(() => b.classList.remove('parle'), 1800); if (mot || d.arabe) parlerArabe(d.arabe); else if (!direTextes([{ t: d.nom, opt: true }, { t: d.texte }])) parler(`${d.nom}. ${d.texte || ''}`); };
     z.classList.remove('cache', 'joue'); void z.offsetWidth; z.classList.add('joue');
     if (d.nouveau) {
       if (!monte) enfant.faire('joie');
-      if (!direTextes([{ t: T[1] }, { t: mot ? d.arabe : d.nom, opt: !mot }])) parler(mot ? `Nouveau mot arabe : ${d.nom}.` : `${T[1].replace(' !', '')} : ${d.nom}.`);
+      if (d.sansVoix) { if (!direTextes([{ t: T[1] }, { t: d.nom, opt: true }, ...(d.auto ? [{ t: d.texte, opt: true }] : [])]) && d.auto) direTextes([{ t: d.texte }]); }
+      else if (!direTextes([{ t: T[1] }, { t: mot ? d.arabe : d.nom, opt: !mot }])) parler(mot ? `Nouveau mot arabe : ${d.nom}.` : `${T[1].replace(' !', '')} : ${d.nom}.`);
     }
     $('dec-ok').focus({ preventScroll: true });
   }
@@ -1274,7 +1326,7 @@ async function demarrer() {
     zone('dunes', LIEUX.dunes.x, LIEUX.dunes.z, 'desert', 110, { rayon: 30, verrou: fermePremium('dunes') });
     zone('montagnes', 0, -258, 'montagne', 75, { rayon: 18, verrou: fermePremium('montagnes') || decor.col.ouvert ? fermePremium('montagnes') : 'Le passage vers les montagnes est encore fermé. Découvre d\'abord l\'oasis et le camp des caravanes.' });
     zone('wadi', LIEUX.wadi.x, LIEUX.wadi.z, 'desert', 50, { rayon: 14, icone: '🌼', verrou: regions.ouverte('wadi') ? null : regions.explication('wadi') });
-    zone('rochers', LIEUX.rochers.x, LIEUX.rochers.z, 'decouverte', 44, { rayon: 12, icone: '🪨', verrou: regions.ouverte('rochers') ? null : regions.explication('rochers') });
+    zone('rochers', LIEUX.rochers.x, LIEUX.rochers.z, 'decouverte', 44, { rayon: 12, icone: '⛰️', verrou: regions.ouverte('rochers') ? null : regions.explication('rochers') });
     L.push({ id: 'col', nom: 'Le col', cat: 'passage', x: 0, z: -150, connu: true, rayon: 8, verrou: fermePremium('col') || decor.col.ouvert ? fermePremium('col') : 'Ce passage s\'ouvrira quand tu auras découvert l\'oasis et le camp des caravanes.', texte: 'Le passage entre le village et les montagnes.' });
     L.push({ id: 'puits', nom: 'Le puits du village', cat: 'eau', x: 0, z: 3.4, connu: true, rayon: 4 });
     L.push({ id: 'abreuvoir', nom: 'L\'abreuvoir de l\'enclos', cat: 'eau', x: 36.5, z: -12.5, connu: true, rayon: 4 });
@@ -1311,6 +1363,7 @@ async function demarrer() {
     arreter: () => { guide.arreter(); etat.guidage = null; enregistrer(); majGuidage(null); }, fermer: () => fermerCarte()
   });
   function ouvrirCarte(lieuId) {
+    if (route && route.enRoute()) { if (!interface_ouverte) route.ouvrirCarte(); return; }
     if (interface_ouverte && $('carte-pays').classList.contains('cache')) return;
     fermerPanneaux(); interface_ouverte = true; ctl.bloque = true;
     $('carte-pays').classList.remove('cache'); carte.ouvrir(lieuId);
@@ -1442,7 +1495,7 @@ async function demarrer() {
       bouger(C, Math.sin(C.a) * C.vit * dt, Math.cos(C.a) * C.vit * dt, monture(AV.monture).espece === 'elephant' ? 1.8 : 1.1, dt);
       J.x = C.x; J.z = C.z; J.a = C.a; J.vit = 0;
     } else {
-      const vmax = (d.course ? 6.2 : 3.3) * (d.analogique || 0);
+      const vmax = (d.course ? 6.2 : 3.3) * (d.analogique || 0) * (route && route.enRoute() ? route.facteurMarche : 1);   // sur la Route : marche un peu plus lente
       const tx = force > 0.05 ? wx / force * vmax : 0, tz = force > 0.05 ? wz / force * vmax : 0;
       const k = Math.min(1, dt * 10);
       J.vx += (tx - J.vx) * k; J.vz += (tz - J.vz) * k;
@@ -1455,9 +1508,10 @@ async function demarrer() {
         const ex = J.x - C.x, ez = J.z - C.z, dist = Math.hypot(ex, ez);
         if (dist < 3.4) { C.venir = false; C.vit = 0; }
         else {
-          const ecart = angleVers(C.a, Math.atan2(ex, ez));
+          const but = sortieEnclos({ x: C.x, z: C.z }, { x: J.x, z: J.z });      // appelée depuis l'enclos : la monture passe par la porte, jamais à travers la clôture
+          const ecart = angleVers(C.a, Math.atan2(but.x - C.x, but.z - C.z));
           C.a += Math.sign(ecart) * Math.min(Math.abs(ecart), dt * 2.5);
-          C.vit += ((dist > 20 ? 9 : 5) - C.vit) * Math.min(1, dt * 2);
+          C.vit += ((dist > 40 ? 11 : dist > 20 ? 9 : 5) - C.vit) * Math.min(1, dt * 2);
           bouger(C, Math.sin(C.a) * C.vit * dt, Math.cos(C.a) * C.vit * dt, 1.1, dt);
         }
       } else if (!C.rentre) C.vit *= Math.max(0, 1 - dt * 4);
@@ -1514,6 +1568,7 @@ async function demarrer() {
       cam.yawCible += angleVers(cam.yawCible, derriere) * Math.min(1, dt * (monte ? 1.1 : 0.8));
     }
     // la caméra suit en douceur (pas de saccade, même avec un doigt nerveux)
+    if (regard && regard.t > 0 && !interface_ouverte) { regard.t -= dt; cam.yawCible = Math.atan2(J.x - regard.x, J.z - regard.z); cam.pitchCible = Math.max(cam.pitchCible, 0.17); }
     cam.yaw += angleVers(cam.yaw, cam.yawCible) * Math.min(1, dt * 12);
     cam.pitch += (cam.pitchCible - cam.pitch) * Math.min(1, dt * 12);
     let distBase = (monte || (sequence && sequence.type === 'monter')) ? (chameau.espece === 'elephant' ? 13 : 10.5) : 6.5;
@@ -1567,6 +1622,8 @@ async function demarrer() {
     // --- monde vivant ---
     const nuit = ciel.maj(dt, cam.cible, etat.cycle !== false); nuitActuelle = !!nuit;
     decor.maj({ x: J.x, z: J.z }, tTotal, nuit);
+    if (route) route.maj(dt, tTotal, nuit);
+    if (village) village.animer(dt, tTotal);
     oiseaux.maj(dt, tTotal, nuit);
     faucon.maj(dt, tTotal, { x: enfant.racine.position.x, y: enfant.racine.position.y, z: enfant.racine.position.z });
     { const sol = terrain.matiere(J.x, J.z), village = Math.hypot(J.x, J.z) < 60;
@@ -1599,7 +1656,7 @@ async function demarrer() {
       const dO = Math.hypot(J.x - LIEUX.oasis.x, J.z - LIEUX.oasis.z), dF = Math.hypot(J.x, J.z), dC = Math.hypot(J.x - LIEUX.camp.x, J.z - LIEUX.camp.z);
       S.majSons(0.4, {
         nuit, altitude: Math.max(0, H(J.x, J.z) - 2),
-        procheEau: Math.max(lisse(55, 20, dO), lisse(16, 3, dF) * 0.5),
+        procheEau: (route && route.procheEau() != null) ? route.procheEau() : Math.max(lisse(55, 20, dO), lisse(16, 3, dF) * 0.5),
         procheFeu: lisse(16, 3, dC),
         procheVert: Math.max(lisse(60, 20, dF), lisse(70, 25, dO)),
         desert: 1 - Math.max(lisse(60, 25, dF), lisse(70, 30, dO))
@@ -1610,8 +1667,11 @@ async function demarrer() {
     tSauvegarde += dt;
     if (tSauvegarde > 3) {
       tSauvegarde = 0;
-      etat.joueur = { x: +J.x.toFixed(2), z: +J.z.toFixed(2), a: +J.a.toFixed(3) };
-      etat.chameau = { x: +C.x.toFixed(2), z: +C.z.toFixed(2), a: +C.a.toFixed(3) };
+      if (route && route.enRoute()) route.sauver();   // sur la Route : position exacte dans etat.route ; la position du village reste celle d'avant
+      else {
+        etat.joueur = { x: +J.x.toFixed(2), z: +J.z.toFixed(2), a: +J.a.toFixed(3) };
+        etat.chameau = { x: +C.x.toFixed(2), z: +C.z.toFixed(2), a: +C.a.toFixed(3) };
+      }
       etat.monte = monte && !sequence; etat.heure = +ciel.p.toFixed(4);
       enregistrer(); verifierSucces(); regions.verifier();
     }
@@ -1634,14 +1694,16 @@ async function demarrer() {
   function majBoutons(pres, loin) {
     const avPrio = procheAv && (!proche || procheAv.d < Math.hypot(proche.x - J.x, proche.z - J.z));
     const lire = avPrio ? procheAv.label : proche ? (proche.id === 'nour' || proche.id === 'sage' || proche.id === 'ecurie' ? 'Parler' : proche.id.startsWith('boutique-') ? 'Acheter' : proche.id === 'cour' ? 'Ma cour' : 'Lire') : (pres && !sequence ? (dansEnclos(C.x, C.z) ? 'S\'occuper' : 'Caresser') : null);
-    const cham = sequence ? null : monte ? 'Descendre' : pres ? 'Monter' : loin ? 'Appeler' : null;
-    const cle = lire + '|' + cham + '|' + interface_ouverte;
+    const eA = etatAppel({ monte, sequence: !!sequence, venir: !!C.venir, soin: !!soin, rentre: !!C.rentre, dist: Math.hypot(J.x - C.x, J.z - C.z), seuilMonter: monture(AV.monture).espece === 'elephant' ? 5 : 4 });
+    const cham = eA.mode ? eA.label : null;   // le bouton de la monture est toujours là pendant l'exploration (Monter, Appeler, Arrive…, Descendre)
+    const cle = lire + '|' + cham + '|' + eA.mode + '|' + interface_ouverte;
     if (cle === dernierEtatBoutons) return;
     dernierEtatBoutons = cle;
     $('btn-action').classList.toggle('cache', !lire || interface_ouverte);
     if (lire) { $('btn-action').querySelector('.txt').textContent = lire; const ic = (avPrio && procheAv.icone) || { Parler: '💬', Caresser: '🤲', 'S\'occuper': '🤲', Examiner: '🔍', Acheter: '🛍️', 'Ma cour': '🏡' }[lire] || '✋';
       if (ic === 'mots') $('btn-action').querySelector('.ico').innerHTML = ICONE_MOTS; else $('btn-action').querySelector('.ico').textContent = ic; }
     $('btn-chameau').classList.toggle('cache', !cham || interface_ouverte);
+    $('btn-chameau').classList.toggle('arrive', eA.mode === 'arrive'); $('btn-chameau').classList.toggle('indispo', eA.mode === 'indisponible');
     if (cham) $('btn-chameau').querySelector('.txt').textContent = cham;
     if (!indiceForce && !ctl.tactile) {
       const morceaux = [];
@@ -1675,13 +1737,14 @@ async function demarrer() {
   $('hud').classList.remove('cache');
   $('tactile').classList.remove('cache'); ctl.appliquer();   // les commandes ont maintenant leur taille : on les garde dans l'écran
   setTimeout(() => carte.preparer(), 5000);
-  if (etat.guidage) { const g0 = etat.guidage; etat.guidage = null; if (!guiderVers({ ...g0, silencieux: true })) etat.guidage = null; }   // la carte se dessine en douce
+  if (etat.guidage && !(route && route.enRoute())) { const g0 = etat.guidage; etat.guidage = null; if (!guiderVers({ ...g0, silencieux: true })) etat.guidage = null; }   // la carte se dessine en douce
   if (!perso()) ouvrirPerso(true);
   else if (!etat.aideVue) montrerAide();
   else { const go = () => { S.demarrerSons(); S.reglerSons(sons()); removeEventListener('pointerdown', go); removeEventListener('keydown', go); }; addEventListener('pointerdown', go); addEventListener('keydown', go); }
 
   // pour les tests
   window.__voyage = {
+    route, ROUTE,
     loumi, soins, faireSoin: (type) => lancerSoin(type, lieuDe(type)), soin: () => soin, pose: () => pose, nuit: () => nuitActuelle, habitants, parlerLoumi, LOUMI_POS, veille, bulleLoumi, ecurie, sOccuper, interactionMontures, interactionSoins, reglerOption: (k, v) => { etat.options[k] = v; enregistrer(); },
     etat, J, C, decor, ciel, H, cam, aventure, bourse, action: () => action(),
     teleporter(x, z) { J.x = x; J.z = z; if (monte) { C.x = x; C.z = z; } },

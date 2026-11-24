@@ -1,0 +1,46 @@
+{
+ "_note": "Les 10 voix « Nour - … » du compte ElevenLabs du fondateur : SEULES voix autorisées pour le projet. Aucune voix n'est créée, supprimée ni renommée par le code. La voix de la mascotte Nour est réservée à Nour.",
+ "voix": [
+  {
+   "id": "pzZMNBXJh6wfnYfk2wLK",
+   "nom": "Nour - Amina (tapis)"
+  },
+  {
+   "id": "IbnTg9TZjxSEt8tJQteX",
+   "nom": "Nour - Hassan (sellier)"
+  },
+  {
+   "id": "lM87a4ey2IQxE37nDvti",
+   "nom": "Nour - Karim (marchand)"
+  },
+  {
+   "id": "8aQsvxWbavqMpn00DVgR",
+   "nom": "Nour - Salim (voyageur)"
+  },
+  {
+   "id": "HAjl4nFl1aflZ2gaim1o",
+   "nom": "Nour - Samira (potiere)"
+  },
+  {
+   "id": "7FhMHxpv3kwYS7eBOJoC",
+   "nom": "Nour - Nour (mascotte)"
+  },
+  {
+   "id": "hddT377hAwvRoOKqMj0E",
+   "nom": "Nour - Narratrice (maitresse)"
+  },
+  {
+   "id": "y01lcQwxER91RfOMk2oG",
+   "nom": "Nour - Layla (tisserande)"
+  },
+  {
+   "id": "4sifSi2zIrBX7VkoWfjD",
+   "nom": "Nour - Nabil (ecurie)"
+  },
+  {
+   "id": "hbGEl9097evPuRZp5BNY",
+   "nom": "Nour - Hakim (ancien)"
+  }
+ ],
+ "reservee_a_nour": "7FhMHxpv3kwYS7eBOJoC"
+}

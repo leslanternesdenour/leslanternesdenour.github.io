@@ -1,0 +1,227 @@
+{
+ "jeu": "voyage-nouvelles-voix",
+ "base": "/audio",
+ "total": 20,
+ "phrases": [
+  {
+   "id": "NOUR-VOIX-ARB-001",
+   "role": "narratrice",
+   "langue": "ar",
+   "texte": "بِئْر",
+   "sousTitre": "بِئْر",
+   "fichier": "fr/vocabulaire/nour-voix-arb-001.mp3",
+   "duree": 1.115,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-ARB-003",
+   "role": "narratrice",
+   "langue": "ar",
+   "texte": "جَمَل",
+   "sousTitre": "جَمَل",
+   "fichier": "fr/vocabulaire/nour-voix-arb-003.mp3",
+   "duree": 0.975,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-ARB-005",
+   "role": "narratrice",
+   "langue": "ar",
+   "texte": "سُوق",
+   "sousTitre": "سُوق",
+   "fichier": "fr/vocabulaire/nour-voix-arb-005.mp3",
+   "duree": 1.207,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-ARB-007",
+   "role": "narratrice",
+   "langue": "ar",
+   "texte": "نَخْلَة",
+   "sousTitre": "نَخْلَة",
+   "fichier": "fr/vocabulaire/nour-voix-arb-007.mp3",
+   "duree": 1.068,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-ARB-009",
+   "role": "narratrice",
+   "langue": "ar",
+   "texte": "تَمْر",
+   "sousTitre": "تَمْر",
+   "fichier": "fr/vocabulaire/nour-voix-arb-009.mp3",
+   "duree": 1.254,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-ARB-011",
+   "role": "narratrice",
+   "langue": "ar",
+   "texte": "مَاء",
+   "sousTitre": "مَاء",
+   "fichier": "fr/vocabulaire/nour-voix-arb-011.mp3",
+   "duree": 0.975,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-ARB-013",
+   "role": "narratrice",
+   "langue": "ar",
+   "texte": "خَيْمَة",
+   "sousTitre": "خَيْمَة",
+   "fichier": "fr/vocabulaire/nour-voix-arb-013.mp3",
+   "duree": 1.115,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-ARB-015",
+   "role": "narratrice",
+   "langue": "ar",
+   "texte": "نَجْمَة",
+   "sousTitre": "نَجْمَة",
+   "fichier": "fr/vocabulaire/nour-voix-arb-015.mp3",
+   "duree": 1.115,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-LOU-001",
+   "role": "loumi",
+   "langue": "fr",
+   "texte": "Bonjour ! Moi, c'est Loumi, la petite lanterne du village. Je reste ici et je fais briller la place. Tu veux que je t'explique quelque chose ?",
+   "sousTitre": "Bonjour ! Moi, c'est Loumi, la petite lanterne du village. Je reste ici et je fais briller la place. Tu veux que je t'explique quelque chose ?",
+   "fichier": "fr/loumi/nour-voix-lou-001.mp3",
+   "duree": 8.48,
+   "prononciationVerifiee": false,
+   "voixId": "pzZMNBXJh6wfnYfk2wLK"
+  },
+  {
+   "id": "NOUR-VOIX-LOU-002",
+   "role": "loumi",
+   "langue": "fr",
+   "texte": "Te revoilà ! Ça me fait plaisir. Je peux t'aider ?",
+   "sousTitre": "Te revoilà ! Ça me fait plaisir. Je peux t'aider ?",
+   "fichier": "fr/loumi/nour-voix-lou-002.mp3",
+   "duree": 3.04,
+   "prononciationVerifiee": false,
+   "voixId": "pzZMNBXJh6wfnYfk2wLK"
+  },
+  {
+   "id": "NOUR-VOIX-LOU-003",
+   "role": "loumi",
+   "langue": "fr",
+   "texte": "Pour marcher, pousse le rond doré avec ton doigt. Pour courir, garde le bouton du vent appuyé. Quand un bouton apparaît près d'un endroit, appuie dessus : c'est pour toi !",
+   "sousTitre": "Pour marcher, pousse le rond doré avec ton doigt. Pour courir, garde le bouton du vent appuyé. Quand un bouton apparaît près d'un endroit, appuie dessus : c'est pour toi !",
+   "fichier": "fr/loumi/nour-voix-lou-003.mp3",
+   "duree": 10.24,
+   "prononciationVerifiee": false,
+   "voixId": "pzZMNBXJh6wfnYfk2wLK"
+  },
+  {
+   "id": "NOUR-VOIX-LOU-004",
+   "role": "loumi",
+   "langue": "fr",
+   "texte": "Pour marcher, utilise les flèches du clavier. Pour courir, garde la touche de course appuyée. Quand un bouton apparaît près d'un endroit, appuie dessus : c'est pour toi !",
+   "sousTitre": "Pour marcher, utilise les flèches du clavier. Pour courir, garde la touche de course appuyée. Quand un bouton apparaît près d'un endroit, appuie dessus : c'est pour toi !",
+   "fichier": "fr/loumi/nour-voix-lou-004.mp3",
+   "duree": 10.16,
+   "prononciationVerifiee": false,
+   "voixId": "pzZMNBXJh6wfnYfk2wLK"
+  },
+  {
+   "id": "NOUR-VOIX-LOU-005",
+   "role": "loumi",
+   "langue": "fr",
+   "texte": "Au village, il y a le souk pour acheter de jolies choses, l'écurie pour les montures, et la fontaine avec le panier de Nour. Promène-toi : tu vas découvrir plein de surprises !",
+   "sousTitre": "Au village, il y a le souk pour acheter de jolies choses, l'écurie pour les montures, et la fontaine avec le panier de Nour. Promène-toi : tu vas découvrir plein de surprises !",
+   "fichier": "fr/loumi/nour-voix-lou-005.mp3",
+   "duree": 10.88,
+   "prononciationVerifiee": false,
+   "voixId": "pzZMNBXJh6wfnYfk2wLK"
+  },
+  {
+   "id": "NOUR-VOIX-LOU-006",
+   "role": "loumi",
+   "langue": "fr",
+   "texte": "Les montures vivent à l'écurie, avec Nabil, leur gardien. Elles aiment boire, manger, se reposer et recevoir des câlins. Prends bien soin de ta monture : elle sera ton amie !",
+   "sousTitre": "Les montures vivent à l'écurie, avec Nabil, leur gardien. Elles aiment boire, manger, se reposer et recevoir des câlins. Prends bien soin de ta monture : elle sera ton amie !",
+   "fichier": "fr/loumi/nour-voix-lou-006.mp3",
+   "duree": 11.28,
+   "prononciationVerifiee": false,
+   "voixId": "pzZMNBXJh6wfnYfk2wLK"
+  },
+  {
+   "id": "NOUR-VOIX-LOU-007",
+   "role": "loumi",
+   "langue": "fr",
+   "texte": "Ta monture a besoin de quatre choses : de l'eau, de quoi manger, du repos et de la tendresse. Qu'est-ce que tu veux savoir ?",
+   "sousTitre": "Ta monture a besoin de quatre choses : de l'eau, de quoi manger, du repos et de la tendresse. Qu'est-ce que tu veux savoir ?",
+   "fichier": "fr/loumi/nour-voix-lou-007.mp3",
+   "duree": 7.84,
+   "prononciationVerifiee": false,
+   "voixId": "pzZMNBXJh6wfnYfk2wLK"
+  },
+  {
+   "id": "NOUR-VOIX-LOU-008",
+   "role": "loumi",
+   "langue": "fr",
+   "texte": "L'eau donne de la force à tout le corps. Dans le désert, il fait chaud : une monture qui a soif fatigue vite. Un dromadaire peut boire énormément d'un seul coup, à l'abreuvoir !",
+   "sousTitre": "L'eau donne de la force à tout le corps. Dans le désert, il fait chaud : une monture qui a soif fatigue vite. Un dromadaire peut boire énormément d'un seul coup, à l'abreuvoir !",
+   "fichier": "fr/loumi/nour-voix-lou-008.mp3",
+   "duree": 11.04,
+   "prononciationVerifiee": false,
+   "voixId": "pzZMNBXJh6wfnYfk2wLK"
+  },
+  {
+   "id": "NOUR-VOIX-LOU-009",
+   "role": "loumi",
+   "langue": "fr",
+   "texte": "Les montures mangent de l'herbe, du foin et des feuilles. Ça leur donne de l'énergie pour marcher longtemps. La bosse d'un dromadaire est une réserve de graisse : elle l'aide quand il y a peu à manger.",
+   "sousTitre": "Les montures mangent de l'herbe, du foin et des feuilles. Ça leur donne de l'énergie pour marcher longtemps. La bosse d'un dromadaire est une réserve de graisse : elle l'aide quand il y a peu à manger.",
+   "fichier": "fr/loumi/nour-voix-lou-009.mp3",
+   "duree": 11.52,
+   "prononciationVerifiee": false,
+   "voixId": "pzZMNBXJh6wfnYfk2wLK"
+  },
+  {
+   "id": "NOUR-VOIX-LOU-010",
+   "role": "loumi",
+   "langue": "fr",
+   "texte": "Comme toi, ta monture a besoin de dormir et de se reposer pour retrouver ses forces. Sur la paille, à l'abri, elle récupère. Une monture bien reposée marche d'un meilleur pas !",
+   "sousTitre": "Comme toi, ta monture a besoin de dormir et de se reposer pour retrouver ses forces. Sur la paille, à l'abri, elle récupère. Une monture bien reposée marche d'un meilleur pas !",
+   "fichier": "fr/loumi/nour-voix-lou-010.mp3",
+   "duree": 10.96,
+   "prononciationVerifiee": false,
+   "voixId": "pzZMNBXJh6wfnYfk2wLK"
+  },
+  {
+   "id": "NOUR-VOIX-LOU-011",
+   "role": "loumi",
+   "langue": "fr",
+   "texte": "Les animaux sentent quand on les aime. Une caresse douce, des paroles gentilles : ça les rassure et ils te font confiance. Une monture heureuse est une monture qui te suit avec joie.",
+   "sousTitre": "Les animaux sentent quand on les aime. Une caresse douce, des paroles gentilles : ça les rassure et ils te font confiance. Une monture heureuse est une monture qui te suit avec joie.",
+   "fichier": "fr/loumi/nour-voix-lou-011.mp3",
+   "duree": 11.52,
+   "prononciationVerifiee": false,
+   "voixId": "pzZMNBXJh6wfnYfk2wLK"
+  },
+  {
+   "id": "NOUR-VOIX-LOU-012",
+   "role": "loumi",
+   "langue": "fr",
+   "texte": "Avant une grande exploration, vérifie ta monture : elle a bu, mangé et bien dormi ? Regarde ses petites jauges quand tu es près d'elle. Alors, en route : le voyage sera plus beau !",
+   "sousTitre": "Avant une grande exploration, vérifie ta monture : elle a bu, mangé et bien dormi ? Regarde ses petites jauges quand tu es près d'elle. Alors, en route : le voyage sera plus beau !",
+   "fichier": "fr/loumi/nour-voix-lou-012.mp3",
+   "duree": 11.36,
+   "prononciationVerifiee": false,
+   "voixId": "pzZMNBXJh6wfnYfk2wLK"
+  }
+ ]
+}

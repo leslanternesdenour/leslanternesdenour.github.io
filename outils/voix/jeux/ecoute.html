@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<title>Écoute des voix des jeux (préproduction)</title>
+<style>
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:#191345;color:#fff}main{max-width:980px;margin:0 auto;padding:14px 14px 80px}
+h1{font-size:22px;margin:6px 0}p.note{color:#cfc8f5;font-size:14px;margin:4px 0 12px}
+.onglets,.filtres{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}button,select,input[type=search]{font:inherit}
+.onglets button,.filtres button{min-height:44px;padding:0 16px;border-radius:999px;border:2px solid #ffd666;background:transparent;color:#fff;font-weight:800}.onglets button.on,.filtres button.on{background:#ffd666;color:#191345}
+input[type=search]{flex:1;min-width:160px;min-height:44px;border-radius:12px;border:2px solid #5b4bc4;padding:0 12px;background:#fff;color:#191345}
+.ligne{display:grid;grid-template-columns:56px 1fr auto;gap:10px;align-items:center;background:#fff6e0;color:#191345;border-radius:16px;padding:10px 12px;margin:8px 0}
+.ligne.ar{border-left:8px solid #e5677b}.ligne.rel{border-left:8px solid #f5b942}.ligne.ok{outline:3px solid #4fa645}.ligne.ko{outline:3px solid #c9776b}
+.jouer{width:52px;height:52px;border-radius:50%;border:0;background:#5b4bc4;color:#fff;font-size:22px}.jouer.en{background:#4fa645}
+.texte{font-weight:700;line-height:1.3}.texte small{display:block;color:#6a5a40;font-weight:600;margin-top:2px}.texte .ar{font-size:24px;direction:rtl}
+.val{display:flex;gap:6px}.val button{min-width:48px;min-height:44px;border-radius:12px;border:2px solid #5b4bc4;background:#fff;font-size:18px}
+.bilan{position:fixed;left:0;right:0;bottom:0;background:#2a1f6b;padding:10px 14px;display:flex;gap:10px;align-items:center;justify-content:space-between;font-weight:800}.bilan button{min-height:44px;padding:0 14px;border-radius:999px;border:0;background:#ffd666;color:#191345;font-weight:800}
+</style></head><body><main>
+<h1>🔊 Écoute des voix des jeux</h1>
+<p class="note">Page interne de préproduction. Touchez ▶ pour écouter, puis 👍 (validé) ou 👎 (à refaire). Vos choix restent sur cet appareil ; « Copier mes notes » donne la liste à me transmettre. Les mots arabes (bord rose) et les questions religieuses (bord doré) sont à valider en priorité.</p>
+<details open id="voix-table"><summary><b>Voix réellement utilisées</b> (lues dans les fichiers générés)</summary><div id="table"></div></details>
+<div class="onglets" id="onglets"></div>
+<div class="filtres"><input type="search" id="rech" placeholder="Rechercher un mot ou une phrase…" aria-label="Rechercher"><button data-f="tout" class="on">Tout</button><button data-f="ar">Arabe</button><button data-f="rel">Religieux</button><button data-f="vide">Pas encore écouté</button></div>
+<div id="liste"></div>
+</main>
+<div class="bilan"><span id="bilan"></span><button id="copier">Copier mes notes</button></div>
+<audio id="son" preload="none"></audio>
+<script>
+(async function () {
+  var JEUX = { 'chasse-aux-mots': 'La Chasse aux mots', 'mysteres-desert': 'Les Mystères du désert', 'quiz-nour': 'Les Quiz de Nour', 'ecole-lettres': 'L\'École des lettres arabes', 'ecole-lecture': 'Je découvre la lecture arabe', 'ecole-chiffres': 'Les chiffres et les nombres arabes' };
+  var racine = new URL('../../../', location.href).href, notes = {}; try { notes = JSON.parse(localStorage.getItem('ldn_ecoute_voix') || '{}'); } catch (e) {}
+  var nom = {}, roles = {}; try { (await (await fetch('voix-nour.json')).json()).voix.forEach(function (v) { nom[v.id] = v.nom; }); } catch (e) {} try { roles = (await (await fetch('voix-roles.json')).json())._associations || {}; } catch (e) {}
+  var donnees = {}, jeu = 'chasse-aux-mots', filtre = 'tout', son = document.getElementById('son'), cle = function (j, id) { return j + '/' + id; };
+  for (var j in JEUX) { try { donnees[j] = (await (await fetch(racine + 'audio/jeux/' + j + '/manifeste.json', { cache: 'no-cache' })).json()).phrases; } catch (e) { donnees[j] = []; } }
+  var religieuse = function (p) { return /^(q|exp)\.(culture|histoires)|^(culture|histoires)\./.test(p.id) || /Coran|prophète|Kaaba|Mecque|Ramadan|Aïd|sourate|Fajr|prière/i.test(p.texte); };
+  function sauver() { try { localStorage.setItem('ldn_ecoute_voix', JSON.stringify(notes)); } catch (e) {} bilan(); }
+  function bilan() { var t = 0, o = 0, k = 0; for (var j in donnees) donnees[j].forEach(function (p) { if (!p.fichier) return; t++; var n = notes[cle(j, p.id)]; if (n === 1) o++; if (n === -1) k++; }); document.getElementById('bilan').textContent = '👍 ' + o + '   👎 ' + k + '   · ' + (t - o - k) + ' à écouter sur ' + t; }
+  function onglets() { var el = document.getElementById('onglets'); el.innerHTML = ''; for (var j in JEUX) { var b = document.createElement('button'); b.textContent = JEUX[j] + ' (' + donnees[j].length + ')'; b.className = j === jeu ? 'on' : ''; b.onclick = (function (x) { return function () { jeu = x; onglets(); liste(); }; })(j); el.appendChild(b); } }
+  function liste() {
+    var q = document.getElementById('rech').value.toLowerCase(), el = document.getElementById('liste'); el.innerHTML = '';
+    donnees[jeu].filter(function (p) { var n = notes[cle(jeu, p.id)];
+      return (!q || (p.texte + ' ' + p.id).toLowerCase().indexOf(q) >= 0) && (filtre === 'tout' || (filtre === 'ar' && p.langue === 'ar') || (filtre === 'rel' && religieuse(p)) || (filtre === 'vide' && !n)); }).slice(0, 400).forEach(function (p) {
+      var n = notes[cle(jeu, p.id)], d = document.createElement('div'); d.className = 'ligne' + (p.langue === 'ar' ? ' ar' : religieuse(p) ? ' rel' : '') + (n === 1 ? ' ok' : n === -1 ? ' ko' : '');
+      var voix = p.voixId ? ((nom[p.voixId] || ('⚠ VOIX NON AUTORISÉE ' + p.voixId)) + ' [' + p.voixId.slice(0, 6) + '…]') : '—';
+      d.innerHTML = '<button class="jouer" aria-label="Écouter" ' + (p.fichier ? '' : 'disabled') + '>▶</button><div class="texte"><span' + (p.langue === 'ar' ? ' class="ar" lang="ar"' : '') + '>' + p.texte.replace(/</g, '&lt;') + '</span><small>' + p.id + ' · rôle ' + p.role + ' · voix : ' + voix + (p.fichier ? ' · ' + p.duree + ' s' : ' · PAS D\'AUDIO') + (p.langue === 'ar' ? ' · prononciation à valider' : '') + '</small></div><div class="val"><button data-v="1" aria-label="Validé">👍</button><button data-v="-1" aria-label="À refaire">👎</button></div>';
+      var bp = d.querySelector('.jouer'); bp.onclick = function () { document.querySelectorAll('.jouer.en').forEach(function (x) { x.classList.remove('en'); }); son.src = racine + 'audio/jeux/' + jeu + '/' + p.fichier; son.play(); bp.classList.add('en'); son.onended = function () { bp.classList.remove('en'); }; };
+      d.querySelectorAll('.val button').forEach(function (b) { b.onclick = function () { var v = Number(b.dataset.v); notes[cle(jeu, p.id)] = notes[cle(jeu, p.id)] === v ? 0 : v; sauver(); liste(); }; });
+      el.appendChild(d); });
+  }
+  function tableau() { var c = {}; for (var j in donnees) donnees[j].forEach(function (p) { if (!p.fichier) return; var k = p.voixId + '|' + p.role; c[k] = c[k] || { id: p.voixId, role: p.role, n: 0 }; c[k].n++; });
+    var h = '<table style="width:100%;border-collapse:collapse;font-size:14px;margin:8px 0"><tr style="text-align:left;color:#ffd666"><th>Voix ElevenLabs</th><th>Identifiant</th><th>Rôle / personnage</th><th>Audios</th></tr>';
+    Object.keys(c).sort(function (a, b) { return c[b].n - c[a].n; }).forEach(function (k) { var v = c[k], ok = !!nom[v.id]; h += '<tr style="border-top:1px solid #5b4bc4' + (ok ? '' : ';background:#7a2a2a') + '"><td>' + (ok ? nom[v.id] : '⚠ NON AUTORISÉE') + '</td><td><code>' + v.id + '</code></td><td>' + v.role + '</td><td>' + v.n + '</td></tr>'; });
+    document.getElementById('table').innerHTML = h + '</table>'; }
+  document.getElementById('rech').oninput = liste;
+  document.querySelectorAll('[data-f]').forEach(function (b) { b.onclick = function () { filtre = b.dataset.f; document.querySelectorAll('[data-f]').forEach(function (x) { x.classList.toggle('on', x === b); }); liste(); }; });
+  document.getElementById('copier').onclick = function () { var L = []; for (var j in donnees) donnees[j].forEach(function (p) { var n = notes[cle(j, p.id)]; if (n === -1) L.push('À REFAIRE · ' + j + ' · ' + p.id + ' · ' + p.texte); }); var t = L.length ? L.join('\n') : 'Aucune voix marquée « à refaire ».'; (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function () { alert('Notes copiées : collez-les dans la conversation.'); }, function () { prompt('Copiez ces notes :', t); }); };
+  onglets(); liste(); bilan(); tableau();
+})();
+</script></body></html>

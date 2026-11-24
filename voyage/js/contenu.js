@@ -12,7 +12,7 @@ export const ZONES = [
   { id: 'dunes',     nom: 'Le grand désert',         icone: '🏜️' },
   { id: 'montagnes', nom: 'Les montagnes',           icone: '⛰️' },
   { id: 'wadi',      nom: 'Le wadi',                 icone: '🌼' },
-  { id: 'rochers',   nom: 'Les rochers gravés',      icone: '🪨' }
+  { id: 'rochers',   nom: 'Les rochers gravés',      icone: '⛰️' }
 ];
 
 export const BIENTOT = [

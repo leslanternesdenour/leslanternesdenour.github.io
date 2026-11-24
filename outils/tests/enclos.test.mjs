@@ -45,3 +45,33 @@ test('trajet vers l\'enclos : jamais en ligne droite à travers la clôture', ()
   }
   assert.deepEqual(P.etape({ x: 52, z: -20 }, cible), cible, 'déjà dedans : tout droit');
 });
+
+test("appelée depuis l'enclos, une monture sort par l'entrée (jamais à travers la clôture) puis rejoint l'enfant", () => {
+  const dehors = { x: P.ECURIE.x - 20, z: P.ECURIE.z + 30 };
+  assert.deepEqual(P.sortie({ x: P.ECURIE.x - 7.4, z: P.ECURIE.z + 0.4 }, dehors), { x: P.ECURIE.x, z: P.ECURIE.z + 4.6 }, 'depuis une place : vers la porte, dedans');
+  assert.deepEqual(P.sortie({ x: P.ECURIE.x + 0.5, z: P.ECURIE.z + 4.7 }, dehors), P.ENTREE, 'près de la porte : franchir l\'entrée');
+  assert.deepEqual(P.sortie({ x: P.ECURIE.x - 3, z: P.ECURIE.z + 9 }, dehors), dehors, 'déjà dehors : tout droit vers l\'enfant');
+});
+
+test("le jeu fait suivre à la monture appelée le trajet de sortie de l'enclos", async () => {
+  const fs = await import('node:fs'), main = fs.readFileSync(new URL('../../voyage/js/main.js', import.meta.url), 'utf8');
+  assert.match(main, /sortie as sortieEnclos/);
+  assert.match(main, /const but = sortieEnclos\(\{ x: C\.x, z: C\.z \}, \{ x: J\.x, z: J\.z \}\);/);
+  assert.match(main, /Math\.atan2\(but\.x - C\.x, but\.z - C\.z\)/);
+});
+
+test("appelée depuis l'ancien enclos de Sablo (en arc, ouvert vers le sud), la monture sort par l'ouverture avant de rejoindre l'enfant", () => {
+  const dehors = { x: 33, z: -45 };
+  assert.deepEqual(P.sortie({ x: 33, z: -9 }, dehors), P.SORTIE_SABLO, 'depuis le centre : vers l\'ouverture');
+  assert.deepEqual(P.sortie({ x: 33.4, z: -9 + 5 }, dehors), P.SORTIE_SABLO, 'encore dans l\'arc : toujours vers l\'ouverture');
+  assert.deepEqual(P.sortie({ x: P.SORTIE_SABLO.x, z: P.SORTIE_SABLO.z }, dehors), dehors, 'sortie franchie : tout droit vers l\'enfant');
+});
+
+test("la clôture en arc de l'ancien enclos est continue : chaque section de lisses relie son piquet au suivant (plus de trous)", async () => {
+  const fs = await import('node:fs'), decor = fs.readFileSync(new URL('../../voyage/js/decor.js', import.meta.url), 'utf8');
+  const pas = 25 * Math.PI / 180, corde = 2 * 7 * Math.sin(pas / 2);             // distance entre deux piquets voisins (rayon 7, un piquet tous les 25°)
+  const m = decor.match(/p: \[0, 1\.0, ([\d.]+)\], s: \[0\.08, 0\.1, ([\d.]+)\] \}\), piece\(B\(\), '#a77a4e', \{ p: \[0, 0\.6, ([\d.]+)\], s: \[0\.08, 0\.1, ([\d.]+)\]/);
+  assert.ok(m, 'lisses de l\'enclos introuvables');
+  for (const longueur of [m[2], m[4]]) assert.ok(Number(longueur) >= corde && Number(longueur) <= corde + 0.2, `lisse de ${longueur} m pour ${corde.toFixed(2)} m entre piquets`);
+  assert.equal(Number(m[1]), Number(m[2]) / 2); assert.equal(Number(m[3]), Number(m[4]) / 2);
+});

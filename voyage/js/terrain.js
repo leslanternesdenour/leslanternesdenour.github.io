@@ -25,6 +25,9 @@ export const CHEMINS = [
   [[0, 0], [10, 70], [22, 140], [30, 205]]                                 // vers les grandes dunes
 ];
 const CHEMIN_MONTAGNE = CHEMINS[2];
+// La Route vers La Mecque (préproduction seulement) : une piste traverse le rempart de dunes au sud. Désactivé par défaut : le village reste identique.
+export const OPTIONS = { sortieRoute: false, chemin: null };
+export function activerSortieRoute(chemin) { if (OPTIONS.sortieRoute) return; OPTIONS.sortieRoute = true; OPTIONS.chemin = chemin; PISTES.push(chemin); }
 // les pistes vers les régions à débloquer (elles partent des chemins existants)
 export const PISTES = [
   [[-175, 60], [-205, 110], [-232, 148], [-242, 168]],   // du camp vers le wadi
@@ -93,7 +96,8 @@ function relief(x, z) {
 
   // bords du monde : de hautes dunes ferment l'horizon
   const bord = Math.max(Math.abs(x), Math.abs(z));
-  const rempart = lisse(300, 390, bord) * 38;
+  const breche = OPTIONS.sortieRoute && bord > 280 ? lisse(30, 12, distanceChemin(x, z, OPTIONS.chemin)) : 0;
+  const rempart = lisse(300, 390, bord) * 38 * (1 - breche);
 
   let h = dunes * (1 - 0.85 * surChemin) * (1 - 0.7 * nord) + massif + rochers * (1 - 0.9 * surChemin) + rempart;
   // les montagnes en gradins : des falaises et des corniches (grès et granit d'Arabie), mais pas sur le chemin ni dans la vallée
@@ -230,7 +234,7 @@ export class Terrain {
 
 // Matériau du sol : couleurs du relief + texture de détail (rides du sable, herbe, roche fissurée)
 // avec un léger relief qui réagit à la lumière, et qui s'efface au loin (pas de scintillement).
-function materiauSol(detail) {
+export function materiauSol(detail) {
   const m = new THREE.MeshLambertMaterial({ vertexColors: true });
   if (!detail) return m;
   m.onBeforeCompile = s => {

@@ -1,0 +1,276 @@
+<!doctype html><meta charset="utf-8">
+<style>
+body{margin:0;background:#888}
+</style>
+<script type="importmap">{"imports":{"three":"/three/build/three.module.js","three/addons/":"/three/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const TAILLE = 1024;               // rendu en grand, réduit ensuite à 512 (lissage des bords)
+const POL = '/polices/';   // servies par generer.mjs (hors dépôt)
+for (const [n, f, p] of [['Baloo', 'baloo.ttf', '800'], ['Amiri', 'amiri.ttf', '700']]) { const ff = new FontFace(n, `url(${POL}${f})`, { weight: p }); await ff.load(); document.fonts.add(ff); }
+await document.fonts.load('800 100px Baloo', 'ابت١٢٣'); await document.fonts.load('700 100px Amiri', 'كتاب');
+
+// ---------------------------------------------------------------- outils de texture
+const toile = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
+const tex = (c, srgb = true) => { const t = new THREE.CanvasTexture(c); if (srgb) t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; return t; };
+const lisser = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+const hex = h => { const c = new THREE.Color(h); return [c.r * 255, c.g * 255, c.b * 255]; };   // (linéaire → on reste en sRGB brut)
+const rgb = h => { const n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
+const mel = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
+
+// bruit doux : grain du cuir, du bois, du papier
+function bruit(w = 256, h = 256, force = 0.5, base = 128) {
+  const c = toile(w, h), g = c.getContext('2d'), im = g.createImageData(w, h);
+  for (let i = 0; i < w * h; i++) { const v = base + (Math.random() - 0.5) * 255 * force; im.data[i * 4] = im.data[i * 4 + 1] = im.data[i * 4 + 2] = v; im.data[i * 4 + 3] = 255; }
+  g.putImageData(im, 0, 0); const t = tex(c, false); t.wrapS = t.wrapT = THREE.RepeatWrapping; return t;
+}
+
+// lettres / chiffres « gonflés » : une pile de calques dont les contours rétrécissent → bords arrondis, vrai volume
+async function relief(texte, o) {
+  const { police = 'Baloo', taille = 400, W = 512, H = 512, N = 16, profondeur = 0.3, ppu = 330, flou = 16, couleur, contour = '#3b1d00', decal = [0, 0] } = o;
+  const c = toile(W, H), g = c.getContext('2d');
+  const dessiner = (dx, dy) => { g.clearRect(0, 0, W, H); g.fillStyle = '#fff'; g.font = `800 ${taille}px ${police}`; g.textAlign = 'center'; g.textBaseline = 'alphabetic'; g.fillText(texte, W / 2 + dx, H * 0.68 + dy); };
+  dessiner(0, 0);
+  let d = g.getImageData(0, 0, W, H).data, x0 = W, x1 = 0, y0 = H, y1 = 0;
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (d[(y * W + x) * 4 + 3] > 40) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+  dessiner(W / 2 - (x0 + x1) / 2, H / 2 - (y0 + y1) / 2);
+  const c2 = toile(W, H), g2 = c2.getContext('2d'); g2.filter = `blur(${flou}px)`; g2.drawImage(c, 0, 0);
+  const F = new Float32Array(W * H), im2 = g2.getImageData(0, 0, W, H).data; for (let i = 0; i < W * H; i++) F[i] = im2[i * 4 + 3] / 255;
+  const L = (() => { const v = [-0.55, -0.7, 0.62], n = Math.hypot(...v); return v.map(x => x / n); })();
+  const cD = rgb(couleur.sombre), cB = rgb(couleur.base), cC = rgb(couleur.clair), cO = rgb(contour);
+  const couleurs = new Uint8ClampedArray(W * H * 3);
+  for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) {
+    const i = y * W + x, gx = (F[i + 1] - F[i - 1]) * 9, gy = (F[i + W] - F[i - W]) * 9;
+    const n = Math.hypot(gx, gy, 1), nx = -gx / n, ny = -gy / n, nz = 1 / n;
+    const diff = Math.max(0, nx * L[0] + ny * L[1] + nz * L[2]);
+    const hx = L[0], hy = L[1], hz = L[2] + 1, hn = Math.hypot(hx, hy, hz), spec = Math.pow(Math.max(0, (nx * hx + ny * hy + nz * hz) / hn), 38);
+    let col = mel(cD, mel(cB, cC, 0.5 * lisser(0.75, 1.0, F[i])), lisser(0.10, 0.62, F[i]));
+    const k = 0.66 + 0.5 * diff;
+    couleurs[i * 3] = Math.min(255, col[0] * k + 255 * spec * 0.55); couleurs[i * 3 + 1] = Math.min(255, col[1] * k + 255 * spec * 0.55); couleurs[i * 3 + 2] = Math.min(255, col[2] * k + 255 * spec * 0.55);
+  }
+  const grp = new THREE.Group();
+  for (let k = 0; k < N; k++) {
+    const t = 0.06 + 0.8 * (k / (N - 1)), cv = toile(W, H), gg = cv.getContext('2d'), im = gg.createImageData(W, H);
+    for (let i = 0; i < W * H; i++) {
+      const a = lisser(t - 0.035, t + 0.035, F[i]);
+      const bord = k === 0 ? 1 : 0;       // le calque de base est le contour sombre (lisière dessinée)
+      im.data[i * 4] = bord ? cO[0] : couleurs[i * 3]; im.data[i * 4 + 1] = bord ? cO[1] : couleurs[i * 3 + 1]; im.data[i * 4 + 2] = bord ? cO[2] : couleurs[i * 3 + 2]; im.data[i * 4 + 3] = a * 255;
+    }
+    gg.putImageData(im, 0, 0);
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(W / ppu, H / ppu), new THREE.MeshBasicMaterial({ map: tex(cv), transparent: true, alphaTest: 0.5, side: THREE.DoubleSide }));
+    m.position.z = (k / (N - 1)) * profondeur; m.castShadow = true;
+    m.customDepthMaterial = new THREE.MeshDepthMaterial({ depthPacking: THREE.RGBADepthPacking, map: m.material.map, alphaTest: 0.5 });
+    grp.add(m);
+  }
+  return grp;
+}
+
+// ---------------------------------------------------------------- matériaux
+const M = {
+  turquoise: new THREE.MeshPhysicalMaterial({ color: '#17b5b0', roughness: 0.38, clearcoat: 0.9, clearcoatRoughness: 0.25, bumpMap: bruit(256, 256, 0.55), bumpScale: 0.9 }),
+  turquoiseSombre: new THREE.MeshPhysicalMaterial({ color: '#0d8a92', roughness: 0.4, clearcoat: 0.7 }),
+  or: new THREE.MeshPhysicalMaterial({ color: '#ffc43a', metalness: 0.9, roughness: 0.26, clearcoat: 0.6 }),
+  orMat: new THREE.MeshPhysicalMaterial({ color: '#f3a91f', metalness: 0.75, roughness: 0.4 }),
+  creme: new THREE.MeshStandardMaterial({ color: '#fff3d6', roughness: 0.85 }),
+  bois: new THREE.MeshPhysicalMaterial({ color: '#b6702f', roughness: 0.55, clearcoat: 0.35, bumpMap: bruit(256, 256, 0.9), bumpScale: 1.4 }),
+  boisClair: new THREE.MeshPhysicalMaterial({ color: '#d99048', roughness: 0.5, clearcoat: 0.4 }),
+  rouge: new THREE.MeshPhysicalMaterial({ color: '#e5473f', roughness: 0.35, clearcoat: 0.8 }),
+  craie: new THREE.MeshStandardMaterial({ color: '#fff9ec', roughness: 0.9 }),
+};
+const rond = (w, h, d, r = 0.05) => new RoundedBoxGeometry(w, h, d, 4, r);
+const mesh = (geo, mat, x = 0, y = 0, z = 0) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.castShadow = m.receiveShadow = true; return m; };
+
+function bordPages() {   // tranche des pages : fines lignes crème / beige
+  const c = toile(64, 256), g = c.getContext('2d'); g.fillStyle = '#fff3d6'; g.fillRect(0, 0, 64, 256);
+  for (let y = 0; y < 256; y += 5) { g.fillStyle = y % 15 === 0 ? 'rgba(175,130,70,.55)' : 'rgba(205,165,100,.35)'; g.fillRect(0, y, 64, 2); }
+  return new THREE.MeshStandardMaterial({ map: tex(c), roughness: 0.85 });
+}
+function halo(couleur = '255,206,120', taille = 512) {
+  const c = toile(taille, taille), g = c.getContext('2d'), r = g.createRadialGradient(taille / 2, taille / 2, 0, taille / 2, taille / 2, taille / 2);
+  r.addColorStop(0, `rgba(${couleur},.85)`); r.addColorStop(0.35, `rgba(${couleur},.35)`); r.addColorStop(1, `rgba(${couleur},0)`); g.fillStyle = r; g.fillRect(0, 0, taille, taille);
+  return tex(c);
+}
+function etincelle(couleur = '#fff6c8', taille = 128) {
+  const c = toile(taille, taille), g = c.getContext('2d'), m = taille / 2; g.translate(m, m);
+  const r = g.createRadialGradient(0, 0, 0, 0, 0, m); r.addColorStop(0, 'rgba(255,255,255,.9)'); r.addColorStop(0.25, 'rgba(255,240,180,.35)'); r.addColorStop(1, 'rgba(255,230,150,0)'); g.fillStyle = r; g.fillRect(-m, -m, taille, taille);
+  g.fillStyle = couleur; g.beginPath(); for (let i = 0; i < 8; i++) { const a = i * Math.PI / 4, rr = i % 2 ? m * 0.12 : m * 0.82; g.lineTo(Math.cos(a - Math.PI / 2) * rr, Math.sin(a - Math.PI / 2) * rr); } g.closePath(); g.fill();
+  return tex(c);
+}
+function lutin(map, x, y, z, s, op = 1, additif = true) {
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map, transparent: true, depthWrite: false, opacity: op, blending: additif ? THREE.AdditiveBlending : THREE.NormalBlending }));
+  sp.position.set(x, y, z); sp.scale.setScalar(s); return sp;
+}
+function etoile8(rE = 0.34, rI = 0.17, ep = 0.07, mat = M.or) {   // étoile orientale à 8 branches, en relief arrondi
+  const s = new THREE.Shape(); for (let i = 0; i < 16; i++) { const a = i * Math.PI / 8, r = i % 2 ? rI : rE; s[i ? 'lineTo' : 'moveTo'](Math.cos(a) * r, Math.sin(a) * r); } s.closePath();
+  const g = new THREE.ExtrudeGeometry(s, { depth: ep, bevelEnabled: true, bevelThickness: 0.025, bevelSize: 0.025, bevelSegments: 4 }); g.translate(0, 0, -ep / 2);
+  return mesh(g, mat);
+}
+function croissant(r = 0.3, ep = 0.07, mat = M.or) {
+  const s = new THREE.Shape(); s.absarc(0, 0, r, 0.45, Math.PI * 2 - 0.45, false); s.absarc(r * 0.34, 0, r * 0.78, Math.PI * 2 - 0.62, 0.62, true); s.closePath();
+  const g = new THREE.ExtrudeGeometry(s, { depth: ep, bevelEnabled: true, bevelThickness: 0.02, bevelSize: 0.02, bevelSegments: 3 }); g.translate(0, 0, -ep / 2);
+  return mesh(g, mat);
+}
+
+// ---------------------------------------------------------------- scène commune
+function nouvelleScene() {
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+  renderer.setSize(TAILLE, TAILLE, false); renderer.setPixelRatio(1); renderer.setClearColor(0x000000, 0);
+  renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.08; renderer.outputColorSpace = THREE.SRGBColorSpace;
+  document.body.appendChild(renderer.domElement); renderer.domElement.style.width = '256px';
+  const scene = new THREE.Scene();
+  const pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromScene(new RoomEnvironment(), 0.04).texture; scene.environmentIntensity = 0.55;
+  scene.add(new THREE.HemisphereLight(0xfff0d2, 0x8a6aa8, 0.85));
+  const cle = new THREE.DirectionalLight(0xffd7a0, 3.0); cle.position.set(-1.6, 8.5, 3.6); cle.castShadow = true; cle.shadow.mapSize.set(2048, 2048); cle.shadow.radius = 6; cle.shadow.bias = -0.0004;
+  Object.assign(cle.shadow.camera, { left: -4, right: 4, top: 4, bottom: -4, near: 0.5, far: 30 }); scene.add(cle);
+  const contre = new THREE.DirectionalLight(0x6fe6e0, 1.4); contre.position.set(5, 3, -4); scene.add(contre);
+  const chaud = new THREE.PointLight(0xffb060, 14, 9); chaud.position.set(1.2, 1.6, 3); scene.add(chaud);
+  const sol = new THREE.Mesh(new THREE.PlaneGeometry(14, 14), new THREE.ShadowMaterial({ opacity: 0.26 })); sol.rotation.x = -Math.PI / 2; sol.receiveShadow = true; scene.add(sol);
+  const cam = new THREE.PerspectiveCamera(28, 1, 0.1, 100);
+  return { renderer, scene, cam, sol };
+}
+function sortie({ renderer, scene, cam }, nom) {
+  renderer.render(scene, cam);
+  const c = toile(512, 512), g = c.getContext('2d'); g.imageSmoothingQuality = 'high'; g.drawImage(renderer.domElement, 0, 0, 512, 512);
+  return { nom, data: c.toDataURL('image/png') };
+}
+
+// ================================================================ ICÔNE 1 — L'ÉCOLE DES LETTRES ARABES
+async function iconeLettres() {
+  const S = nouvelleScene(), { scene, cam } = S;
+  // livre d'apprentissage vu en 3/4, couverture légèrement entrouverte
+  const livre = new THREE.Group(); scene.add(livre);
+  const W = 2.5, D = 3.1, Hp = 0.55;
+  livre.add(mesh(rond(W, 0.12, D, 0.05), M.turquoise, 0, 0.06, 0));
+  livre.add(mesh(rond(W - 0.16, Hp, D - 0.16, 0.06), bordPages(), 0.04, 0.12 + Hp / 2, 0));
+  const pivot = new THREE.Group(); pivot.position.set(-W / 2, 0.12 + Hp + 0.08, 0); pivot.rotation.z = 0.34; livre.add(pivot);
+  pivot.add(mesh(rond(W, 0.12, D, 0.05), M.turquoise, W / 2, 0, 0));
+  for (const [w, d, x, z] of [[W - 0.5, 0.06, W / 2, D / 2 - 0.26], [W - 0.5, 0.06, W / 2, -D / 2 + 0.26], [0.06, D - 0.46, 0.26, 0], [0.06, D - 0.46, W - 0.26, 0]]) pivot.add(mesh(rond(w, 0.04, d, 0.015), M.or, x, 0.085, z));
+  const med = etoile8(0.72, 0.4, 0.1); med.rotation.x = -Math.PI / 2; med.position.set(W / 2, 0.15, 0); pivot.add(med);
+  pivot.add(mesh(new THREE.CylinderGeometry(0.26, 0.26, 0.14, 48), M.turquoiseSombre, W / 2, 0.17, 0));
+  const an = mesh(new THREE.TorusGeometry(0.26, 0.035, 14, 48), M.or, W / 2, 0.245, 0); an.rotation.x = Math.PI / 2; pivot.add(an);
+  livre.add(mesh(rond(0.2, Hp + 0.3, D, 0.07), M.turquoiseSombre, -W / 2 + 0.02, 0.14 + Hp / 2, 0));
+  livre.add(mesh(rond(0.09, 0.02, 0.85, 0.008), M.rouge, 0.6, 0.12 + Hp + 0.014, D / 2 + 0.3));
+  livre.rotation.y = -0.62; livre.position.set(0.15, 0, 0.5);
+  // trois lettres sculptées et flottantes : ا ب ت
+  const spec = [
+    ['ا', { sombre: '#a8560a', base: '#ffb81f', clair: '#fff0a0' }, 1.45, 2.55, 0.2, -0.22],
+    ['ب', { sombre: '#055c69', base: '#14c7c0', clair: '#bdfff6' }, 0.05, 3.0, 0.45, 0.0],
+    ['ت', { sombre: '#a8560a', base: '#ffb81f', clair: '#fff0a0' }, -1.4, 2.5, 0.2, 0.22],
+  ];
+  const lettres = [];
+  for (const [t, c, x, y, z, rz] of spec) {
+    const gl = await relief(t, { couleur: c, taille: 420, ppu: 235, profondeur: 0.34, flou: 17, contour: t === 'ب' ? '#033a44' : '#5a2b02' });
+    gl.position.set(x, y, z); gl.rotation.z = rz; gl.rotation.y = 0.12 * Math.sign(x || 1); scene.add(gl); lettres.push(gl);
+    const ombre = lutin(halo(t === 'ب' ? '80,235,225' : '255,196,80', 256), x, y + 0.25, z - 0.4, 2.3, 0.45); scene.add(ombre);
+  }
+  // petite décoration orientale : croissant + étoile suspendus, étincelles
+  const cr = croissant(0.3, 0.09); cr.position.set(-2.35, 1.2, -0.3); cr.rotation.z = 0.5; cr.castShadow = false; scene.add(cr);
+  const et = etoile8(0.2, 0.1, 0.07); et.position.set(2.45, 1.0, -0.2); et.rotation.z = 0.2; et.castShadow = false; scene.add(et);
+  for (const [x, y, z, s] of [[-0.6, 3.6, 0.5, 0.5], [0.85, 3.5, 0.3, 0.36], [2.2, 2.6, 0.3, 0.4], [-2.2, 2.7, 0.2, 0.36], [0.4, 1.4, 1.6, 0.34]]) scene.add(lutin(etincelle(), x, y, z, s));
+  cam.position.set(0.0, 4.4, 10.2); cam.lookAt(0, 1.75, 0); cam.fov = 33; cam.updateProjectionMatrix();
+  S.sol.position.y = 0;
+  return sortie(S, 'ecole-lettres');
+}
+
+// ================================================================ ICÔNE 2 — LA LECTURE ARABE
+async function iconeLecture() {
+  const S = nouvelleScene(), { scene, cam } = S; S.renderer.toneMappingExposure = 0.9;
+  const livre = new THREE.Group(); scene.add(livre);
+  const W = 2.05, D = 2.8, Hp = 0.5, a = 0.2;
+  // pages avec vrais mots arabes (lettres attachées)
+  function page(gauche) {
+    const c = toile(640, 880), g = c.getContext('2d'); const f = g.createLinearGradient(0, 0, 640, 0); f.addColorStop(gauche ? 0 : 1, '#f3e6c6'); f.addColorStop(gauche ? 1 : 0, '#e3cf9f'); g.fillStyle = f; g.fillRect(0, 0, 640, 880);
+    g.strokeStyle = '#d99a1c'; g.lineWidth = 7; g.strokeRect(40, 44, 560, 792); g.strokeStyle = '#17b5b0'; g.lineWidth = 3; g.strokeRect(58, 62, 524, 756);
+    g.textAlign = 'center'; g.direction = 'rtl';
+    if (gauche) {
+      g.fillStyle = '#075f69'; g.font = '700 330px Amiri'; g.fillText('قلم', 320, 400);
+      g.fillStyle = '#a85d06'; g.font = '700 250px Amiri'; g.fillText('بيت', 320, 700);
+    } else {
+      g.fillStyle = '#a85d06'; g.font = '700 330px Amiri'; g.fillText('اقرأ', 320, 380);
+      // assemblage des lettres : ب + ا + ب = باب
+      g.fillStyle = '#4a2c0e'; g.font = '700 150px Amiri';
+      g.fillText('ب', 512, 590); g.fillText('+', 428, 585); g.fillText('ا', 345, 590); g.fillText('+', 262, 585); g.fillText('ب', 178, 590); g.fillText('=', 100, 585);
+      g.fillStyle = '#075f69'; g.font = '700 250px Amiri'; g.fillText('باب', 320, 810);
+    }
+    return tex(c);
+  }
+  const bord = bordPages();
+  function moitie(cote) {
+    const g = new THREE.Group(), s = cote;                                         // -1 gauche, +1 droite
+    const plateau = mesh(rond(W + 0.1, 0.1, D + 0.1, 0.04), M.turquoise, s * (W + 0.1) / 2, -0.02, 0); g.add(plateau);
+    const bloc = mesh(rond(W - 0.02, Hp, D - 0.06, 0.06), [bord, bord, M.creme, bord, bord, bord], s * W / 2, Hp / 2 + 0.02, 0); g.add(bloc);
+    const top = new THREE.Mesh(new THREE.PlaneGeometry(W - 0.3, D - 0.3), new THREE.MeshStandardMaterial({ map: page(s < 0), roughness: 0.85 }));
+    top.rotation.x = -Math.PI / 2; top.position.set(s * W / 2, Hp + 0.026, 0); g.add(top);
+    // liseré doré sur la tranche de couverture
+    g.add(mesh(rond(0.05, 0.1, D + 0.12, 0.02), M.or, s * (W + 0.1), -0.02, 0));
+    g.rotation.z = -s * a; return g;
+  }
+  livre.add(moitie(-1), moitie(1));
+  livre.add(mesh(rond(0.2, 0.5, D + 0.12, 0.08), M.turquoiseSombre, 0, 0.05, 0));   // dos
+  // signet rouge qui pend
+  const sig = mesh(rond(0.1, 0.02, 0.75, 0.008), M.rouge, 0.18, Hp + 0.05, D / 2 + 0.3); sig.rotation.x = 0.28; livre.add(sig);
+  livre.position.y = 0.42; livre.rotation.x = 0;
+  // lueur douce autour du livre
+  scene.add(lutin(halo('255,214,130', 512), 0, 1.5, -1.6, 8.2, 0.5));
+  scene.add(lutin(halo('90,235,225', 512), 0, 1.3, -1.7, 5.6, 0.3));
+  // mots lumineux qui s'élèvent : lettres liées « كتاب »
+  const mot = await relief('كتاب', { couleur: { sombre: '#a8560a', base: '#ffb81f', clair: '#fff1a6' }, taille: 330, ppu: 250, profondeur: 0.28, flou: 14, contour: '#5a2b02', W: 640, H: 512 });
+  mot.position.set(0, 2.35, 0.5); mot.rotation.x = -0.12; scene.add(mot);
+  for (const [x, y, z, s] of [[-1.7, 2.3, 0.4, 0.5], [1.75, 2.0, 0.4, 0.42], [0.9, 3.35, 0.3, 0.34], [-1.0, 3.2, 0.3, 0.3], [2.1, 3.0, 0.2, 0.28]]) scene.add(lutin(etincelle(), x, y, z, s));
+  cam.position.set(0, 4.6, 7.4); cam.lookAt(0, 1.45, 0); cam.fov = 33; cam.updateProjectionMatrix();
+  return sortie(S, 'ecole-lecture');
+}
+
+// ================================================================ ICÔNE 3 — LES CHIFFRES ET LES NOMBRES ARABES
+async function iconeChiffres() {
+  const S = nouvelleScene(), { scene, cam } = S;
+  const tab = new THREE.Group(); scene.add(tab);
+  const W = 3.3, Hh = 2.45, E = 0.28;
+  // cadre en bois arrondi
+  tab.add(mesh(rond(W + 0.5, Hh + 0.5, E, 0.12), M.bois, 0, 0, 0));
+  tab.add(mesh(rond(W + 0.5, 0.07, E + 0.04, 0.03), M.boisClair, 0, (Hh + 0.5) / 2 - 0.03, 0));
+  // ardoise verte profonde, grain de craie
+  const cv = toile(1024, 768), g = cv.getContext('2d'), fond = g.createRadialGradient(512, 340, 80, 512, 384, 640); fond.addColorStop(0, '#2a8c86'); fond.addColorStop(1, '#10555d'); g.fillStyle = fond; g.fillRect(0, 0, 1024, 768);
+  for (let i = 0; i < 1400; i++) { g.fillStyle = `rgba(255,255,255,${Math.random() * 0.05})`; g.beginPath(); g.arc(Math.random() * 1024, Math.random() * 768, Math.random() * 14 + 1, 0, 7); g.fill(); }
+  g.strokeStyle = 'rgba(255,235,180,.55)'; g.lineWidth = 6; g.setLineDash([22, 16]); g.strokeRect(26, 26, 972, 716);
+  const ardoise = new THREE.Mesh(new THREE.PlaneGeometry(W, Hh), new THREE.MeshStandardMaterial({ map: tex(cv), roughness: 0.9 })); ardoise.position.z = E / 2 + 0.003; ardoise.receiveShadow = true; tab.add(ardoise);
+  // coins dorés
+  for (const [sx, sy] of [[-1, 1], [1, 1], [-1, -1], [1, -1]]) { const co = mesh(new THREE.SphereGeometry(0.15, 24, 16), M.or, sx * (W / 2 + 0.2), sy * (Hh / 2 + 0.2), E / 2 + 0.03); tab.add(co); }
+  // chiffres orientaux ١ ٢ ٣ en relief, dorés et colorés (ordre de lecture : ١ à gauche, ٣ à droite)
+  const cols = [
+    { sombre: '#a8500a', base: '#ffa90a', clair: '#ffe27a' },
+    { sombre: '#a02a3a', base: '#ff6b57', clair: '#ffd2c2' },
+    { sombre: '#055c69', base: '#17c9c2', clair: '#c4fff7' },
+  ];
+  const chiffres = ['١', '٢', '٣'];
+  for (let i = 0; i < 3; i++) {
+    const gl = await relief(chiffres[i], { couleur: cols[i], taille: 470, ppu: 205, profondeur: 0.34, flou: 7, contour: i === 2 ? '#033a44' : i === 1 ? '#541019' : '#5a2b02' });
+    gl.position.set((i - 1) * 1.12, 0.2, E / 2 + 0.02); gl.rotation.z = (i - 1) * -0.06; tab.add(gl);
+  }
+  // boulier : tige + perles colorées, sur le bas de l'ardoise
+  const tige = mesh(new THREE.CylinderGeometry(0.035, 0.035, W - 0.5, 12), M.or, 0, -Hh / 2 + 0.34, E / 2 + 0.2); tige.rotation.z = Math.PI / 2; tab.add(tige);
+  const perles = ['#ff6b57', '#ffb81f', '#17c9c2', '#7b61e0', '#4fd16b', '#ff6b57', '#ffb81f'];
+  perles.forEach((c, i) => tab.add(mesh(new THREE.SphereGeometry(0.15, 28, 20), new THREE.MeshPhysicalMaterial({ color: c, roughness: 0.25, clearcoat: 1 }), -1.14 + i * 0.38, -Hh / 2 + 0.34, E / 2 + 0.2)));
+  // étoile orientale en relief, coin haut-droit
+  const et = etoile8(0.3, 0.15, 0.09); et.position.set(0, Hh / 2 + 0.25, E / 2 + 0.06); tab.add(et);
+  // chevalet : deux pieds en bois, tablette à craie, craie et crayon
+  tab.position.set(0, 2.1, 0); tab.rotation.x = -0.1;
+  const pied = (x, rz) => { const p = mesh(rond(0.22, 3.4, 0.22, 0.07), M.bois, x, 1.65, -0.7); p.rotation.z = rz; p.rotation.x = 0.3; scene.add(p); };
+  pied(-1.6, -0.04); pied(1.6, 0.04);
+  scene.add(mesh(rond(W + 0.9, 0.2, 0.65, 0.08), M.boisClair, 0, 0.7, 0.3));         // tablette
+  const craie = mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.5, 20), M.craie, -0.9, 0.9, 0.34); craie.rotation.z = Math.PI / 2 - 0.1; scene.add(craie);
+  const crayon = mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.95, 6), new THREE.MeshPhysicalMaterial({ color: '#ffb81f', roughness: 0.4, clearcoat: 0.8 }), 1.0, 0.9, 0.3); crayon.rotation.z = Math.PI / 2 + 0.12; crayon.rotation.y = 0.2; scene.add(crayon);
+  const pointe = mesh(new THREE.ConeGeometry(0.06, 0.18, 6), new THREE.MeshStandardMaterial({ color: '#f1c89a', roughness: 0.7 }), 0.4, 0.93, 0.28); pointe.rotation.z = Math.PI / 2 + 0.12 + Math.PI; scene.add(pointe);
+  scene.add(lutin(halo('255,206,120', 512), 0, 2.2, -0.4, 7, 0.4));
+  for (const [x, y, z, s] of [[-2.35, 3.9, 0.5, 0.45], [2.3, 3.6, 0.5, 0.4], [2.5, 1.6, 0.6, 0.34]]) scene.add(lutin(etincelle(), x, y, z, s));
+  cam.position.set(0, 3.6, 8.9); cam.lookAt(0, 1.95, 0); cam.fov = 33; cam.updateProjectionMatrix();
+  return sortie(S, 'ecole-chiffres');
+}
+
+window.__rendre = async nom => ({ lettres: iconeLettres, lecture: iconeLecture, chiffres: iconeChiffres })[nom]();
+window.__pret = true;
+</script>

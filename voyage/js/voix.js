@@ -58,29 +58,43 @@ export function idsPour(texte, prof = 0) {
   return [];
 }
 const enregistres = ids => ids.length > 0 && ids.every(id => id && existe(id));
+// ce texte a-t-il une voix enregistrée ? (pour n'afficher « Écouter » que s'il y a quelque chose à écouter)
+export function aUneVoix(texte) { return !!pret && enregistres(idsPour(texte)); }
 
 // Joue une suite d'identifiants, l'un après l'autre. Une nouvelle voix coupe la précédente.
-let jeton = 0;
+let jeton = 0, actif = false, attente = [];
 export function direIds(ids, fini) {
   if (!pret || !enregistres(ids)) return false;
   try { speechSynthesis.cancel(); } catch (e) {}
   const moi = ++jeton; let i = 0;
-  const suivant = ok => { if (moi !== jeton) return; if (ok === false || i >= ids.length) { fini && fini(); return; } dire(ids[i++], suivant); };
+  actif = true;
+  const suivant = ok => { if (moi !== jeton) return; if (ok === false || i >= ids.length) { actif = false; fini && fini(); if (attente.length) direTextes(attente.shift()); return; } dire(ids[i++], suivant); };
   suivant(true);
   return true;
 }
 
+// un message court (indice) ne coupe jamais une voix en cours : il attend la fin de celle-ci (le dernier message en attente remplace les autres)
+export function direApres(segments) {
+  if (actif) { if (idsDe(segments)) { attente.push(segments); if (attente.length > 3) attente.shift(); } return true; }
+  return direTextes(segments);
+}
+
 // segments : [{ t: texte, opt: true si on peut le sauter }] → true si la voix enregistrée a été lancée
-export function direTextes(segments, fini) {
-  if (!pret) return false;
+// les identifiants à jouer pour ces segments, ou null si un segment obligatoire n'a pas de voix enregistrée
+function idsDe(segments) {
+  if (!pret) return null;
   const ids = [];
   for (const s of segments) {
     if (!s || !s.t) continue;
     const trouve = idsPour(s.t);
     if (enregistres(trouve)) ids.push(...trouve);
-    else if (!s.opt) return false;
+    else if (!s.opt) return null;
   }
-  return ids.length ? direIds(ids, fini) : false;
+  return ids.length ? ids : null;
+}
+export function direTextes(segments, fini) {
+  const ids = idsDe(segments);
+  return ids ? direIds(ids, fini) : false;
 }
 
 // un mot arabe : le mot, puis son explication en français si elle est enregistrée
@@ -91,4 +105,4 @@ export function direMotArabe(mot) {
   return direIds(s && existe(s) ? [ids[0], s] : ids);
 }
 
-export function arreterVoixVoyage() { jeton++; arreterVoix(); }
+export function arreterVoixVoyage() { jeton++; actif = false; attente = []; arreterVoix(); }

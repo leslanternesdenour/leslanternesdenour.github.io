@@ -4,6 +4,18 @@ import test from 'node:test'; import assert from 'node:assert/strict'; import { 
 const PREPROD_TOML = 'docs/migration/wrangler.preproduction.toml';
 const lancer = (branche) => spawnSync('node', ['outils/construire.mjs'], { env: { ...process.env, LDN_PREPROD: '1', LDN_WRANGLER: PREPROD_TOML, ...(branche ? { CF_PAGES_BRANCH: branche } : { CF_PAGES_BRANCH: '' }) }, encoding: 'utf8' });
 for (const b of ['main', 'master', 'autre', 'Main']) test(`branche « ${b} » : build refusé`, () => { fs.rmSync('dist', { recursive: true, force: true }); const r = lancer(b); assert.equal(r.status, 1); assert.match(r.stderr, /Build refusé/); assert.ok(!fs.existsSync('dist')); });
+test('préproduction : la page de validation des 28 lettres et ses données sont publiées (outil interne) ; aucun audio du site n\'est touché', () => {
+  assert.equal(lancer('preproduction').status, 0);
+  for (const f of ['outils/voix/lettres-validation/index.html', 'outils/voix/lettres-validation/donnees.js']) assert.ok(fs.existsSync('dist/' + f), f);
+  assert.ok(fs.existsSync('dist/audio/jeux/ecole-lettres/nom.alif.mp3'), 'les audios actuels restent en place');
+});
+
+test('préproduction : le dossier des enregistrements candidats des lettres est publié en interne, jamais sous le dossier audio du site', () => {
+  assert.equal(lancer('preproduction').status, 0);
+  assert.ok(fs.existsSync('dist/outils/voix/lettres-candidats/LISEZMOI.txt'));
+  assert.ok(!fs.existsSync('dist/audio/jeux/ecole-lettres-candidats'));
+});
+
 test('branche « preproduction » : build accepté, noindex posé', () => { const r = lancer('preproduction'); assert.equal(r.status, 0); assert.match(fs.readFileSync('dist/_headers', 'utf8'), /X-Robots-Tag: noindex/); assert.match(fs.readFileSync('dist/robots.txt', 'utf8'), /Disallow: \//); });
 
 // Cloudflare ne garde qu'un seul bloc par chemin : un doublon efface silencieusement les en-têtes de sécurité du premier.

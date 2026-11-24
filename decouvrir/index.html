@@ -220,6 +220,7 @@ footer{text-align:center;padding:0 0 30px;font-size:14px;color:#bfb3e6}
           <li>Il garde l'adresse e-mail du parent et une copie de la progression : étoiles, étapes réussies, et les profils du calendrier (prénom, tranche d'âge, garçon ou fille).</li>
           <li>Le parent se connecte avec son adresse e-mail et un mot de passe, <b>ou avec son compte Google</b>. Avec Google, le site n'enregistre que l'adresse e-mail et ne reçoit jamais le mot de passe Google. Le service de connexion (Google Firebase) garde, dans le compte du parent, le nom et la photo de profil Google : le site ne les utilise ni ne les affiche.</li>
           <li>Ces données ne sont ni vendues ni partagées. Elles sont hébergées par Google Firebase.</li>
+          <li><b>Paiements (abonnements et contributions)</b> : ils sont traités par Stripe, qui reçoit l'adresse e-mail et les informations de carte saisies sur sa page sécurisée. Le site ne voit ni ne conserve les numéros de carte ; il garde seulement les références techniques de l'abonnement (identifiant client Stripe, formule, date de fin de période).</li>
           <li>Le compte et sa copie se suppriment à tout moment depuis l'<a href="../compte/">Espace famille</a>.</li>
         </ul></div>
       </div>
@@ -261,7 +262,7 @@ footer{text-align:center;padding:0 0 30px;font-size:14px;color:#bfb3e6}
   </div>
 </div>
 
-<footer>Les Lanternes de Nour · <a href="../">Accueil</a> · <a href="../compte/">Espace famille</a> · <a href="#confidentialite" id="lien-conf">Confidentialité</a></footer>
+<footer>Les Lanternes de Nour · <a href="../">Accueil</a> · <a href="../compte/">Espace famille</a> · <a href="../soutenir/">Soutenir le projet</a> · <a href="#confidentialite" id="lien-conf">Confidentialité</a></footer>
 
 <script type="module">
 import { BATIMENTS } from '../monde/batiments.js?v=3';

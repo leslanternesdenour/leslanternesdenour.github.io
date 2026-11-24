@@ -18,6 +18,13 @@ const entetes = p => { const h = {}; for (const r of regles.filter(r => r.motif.
   for (const [k, v] of r.h) { const ex = Object.keys(h).find(x => x.toLowerCase() === k.toLowerCase()); if (ex) h[ex] += ', ' + v; else h[k] = v; } } return h; };
 const EMUL = process.env.LDN_EMULATEUR === '1' ? await (await import('./emulateur/emulateur.mjs')).creerEmulateur() : null;
 if (EMUL) console.log('⚠️  SIMULATION LOCALE active — compte Créateur : createur@local.test / ' + EMUL.mdpCreateur);
+// Secrets LOCAUX : fichier .dev.vars à la racine (format CLE=valeur, ignoré par Git, jamais affiché : seuls les NOMS sont journalisés).
+const VARIABLES_LOCALES = {};
+const fichierVars = path.join(RACINE, '.dev.vars');
+if (fs.existsSync(fichierVars)) {
+  for (const l of fs.readFileSync(fichierVars, 'utf8').split(/\r?\n/)) { const m = /^\s*([A-Z0-9_]+)\s*=\s*(.*?)\s*$/.exec(l); if (m && !l.trim().startsWith('#')) VARIABLES_LOCALES[m[1]] = m[2].replace(/^(['"])(.*)\1$/, '$2'); }
+  console.log('variables locales (.dev.vars) chargées : ' + (Object.keys(VARIABLES_LOCALES).join(', ') || 'aucune'));
+}
 const lireCorps = req => new Promise(ok => { const t = []; req.on('data', c => t.push(c)); req.on('end', () => ok(Buffer.concat(t))); });
 async function repondre(res, r) { const h = {}; r.headers.forEach((v, k) => { h[k] = k === 'set-cookie' ? r.headers.getSetCookie() : v; }); res.writeHead(r.status, h); res.end(Buffer.from(await r.arrayBuffer())); }
 http.createServer(async (req, res) => {
@@ -42,7 +49,11 @@ http.createServer(async (req, res) => {
   if (p.startsWith('/api/')) {
     const f = path.join(RACINE, 'functions', p.replace(/\/$/, '') + '.js');
     if (fs.existsSync(f)) { const m = await import(pathToFileURL(f).href); const h = m['onRequest' + req.method[0] + req.method.slice(1).toLowerCase()] || m.onRequest;
-      if (h) { const r = await h({ request: new Request('http://x' + req.url, { method: req.method }), env: { ENVIRONNEMENT: 'local' } }); res.writeHead(r.status, Object.fromEntries(r.headers)); res.end(Buffer.from(await r.arrayBuffer())); return; } }
+      if (h) { // comme Cloudflare : vraie URL, vrais en-têtes et vrai corps transmis à la fonction ; secrets locaux lus dans .dev.vars
+        const entreesH = new Headers(); for (const [k, v] of Object.entries(req.headers)) entreesH.set(k, Array.isArray(v) ? v.join(', ') : v);
+        const corps = ['GET', 'HEAD'].includes(req.method) ? undefined : await lireCorps(req);
+        const r = await h({ request: new Request('http://' + req.headers.host + req.url, { method: req.method, headers: entreesH, body: corps }), env: { ENVIRONNEMENT: 'local', ...VARIABLES_LOCALES } });
+        res.writeHead(r.status, Object.fromEntries(r.headers)); res.end(Buffer.from(await r.arrayBuffer())); return; } }
   }
   let f = path.join(DIST, p); if (!f.startsWith(DIST)) { res.writeHead(400); return res.end(); }
   if (fs.existsSync(f) && fs.statSync(f).isDirectory()) { if (!p.endsWith('/')) { res.writeHead(308, { Location: p + '/' + url.search }); return res.end(); } f = path.join(f, 'index.html'); }

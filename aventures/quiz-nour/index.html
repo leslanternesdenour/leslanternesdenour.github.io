@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Les Quiz et défis de Nour – Les Lanternes de Nour</title>
+<meta name="description" content="Huit thèmes, trois niveaux : des questions illustrées posées par des personnages attachants, avec des explications douces et la possibilité de réessayer.">
+<meta name="theme-color" content="#191345">
+<link rel="icon" href="../../intro/favicon-48.png">
+<script src="../../monde/socle/sans-visage.js?v=1"></script>
+<link rel="stylesheet" href="jeu.css?v=2">
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js" } }
+</script>
+</head>
+<body>
+<canvas id="scene" aria-label="Décor 3D du quiz : le personnage te pose une question"></canvas>
+
+<main id="accueil" aria-labelledby="titre-jeu">
+  <header><a class="retour-aventures" href="../">‹ Les Aventures</a><h1 id="titre-jeu">❓ Les Quiz et défis de Nour</h1>
+    <div class="outils"><button id="btn-diplomes" class="rond" aria-label="Mes diplômes" title="Mes diplômes">🎓</button><button id="btn-reglages" class="rond" aria-label="Réglages" title="Réglages">⚙️</button></div></header>
+  <p id="bilan" class="bilan" aria-live="polite"></p>
+  <section id="age-bloc" class="cache"><h2>Quel âge as-tu ?</h2>
+    <div class="ages"><button data-age="petits"><b>3 – 5 ans</b><span>questions simples, grandes images</span></button><button data-age="moyens"><b>6 – 8 ans</b><span>questions variées</span></button><button data-age="grands"><b>9 – 10 ans</b><span>questions plus difficiles</span></button></div></section>
+  <section id="themes-bloc" class="cache"><div class="niveaux-ligne" role="group" aria-label="Difficulté"><span>Difficulté :</span><div id="niveaux" class="chips"></div></div>
+    <h2>Choisis un thème</h2><div id="themes" class="lieux"></div></section>
+</main>
+
+<div id="hud" class="cache">
+  <div class="haut"><button id="retour" class="rond" aria-label="Retour aux thèmes">‹</button><span id="titre-partie"></span>
+    <div class="outils"><button id="reecouter" class="rond" aria-label="Réécouter la question" title="Réécouter">🔊</button><button id="aide" class="rond" aria-label="Un petit coup de pouce" title="Coup de pouce">💡</button></div></div>
+</div>
+<p id="sous-titres" class="sous-titres cache" role="status" aria-live="polite"></p>
+
+<section id="question" class="carte-q cache" aria-live="polite"><p id="progression" class="progression"></p><h2 id="question-texte"></h2><div id="reponses" class="reponses" role="group" aria-label="Les réponses"></div>
+  <div id="explication" class="explication cache"><p id="exp-texte"></p><button id="suivant" class="principal">Question suivante ›</button></div></section>
+<section id="fin" class="carte cache" role="dialog" aria-labelledby="fin-titre"><h2 id="fin-titre"></h2><p id="fin-etoiles" class="grandes-etoiles" aria-hidden="true"></p><p id="fin-score"></p><div id="fin-recompenses" class="recompenses"></div>
+  <div class="actions"><button id="fin-suite" class="principal"></button><button id="fin-rejouer">Rejouer</button><button id="fin-themes">Autres thèmes</button></div></section>
+<section id="diplomes" class="carte petit cache" role="dialog" aria-labelledby="diplomes-titre"><h2 id="diplomes-titre">🎓 Mes diplômes</h2><div id="diplomes-liste" class="recompenses"></div><div class="actions"><button id="diplomes-fermer" class="principal">Fermer</button></div></section>
+<section id="reglages" class="carte petit cache" role="dialog" aria-labelledby="reglages-titre"><h2 id="reglages-titre">Réglages</h2>
+  <label class="ligne"><input type="checkbox" id="st-case" checked> Sous-titres</label>
+  <label class="ligne">Volume de la voix <input type="range" id="volume" min="0" max="1" step="0.05" value="1" aria-label="Volume de la voix"></label>
+  <button id="changer-age">Changer mon groupe d'âge</button><div class="actions"><button id="reglages-fermer" class="principal">Fermer</button></div></section>
+
+<script type="module" src="jeu.js?v=3"></script>
+<script src="../../compte/barre.js?v=3" defer data-menu="1" data-pos="bas-droite"></script>
+</body>
+</html>

@@ -5,8 +5,18 @@
 //                 + étoiles de la Chasse aux mots (clé « maison_mots », 6 max : 3 par jeu)
 //   🏮 lanternes = lanternes allumées dans le calendrier du Ramadan (tous les profils) + lanternes cachées trouvées dans le Grand Voyage
 
-// L'École arabe de Maktoub : le jeu « Les chiffres et les nombres arabes » (clé « ecole_chiffres ») compte dans les étoiles et les lanternes du village.
-import { lire as lireChiffres, recompenses as recompensesChiffres } from '../../ecole-arabe/chiffres/moteur.js';
+// Les Aventures des Lanternes : « La Chasse aux mots » (clé « aventure_mots ») — étoiles (90 max) et lanternes (une par lieu et niveau réussis)
+import { lire as lireAventureMots, etoilesTotal as etoilesMots, lanternes as lanternesMots } from '../../aventures/chasse-aux-mots/logique.js';
+
+import { lire as lireMysteres, etoilesTotal as etoilesMysteres, lanternes as lanternesMysteres } from '../../aventures/mysteres-desert/logique.js';
+
+import { lire as lireQuiz, etoilesTotal as etoilesQuiz, lanternes as lanternesQuiz } from '../../aventures/quiz-nour/logique.js';
+
+import { lire as lireEcole, recompenses as recompensesEcole, progressionGlobale as progressionEcole } from '../../ecole-arabe/lettres/moteur/competences.js';
+
+import { lire as lireLecture, recompenses as recompensesLecture, progressionGlobale as progressionLecture } from '../../ecole-arabe/lecture/moteur.js';
+
+import { lire as lireChiffres, recompenses as recompensesChiffres, progressionGlobale as progressionChiffres } from '../../ecole-arabe/chiffres/moteur.js';
 
 const JEUX_ABLUTIONS = ['g1', 'g2', 'g3', 'g4'];
 const JEUX_PRIERE = ['g1', 'g3', 'g4'];
@@ -15,13 +25,13 @@ const etoilesDe = (p, jeux) => p ? jeux.reduce((s, k) => s + Math.max(0, Math.mi
 
 // lire(cle) → objet JSON ou null
 export function calculerRecompenses(lire) {
-  const abl = lire('ablutions'), pri = lire('priere'), cal = lire('lanternes2'), voy = lire('monde_voyage'), mots = lire('maison_mots'), chiffresEt = lireChiffres(lire('ecole_chiffres'));
-  const chiffres = recompensesChiffres(chiffresEt);
+  const abl = lire('ablutions'), pri = lire('priere'), cal = lire('lanternes2'), voy = lire('monde_voyage'), mots = lire('maison_mots'), av = lireAventureMots(lire('aventure_mots')), my = lireMysteres(lire('aventure_mysteres')), qz = lireQuiz(lire('aventure_quiz')), ecoleEt = lireEcole(lire('ecole_lettres')), lectureEt = lireLecture(lire('ecole_lecture')), chiffresEt = lireChiffres(lire('ecole_chiffres'));
 
   const ablutions = etoilesDe(abl, JEUX_ABLUTIONS);
   const priere = etoilesDe(pri, JEUX_PRIERE);
   const chasse = mots && mots.etoiles ? etoilesDe(mots.etoiles, ['paires', 'bonmot']) : 0;
 
+  const ecole = recompensesEcole(ecoleEt), lecture = recompensesLecture(lectureEt), chiffres = recompensesChiffres(chiffresEt), aventureEtoiles = etoilesMots(av) + etoilesMysteres(my) + etoilesQuiz(qz) + ecole.etoiles + lecture.etoiles + chiffres.etoiles, aventureLanternes = lanternesMots(av) + lanternesMysteres(my) + lanternesQuiz(qz) + ecole.lanternes + lecture.lanternes + chiffres.lanternes;
   let lanternesRamadan = 0;
   const jeuxRamadan = new Set();
   if (cal && Array.isArray(cal.kids)) cal.kids.forEach(k => {
@@ -34,15 +44,20 @@ export function calculerRecompenses(lire) {
   const lanternesVoyage = new Set(ramasses.filter(k => typeof k === 'string' && k.startsWith('lanterne'))).size;
 
   return {
-    etoiles: ablutions + priere + jeuxRamadan.size + chasse + chiffres.etoiles,
-    lanternes: lanternesRamadan + lanternesVoyage + chiffres.lanternes,
+    etoiles: ablutions + priere + jeuxRamadan.size + chasse + aventureEtoiles,
+    lanternes: lanternesRamadan + lanternesVoyage + aventureLanternes,
     jeux: {
       ablutions: { etoiles: ablutions, appris: !!(abl && abl.learned) },
       priere: { etoiles: priere, appris: !!(pri && pri.learn) },
       ramadan: { etoiles: jeuxRamadan.size, lanternes: lanternesRamadan },
       desert: { lanternes: lanternesVoyage },
       mots: { etoiles: chasse },
-      ecole_chiffres: { etoiles: chiffres.etoiles, lanternes: chiffres.lanternes }
+      chasse_aux_mots: { etoiles: etoilesMots(av), lanternes: lanternesMots(av), appris: av.trouves.length },
+      mysteres_desert: { etoiles: etoilesMysteres(my), lanternes: lanternesMysteres(my), tresors: my.tresors.length },
+      ecole_chiffres: { etoiles: chiffres.etoiles, lanternes: chiffres.lanternes, progression: progressionChiffres(chiffresEt) },
+      ecole_lecture: { etoiles: lecture.etoiles, lanternes: lecture.lanternes, progression: progressionLecture(lectureEt) },
+      ecole_lettres: { etoiles: ecole.etoiles, lanternes: ecole.lanternes, progression: progressionEcole(ecoleEt) },
+      quiz_nour: { etoiles: etoilesQuiz(qz), lanternes: lanternesQuiz(qz), diplomes: qz.diplomes.length }
     }
   };
 }

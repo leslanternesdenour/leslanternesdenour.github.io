@@ -9,6 +9,11 @@ compatibility_date = "2026-11-01"
 ENVIRONNEMENT = "production"
 # Identifiant PUBLIC du projet Firebase (pas un secret). Même projet que la préproduction : mêmes comptes, mêmes familles.
 FIREBASE_PROJET = "lanternes-de-nour"
+# Identifiants PUBLICS (pas des secrets) des 3 tarifs Stripe en MODE TEST, créés le 23/11/2026 : préproduction uniquement.
+# La production aura ses propres identifiants (mode réel), créés dans Stripe au moment de l'ouverture des paiements.
+STRIPE_PRIX_PREMIUM_MENSUEL = "price_1Uev94D88y9eITej7dv4VPA9"
+STRIPE_PRIX_PREMIUM_ANNUEL = "price_1Uev96D88y9eITejxWarVO7v"
+STRIPE_PRIX_FAMILLE_ANNUEL = "price_1Uev97D88y9eITejrIU7gGiF"
 
 # Secrets (tableau de bord Cloudflare, environnement « Production », type « Secret ») : SESSION_SECRET, FIREBASE_COMPTE_SERVICE, CREATOR_UID.
 # Paiement : NE PAS définir STRIPE_* en production tant que l'ouverture des paiements n'est pas décidée (le site affiche alors « Le paiement n'est pas encore ouvert »).

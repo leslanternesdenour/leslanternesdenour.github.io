@@ -1,0 +1,2289 @@
+// GÉNÉRÉ par outils/voix/route/produire-route.mjs — ne pas modifier à la main.
+// Les phrases de la Route qui ont une voix Nour enregistrée (jamais de récit « À VALIDER », jamais de contenu religieux, aucun mot arabe).
+export const PHRASES_ROUTE = [
+ [
+  "NOUR-VOIX-RTE-924aa3cd",
+  "Voici le début de la grande route. Bon voyage !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-2c9d1581",
+  "Ici commence la grande route. Elle est très longue : prends ton temps, regarde autour de toi et repose-toi quand tu veux.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-5bc2e9d8",
+  "Une vieille balise de pierre ! Une de trouvée.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-b672da53",
+  "Une vieille balise de pierre. Les voyageurs les posaient pour ne pas se perdre quand le vent effaçait la piste.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-7331d85e",
+  "Un grand rocher. Les grands oiseaux aiment s'y poser.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-6f4f1221",
+  "Un grand rocher qui domine la plaine. Les grands oiseaux aiment s'y poser pour regarder au loin. De là-haut, on voit très loin !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-1f1e781a",
+  "Des fourmis portent des graines jusqu'à leur nid.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-2cbb55fe",
+  "Des fourmis du désert transportent des graines jusqu'à leur nid sous le sable. Chacune a sa tâche : elles s'entraident, comme une petite caravane.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-49d5f4a2",
+  "Une deuxième balise ! Bravo.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-3e838a83",
+  "Une deuxième balise. Elle est alignée avec la première : la piste passe juste entre les deux.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-caa426f7",
+  "Un coin pour se reposer. Ton voyage est gardé.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-87d8b1f8",
+  "Un bon endroit pour se reposer à l'ombre. Ton voyage est sauvegardé : tu pourras reprendre ici.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-7f8fb9f8",
+  "Quand il pleut, le désert se couvre de fleurs !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-8bf3d4f7",
+  "Après une rare pluie, les graines endormies se réveillent et le désert se couvre de fleurs en quelques jours. Elles vivent peu de temps, puis laissent des graines pour la prochaine pluie.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-196c8cdd",
+  "Un petit lézard est passé ici !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-52c1e26e",
+  "Ces traces fines, avec un sillon au milieu, viennent d'un lézard à queue épineuse. Il se réchauffe au soleil et se cache dans un terrier quand il fait trop chaud.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-749379c7",
+  "La troisième balise ! Tu as retrouvé le chemin.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-9519682c",
+  "La troisième balise. Les trois sont alignées : tu as bien retrouvé le chemin de la grande route.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-4e9bb052",
+  "Des acacias ! Leur ombre est fraîche.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-3d1a18b9",
+  "Des acacias. Leurs racines vont très profond pour trouver l'eau, et leurs épines protègent les feuilles. Leur ombre est précieuse dans la plaine.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-27cec4a7",
+  "Les tisserins font des nids ronds avec de l'herbe.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-bf81c96a",
+  "Les oiseaux tisserins tissent des nids ronds avec de l'herbe, accrochés aux branches d'un acacia. Ils les construisent ensemble, comme un petit village.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-21d3f3b6",
+  "Un campement de voyageurs !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-84ffd2a2",
+  "Le campement des Trois Tentes (un lieu imaginaire). Les voyageurs s'y arrêtent pour se reposer, se nourrir et faire boire leurs animaux.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-c6238b45",
+  "Un animal qui saute : une gerboise !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-e0e43a10",
+  "Ces petites traces espacées, ce sont celles d'une gerboise. Elle saute sur ses longues pattes arrière et sort surtout la nuit.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-c2345128",
+  "Encore un coin tranquille pour souffler.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-669dc07c",
+  "Un replat abrité du vent, juste avant les dunes. Ton voyage est sauvegardé.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-1f6129a3",
+  "Le vent dessine des vagues sur le sable.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-151cb333",
+  "Le vent déplace le sable grain par grain et dessine des vagues sur la crête. Une dune avance doucement, de quelques mètres chaque année.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-fbdb4d9d",
+  "Regarde les belles dunes !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-e46a6bc9",
+  "De là-haut, on voit les dunes. C'est le vent qui déplace le sable, grain après grain, et qui dessine ces grandes vagues dorées.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-14ac91d8",
+  "Un renard a marché par ici.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-42bb2382",
+  "Ces empreintes alignées viennent d'un renard des sables. Il a de grandes oreilles et des poils sous les pattes pour marcher sur le sable chaud.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-0285166c",
+  "Ici, l'eau est passée : la terre est toute craquelée.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-b2fd36e6",
+  "Ici, de l'eau a coulé après de rares pluies. En séchant, la boue s'est fendue en grandes plaques : on appelle cela une terre craquelée.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-335e89ed",
+  "Une borne de pierre montre le sentier vers le hameau.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-0a82e22c",
+  "Une borne de pierre marque le départ d'un petit sentier. Il mène à un hameau caché entre les dunes, où l'on garde une source précieuse.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-0fc3016a",
+  "Un puits profond : l'eau est tout en bas.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-92485db6",
+  "Un puits profond, creusé à la main. Un seau attaché à une corde descend chercher l'eau, et un treuil de bois aide à le remonter.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-d74f438b",
+  "Ce petit jardin pousse grâce à l'eau du puits.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-78ff451c",
+  "Un petit jardin de légumes, entouré d'une clôture de branches qui protège les plantes du vent. Chaque matin, on l'arrose avec l'eau du puits.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-f538c433",
+  "Ce four en terre cuit le pain de tout le hameau.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-0faa3249",
+  "Un four en terre : on y chauffe des braises, puis on pose les pains sur les pierres chaudes. Tout le hameau partage ce four.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-1cf2a394",
+  "Le vent et le sable ont creusé ce rocher.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-bacdccda",
+  "Pendant des milliers d'années, le vent chargé de sable a poli ce rocher et creusé des formes étranges. C'est le plus lent des sculpteurs.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-80353d75",
+  "Une vieille citerne en pierre.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-69032017",
+  "Une vieille citerne de pierre (un lieu imaginaire). Elle gardait l'eau de la pluie : dans le désert, chaque goutte compte.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-ecdcd53d",
+  "Dernier repos avant l'oasis.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-4fd78e51",
+  "Le dernier replat avant l'oasis. On devine déjà les palmiers au loin. Ton voyage est sauvegardé.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-7388e24a",
+  "L'oasis ! De l'eau, de l'ombre et des palmiers.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-8de3f7d9",
+  "L'oasis de la Source Claire (un lieu imaginaire). Dans une oasis, l'eau est proche de la surface : les palmiers et les plantes peuvent pousser au milieu du désert.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-846679bc",
+  "Les roseaux aiment avoir les pieds dans l'eau.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-b6f87e6a",
+  "Au bord de l'eau poussent des roseaux. On en fait des paniers, des nattes et des toits. Leurs racines tiennent la rive.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-650868a5",
+  "Un petit canal amène l'eau jusqu'aux jardins.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-a45b0018",
+  "Un petit canal creusé dans la terre conduit l'eau de la source jusqu'aux jardins et aux palmiers. Chacun ouvre et ferme la vanne à son tour, pour partager.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-c80e2df5",
+  "Les palmiers donnent des dattes.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-23f54b12",
+  "Le palmier dattier donne des dattes, un fruit très nourrissant. Ses racines aiment l'eau, et son ombre abrite d'autres plantes.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-3e9abc11",
+  "Un vieux puits de pierre pour les voyageurs.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-fb1077fc",
+  "Un puits de pierre (un lieu imaginaire). Les voyageurs y faisaient boire leurs animaux avant de quitter la plaine pour les montagnes.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-bcfe0e0e",
+  "Des pierres plates et lisses, comme un grand sol.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-e9edaa19",
+  "Un plateau de pierres plates. Le soleil, le vent et le sable les ont polies pendant très longtemps. Après lui, le chemin monte doucement vers les montagnes.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-b69f95d0",
+  "Les montagnes ! Le chemin entre dans la vallée.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-c573316f",
+  "Ici commencent les contreforts, les premières montagnes. Le sable se mêle de cailloux, la roche devient rouge et grise, et la vallée se resserre autour de toi.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-8f9f0f82",
+  "Une porte de pierre entre deux grands rochers.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-9844147c",
+  "Deux grands rochers forment une porte naturelle (un lieu imaginaire). Un col est un passage entre deux montagnes : c'est souvent le chemin le plus facile pour les traverser.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-0a29d8fd",
+  "Un abri sous la falaise, au frais.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-092fca1d",
+  "Un abri sous la falaise, à l'ombre et au frais. Ton voyage est sauvegardé.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-7e48b370",
+  "Un lit de cailloux ronds : une rivière dormait ici.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-1ba0f74f",
+  "Un wadi est un lit de rivière à sec. La pluie est rare, mais quand elle tombe en montagne, l'eau peut couler d'un coup. Les galets sont ronds parce que l'eau les a roulés.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-439e832f",
+  "Regarde derrière toi : tout le chemin parcouru !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-710b0a27",
+  "Du haut du premier col, on voit toute la route : les dunes, l'oasis et la plaine. C'est un bon endroit pour se souvenir du chemin parcouru.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-1ceaf830",
+  "Encore un coin calme dans la vallée.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-21fbe9f7",
+  "Un replat tranquille dans le fond de la vallée, près des galets. Ton voyage est sauvegardé.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-6d17132f",
+  "Le haut du premier col : la cité n'est plus très loin.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-60924eb0",
+  "Le grand cairn marque le haut du premier col. Après lui, la route redescend vers d'autres vallées, puis vers les chemins qui mènent à la cité.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-5c385607",
+  "Un deuxième col, encore un passage entre les montagnes.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-6ae6676f",
+  "Un deuxième col. La route monte, puis redescend de l'autre côté. Regarde les couches de roche sur les parois : elles se sont empilées pendant très longtemps.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-b2bba0ed",
+  "Un coin pour souffler. Ton voyage est gardé.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-dd6e9816",
+  "Un replat où les voyageurs se reposaient avant de repartir. Ton voyage est sauvegardé.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-df00b4bc",
+  "Un petit mur de pierres, sans ciment.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-b9c201b4",
+  "Un muret de pierres sèches : les pierres tiennent toutes seules, bien emboîtées, sans ciment. On en faisait pour border les chemins et les jardins.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-236da7a1",
+  "Un puits au bord du chemin.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-8e4e5116",
+  "Un puits au bord du chemin (un lieu imaginaire) : les voyageurs et leurs animaux pouvaient s'y arrêter pour boire.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-4feadab0",
+  "Dernier coin calme avant la cité.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-65532a58",
+  "Le dernier replat avant la cité. Ton voyage est sauvegardé.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-9814b79b",
+  "Un sentier part vers une grande montagne.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-fe021f1f",
+  "Un carrefour : un sentier part vers le nord, vers une grande montagne. Tu peux le suivre pour aller voir, puis revenir sur la route.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-e09e9a53",
+  "De petits jardins entourés de murets.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-d36f8d19",
+  "Les premiers jardins : de petits champs et des arbres protégés par des murets de pierre. Ils annoncent qu'une cité n'est plus très loin.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-fdfabf4e",
+  "La porte de la cité.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-32084e99",
+  "La porte de la cité : deux gros piliers de pierre. Elle ouvre sur des ruelles, des cours et des places.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-7116f57a",
+  "Un atelier de potier : des jarres en terre cuite.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-d336def5",
+  "L'atelier du potier : on façonne des jarres et des bols en terre, que l'on fait cuire. Ils servent à garder l'eau, les dattes et le grain.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-14558a98",
+  "Regarde la colline devant toi.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-51326b83",
+  "Premier point d'observation : regarde la colline devant toi. Les deux collines sont assez proches pour que l'on puisse voir l'une depuis l'autre.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-ee1a4e58",
+  "Écoute le vent dans la vallée.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-2a18c18f",
+  "Deuxième point : écoute le vent qui passe dans la vallée. Entre deux collines, l'air circule et rafraîchit un peu.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-a8b08895",
+  "Regarde le sol : du sable et des pierres.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-64e83392",
+  "Troisième point : observe le sol, fait de sable, de petites pierres et de terre sèche. Il n'y a ni course ni chronomètre : on se promène à son rythme.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-c8947e2b",
+  "Le marché : des étals, des jarres, des tissus.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-f7a63daa",
+  "Le marché : des étals sous des auvents de tissu, des jarres, des paniers, des dattes. On y échange et on y bavarde.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-fddce6fc",
+  "Ici s'arrête le monde construit, pour l'instant.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-f7dfcdce",
+  "Ici s'arrête la partie du monde déjà construite. Bravo : tu as traversé les plaines, les montagnes et la cité !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-5517fc5d",
+  "Bonjour ! Je suis Rachid. Je connais la grande route. Prépare ton sac, puis suis-moi !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-52a5b6ca",
+  "Oh ! J'ai perdu mes affaires. Tu peux m'aider ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-9402e902",
+  "Cherche autour des tentes. Merci !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-fde592f2",
+  "Tu as tout trouvé ! Rapporte-moi mes affaires.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-b14749e4",
+  "Merci beaucoup ! Tu es très gentil.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-8deb1a83",
+  "Bonjour, voyageur ! Je m'appelle Rachid et je guide les caravanes. La grande route est très longue : elle traverse des plaines, des dunes, des oasis et des montagnes. Prépare ton sac, et en route !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-ffc956bd",
+  "Bonjour ! Le vent a emporté mon tapis, ma jarre et mon petit sac quelque part autour du campement. Tu peux m'aider à les retrouver ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-8ec05c07",
+  "Cherche autour du campement : des petites pierres dorées brillent là où mes affaires se cachent. Merci pour ton aide !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-8aea1bca",
+  "Tu as retrouvé mes trois affaires ! Rapporte-les-moi, je t'attends au campement.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-7c5afbb8",
+  "Merci mille fois ! Sans toi, je serais repartie sans mon tapis ni ma jarre. Tu es un vrai ami des voyageurs !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-49a756af",
+  "La grande route n'est pas encore ouverte pour toi. Continue d'explorer le village : découvre l'oasis et le camp des caravanes, puis fais une activité de ton choix.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-8d6d93a0",
+  "Tu partages l'eau de ta gourde avec elle. « Merci, c'est très gentil ! »",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-0b8c29cd",
+  "Tu partages tes provisions avec elle. « Quelle bonne idée, merci ! »",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-7963bf9d",
+  "Je creuse et j'entretiens les puits.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-39a47386",
+  "Je creuse et j'entretiens les puits. Sans eau, il n'y aurait ni jardin ni hameau : c'est un travail qui rend service à tous.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-b3b014c5",
+  "Bonjour ! Mes dattes viennent d'une oasis lointaine.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-016b591e",
+  "Bonjour, voyageur ! Mes dattes viennent d'une oasis lointaine. Elles se conservent longtemps : c'est parfait pour les longs voyages.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-5aebeb80",
+  "Je tisse la laine pour faire des tentes et des tapis.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-0b68b3be",
+  "Je tisse la laine des moutons pour faire un tissu solide : les tentes, les tapis et les vêtements sont faits ainsi. Chaque couleur vient d'une plante ou d'une terre.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-e68409ed",
+  "Avec de l'argile et du feu, je fais des jarres.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-aaac4d5e",
+  "Avec de l'argile et du feu, je fais des jarres. Une jarre en terre cuite garde l'eau fraîche, même quand il fait très chaud.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-e3b3be73",
+  "Je viens du campement des Trois Tentes. Là-bas, on partage l'eau.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-f1434bf0",
+  "Je viens du campement des Trois Tentes, très loin d'ici. Là-bas, on partage toujours l'eau et le pain avec les voyageurs : c'est une belle habitude.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-32b08824",
+  "Je porte l'eau du puits jusqu'au marché.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-b9ba7cfc",
+  "Je porte l'eau du puits jusqu'au marché, dans des jarres. L'eau est précieuse : on ne la gaspille jamais.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-5e913c6f",
+  "Je viens de traverser les montagnes. Quel long chemin !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-4cfde4ec",
+  "Je viens de traverser les montagnes et le désert. Le chemin est long, mais on y fait de belles rencontres et on apprend beaucoup.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-d450fb77",
+  "Je viens ici tous les jours pour regarder les caravanes arriver.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-751f4642",
+  "Je viens au marché tous les jours : j'aime regarder les caravanes arriver et écouter les nouvelles des routes lointaines.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-ca430591",
+  "Mon pain chaud sort du four !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-7dd44a91",
+  "Mon pain sort du four : il est chaud, doré, et il sent bon dans toute la rue. Veux-tu savoir comment on le fait ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-2c152646",
+  "Je garde mes chèvres : elles aiment grimper partout !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-6fc63dcb",
+  "Je garde mes chèvres. Elles grimpent partout et trouvent de l'herbe là où personne n'en voit. Il faut les compter chaque soir.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-96f4d81e",
+  "Ma caravane repart demain, avec dix chameaux.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-ad4640f4",
+  "Ma caravane repart demain avec dix chameaux chargés. Nous voyageons en groupe : c'est plus sûr, et on partage l'eau.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-77f5d230",
+  "On cherche où la terre est fraîche.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-52cbc342",
+  "On cherche les endroits où la terre reste fraîche et où poussent des plantes vertes. Là, l'eau n'est pas loin sous le sable.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-e09b13ee",
+  "L'eau fraîche est tout en bas.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-b1f0b89f",
+  "Plus on creuse, plus l'eau est fraîche et propre, à l'abri du soleil et de la poussière. Mais il faut une bonne corde !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-a9d8ae5f",
+  "Une bonne datte est souple et brillante.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-ac7da8d2",
+  "Une bonne datte est souple, brillante et sucrée. Si elle est très dure ou très sèche, elle est trop vieille.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-5f71e185",
+  "Des palmiers de l'oasis, tout là-bas.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-35e8fec3",
+  "Elles poussent sur les palmiers des oasis, où l'eau est proche. Une caravane les apporte jusqu'ici en plusieurs jours.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-108280cc",
+  "Avec des plantes et de la terre.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-7741c23d",
+  "Je fais bouillir des plantes, des racines et de la terre colorée. Le tissu prend la couleur, comme une peinture douce.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-ed56183c",
+  "Plusieurs semaines, avec patience.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-b14f585c",
+  "Un grand tapis demande plusieurs semaines, un fil après l'autre. Il faut de la patience, et c'est ce qui le rend si beau.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-a6963f1c",
+  "Le feu rend la jarre dure comme une pierre.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-ed7d62a2",
+  "Le feu durcit l'argile. Sans cuisson, la jarre redeviendrait de la boue au premier contact avec l'eau.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-81ea8dcc",
+  "Près des endroits où l'eau passe.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-634580ef",
+  "On trouve l'argile près des anciens lits d'eau, là où la terre est lisse et collante quand elle est mouillée.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-62f4c7d2",
+  "En caravane, avec des chameaux.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-b7320a08",
+  "J'ai voyagé en caravane, avec des chameaux qui portaient l'eau et les provisions. On marche surtout le matin et le soir, quand il fait plus frais.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-c62772f7",
+  "On se repose à l'ombre.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-355e4828",
+  "Quand le soleil est trop fort, on se repose à l'ombre d'une tente, on boit de petites gorgées et on repart plus tard.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-e3aad7a2",
+  "Beaucoup ! Mon dos le sait.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-9093698f",
+  "Une dizaine de jarres par jour, du puits jusqu'au marché. Avec deux outres bien équilibrées, c'est plus facile.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-c71b4826",
+  "On la couvre avec un linge mouillé.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-15c38c7a",
+  "On couvre les jarres d'un linge mouillé et on les met à l'ombre : en séchant, le linge rafraîchit l'eau.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-9804a636",
+  "Des dunes, des oasis et des montagnes.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-56eb5dfd",
+  "J'ai vu des dunes dorées, des oasis pleines de palmiers et de hautes montagnes rouges. Chaque endroit était différent.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-fd382bec",
+  "Marche doucement et bois de l'eau.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-9f4418f0",
+  "Marche à ton rythme, bois un peu d'eau souvent et regarde autour de toi : on ne voyage pas pour arriver vite, mais pour bien voir.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-1e2da391",
+  "Je regarde le ciel et le vent.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-71778cdf",
+  "Je regarde le ciel et le vent. Un ciel rouge au coucher du soleil annonce souvent une belle journée, et un vent chaud apporte du sable.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-5358bf63",
+  "J'ai guidé des caravanes.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-0fd8d69c",
+  "J'ai guidé des caravanes pendant des années. J'ai appris à lire les étoiles pour ne jamais perdre mon chemin la nuit.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-669e4560",
+  "Avec de la farine, de l'eau et du feu.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-4e8b0005",
+  "Je mélange de la farine, de l'eau et un peu de sel, je laisse reposer la pâte, puis je la cuis sur les pierres chaudes du four.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-374a6f67",
+  "Pour qu'elle gonfle doucement.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-8c404e4b",
+  "En reposant, la pâte gonfle doucement et devient légère. Il faut de la patience : on ne peut pas aller plus vite que la pâte !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-e6e4b0b0",
+  "Avec un sifflement doux.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-5fb3c702",
+  "Je siffle un petit air, toujours le même : mes chèvres le reconnaissent et viennent vers moi, même de loin.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-7989ab7d",
+  "Un peu d'eau, matin et soir.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-3b051d53",
+  "Elles boivent un peu d'eau matin et soir. Dans le désert, elles supportent la soif mieux que nous, mais je leur en garde toujours.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-63294df4",
+  "Des sacs, de l'eau et des tissus.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-40a5755a",
+  "Ils portent des sacs de dattes, des jarres d'eau et des balles de tissu. Un chameau peut porter une lourde charge pendant des jours.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-349943f6",
+  "On suit les étoiles et les repères.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-817c4fe8",
+  "On suit les étoiles la nuit et, le jour, des repères comme les montagnes ou les balises de pierre.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-eb118d0e",
+  "Une maison de pierre : ses murs épais gardent la fraîcheur.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-eb27581e",
+  "Une maison de pierre : ses murs épais gardent la fraîcheur le jour et la chaleur la nuit. Ses petites fenêtres laissent peu entrer le soleil brûlant.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-98119703",
+  "Cette maison a un étage plus étroit, avec un toit plat.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-e3e08f14",
+  "Cette maison a un étage plus étroit. Sur le toit plat, on pouvait faire sécher des dattes, ou dormir quand il faisait trop chaud.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-a2bc6c29",
+  "Une maison en L : deux ailes autour d'un coin à l'ombre.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-66bebc51",
+  "Une maison en forme de L : les deux ailes protègent un petit coin à l'ombre, où l'on pouvait s'asseoir à la fraîche.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-96f75b6b",
+  "Un escalier à l'extérieur mène au toit.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-58c07a62",
+  "Un escalier extérieur mène au toit : on monte sans traverser la maison, et l'on garde la pièce du bas fraîche et tranquille.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-fad91583",
+  "Une maison avec une cour au milieu.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-5f4d44eb",
+  "Une maison à cour : au milieu, un espace ouvert où l'on travaille à l'abri du vent et de la poussière, avec les murs tout autour.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-5faf18bc",
+  "Une échoppe : un auvent de tissu donne de l'ombre.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-244b36a7",
+  "Une échoppe : l'auvent de tissu protège du soleil, et les marchandises sont posées devant la porte, bien visibles.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-03f8c1f7",
+  "Une petite tour pour ranger les provisions.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-97987339",
+  "Une petite tour basse : on y rangeait les provisions, dans la fraîcheur des murs épais.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-82185454",
+  "Un enclos avec une petite cabane.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-96348f20",
+  "Un enclos avec une cabane : un abri pour les animaux de la famille, à l'ombre d'un mur.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-67d42997",
+  "Le potier fait tourner le plateau et modèle l'argile avec ses mains.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-730bcc38",
+  "Le tour du potier : le plateau tourne, et le potier modèle l'argile avec ses mains mouillées. Peu à peu, la motte devient une jarre bien ronde.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-ad6d3f4f",
+  "Dans le four, la chaleur rend la jarre dure comme une pierre.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-b53bba43",
+  "Le four à argile : la grande chaleur durcit les jarres. Une fois cuites, elles ne se déforment plus et peuvent garder l'eau.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-d0ca058a",
+  "Une grande jarre d'eau : l'eau y reste fraîche.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-8db72c08",
+  "Une grande jarre d'eau, couverte d'un linge humide : l'eau y reste fraîche même quand il fait très chaud dehors.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-5db995c1",
+  "Un tapis de laine pour s'asseoir tous ensemble.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-a6f5799f",
+  "Un tapis de laine épais : on s'y assoit en famille pour partager le repas et se reposer.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-b0e6a283",
+  "Des sacs pleins de dattes bien rangés.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-47b87a80",
+  "Des sacs de dattes, bien fermés et rangés au frais : ainsi, elles se gardent longtemps.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-bf859551",
+  "Une balance pour peser les dattes.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-647e5dc0",
+  "Une balance en bois : le marchand pèse les dattes pour que chacun reçoive exactement la bonne quantité, sans tricher.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-c9eb0d5d",
+  "Un métier à tisser : les fils se croisent pour faire un tissu.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-2f618eae",
+  "Un métier à tisser : en croisant les fils de laine, un à un, on fabrique un tissu solide et chaud.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-aac220c1",
+  "Des tissus de toutes les couleurs.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-6476a954",
+  "Des tissus de toutes les couleurs, teints avec des plantes et de la terre : bleu, rouge, jaune.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-f3651542",
+  "De la laine de mouton, toute douce.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-afe24521",
+  "De la laine de mouton : on la lave, on la peigne, puis on la file pour en faire des vêtements et des tapis.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-9396ff78",
+  "Une outre en peau pour porter l'eau.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-fb69e443",
+  "Une outre en peau de chèvre : elle porte l'eau pendant les voyages et la garde fraîche.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-ce0d408d",
+  "Des outils pour réparer : un marteau et une lime.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-675b457c",
+  "Des outils bien rangés : avec un marteau et une lime, l'artisan répare ce qui est cassé, au lieu de le jeter.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-adde3cfb",
+  "Des cordes tressées, très solides.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-29f92372",
+  "Des cordes tressées à la main avec des fibres de palmier : elles servent à puiser l'eau et à attacher les charges.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-ee133108",
+  "Des sacs de blé pour toute l'année.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-2ea87e3a",
+  "Des sacs de blé et d'orge : ces provisions permettent de nourrir tout le monde, même quand la récolte est mauvaise.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-223c3de0",
+  "Une étagère avec des jarres de miel et d'huile.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-59a7884f",
+  "Une étagère de jarres de miel, d'huile et de dattes pressées, bien fermées pour ne pas se gâter.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-c90be256",
+  "Bonjour ! Entre dans l'ombre : chez moi, il fait frais.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-494d5a5d",
+  "Bonjour, petit voyageur ! Ne reste pas au soleil. Mes murs sont épais : ils gardent la fraîcheur toute la journée. Assieds-toi un instant, je t'apporte de l'eau.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-b0dfa427",
+  "Regarde sur mon toit : des dattes qui sèchent au soleil !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-22dd1f03",
+  "Sur mon toit plat, je fais sécher les dattes de l'oasis. Au soleil, elles se gardent des mois : c'est parfait pour les longs voyages.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-91df1373",
+  "Je couds à l'ombre, dans le coin de ma maison.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-266b9c8f",
+  "Je couds des manteaux pour les voyageurs, à l'ombre du coin de ma maison. Un bon manteau protège du soleil le jour et du froid la nuit.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-67106e5e",
+  "Je monte sur mon toit pour surveiller mes moutons !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-c95a797a",
+  "Mon escalier est dehors : je monte sur le toit pour surveiller mes moutons. De là-haut, on voit toute la plaine et on repère les voyageurs de loin.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-0c94973d",
+  "Dans ma cour, je répare des jarres et des outils.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-9b9fff09",
+  "Dans ma cour, à l'abri du vent, je répare les jarres et les outils de mes voisins. Chacun a son savoir-faire, et on s'entraide.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-49777354",
+  "Dans ma tour, il fait frais : je range le blé et les dattes.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-3d1dd58e",
+  "Dans ma petite tour, les murs épais gardent le blé et les dattes au frais. Ces provisions sont partagées avec ceux qui en ont besoin.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-26424b77",
+  "Un petit replat pour reprendre son souffle.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-0dfc113e",
+  "Un petit replat pour reprendre son souffle. On monte mieux à petits pas réguliers, en buvant un peu d'eau.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-33d47d5f",
+  "Des petites plantes poussent entre les pierres.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-b5525cb0",
+  "Entre les pierres, de petites plantes épineuses poussent : leurs longues racines vont chercher l'eau très profond.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-b9901b35",
+  "D'ici, on voit toute la cité et la plaine !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-f75163d4",
+  "D'ici, on voit toute la cité, ses maisons serrées, et la grande plaine tout autour. Plus on monte, plus on voit loin.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-cdc6356d",
+  "Ici, le vent souffle plus fort.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-100e8efe",
+  "Plus on monte, plus le vent est frais et fort. Depuis très longtemps, il polit les rochers.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-42bb8bb8",
+  "Les roches ont des couleurs : rouge, jaune, gris.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-3cf6ef96",
+  "Regarde les couleurs de la roche : le rouge vient du fer, le jaune du sable, le gris de la pierre dure.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-5627dad9",
+  "D'ici, on voit les chemins et les jardins.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-8f5d80e3",
+  "D'ici, on voit les chemins des caravanes, les jardins et la cité au loin. Les montagnes servent de repères aux voyageurs.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-203f5d9e",
+  "Je donne un tissu contre deux dattes. D'accord ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-599157bb",
+  "Mes tissus sont chauds et solides. Je te donne un tissu contre deux dattes. D'accord ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-d55d5272",
+  "Merci ! Voici ton beau tissu.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-ae64589d",
+  "Merci ! Voici ton tissu. Chacun y gagne : toi un tissu, moi de quoi manger.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-03a528e6",
+  "Il te faut deux dattes pour cet échange.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-ef80ba7c",
+  "Il te faut deux dattes pour cet échange. Le marchand de dattes pourra t'aider.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-bf05e351",
+  "Je donne une jarre contre un tissu. D'accord ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-406b8ac0",
+  "Je fabrique des jarres, mais il me manque un tissu pour me protéger du soleil. Je te donne une jarre contre un tissu. D'accord ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-5e09caa1",
+  "Merci ! Voici ta jarre.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-235696d7",
+  "Merci ! Voici une jarre. Chacun y gagne : toi une jarre, moi un tissu pour me protéger du soleil.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-a805919e",
+  "Il te faut un tissu pour cet échange.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-cc8dc584",
+  "Il te faut un tissu pour cet échange. La tisserande en a : elle aime les dattes.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-d86facf3",
+  "Je donne quatre dattes contre une jarre. D'accord ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-3a0d762e",
+  "J'ai besoin de jarres pour ranger mes dattes. Je te donne quatre dattes contre une jarre. D'accord ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-a4ae68f9",
+  "Merci ! Tu as quatre dattes de plus.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-92196504",
+  "Merci ! Voilà quatre dattes. Chacun y gagne : toi des dattes, moi une jarre pour les ranger.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-54de6eed",
+  "Il te faut une jarre pour cet échange.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-12ac1ee3",
+  "Il te faut une jarre pour cet échange. Le potier en fabrique : va le voir avec un tissu.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-a4a5b663",
+  "Pour commencer, voici quatre dattes pour toi !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-9f266602",
+  "Pour commencer, voici quatre dattes de mon étal : on n'échange bien que si l'on a quelque chose à offrir.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-7f5c5194",
+  "Je suis potier. Veux-tu apprendre à faire une jarre ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-bb6191a7",
+  "Bravo, tu sais faire une jarre !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-c58e621a",
+  "Je suis potier : je fabrique des jarres avec de l'argile. Veux-tu apprendre mon métier ? Réponds à mes trois questions, sans te presser.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-58ede511",
+  "Bravo, tu connais maintenant le métier de potier. Une bonne jarre garde l'eau fraîche pendant tout le voyage.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-79c7c463",
+  "Pour faire une jarre, on commence par quoi ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-fdd2186d",
+  "Oui ! L'argile mouillée se modèle très bien.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-17a605a3",
+  "Pas encore : le feu vient à la fin. D'abord, on mouille l'argile.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-eecfb014",
+  "Quand la jarre est modelée, où la laisse-t-on sécher ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-fb44ae7c",
+  "Oui ! À l'ombre, elle sèche doucement.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-330695d8",
+  "Pas tout à fait : dans l'eau, elle redeviendrait molle. On la laisse sécher à l'ombre.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-c02c8128",
+  "Pourquoi les voyageurs aiment-ils les jarres ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-0c503d3a",
+  "Oui ! Dans une jarre, l'eau reste fraîche.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-51cefd9a",
+  "Pas tout à fait : ce qui compte, c'est que l'eau reste fraîche dans la jarre.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-e985040f",
+  "Pour faire une jarre, par quoi commence-t-on ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-1232bbed",
+  "Exactement ! L'argile mouillée devient une pâte douce, que l'on peut modeler avec les mains.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-ca9c6638",
+  "Pas encore : on ne peut pas cuire une jarre qui n'existe pas. D'abord, on prépare l'argile avec de l'eau.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-d66a02c1",
+  "Quand la jarre est modelée, que faut-il faire avant de la cuire ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-8217ac11",
+  "Oui ! Si elle sèche trop vite, elle se fendille. L'ombre la fait sécher doucement.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-9e8d914a",
+  "Pas tout à fait : trop d'eau ou trop de soleil la fendillerait. Il faut la laisser sécher doucement à l'ombre.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-c9eab654",
+  "Pourquoi les voyageurs aiment-ils tant les jarres en argile ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-d26c49f9",
+  "Oui ! L'argile laisse passer un peu d'eau, qui s'évapore : cela rafraîchit l'eau qui reste dans la jarre.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-13d01167",
+  "Pas tout à fait : une jarre est lourde et elle peut se casser. Mais l'argile garde l'eau fraîche, et c'est le plus précieux.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-c67b110f",
+  "Je vends des dattes. Veux-tu apprendre mon métier ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-1956fbbe",
+  "Bravo, tu connais le métier de marchand !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-4a0ad5ca",
+  "Je suis marchand de dattes. Au marché, on apprend à échanger et à voyager ensemble. Veux-tu apprendre mon métier ? Réponds à mes trois questions.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-5cbbae18",
+  "Bravo, tu connais maintenant le métier de marchand : bien choisir, échanger honnêtement et voyager ensemble.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-e121667f",
+  "Un voyageur part dans le désert. Que lui conseilles-tu d'emporter ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-82a2ae7c",
+  "Oui ! Les dattes et l'eau sont parfaites pour la route.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-91d62ce5",
+  "Pas tout à fait : un gros coffre est lourd. Les dattes et l'eau sont plus utiles.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-558b2d7b",
+  "Au marché, on peut échanger des dattes contre quoi ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-b9d4e3dc",
+  "Oui ! Le tissu et les dattes s'échangent bien.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-2860a0b0",
+  "Pas tout à fait : un nuage ne s'échange pas ! Un beau tissu, oui.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-2fb2d31b",
+  "Pourquoi les marchands voyagent-ils ensemble ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-96d719b7",
+  "Oui ! Ensemble, on s'entraide.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-238dac1b",
+  "Pas tout à fait : on voyage ensemble pour s'entraider.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-6c277efe",
+  "Un voyageur part pour une longue route dans le désert. Que lui conseilles-tu d'emporter ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-01576457",
+  "Bien vu ! Les dattes se gardent longtemps et donnent de l'énergie, et l'eau est la chose la plus précieuse du désert.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-f26473e5",
+  "Pas tout à fait : le coffre et le tapis sont lourds à porter. Des dattes et une gourde d'eau sont bien plus utiles.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-78fa9304",
+  "Au marché, on échange parfois sans pièces : on troque. Que peut-on échanger contre un sac de dattes ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-1a1f8c30",
+  "Oui ! Chacun a ce qui manque à l'autre : en échangeant, tout le monde est content.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-3ef0dc8a",
+  "Pas tout à fait : on ne peut pas échanger un nuage ni une ombre. Un beau tissu, par contre, oui.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-c8ed43b4",
+  "Pourquoi les marchands voyagent-ils en caravane, tous ensemble ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-569a518c",
+  "Oui ! Ensemble, on se protège, on partage l'eau et les provisions, et le chemin paraît moins long.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-35c8c1c3",
+  "Pas tout à fait : une caravane ne va pas plus vite, mais on s'y entraide et on y partage l'eau et les provisions.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-85e835c6",
+  "Je suis tisserande. Veux-tu apprendre à tisser ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-1a2a7fc6",
+  "Bravo, tu sais comment on tisse !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-af99737c",
+  "Je suis tisserande : je transforme la laine en tissu. Veux-tu apprendre mon métier ? Réponds à mes trois questions, sans te presser.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-1f9d6bd7",
+  "Bravo, tu connais maintenant le métier de tisserande. Avec de la patience, des fils deviennent un beau tissu.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-c8b46ea1",
+  "D'où vient la laine ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-c9fca8e6",
+  "Oui ! La laine vient du mouton.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-8772bb7d",
+  "Pas tout à fait : la laine vient du mouton.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-8e35abef",
+  "Avant de tisser, on fait des quoi ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-4a84fa3b",
+  "Oui ! On file la laine pour faire des fils.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-66406590",
+  "Pas tout à fait : on fait d'abord des fils.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-b2054bef",
+  "La nuit, que fait la laine ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-01de6c0a",
+  "Oui ! La laine garde chaud la nuit.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-ed5923d0",
+  "Pas tout à fait : la laine garde chaud.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-1b598c5f",
+  "Oui ! On coupe la laine du mouton, puis on la lave et on la file.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-7499fc09",
+  "Pas tout à fait : un nuage ou une pierre n'ont pas de laine. La laine vient du mouton.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-ac658af3",
+  "Que fait-on avant de tisser ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-6cf175ec",
+  "Oui ! En filant la laine, on tord les poils en un fil solide.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-2f6f0757",
+  "Pas tout à fait : on ne mange pas la laine ! On la file d'abord pour faire des fils.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-3b3e506d",
+  "Pourquoi un manteau de laine est-il utile dans le désert ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-64ffe41f",
+  "Oui ! La nuit, le désert est froid : la laine garde la chaleur.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-d1a4c550",
+  "Pas tout à fait : la laine ne brille pas. Elle protège du froid de la nuit.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-934fc0f7",
+  "Je porte l'eau dans la cité. Veux-tu apprendre mon métier ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-3bd2b8f8",
+  "Bravo, tu sais bien porter l'eau !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-cf8739ab",
+  "Je suis porteur d'eau : je rapporte l'eau du puits à toutes les maisons. Veux-tu apprendre mon métier ? Réponds à mes trois questions.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-75cb205a",
+  "Bravo, tu connais le métier de porteur d'eau. L'eau est précieuse : on la porte, on la partage et on ne la gaspille pas.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-bed564fe",
+  "Pourquoi couvre-t-on l'eau ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-2a9a95f1",
+  "Oui ! On la garde propre et fraîche.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-82a1210d",
+  "Pas tout à fait : on la garde propre.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-d9ee0534",
+  "L'eau, dans le désert, c'est…",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-6983122f",
+  "Oui ! L'eau est précieuse.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-3428244c",
+  "Pas tout à fait : l'eau est précieuse.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-3933b4f6",
+  "Pour porter l'eau, on équilibre avec…",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-b4b725d5",
+  "Oui ! Deux outres, une de chaque côté.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-77a420dc",
+  "Pas tout à fait : deux outres, une de chaque côté.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-f8b244f7",
+  "Pourquoi couvre-t-on les jarres d'eau ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-83a7ceb9",
+  "Oui ! Un couvercle garde la poussière dehors et l'eau plus fraîche.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-a062d2ff",
+  "Pas tout à fait : on la couvre pour la garder propre et fraîche.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-b168ea55",
+  "Que fait-on de l'eau qu'on ne boit pas tout de suite ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-0e18489f",
+  "Oui ! L'eau est précieuse : on la garde pour plus tard.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-bdd3aea1",
+  "Pas tout à fait : on ne gaspille jamais l'eau. On la garde dans une jarre.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-3f664379",
+  "Comment porte-t-on beaucoup d'eau sans se fatiguer ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-0e9be07b",
+  "Oui ! Deux charges égales de chaque côté gardent l'équilibre.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-dfacc98f",
+  "Pas tout à fait : il faut deux charges égales, une de chaque côté, pour garder l'équilibre.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-e1bef44a",
+  "Je creuse des puits. Veux-tu apprendre mon métier ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-64627c93",
+  "Bravo, tu sais comment on trouve l'eau !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-5a60d531",
+  "Je suis puisatier : je creuse des puits pour trouver l'eau. Veux-tu apprendre mon métier ? Réponds à mes trois questions, sans te presser.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-faeb0c24",
+  "Bravo, tu connais maintenant le métier de puisatier. Un bon puits, bien entretenu, donne de l'eau à tout un hameau.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-20d84c35",
+  "On creuse un puits pour…",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-8a5c262e",
+  "Oui ! Un puits donne de l'eau.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-8be6c574",
+  "Pas tout à fait : on creuse un puits pour trouver de l'eau.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-edf9fca9",
+  "Pour remonter l'eau, on utilise…",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-cea940b6",
+  "Oui ! Une corde, avec un seau.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-fd4b791d",
+  "Pas tout à fait : on utilise une corde et un seau.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-f5197f2b",
+  "Un puits propre, c'est…",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-7aa86257",
+  "Oui ! Un puits propre est bon pour tous.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-a73d4ce6",
+  "Pas tout à fait : un puits propre est bon pour tous.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-569add4d",
+  "Pourquoi creuse-t-on un puits profond ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-ed763fd9",
+  "Oui ! Plus on creuse, plus l'eau est fraîche et propre, à l'abri du soleil.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-61b5645d",
+  "Pas tout à fait : un puits sert à trouver de l'eau fraîche et propre, tout en bas.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-e00cdf40",
+  "Comment remonte-t-on le seau d'eau ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-68d9d611",
+  "Oui ! Le treuil tourne et la corde remonte le seau, sans trop se fatiguer.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-76a276a0",
+  "Pas tout à fait : on tire le seau avec une corde, aidée d'un treuil.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-f80bbb4d",
+  "Pourquoi garde-t-on un puits propre ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-f6ebb226",
+  "Oui ! Une eau propre protège la santé de tout le hameau.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-f664b609",
+  "Pas tout à fait : on garde le puits propre pour que tout le monde boive une eau saine.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-b00d68c6",
+  "Retrouver le chemin de la grande route",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-17bac5de",
+  "Cherche les trois vieilles balises de pierre.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-be469e22",
+  "Le chemin de la grande route s'efface par endroits. Retrouve les trois vieilles balises de pierre pour ne pas te perdre.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-268a89fd",
+  "Les traces dans le sable",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-ded7ca58",
+  "Regarde les traces dans le sable. Qui est passé ici ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-d7ebdf85",
+  "Trois animaux du désert sont passés par là. Observe leurs traces et devine qui les a laissées.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-765ba50a",
+  "Les affaires de la voyageuse",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-bba19697",
+  "Aide la voyageuse : retrouve ses trois affaires autour du campement.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-526ee29b",
+  "Une voyageuse a perdu un tapis, une jarre et un petit sac près du campement. Retrouve-les et rapporte-les-lui.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-e214ef3f",
+  "Découvrir la cité ancienne",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-5fc1602f",
+  "Visite la porte, l'atelier, la grande place et le marché de la cité.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-7b0782c0",
+  "La cité est faite de maisons de pierre, de ruelles et de places. Visite la porte, l'atelier du potier, la grande place et le marché pour la découvrir.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-ede1135c",
+  "Les deux collines",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-2e90331e",
+  "Va voir les deux collines, tranquillement.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-36348258",
+  "Deux petites collines dominent la cité. Va les observer l'une après l'autre, à ton rythme : il n'y a ni course ni chronomètre.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-947c1987",
+  "Le chemin entre les deux collines",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-bab7febb",
+  "Marche tranquillement entre les deux collines et regarde bien autour de toi.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-11533aa6",
+  "Un chemin plat relie les deux collines. Marche tranquillement et fais trois pauses d'observation : la colline, le vent, le sol. Il n'y a ni course, ni chronomètre, ni classement.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-d537dcf6",
+  "Les voyageurs de la cité",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-ac8c6865",
+  "Dis bonjour à trois voyageurs de la cité.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-0c99d98f",
+  "La cité est pleine de voyageurs et d'artisans venus de loin. Parle à trois d'entre eux pour apprendre comment ils vivent, ce qu'ils font et d'où ils viennent.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-7e727a2d",
+  "Dans les maisons",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-1c23b104",
+  "Entre dans trois maisons de la cité.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-1f121d42",
+  "Les habitants t'invitent chez eux. Entre dans trois maisons différentes de la cité pour découvrir comment on y vit.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-9abd0080",
+  "Frapper aux portes",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-8b3f6475",
+  "Frappe à quatre portes de la cité et dis bonjour.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-e436bc44",
+  "Dans la cité, chaque maison a ses habitants. Frappe à quatre portes différentes, poliment, pour savoir qui vit là et ce qu'ils font.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-b22beac6",
+  "Le hameau des puits",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-7bbcb346",
+  "Suis le petit sentier jusqu'au hameau caché dans les dunes.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-8290777a",
+  "À l'écart de la grande piste, un petit sentier mène à un hameau caché entre les dunes. Suis-le et découvre la borne, le puits, le jardin et le four à pain.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-36fc74e8",
+  "Le carnet de la nature",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-7eb1dab0",
+  "Regarde bien : huit petites merveilles de la nature t'attendent.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-5076fcff",
+  "Sur la grande route, la nature cache de petites merveilles : des fourmis, des fleurs, des oiseaux, le vent, l'eau. Trouve et observe huit d'entre elles, sans te presser.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-cdf98318",
+  "Monter doucement",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-8f3c5b60",
+  "Monte sur les deux montagnes, doucement, et regarde la vue.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-2d0d6043",
+  "Un sentier monte sur chacune des deux grandes montagnes. Monte tranquillement, observe à chaque halte et regarde la vue du belvédère. Il n'y a ni course ni chronomètre.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-917cbab4",
+  "Au marché : échanger",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-060cfcda",
+  "Fais un échange avec trois marchands.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-7f06e3e6",
+  "Au marché, chacun a ce qui manque à l'autre. Fais un échange avec trois marchands différents : à chaque fois, tout le monde y gagne.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-e0aac09a",
+  "La piste de sortie",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-3cc95c55",
+  "Les grandes plaines",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-6d5efe32",
+  "Les dunes et les vallées",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-293fe9b4",
+  "L'oasis de la Source Claire",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-5032069f",
+  "Les montagnes et les cols",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-3a4a60f1",
+  "Les chemins vers la cité",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-8fded789",
+  "La vallée de l'arrivée",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-739d8bf3",
+  "La cité ancienne",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-0c6bbf8c",
+  "Chaque objet du sac sert à quelque chose, mais aucun n'est obligatoire : tu peux partir comme tu veux. Touche un objet pour le mettre dans ton sac, ou l'en retirer.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-720eef4d",
+  "Une très longue piste part d'ici, vers l'est. Parle à Rachid pour préparer ton sac, puis suis la piste.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-aaa128d4",
+  "Une très longue piste part d'ici, mais elle est encore fermée.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-884c0be5",
+  "Une lanterne est allumée : une histoire à découvrir ici.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-363e89fc",
+  "Tu as tout retrouvé ! Rapporte les affaires à la voyageuse.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-9b100313",
+  "Ici s'arrête le monde construit, pour l'instant. Bravo pour ce long voyage !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-7931fc71",
+  "Bravo, tu as traversé les plaines et les dunes jusqu'à l'oasis !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-743c9fcb",
+  "Pour te remercier, un dromadaire de la grande route t'attend dans ton écurie, au village.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-05a4f94a",
+  "Ta petite lanterne brille doucement.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-0eec909b",
+  "(Illustration du jeu : la cité est une interprétation, pas une reconstitution exacte.)",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-c6739fed",
+  "Nouvelle mission",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-c8e98407",
+  "Histoire ajoutée à ton carnet",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-709b83e5",
+  "Tu entres dans",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-20b23ddc",
+  "La cité apparaît !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-cd3b2d5f",
+  "Tu découvres",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-1b5e6e5e",
+  "La grande route",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-226dcf87",
+  "Tu remplis ta gourde à l'eau claire de l'oasis.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-7449beb5",
+  "L'eau de l'oasis est claire et fraîche. Pense à emporter ta gourde la prochaine fois !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-7fc0ec04",
+  "Les trois balises sont trouvées : tu as retrouvé le chemin de la grande route !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-b9bdff35",
+  "Une traversée de plus, tranquillement !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-f0cbe9e6",
+  "Trois traversées : bravo ! Tu peux continuer, sans te presser.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-d61e7aae",
+  "Tu cueilles deux dattes mûres : elles vont dans ton panier.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-2ca9634e",
+  "Il ne reste plus de dattes mûres : laisse le reste aux oiseaux !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-0ebb39ee",
+  "Tu t'éloignes de la grande piste. Reviens vers les poteaux rouges, ou ouvre ta carte.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-5e7f6a70",
+  "Plus loin, le désert est trop sauvage : reste près de la piste et des lumières.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-7432d7fd",
+  "Tu t'étais trop éloigné : on te ramène sur la grande piste.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-1c8cfd4c",
+  "Bravo, tout est dans l'ordre !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-1913ceea",
+  "Pas tout à fait, essaie encore doucement.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-9ee11364",
+  "Bonne réponse !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-8fbb07a2",
+  "Pas tout à fait, essaie encore.",
+  "exact"
+ ]
+];
