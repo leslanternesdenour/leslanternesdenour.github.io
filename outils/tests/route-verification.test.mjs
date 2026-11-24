@@ -29,3 +29,12 @@ test('parcours de test : le panneau n\'existe que dans le bac à sable, il est t
   assert.match(u, /min-height:4[48]px/, 'cibles tactiles d\'au moins 44 px'); assert.match(u, /setInterval/, 'se met à jour tout seul');
   assert.ok(!/(fetch|XMLHttpRequest|localStorage)/.test(u), 'aucun réseau, aucun stockage');
 });
+
+test('parcours de test : « Ouvrir la Route » ouvre vraiment la région tout de suite (contrôle immédiat), le panneau du village ne dit plus « fermée »', async () => {
+  const fs = await import('node:fs');
+  const j = fs.readFileSync(new URL('../../voyage/js/route/jeu-route.js', import.meta.url), 'utf8');
+  const i = j.indexOf('ouvrirRoute: () =>'); assert.ok(i > 0);
+  const f = j.slice(i, i + 700);
+  assert.match(f, /ctx\.regions\.verifier\(\)/, 'contrôle immédiat après avoir rempli les conditions');
+  assert.ok(f.indexOf('ctx.regions.verifier()') < f.indexOf('J.x = 326'), 'avant de déplacer l\'enfant');
+});

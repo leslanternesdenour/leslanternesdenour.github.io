@@ -380,6 +380,7 @@ export function creerRoute(ctx) {
   }
   if (sandboxActif(location.hostname, location.search)) creerVerificationUI({ etatRoute: () => R, surRoute: () => dans, aller: allerVerif,
     ouvrirRoute: () => { for (const z of ['oasis', 'camp']) if (!etat.zones.includes(z)) etat.zones.push(z); for (const a of ['lezard', 'gerboise', 'renard']) if (!AV.animaux.includes(a)) AV.animaux.push(a);
+      ctx.regions.verifier();   // contrôle immédiat : la Route s'ouvre tout de suite (sinon le panneau dit encore « fermée »)
       J.x = 326; J.z = 50; if (ctx.monte()) { C.x = J.x; C.z = J.z; } ui.indice('🐪 Avance vers l' + String.fromCharCode(39) + 'est pour entrer sur la Route', 5000); } });
 
   return {
