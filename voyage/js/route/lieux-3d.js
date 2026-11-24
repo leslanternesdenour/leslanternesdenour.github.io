@@ -7,6 +7,7 @@ import { DEC, OASIS, CAMP, MONTAGNE_NORD, MONTAGNE_SUD } from './relief.js';
 import { LIEUX_SACRES } from './lieux-mecque-a-valider.js';
 import { LIEUX_ROUTE, positionDeLieu } from './donnees.js';
 import { ATELIER, planAtelier } from './atelier-plan.js';
+import { majPortee } from './portee-plan.js';
 
 const B = () => new THREE.BoxGeometry(1, 1, 1), DOD = r => new THREE.DodecahedronGeometry(r, 0), CYL = (a, b, h, s = 8) => new THREE.CylinderGeometry(a, b, h, s);
 const SPH = (r, w = 8, h = 6) => new THREE.SphereGeometry(r, w, h);
@@ -14,7 +15,7 @@ const SPH = (r, w = 8, h = 6) => new THREE.SphereGeometry(r, w, h);
 export function creerLieux3D({ scene, hauteur, colliders, ombres, TX }) {
   const mat = materiau({ finesse: 1.4 }), matVent = materiau({ balance: 1.5 });
   const groupe = new THREE.Group(); groupe.name = 'route-lieux'; scene.add(groupe);
-  const lieux = {}, meshes = {}; let planAt = null, toitAt = null, mursAt = null;   // planAt : le plan de l'atelier (murs, tour, four)
+  const lieux = {}, meshes = {}; let planAt = null, toitAt = null, mursAt = null, tPortee = 0;   // planAt : le plan de l'atelier (murs, tour, four)
   const pos = id => { const l = LIEUX_ROUTE.find(o => o.id === id), { s, t } = positionDeLieu(l); return { x: t, z: DEC + s }; };
   const monter = (geo, m, x, z, { dy = 0, rot = 0 } = {}) => { const o = new THREE.Mesh(geo, m); o.position.set(x, hauteur(x, z) + dy, z); o.rotation.y = rot; o.castShadow = ombres; o.receiveShadow = ombres; groupe.add(o); return o; };
   const bloquer = (x, z, r) => colliders.push({ x, z, r });
@@ -239,10 +240,11 @@ export function creerLieux3D({ scene, hauteur, colliders, ombres, TX }) {
   return {
     groupe, lieux, voyageuse, dromadaire, pos, camp, lanternes, atelier: planAt,
     retirerGemme(id) { const g = gemmes[id]; if (g) { groupe.remove(g); delete gemmes[id]; } },
-    gemmeVisible(id, v) { if (gemmes[id]) gemmes[id].visible = v; },
+    gemmeVisible(id, v) { if (gemmes[id]) { gemmes[id].userData.retire = !v; gemmes[id].visible = v; } },
     // un objet ramassé disparaît du sol, et sa pierre dorée aussi
-    retirerObjet(id) { if (meshes[id]) meshes[id].visible = false; this.retirerGemme(id); },
+    retirerObjet(id) { if (meshes[id]) { meshes[id].userData.retire = true; meshes[id].visible = false; } this.retirerGemme(id); },
     animer(dt, t, joueur) {
+      tPortee += dt; if (tPortee > 0.4) { tPortee = 0; majPortee(groupe.children, joueur.x, joueur.z, Math.max(320, scene.fog.far + 120), [toitAt, mursAt]); }   // les lieux hors du brouillard ne sont pas dessinés
       if (toitAt && planAt) toitAt.visible = mursAt.visible = !planAt.dedans(joueur.x, joueur.z);
       for (const k in gemmes) { const g = gemmes[k]; g.rotation.y = t * 1.6; g.position.y = g.userData.y0 + Math.sin(t * 2 + g.position.x) * 0.12; }
       if (Math.hypot(joueur.x - camp.x, joueur.z - camp.z) < 90) { voyageuse.animer(dt, 0, t); dromadaire.animer(dt, 0, t); }
