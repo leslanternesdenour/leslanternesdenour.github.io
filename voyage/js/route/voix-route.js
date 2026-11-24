@@ -1187,6 +1187,221 @@ export const PHRASES_ROUTE = [
   "exact"
  ],
  [
+  "NOUR-VOIX-RTE-85e835c6",
+  "Je suis tisserande. Veux-tu apprendre à tisser ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-1a2a7fc6",
+  "Bravo, tu sais comment on tisse !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-af99737c",
+  "Je suis tisserande : je transforme la laine en tissu. Veux-tu apprendre mon métier ? Réponds à mes trois questions, sans te presser.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-1f9d6bd7",
+  "Bravo, tu connais maintenant le métier de tisserande. Avec de la patience, des fils deviennent un beau tissu.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-c8b46ea1",
+  "D'où vient la laine ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-c9fca8e6",
+  "Oui ! La laine vient du mouton.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-8772bb7d",
+  "Pas tout à fait : la laine vient du mouton.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-8e35abef",
+  "Avant de tisser, on fait des quoi ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-4a84fa3b",
+  "Oui ! On file la laine pour faire des fils.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-66406590",
+  "Pas tout à fait : on fait d'abord des fils.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-b2054bef",
+  "La nuit, que fait la laine ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-01de6c0a",
+  "Oui ! La laine garde chaud la nuit.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-ed5923d0",
+  "Pas tout à fait : la laine garde chaud.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-1b598c5f",
+  "Oui ! On coupe la laine du mouton, puis on la lave et on la file.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-7499fc09",
+  "Pas tout à fait : un nuage ou une pierre n'ont pas de laine. La laine vient du mouton.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-ac658af3",
+  "Que fait-on avant de tisser ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-6cf175ec",
+  "Oui ! En filant la laine, on tord les poils en un fil solide.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-2f6f0757",
+  "Pas tout à fait : on ne mange pas la laine ! On la file d'abord pour faire des fils.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-3b3e506d",
+  "Pourquoi un manteau de laine est-il utile dans le désert ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-64ffe41f",
+  "Oui ! La nuit, le désert est froid : la laine garde la chaleur.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-d1a4c550",
+  "Pas tout à fait : la laine ne brille pas. Elle protège du froid de la nuit.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-934fc0f7",
+  "Je porte l'eau dans la cité. Veux-tu apprendre mon métier ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-3bd2b8f8",
+  "Bravo, tu sais bien porter l'eau !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-cf8739ab",
+  "Je suis porteur d'eau : je rapporte l'eau du puits à toutes les maisons. Veux-tu apprendre mon métier ? Réponds à mes trois questions.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-75cb205a",
+  "Bravo, tu connais le métier de porteur d'eau. L'eau est précieuse : on la porte, on la partage et on ne la gaspille pas.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-bed564fe",
+  "Pourquoi couvre-t-on l'eau ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-2a9a95f1",
+  "Oui ! On la garde propre et fraîche.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-82a1210d",
+  "Pas tout à fait : on la garde propre.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-d9ee0534",
+  "L'eau, dans le désert, c'est…",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-6983122f",
+  "Oui ! L'eau est précieuse.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-3428244c",
+  "Pas tout à fait : l'eau est précieuse.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-3933b4f6",
+  "Pour porter l'eau, on équilibre avec…",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-b4b725d5",
+  "Oui ! Deux outres, une de chaque côté.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-77a420dc",
+  "Pas tout à fait : deux outres, une de chaque côté.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-f8b244f7",
+  "Pourquoi couvre-t-on les jarres d'eau ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-83a7ceb9",
+  "Oui ! Un couvercle garde la poussière dehors et l'eau plus fraîche.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-a062d2ff",
+  "Pas tout à fait : on la couvre pour la garder propre et fraîche.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-b168ea55",
+  "Que fait-on de l'eau qu'on ne boit pas tout de suite ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-0e18489f",
+  "Oui ! L'eau est précieuse : on la garde pour plus tard.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-bdd3aea1",
+  "Pas tout à fait : on ne gaspille jamais l'eau. On la garde dans une jarre.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-3f664379",
+  "Comment porte-t-on beaucoup d'eau sans se fatiguer ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-0e9be07b",
+  "Oui ! Deux charges égales de chaque côté gardent l'équilibre.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-dfacc98f",
+  "Pas tout à fait : il faut deux charges égales, une de chaque côté, pour garder l'équilibre.",
+  "exact"
+ ],
+ [
   "NOUR-VOIX-RTE-b00d68c6",
   "Retrouver le chemin de la grande route",
   "exact"

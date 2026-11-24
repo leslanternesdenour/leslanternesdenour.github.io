@@ -23,6 +23,28 @@ export const ACTIVITES_METIERS = {
         grand: { question: `Au marché, on échange parfois sans pièces : on troque. Que peut-on échanger contre un sac de dattes ?`, choix: [`Un beau tissu`, `Un nuage`, `Une ombre`], bonne: 0, ok: `Oui ! Chacun a ce qui manque à l'autre : en échangeant, tout le monde est content.`, ko: `Pas tout à fait : on ne peut pas échanger un nuage ni une ombre. Un beau tissu, par contre, oui.` } },
       { petit: { question: `Pourquoi les marchands voyagent-ils ensemble ?`, choix: [`Pour s'entraider`, `Pour faire du bruit`], bonne: 0, ok: `Oui ! Ensemble, on s'entraide.`, ko: `Pas tout à fait : on voyage ensemble pour s'entraider.` },
         grand: { question: `Pourquoi les marchands voyagent-ils en caravane, tous ensemble ?`, choix: [`Pour s'entraider et partager l'eau`, `Pour aller plus vite`, `Pour faire du bruit`], bonne: 0, ok: `Oui ! Ensemble, on se protège, on partage l'eau et les provisions, et le chemin paraît moins long.`, ko: `Pas tout à fait : une caravane ne va pas plus vite, mais on s'y entraide et on y partage l'eau et les provisions.` } }
+    ] },
+  tisserande: { icone: '🧵', titre: 'Le métier de tisserande', voix: 'perso-warda', recompense: 40,
+    intro: { petit: `Je suis tisserande. Veux-tu apprendre à tisser ?`, grand: `Je suis tisserande : je transforme la laine en tissu. Veux-tu apprendre mon métier ? Réponds à mes trois questions, sans te presser.` },
+    fin: { petit: `Bravo, tu sais comment on tisse !`, grand: `Bravo, tu connais maintenant le métier de tisserande. Avec de la patience, des fils deviennent un beau tissu.` },
+    questions: [
+      { petit: { question: `D'où vient la laine ?`, choix: [`Du mouton`, `D'une pierre`], bonne: 0, ok: `Oui ! La laine vient du mouton.`, ko: `Pas tout à fait : la laine vient du mouton.` },
+        grand: { question: `D'où vient la laine ?`, choix: [`Du mouton`, `D'un nuage`, `D'une pierre`], bonne: 0, ok: `Oui ! On coupe la laine du mouton, puis on la lave et on la file.`, ko: `Pas tout à fait : un nuage ou une pierre n'ont pas de laine. La laine vient du mouton.` } },
+      { petit: { question: `Avant de tisser, on fait des quoi ?`, choix: [`Des fils`, `Des gâteaux`], bonne: 0, ok: `Oui ! On file la laine pour faire des fils.`, ko: `Pas tout à fait : on fait d'abord des fils.` },
+        grand: { question: `Que fait-on avant de tisser ?`, choix: [`On file la laine pour faire des fils`, `On mange la laine`, `On met la laine au four`], bonne: 0, ok: `Oui ! En filant la laine, on tord les poils en un fil solide.`, ko: `Pas tout à fait : on ne mange pas la laine ! On la file d'abord pour faire des fils.` } },
+      { petit: { question: `La nuit, que fait la laine ?`, choix: [`Elle garde chaud`, `Elle brille`], bonne: 0, ok: `Oui ! La laine garde chaud la nuit.`, ko: `Pas tout à fait : la laine garde chaud.` },
+        grand: { question: `Pourquoi un manteau de laine est-il utile dans le désert ?`, choix: [`Il protège du froid de la nuit`, `Il brille dans le noir`, `Il fait du bruit`], bonne: 0, ok: `Oui ! La nuit, le désert est froid : la laine garde la chaleur.`, ko: `Pas tout à fait : la laine ne brille pas. Elle protège du froid de la nuit.` } }
+    ] },
+  'porteur-eau': { icone: '💧', titre: `Le métier de porteur d'eau`, voix: 'perso-samir', recompense: 40,
+    intro: { petit: `Je porte l'eau dans la cité. Veux-tu apprendre mon métier ?`, grand: `Je suis porteur d'eau : je rapporte l'eau du puits à toutes les maisons. Veux-tu apprendre mon métier ? Réponds à mes trois questions.` },
+    fin: { petit: `Bravo, tu sais bien porter l'eau !`, grand: `Bravo, tu connais le métier de porteur d'eau. L'eau est précieuse : on la porte, on la partage et on ne la gaspille pas.` },
+    questions: [
+      { petit: { question: `Pourquoi couvre-t-on l'eau ?`, choix: [`Pour la garder propre`, `Pour la cacher`], bonne: 0, ok: `Oui ! On la garde propre et fraîche.`, ko: `Pas tout à fait : on la garde propre.` },
+        grand: { question: `Pourquoi couvre-t-on les jarres d'eau ?`, choix: [`Pour garder l'eau propre et fraîche`, `Pour la cacher`, `Pour qu'elle chante`], bonne: 0, ok: `Oui ! Un couvercle garde la poussière dehors et l'eau plus fraîche.`, ko: `Pas tout à fait : on la couvre pour la garder propre et fraîche.` } },
+      { petit: { question: `L'eau, dans le désert, c'est…`, choix: [`Précieux`, `Inutile`], bonne: 0, ok: `Oui ! L'eau est précieuse.`, ko: `Pas tout à fait : l'eau est précieuse.` },
+        grand: { question: `Que fait-on de l'eau qu'on ne boit pas tout de suite ?`, choix: [`On la garde dans une jarre`, `On la jette au sable`, `On la verse par terre`], bonne: 0, ok: `Oui ! L'eau est précieuse : on la garde pour plus tard.`, ko: `Pas tout à fait : on ne gaspille jamais l'eau. On la garde dans une jarre.` } },
+      { petit: { question: `Pour porter l'eau, on équilibre avec…`, choix: [`Deux outres`, `Une pierre`], bonne: 0, ok: `Oui ! Deux outres, une de chaque côté.`, ko: `Pas tout à fait : deux outres, une de chaque côté.` },
+        grand: { question: `Comment porte-t-on beaucoup d'eau sans se fatiguer ?`, choix: [`Avec deux outres, une de chaque côté`, `Avec une seule grosse jarre sur la tête`, `En courant très vite`], bonne: 0, ok: `Oui ! Deux charges égales de chaque côté gardent l'équilibre.`, ko: `Pas tout à fait : il faut deux charges égales, une de chaque côté, pour garder l'équilibre.` } }
     ] }
 };
 

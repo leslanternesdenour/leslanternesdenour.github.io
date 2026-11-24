@@ -1,7 +1,7 @@
 {
  "jeu": "route-voix",
  "base": "/audio",
- "total": 303,
+ "total": 346,
  "phrases": [
   {
    "id": "NOUR-VOIX-RTE-924aa3cd",
@@ -2372,6 +2372,436 @@
    "duree": 6.72,
    "prononciationVerifiee": false,
    "voixId": "lM87a4ey2IQxE37nDvti"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-85e835c6",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Je suis tisserande. Veux-tu apprendre à tisser ?",
+   "fichier": "fr/route/nour-voix-rte-85e835c6.mp3",
+   "duree": 2.96,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-1a2a7fc6",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Bravo, tu sais comment on tisse !",
+   "fichier": "fr/route/nour-voix-rte-1a2a7fc6.mp3",
+   "duree": 2.56,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-af99737c",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Je suis tisserande : je transforme la laine en tissu. Veux-tu apprendre mon métier ? Réponds à mes trois questions, sans te presser.",
+   "fichier": "fr/route/nour-voix-rte-af99737c.mp3",
+   "duree": 8.24,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-1f9d6bd7",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Bravo, tu connais maintenant le métier de tisserande. Avec de la patience, des fils deviennent un beau tissu.",
+   "fichier": "fr/route/nour-voix-rte-1f9d6bd7.mp3",
+   "duree": 7.12,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-c8b46ea1",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "D'où vient la laine ?",
+   "fichier": "fr/route/nour-voix-rte-c8b46ea1.mp3",
+   "duree": 1.28,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-c9fca8e6",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Oui ! La laine vient du mouton.",
+   "fichier": "fr/route/nour-voix-rte-c9fca8e6.mp3",
+   "duree": 2.48,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-8772bb7d",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Pas tout à fait : la laine vient du mouton.",
+   "fichier": "fr/route/nour-voix-rte-8772bb7d.mp3",
+   "duree": 3.04,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-8e35abef",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Avant de tisser, on fait des quoi ?",
+   "fichier": "fr/route/nour-voix-rte-8e35abef.mp3",
+   "duree": 2.24,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-4a84fa3b",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Oui ! On file la laine pour faire des fils.",
+   "fichier": "fr/route/nour-voix-rte-4a84fa3b.mp3",
+   "duree": 3.04,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-66406590",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Pas tout à fait : on fait d'abord des fils.",
+   "fichier": "fr/route/nour-voix-rte-66406590.mp3",
+   "duree": 2.88,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-b2054bef",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "La nuit, que fait la laine ?",
+   "fichier": "fr/route/nour-voix-rte-b2054bef.mp3",
+   "duree": 2.08,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-01de6c0a",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Oui ! La laine garde chaud la nuit.",
+   "fichier": "fr/route/nour-voix-rte-01de6c0a.mp3",
+   "duree": 2.56,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-ed5923d0",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Pas tout à fait : la laine garde chaud.",
+   "fichier": "fr/route/nour-voix-rte-ed5923d0.mp3",
+   "duree": 2.72,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-1b598c5f",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Oui ! On coupe la laine du mouton, puis on la lave et on la file.",
+   "fichier": "fr/route/nour-voix-rte-1b598c5f.mp3",
+   "duree": 4.48,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-7499fc09",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Pas tout à fait : un nuage ou une pierre n'ont pas de laine. La laine vient du mouton.",
+   "fichier": "fr/route/nour-voix-rte-7499fc09.mp3",
+   "duree": 5.68,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-ac658af3",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Que fait-on avant de tisser ?",
+   "fichier": "fr/route/nour-voix-rte-ac658af3.mp3",
+   "duree": 1.76,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-6cf175ec",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Oui ! En filant la laine, on tord les poils en un fil solide.",
+   "fichier": "fr/route/nour-voix-rte-6cf175ec.mp3",
+   "duree": 4.24,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-2f6f0757",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Pas tout à fait : on ne mange pas la laine ! On la file d'abord pour faire des fils.",
+   "fichier": "fr/route/nour-voix-rte-2f6f0757.mp3",
+   "duree": 5.12,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-3b3e506d",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Pourquoi un manteau de laine est-il utile dans le désert ?",
+   "fichier": "fr/route/nour-voix-rte-3b3e506d.mp3",
+   "duree": 3.28,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-64ffe41f",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Oui ! La nuit, le désert est froid : la laine garde la chaleur.",
+   "fichier": "fr/route/nour-voix-rte-64ffe41f.mp3",
+   "duree": 4.88,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-d1a4c550",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Pas tout à fait : la laine ne brille pas. Elle protège du froid de la nuit.",
+   "fichier": "fr/route/nour-voix-rte-d1a4c550.mp3",
+   "duree": 4.64,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-934fc0f7",
+   "role": "perso-samir",
+   "langue": "fr",
+   "texte": "Je porte l'eau dans la cité. Veux-tu apprendre mon métier ?",
+   "fichier": "fr/route/nour-voix-rte-934fc0f7.mp3",
+   "duree": 3.44,
+   "prononciationVerifiee": false,
+   "voixId": "4sifSi2zIrBX7VkoWfjD"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-3bd2b8f8",
+   "role": "perso-samir",
+   "langue": "fr",
+   "texte": "Bravo, tu sais bien porter l'eau !",
+   "fichier": "fr/route/nour-voix-rte-3bd2b8f8.mp3",
+   "duree": 2.32,
+   "prononciationVerifiee": false,
+   "voixId": "4sifSi2zIrBX7VkoWfjD"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-cf8739ab",
+   "role": "perso-samir",
+   "langue": "fr",
+   "texte": "Je suis porteur d'eau : je rapporte l'eau du puits à toutes les maisons. Veux-tu apprendre mon métier ? Réponds à mes trois questions.",
+   "fichier": "fr/route/nour-voix-rte-cf8739ab.mp3",
+   "duree": 7.36,
+   "prononciationVerifiee": false,
+   "voixId": "4sifSi2zIrBX7VkoWfjD"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-75cb205a",
+   "role": "perso-samir",
+   "langue": "fr",
+   "texte": "Bravo, tu connais le métier de porteur d'eau. L'eau est précieuse : on la porte, on la partage et on ne la gaspille pas.",
+   "fichier": "fr/route/nour-voix-rte-75cb205a.mp3",
+   "duree": 7.76,
+   "prononciationVerifiee": false,
+   "voixId": "4sifSi2zIrBX7VkoWfjD"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-bed564fe",
+   "role": "perso-samir",
+   "langue": "fr",
+   "texte": "Pourquoi couvre-t-on l'eau ?",
+   "fichier": "fr/route/nour-voix-rte-bed564fe.mp3",
+   "duree": 1.52,
+   "prononciationVerifiee": false,
+   "voixId": "4sifSi2zIrBX7VkoWfjD"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-2a9a95f1",
+   "role": "perso-samir",
+   "langue": "fr",
+   "texte": "Oui ! On la garde propre et fraîche.",
+   "fichier": "fr/route/nour-voix-rte-2a9a95f1.mp3",
+   "duree": 2.72,
+   "prononciationVerifiee": false,
+   "voixId": "4sifSi2zIrBX7VkoWfjD"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-82a1210d",
+   "role": "perso-samir",
+   "langue": "fr",
+   "texte": "Pas tout à fait : on la garde propre.",
+   "fichier": "fr/route/nour-voix-rte-82a1210d.mp3",
+   "duree": 2.56,
+   "prononciationVerifiee": false,
+   "voixId": "4sifSi2zIrBX7VkoWfjD"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-d9ee0534",
+   "role": "perso-samir",
+   "langue": "fr",
+   "texte": "L'eau, dans le désert, c'est…",
+   "fichier": "fr/route/nour-voix-rte-d9ee0534.mp3",
+   "duree": 2.56,
+   "prononciationVerifiee": false,
+   "voixId": "4sifSi2zIrBX7VkoWfjD"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-6983122f",
+   "role": "perso-samir",
+   "langue": "fr",
+   "texte": "Oui ! L'eau est précieuse.",
+   "fichier": "fr/route/nour-voix-rte-6983122f.mp3",
+   "duree": 2.48,
+   "prononciationVerifiee": false,
+   "voixId": "4sifSi2zIrBX7VkoWfjD"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-3428244c",
+   "role": "perso-samir",
+   "langue": "fr",
+   "texte": "Pas tout à fait : l'eau est précieuse.",
+   "fichier": "fr/route/nour-voix-rte-3428244c.mp3",
+   "duree": 2.96,
+   "prononciationVerifiee": false,
+   "voixId": "4sifSi2zIrBX7VkoWfjD"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-3933b4f6",
+   "role": "perso-samir",
+   "langue": "fr",
+   "texte": "Pour porter l'eau, on équilibre avec…",
+   "fichier": "fr/route/nour-voix-rte-3933b4f6.mp3",
+   "duree": 2.64,
+   "prononciationVerifiee": false,
+   "voixId": "4sifSi2zIrBX7VkoWfjD"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-b4b725d5",
+   "role": "perso-samir",
+   "langue": "fr",
+   "texte": "Oui ! Deux outres, une de chaque côté.",
+   "fichier": "fr/route/nour-voix-rte-b4b725d5.mp3",
+   "duree": 2.8,
+   "prononciationVerifiee": false,
+   "voixId": "4sifSi2zIrBX7VkoWfjD"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-77a420dc",
+   "role": "perso-samir",
+   "langue": "fr",
+   "texte": "Pas tout à fait : deux outres, une de chaque côté.",
+   "fichier": "fr/route/nour-voix-rte-77a420dc.mp3",
+   "duree": 3.52,
+   "prononciationVerifiee": false,
+   "voixId": "4sifSi2zIrBX7VkoWfjD"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-f8b244f7",
+   "role": "perso-samir",
+   "langue": "fr",
+   "texte": "Pourquoi couvre-t-on les jarres d'eau ?",
+   "fichier": "fr/route/nour-voix-rte-f8b244f7.mp3",
+   "duree": 2.08,
+   "prononciationVerifiee": false,
+   "voixId": "4sifSi2zIrBX7VkoWfjD"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-83a7ceb9",
+   "role": "perso-samir",
+   "langue": "fr",
+   "texte": "Oui ! Un couvercle garde la poussière dehors et l'eau plus fraîche.",
+   "fichier": "fr/route/nour-voix-rte-83a7ceb9.mp3",
+   "duree": 4.16,
+   "prononciationVerifiee": false,
+   "voixId": "4sifSi2zIrBX7VkoWfjD"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-a062d2ff",
+   "role": "perso-samir",
+   "langue": "fr",
+   "texte": "Pas tout à fait : on la couvre pour la garder propre et fraîche.",
+   "fichier": "fr/route/nour-voix-rte-a062d2ff.mp3",
+   "duree": 4,
+   "prononciationVerifiee": false,
+   "voixId": "4sifSi2zIrBX7VkoWfjD"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-b168ea55",
+   "role": "perso-samir",
+   "langue": "fr",
+   "texte": "Que fait-on de l'eau qu'on ne boit pas tout de suite ?",
+   "fichier": "fr/route/nour-voix-rte-b168ea55.mp3",
+   "duree": 2.48,
+   "prononciationVerifiee": false,
+   "voixId": "4sifSi2zIrBX7VkoWfjD"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-0e18489f",
+   "role": "perso-samir",
+   "langue": "fr",
+   "texte": "Oui ! L'eau est précieuse : on la garde pour plus tard.",
+   "fichier": "fr/route/nour-voix-rte-0e18489f.mp3",
+   "duree": 3.76,
+   "prononciationVerifiee": false,
+   "voixId": "4sifSi2zIrBX7VkoWfjD"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-bdd3aea1",
+   "role": "perso-samir",
+   "langue": "fr",
+   "texte": "Pas tout à fait : on ne gaspille jamais l'eau. On la garde dans une jarre.",
+   "fichier": "fr/route/nour-voix-rte-bdd3aea1.mp3",
+   "duree": 4.64,
+   "prononciationVerifiee": false,
+   "voixId": "4sifSi2zIrBX7VkoWfjD"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-3f664379",
+   "role": "perso-samir",
+   "langue": "fr",
+   "texte": "Comment porte-t-on beaucoup d'eau sans se fatiguer ?",
+   "fichier": "fr/route/nour-voix-rte-3f664379.mp3",
+   "duree": 2.88,
+   "prononciationVerifiee": false,
+   "voixId": "4sifSi2zIrBX7VkoWfjD"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-0e9be07b",
+   "role": "perso-samir",
+   "langue": "fr",
+   "texte": "Oui ! Deux charges égales de chaque côté gardent l'équilibre.",
+   "fichier": "fr/route/nour-voix-rte-0e9be07b.mp3",
+   "duree": 3.76,
+   "prononciationVerifiee": false,
+   "voixId": "4sifSi2zIrBX7VkoWfjD"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-dfacc98f",
+   "role": "perso-samir",
+   "langue": "fr",
+   "texte": "Pas tout à fait : il faut deux charges égales, une de chaque côté, pour garder l'équilibre.",
+   "fichier": "fr/route/nour-voix-rte-dfacc98f.mp3",
+   "duree": 5.28,
+   "prononciationVerifiee": false,
+   "voixId": "4sifSi2zIrBX7VkoWfjD"
   },
   {
    "id": "NOUR-VOIX-RTE-b00d68c6",
