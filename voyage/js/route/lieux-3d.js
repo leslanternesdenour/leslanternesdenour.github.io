@@ -132,6 +132,25 @@ export function creerLieux3D({ scene, hauteur, colliders, ombres, TX }) {
   { const p = pos('oasis'), g = [];
     for (let k = 0; k < 5; k++) g.push(piece(B(), '#8a6440', { p: [0, 0.2, k * 1.0 + 1], s: [1.5, 0.1, 0.95], m: M.bois }));
     monter(fusion(g), mat, p.x, p.z); lieux.oasis = { x: p.x, z: p.z }; }
+  // ---- les découvertes de la nature (plaines, dunes, oasis) : de petits modèles à observer, un par site ----
+  const alea = k => { const x = Math.sin(k * 12.9898 + 4.1414) * 43758.5453; return x - Math.floor(x); };    // petit hasard déterministe : toujours les mêmes fleurs, toujours les mêmes fissures
+  const NATURE = {
+    'fourmiliere': () => [piece(DOD(0.9), '#b8946a', { p: [0, 0.35, 0], s: [1.5, 0.7, 1.5], m: M.terre }), piece(DOD(0.5), '#a8845a', { p: [1.6, 0.2, 0.6], s: [1.4, 0.7, 1.4], m: M.terre }),
+      ...Array.from({ length: 12 }, (_, k) => piece(B(), '#2a1e16', { p: [0.9 + k * 0.28, 0.04, -0.2 - k * 0.14 + Math.sin(k) * 0.12], s: [0.09, 0.05, 0.12] }))],
+    'fleurs-pluie': () => Array.from({ length: 26 }, (_, k) => { const a = alea(k) * 6.28, r = 0.6 + alea(k + 40) * 4.4, x = Math.cos(a) * r, z = Math.sin(a) * r, c = ['#f2c14e', '#e8738a', '#f4f0e6', '#9b6bd1'][k % 4];
+      return [piece(B(), '#6f9a4a', { p: [x, 0.17, z], s: [0.04, 0.34, 0.04] }), piece(SPH(0.13, 6, 5), c, { p: [x, 0.38, z] })]; }).flat(),
+    'nid-tisserins': () => [piece(CYL(0.2, 0.3, 3.2, 7), '#6e4e34', { p: [0, 1.6, 0], m: M.bois }), piece(SPH(2.3, 9, 5), '#7a8a4a', { p: [0, 3.5, 0], s: [1, 0.35, 1] }),
+      ...[[-1.3, 0.3], [1.2, -0.4], [0.2, 1.4], [-0.4, -1.3]].flatMap(([x, z], k) => [piece(SPH(0.46, 8, 6), '#c9a96a', { p: [x, 2.8 - (k % 2) * 0.15, z], s: [1, 1.15, 1] }), piece(SPH(0.11, 5, 4), '#3a2a20', { p: [x, 2.65 - (k % 2) * 0.15, z + 0.4] })])],
+    'dune-vent': () => [...Array.from({ length: 9 }, (_, k) => piece(B(), k % 2 ? '#e0b46e' : '#d4a458', { p: [0, 0.05 + k * 0.015, -2.4 + k * 0.6], s: [6 - k * 0.2, 0.12, 0.34], r: [0, Math.sin(k) * 0.08, 0] })), piece(DOD(0.45), '#a08566', { p: [2.4, 0.3, 0.8], m: M.pierre })],
+    'lit-sec': () => Array.from({ length: 16 }, (_, k) => { const i = k % 4, j = Math.floor(k / 4); return piece(B(), k % 3 ? '#cdb990' : '#c2ad82', { p: [(i - 1.5) * 1.8, 0.05 + alea(k) * 0.05, (j - 1.5) * 1.6], s: [1.55 + alea(k + 9) * 0.2, 0.1, 1.35 + alea(k + 19) * 0.2], r: [0, alea(k + 29) * 0.3, 0] }); }),
+    'rocher-vent': () => [piece(DOD(1.2), '#a08566', { p: [-1.7, 1.2, 0], s: [0.9, 2, 0.9], m: M.pierre }), piece(DOD(1.2), '#9a8062', { p: [1.7, 1.2, 0], s: [0.9, 1.8, 0.9], m: M.pierre }), piece(DOD(1.4), '#b09672', { p: [0, 3.0, 0], s: [2.3, 0.55, 0.9], m: M.pierre }), piece(DOD(0.6), '#8f7a5e', { p: [2.9, 0.4, 1.1], m: M.pierre })],
+    'roseaux': () => Array.from({ length: 22 }, (_, k) => { const x = (alea(k) - 0.5) * 4.5, z = (alea(k + 50) - 0.5) * 2.2, h = 1.6 + alea(k + 70) * 1.2;
+      return [piece(CYL(0.03, 0.05, h, 5), k % 3 ? '#8fa650' : '#b3b25a', { p: [x, h / 2, z], r: [0.05 * (k % 3 - 1), 0, 0.06 * (k % 5 - 2)] }), piece(CYL(0.01, 0.07, 0.35, 5), '#8a6a3a', { p: [x, h + 0.1, z] })]; }).flat(),
+    'canal-jardin': () => [piece(B(), '#8a7456', { p: [0, 0.1, 0], s: [7, 0.2, 0.9], m: M.terre }), piece(B(), '#5fb6cf', { p: [0, 0.18, 0], s: [6.8, 0.06, 0.5] }), piece(B(), '#6e4e34', { p: [1.4, 0.55, 0], s: [0.12, 0.9, 1.0], m: M.bois }), piece(B(), '#8a6440', { p: [1.4, 1.05, 0], s: [0.3, 0.12, 1.1], m: M.bois }),
+      ...[-2.4, 0.2, 2.6].map(x => piece(SPH(0.55, 7, 5), '#6f9a4a', { p: [x, 0.45, 1.3], s: [1, 0.8, 1] })), ...[-1.8, 1.2].map(x => piece(SPH(0.5, 7, 5), '#7fa65a', { p: [x, 0.4, -1.3], s: [1, 0.8, 1] }))]
+  };
+  for (const id of Object.keys(NATURE)) { const p = pos(id); monter(fusion(NATURE[id]()), mat, p.x, p.z, { rot: id.length * 0.7 }); lieux[id] = { x: p.x + 2.6, z: p.z - 2.6 }; gemme(id, p.x, p.z, 2.8); }
+
   // ---- la palmeraie : un banc de pierre à l'ombre ----
   { const p = pos('palmeraie'), g = [piece(B(), '#b09672', { p: [0, 0.3, 0], s: [2.4, 0.3, 0.8], m: M.pierre }), piece(B(), '#a08566', { p: [-0.9, 0.12, 0], s: [0.3, 0.24, 0.7] }), piece(B(), '#a08566', { p: [0.9, 0.12, 0], s: [0.3, 0.24, 0.7] })];
     monter(fusion(g), mat, p.x, p.z, { rot: 0.4 }); lieux.palmeraie = { x: p.x, z: p.z - 1.8 }; }

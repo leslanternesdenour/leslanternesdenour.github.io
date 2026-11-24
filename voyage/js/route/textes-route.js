@@ -2,6 +2,14 @@
 // « petit » : phrase courte pour les 3–5 ans. « grand » : un peu plus de détails pour les 6–10 ans. Les lieux sont imaginaires.
 // Les contenus historiques et religieux sont ailleurs (contenu-a-valider.js).
 export const TEXTES_LIEUX = {
+  fourmiliere: { petit: `Des fourmis portent des graines jusqu'à leur nid.`, grand: `Des fourmis du désert transportent des graines jusqu'à leur nid sous le sable. Chacune a sa tâche : elles s'entraident, comme une petite caravane.` },
+  'fleurs-pluie': { petit: `Quand il pleut, le désert se couvre de fleurs !`, grand: `Après une rare pluie, les graines endormies se réveillent et le désert se couvre de fleurs en quelques jours. Elles vivent peu de temps, puis laissent des graines pour la prochaine pluie.` },
+  'nid-tisserins': { petit: `Les tisserins font des nids ronds avec de l'herbe.`, grand: `Les oiseaux tisserins tissent des nids ronds avec de l'herbe, accrochés aux branches d'un acacia. Ils les construisent ensemble, comme un petit village.` },
+  'dune-vent': { petit: `Le vent dessine des vagues sur le sable.`, grand: `Le vent déplace le sable grain par grain et dessine des vagues sur la crête. Une dune avance doucement, de quelques mètres chaque année.` },
+  'lit-sec': { petit: `Ici, l'eau est passée : la terre est toute craquelée.`, grand: `Ici, de l'eau a coulé après de rares pluies. En séchant, la boue s'est fendue en grandes plaques : on appelle cela une terre craquelée.` },
+  'rocher-vent': { petit: `Le vent et le sable ont creusé ce rocher.`, grand: `Pendant des milliers d'années, le vent chargé de sable a poli ce rocher et creusé des formes étranges. C'est le plus lent des sculpteurs.` },
+  roseaux: { petit: `Les roseaux aiment avoir les pieds dans l'eau.`, grand: `Au bord de l'eau poussent des roseaux. On en fait des paniers, des nattes et des toits. Leurs racines tiennent la rive.` },
+  'canal-jardin': { petit: `Un petit canal amène l'eau jusqu'aux jardins.`, grand: `Un petit canal creusé dans la terre conduit l'eau de la source jusqu'aux jardins et aux palmiers. Chacun ouvre et ferme la vanne à son tour, pour partager.` },
   seuil: { petit: 'Voici le début de la grande route. Bon voyage !', grand: 'Ici commence la grande route. Elle est très longue : prends ton temps, regarde autour de toi et repose-toi quand tu veux.' },
   balise1: { petit: 'Une vieille balise de pierre ! Une de trouvée.', grand: 'Une vieille balise de pierre. Les voyageurs les posaient pour ne pas se perdre quand le vent effaçait la piste.' },
   balise2: { petit: 'Une deuxième balise ! Bravo.', grand: 'Une deuxième balise. Elle est alignée avec la première : la piste passe juste entre les deux.' },

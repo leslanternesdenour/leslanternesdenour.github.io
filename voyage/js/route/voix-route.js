@@ -32,6 +32,16 @@ export const PHRASES_ROUTE = [
   "exact"
  ],
  [
+  "NOUR-VOIX-RTE-1f1e781a",
+  "Des fourmis portent des graines jusqu'à leur nid.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-2cbb55fe",
+  "Des fourmis du désert transportent des graines jusqu'à leur nid sous le sable. Chacune a sa tâche : elles s'entraident, comme une petite caravane.",
+  "exact"
+ ],
+ [
   "NOUR-VOIX-RTE-49d5f4a2",
   "Une deuxième balise ! Bravo.",
   "exact"
@@ -49,6 +59,16 @@ export const PHRASES_ROUTE = [
  [
   "NOUR-VOIX-RTE-87d8b1f8",
   "Un bon endroit pour se reposer à l'ombre. Ton voyage est sauvegardé : tu pourras reprendre ici.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-7f8fb9f8",
+  "Quand il pleut, le désert se couvre de fleurs !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-8bf3d4f7",
+  "Après une rare pluie, les graines endormies se réveillent et le désert se couvre de fleurs en quelques jours. Elles vivent peu de temps, puis laissent des graines pour la prochaine pluie.",
   "exact"
  ],
  [
@@ -82,6 +102,16 @@ export const PHRASES_ROUTE = [
   "exact"
  ],
  [
+  "NOUR-VOIX-RTE-27cec4a7",
+  "Les tisserins font des nids ronds avec de l'herbe.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-bf81c96a",
+  "Les oiseaux tisserins tissent des nids ronds avec de l'herbe, accrochés aux branches d'un acacia. Ils les construisent ensemble, comme un petit village.",
+  "exact"
+ ],
+ [
   "NOUR-VOIX-RTE-21d3f3b6",
   "Un campement de voyageurs !",
   "exact"
@@ -112,6 +142,16 @@ export const PHRASES_ROUTE = [
   "exact"
  ],
  [
+  "NOUR-VOIX-RTE-1f6129a3",
+  "Le vent dessine des vagues sur le sable.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-151cb333",
+  "Le vent déplace le sable grain par grain et dessine des vagues sur la crête. Une dune avance doucement, de quelques mètres chaque année.",
+  "exact"
+ ],
+ [
   "NOUR-VOIX-RTE-fbdb4d9d",
   "Regarde les belles dunes !",
   "exact"
@@ -129,6 +169,26 @@ export const PHRASES_ROUTE = [
  [
   "NOUR-VOIX-RTE-42bb2382",
   "Ces empreintes alignées viennent d'un renard des sables. Il a de grandes oreilles et des poils sous les pattes pour marcher sur le sable chaud.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-0285166c",
+  "Ici, l'eau est passée : la terre est toute craquelée.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-b2fd36e6",
+  "Ici, de l'eau a coulé après de rares pluies. En séchant, la boue s'est fendue en grandes plaques : on appelle cela une terre craquelée.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-1cf2a394",
+  "Le vent et le sable ont creusé ce rocher.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-bacdccda",
+  "Pendant des milliers d'années, le vent chargé de sable a poli ce rocher et creusé des formes étranges. C'est le plus lent des sculpteurs.",
   "exact"
  ],
  [
@@ -159,6 +219,26 @@ export const PHRASES_ROUTE = [
  [
   "NOUR-VOIX-RTE-8de3f7d9",
   "L'oasis de la Source Claire (un lieu imaginaire). Dans une oasis, l'eau est proche de la surface : les palmiers et les plantes peuvent pousser au milieu du désert.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-846679bc",
+  "Les roseaux aiment avoir les pieds dans l'eau.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-b6f87e6a",
+  "Au bord de l'eau poussent des roseaux. On en fait des paniers, des nattes et des toits. Leurs racines tiennent la rive.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-650868a5",
+  "Un petit canal amène l'eau jusqu'aux jardins.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-a45b0018",
+  "Un petit canal creusé dans la terre conduit l'eau de la source jusqu'aux jardins et aux palmiers. Chacun ouvre et ferme la vanne à son tour, pour partager.",
   "exact"
  ],
  [
@@ -1774,6 +1854,21 @@ export const PHRASES_ROUTE = [
  [
   "NOUR-VOIX-RTE-e436bc44",
   "Dans la cité, chaque maison a ses habitants. Frappe à quatre portes différentes, poliment, pour savoir qui vit là et ce qu'ils font.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-36fc74e8",
+  "Le carnet de la nature",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-7eb1dab0",
+  "Regarde bien : huit petites merveilles de la nature t'attendent.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-5076fcff",
+  "Sur la grande route, la nature cache de petites merveilles : des fourmis, des fleurs, des oiseaux, le vent, l'eau. Trouve et observe huit d'entre elles, sans te presser.",
   "exact"
  ],
  [
