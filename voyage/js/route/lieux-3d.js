@@ -6,6 +6,7 @@ import { Enfant, Chameau } from '../personnages.js?v=4';
 import { DEC, OASIS, CAMP, MONTAGNE_NORD, MONTAGNE_SUD } from './relief.js';
 import { LIEUX_SACRES } from './lieux-mecque-a-valider.js';
 import { LIEUX_ROUTE, positionDeLieu } from './donnees.js';
+import { ATELIER, planAtelier } from './atelier-plan.js';
 
 const B = () => new THREE.BoxGeometry(1, 1, 1), DOD = r => new THREE.DodecahedronGeometry(r, 0), CYL = (a, b, h, s = 8) => new THREE.CylinderGeometry(a, b, h, s);
 const SPH = (r, w = 8, h = 6) => new THREE.SphereGeometry(r, w, h);
@@ -13,7 +14,7 @@ const SPH = (r, w = 8, h = 6) => new THREE.SphereGeometry(r, w, h);
 export function creerLieux3D({ scene, hauteur, colliders, ombres, TX }) {
   const mat = materiau({ finesse: 1.4 }), matVent = materiau({ balance: 1.5 });
   const groupe = new THREE.Group(); groupe.name = 'route-lieux'; scene.add(groupe);
-  const lieux = {}, meshes = {};
+  const lieux = {}, meshes = {}; let planAt = null, toitAt = null, mursAt = null;   // planAt : le plan de l'atelier (murs, tour, four)
   const pos = id => { const l = LIEUX_ROUTE.find(o => o.id === id), { s, t } = positionDeLieu(l); return { x: t, z: DEC + s }; };
   const monter = (geo, m, x, z, { dy = 0, rot = 0 } = {}) => { const o = new THREE.Mesh(geo, m); o.position.set(x, hauteur(x, z) + dy, z); o.rotation.y = rot; o.castShadow = ombres; o.receiveShadow = ombres; groupe.add(o); return o; };
   const bloquer = (x, z, r) => colliders.push({ x, z, r });
@@ -172,9 +173,22 @@ export function creerLieux3D({ scene, hauteur, colliders, ombres, TX }) {
     for (const sg of [-1, 1]) g.push(piece(B(), '#9a8e7c', { p: [sg * 3.4, 2.2, 0], s: [1.5, 4.4, 1.5], m: M.pierre }), piece(B(), '#847868', { p: [sg * 3.4, 4.6, 0], s: [1.9, 0.4, 1.9], m: M.pierre }));
     g.push(piece(B(), '#6e4e34', { p: [0, 4.4, 0], s: [8, 0.5, 0.7], m: M.bois }));
     monter(fusion(g), mat, p.x, p.z); bloquer(p.x - 3.4, p.z, 1.1); bloquer(p.x + 3.4, p.z, 1.1); lieux['cite-porte'] = { x: p.x, z: p.z + 4 }; }
-  { const p = pos('cite-atelier'), g = [piece(B(), '#c4a77d', { p: [0, 1.2, 0], s: [4.4, 2.4, 3.4], m: M.terre }), piece(B(), '#6e4e34', { p: [0, 2.5, 1.9], s: [4.8, 0.1, 1.6], r: [0.25, 0, 0], m: M.bois }), piece(SPH(1.3, 10, 6), '#a8906e', { p: [3.6, 0.4, 0], s: [1, 0.8, 1] })];
-    for (let k = 0; k < 6; k++) g.push(piece(CYL(0.22, 0.3, 0.6, 8), k % 2 ? '#b0643c' : '#a35a34', { p: [-2.6 + (k % 3) * 0.7, 0.3, 2.4 + Math.floor(k / 3) * 0.7], m: M.terre }), piece(SPH(0.3, 8, 6), '#b0643c', { p: [-2.6 + (k % 3) * 0.7, 0.75, 2.4 + Math.floor(k / 3) * 0.7], m: M.terre }));
-    monter(fusion(g), mat, p.x, p.z, { rot: -0.4 }); bloquer(p.x, p.z, 2.8); lieux['cite-atelier'] = { x: p.x - 1.5, z: p.z + 4.8 }; }
+  // ---- l'atelier du potier : un vrai bâtiment ouvert sur l'avant (on y entre) : murs de terre, toit de bois, tour de potier, four, étagère de jarres ----
+  { const p = pos('cite-atelier'), A = ATELIER, g = [
+      piece(B(), '#8a7456', { p: [0, 0.03, 0], s: [6.2, 0.06, 5.2], m: M.terre }),                                                                   // le sol battu
+      piece(B(), '#c4a77d', { p: [0, 0.25, A.fond.z], s: [7.2, 0.5, 0.5], m: M.terre }),                                                             // le muret du fond (le haut du mur s'efface quand on est dedans)
+      ...[-1, 1].flatMap(sg => [piece(B(), '#c4a77d', { p: [sg * A.cotes.x, 0.25, -0.35], s: [0.5, 0.5, 4.5], m: M.terre }), piece(B(), '#6e4e34', { p: [sg * A.poteaux.x, 1.3, A.poteaux.z], s: [0.4, 2.6, 0.4], m: M.bois })]),
+      piece(B(), '#6e4e34', { p: [0, 1.0, A.fond.z + 0.4], s: [5.0, 0.12, 0.6], m: M.bois }),                                                       // l'étagère du fond
+      piece(CYL(0.25, 0.32, 0.55, 8), '#7a5a3a', { p: [A.tour.x, 0.28, A.tour.z], m: M.bois }), piece(CYL(0.55, 0.55, 0.08, 14), '#8a6440', { p: [A.tour.x, 0.6, A.tour.z], m: M.bois }), piece(SPH(0.3, 8, 6), '#a8734e', { p: [A.tour.x, 0.82, A.tour.z], s: [1, 0.8, 1], m: M.terre }),   // le tour de potier et sa motte d'argile
+      piece(SPH(1.1, 12, 8), '#a8906e', { p: [A.four.x, 0.5, A.four.z], s: [1, 0.85, 1], m: M.terre }), piece(B(), '#2a1e16', { p: [A.four.x, 0.5, A.four.z + 0.95], s: [0.7, 0.6, 0.2], m: M.terre }), piece(CYL(0.22, 0.28, 0.7, 8), '#8f7a5e', { p: [A.four.x, 1.6, A.four.z], m: M.terre })   // le four à argile
+    ];
+    for (let k = 0; k < 7; k++) g.push(piece(CYL(0.2, 0.27, 0.5, 8), k % 2 ? '#b0643c' : '#a35a34', { p: [-2.7 + k * 0.9, 1.31, A.fond.z + 0.4], m: M.terre }));            // des jarres sur l'étagère
+    for (let k = 0; k < 3; k++) g.push(piece(CYL(0.28, 0.36, 0.7, 8), '#a35a34', { p: [-2.6, 0.38, -1.8 + k * 0.8], m: M.terre }), piece(SPH(0.33, 8, 6), '#b0643c', { p: [-2.6, 0.85, -1.8 + k * 0.8], m: M.terre }));   // de grandes jarres contre le mur
+    for (let k = 0; k < 6; k++) g.push(piece(CYL(0.22, 0.3, 0.6, 8), k % 2 ? '#b0643c' : '#a35a34', { p: [-2.6 + (k % 3) * 0.7, 0.3, 4.2 + Math.floor(k / 3) * 0.7], m: M.terre }), piece(SPH(0.3, 8, 6), '#b0643c', { p: [-2.6 + (k % 3) * 0.7, 0.75, 4.2 + Math.floor(k / 3) * 0.7], m: M.terre }));   // les jarres à sécher devant l'entrée
+    monter(fusion(g), mat, p.x, p.z, { rot: -0.4 });
+    mursAt = monter(fusion([piece(B(), '#c4a77d', { p: [0, 1.55, A.fond.z], s: [7.2, 2.1, 0.5], m: M.terre }), ...[-1, 1].map(sg => piece(B(), '#c4a77d', { p: [sg * A.cotes.x, 1.55, -0.35], s: [0.5, 2.1, 4.5], m: M.terre }))]), mat, p.x, p.z, { rot: -0.4 });   // le haut des murs
+    toitAt = monter(fusion([piece(B(), '#6e4e34', { p: [0, 2.72, 0], s: [8.0, 0.22, 6.4], m: M.bois }), piece(B(), '#5a3f2a', { p: [0, 2.5, 2.9], s: [7.4, 0.16, 0.3], m: M.bois })]), mat, p.x, p.z, { rot: -0.4 });   // le toit : il s'efface quand on est dedans, pour que la caméra voie
+    planAt = planAtelier(p.x, p.z, -0.4); for (const c of planAt.colliders) bloquer(c.x, c.z, c.r); lieux['cite-atelier'] = { x: planAt.entree.x, z: planAt.entree.z }; }
   for (const id of ['cite-colline-a', 'cite-colline-b']) { const p = pos(id), g = [piece(B(), '#a8906e', { p: [0, 0.2, 0], s: [3, 0.4, 1.2], m: M.pierre }), piece(B(), '#6b4a30', { p: [-1.8, 1.1, 0], s: [0.14, 2.2, 0.14], m: M.bois }), piece(B(), '#c9a26a', { p: [-1.8, 2.0, 0.05], s: [1.2, 0.5, 0.07], m: M.bois })];
     monter(fusion(g), mat, p.x, p.z, { rot: 0.2 }); lieux[id] = { x: p.x + 1, z: p.z + 1.4 }; }
   // le chemin entre les deux collines : trois petits cairns le long d'une bande de pierres claires (un chemin plat à parcourir tranquillement)
@@ -204,12 +218,13 @@ export function creerLieux3D({ scene, hauteur, colliders, ombres, TX }) {
     lanternes[l.id] = { x, z, allumer(k) { matL.color.set(k ? '#ffd36b' : '#8a7a52'); lampe.scale.setScalar(k ? 1.25 : 1); } };
   }
   return {
-    groupe, lieux, voyageuse, dromadaire, pos, camp, lanternes,
+    groupe, lieux, voyageuse, dromadaire, pos, camp, lanternes, atelier: planAt,
     retirerGemme(id) { const g = gemmes[id]; if (g) { groupe.remove(g); delete gemmes[id]; } },
     gemmeVisible(id, v) { if (gemmes[id]) gemmes[id].visible = v; },
     // un objet ramassé disparaît du sol, et sa pierre dorée aussi
     retirerObjet(id) { if (meshes[id]) meshes[id].visible = false; this.retirerGemme(id); },
     animer(dt, t, joueur) {
+      if (toitAt && planAt) toitAt.visible = mursAt.visible = !planAt.dedans(joueur.x, joueur.z);
       for (const k in gemmes) { const g = gemmes[k]; g.rotation.y = t * 1.6; g.position.y = g.userData.y0 + Math.sin(t * 2 + g.position.x) * 0.12; }
       if (Math.hypot(joueur.x - camp.x, joueur.z - camp.z) < 90) { voyageuse.animer(dt, 0, t); dromadaire.animer(dt, 0, t); }
       if (eauNormales) eauNormales.offset.set(t * 0.012, t * 0.007);

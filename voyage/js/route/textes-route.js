@@ -61,6 +61,11 @@ export const FAITS_MAISONS = [
   { petit: 'Une petite tour pour ranger les provisions.', grand: 'Une petite tour basse : on y rangeait les provisions, dans la fraîcheur des murs épais.' },
   { petit: 'Un enclos avec une petite cabane.', grand: 'Un enclos avec une cabane : un abri pour les animaux de la famille, à l\'ombre d\'un mur.' }
 ];
+// Dans l'atelier du potier : deux choses à observer, au tour et au four
+export const FAITS_ATELIER = {
+  tour: { nom: 'Le tour du potier', icone: '🌀', label: 'Observer le tour', petit: `Le potier fait tourner le plateau et modèle l'argile avec ses mains.`, grand: `Le tour du potier : le plateau tourne, et le potier modèle l'argile avec ses mains mouillées. Peu à peu, la motte devient une jarre bien ronde.` },
+  four: { nom: 'Le four à argile', icone: '🔥', label: 'Observer le four', petit: `Dans le four, la chaleur rend la jarre dure comme une pierre.`, grand: `Le four à argile : la grande chaleur durcit les jarres. Une fois cuites, elles ne se déforment plus et peuvent garder l'eau.` }
+};
 export const texteLieu = (id, age) => { const t = TEXTES_LIEUX[id]; return t ? (age === '3-5' ? t.petit : t.grand) : ''; };
 
 // Les personnages FICTIFS (aucun personnage historique ou religieux)

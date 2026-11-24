@@ -48,3 +48,10 @@ test('inventaire : chaque texte d\'une activité de métier (présentation, ques
     for (const t of textes) { const p = parTexte.get(normaliserTexte(t)); assert.ok(p, `${id} : sans voix : ${t.slice(0, 40)}`); assert.equal(p.role, a.voix, `${id} : mauvaise voix`); }
   }
 });
+
+test('inventaire : le tour et le four de l\'atelier sont dits par la narratrice (3–5 ans et 6–10 ans)', async () => {
+  const { inventaire, normaliserTexte } = await import('../voix/route/inventaire-route.mjs');
+  const { FAITS_ATELIER } = await import('../../voyage/js/route/textes-route.js');
+  const parTexte = new Map((await inventaire()).map(p => [normaliserTexte(p.texte), p]));
+  for (const f of Object.values(FAITS_ATELIER)) for (const t of [f.petit, f.grand]) { const p = parTexte.get(normaliserTexte(t)); assert.ok(p, 'sans voix : ' + t.slice(0, 40)); assert.equal(p.role, 'narratrice'); }
+});

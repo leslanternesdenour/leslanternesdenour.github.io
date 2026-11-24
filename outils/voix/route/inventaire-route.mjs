@@ -21,6 +21,7 @@ export async function inventaire() {
   // les voyageurs de la cité (chacun sa voix) et les maisons
   for (const v of D.VOYAGEURS_VILLE) { ajouter(ROLE_VOYAGEUR[v.id], v.texte.petit, 'voyageur:' + v.id); ajouter(ROLE_VOYAGEUR[v.id], v.texte.grand, 'voyageur:' + v.id); }
   for (const f of T.FAITS_MAISONS) { ajouter('narratrice', f.petit, 'maison'); ajouter('narratrice', f.grand, 'maison'); }
+  for (const [id, f] of Object.entries(T.FAITS_ATELIER)) { ajouter('narratrice', f.petit, 'atelier:' + id); ajouter('narratrice', f.grand, 'atelier:' + id); }   // dans l'atelier du potier : le tour et le four
   for (const [g, h] of Object.entries(D.HABITANTS_MAISONS)) { ajouter(h.voix, h.petit, 'porte:' + g); ajouter(h.voix, h.grand, 'porte:' + g); }   // les habitants derrière les portes : chacun sa voix
   // les activités des métiers : présentation, questions, explications, fin (chaque métier a sa voix)
   for (const [id, a] of Object.entries(A.ACTIVITES_METIERS)) { for (const k of ['petit', 'grand']) { ajouter(a.voix, a.intro[k], 'metier:' + id); ajouter(a.voix, a.fin[k], 'metier:' + id); }

@@ -12,7 +12,7 @@ import { preparerRoute, memoriserPosition, positionDeReprise } from './etat-rout
 import { faireEtape, progression } from './missions-route.js';
 import { DEC, versRoute, S_DEBUT, S_FIN_TRANCHE, LARGEUR, OASIS, CITE, pointChemin } from './relief.js';
 import { FACTEUR_MARCHE_ROUTE, HABITANTS_MAISONS, regionA, LIEUX_ROUTE, MISSIONS_ROUTE, SAC_ROUTE, RELAIS_VILLAGE, auSeuilVillage, versLaRoute, auRetourRoute, versLeVillage } from './donnees.js';
-import { texteLieu, GUIDE, VOYAGEUSE, MESSAGES, FAITS_MAISONS } from './textes-route.js';
+import { texteLieu, GUIDE, VOYAGEUSE, MESSAGES, FAITS_MAISONS, FAITS_ATELIER } from './textes-route.js';
 import { CONTENU, etiquette, texteDe } from './contenu-a-valider.js';
 import { pageCarnetRoute } from './carnet-route.js';
 import { creerRecitUI } from './recit-ui.js';
@@ -147,6 +147,11 @@ export function creerRoute(ctx) {
     if (d < 20 && !annonce.has(l.id) && !recitUI.ouverte()) { annonce.add(l.id); ui.indice('📜 ' + MESSAGES.lanterne, 4500); } } };
 
   // ---------- la cité vivante : des voyageurs à qui parler (mission « rencontres »), des maisons à observer ----------
+  // dans l'atelier du potier : on entre, on observe le tour et le four (une petite découverte la première fois)
+  if (L.atelier) for (const o of L.atelier.objets) { const f = FAITS_ATELIER[o.id];
+    habitants.ajouter({ id: 'route:atelier:' + o.id, x: o.poseX, z: o.poseZ, rayon: 1.9, label: f.label, icone: f.icone, ouvrir: () => {
+      ui.dialogue({ titre: f.icone + ' ' + f.nom, texte: age() === '3-5' ? f.petit : f.grand, icone: f.icone, boutons: [{ txt: 'Merci !', fn: () => {} }] });
+      if (!R.decouvertes.includes('atelier:' + o.id)) { R.decouvertes.push('atelier:' + o.id); enregistrer(); gagner('atelier:' + o.id, 10, 'Tu as observé : ' + f.nom); } } }); }
   // les métiers : le potier et le marchand t'apprennent leur métier en trois questions douces (ni chronomètre ni pénalité : on réessaie après l'explication)
   function lancerMetier(id) {
     const a = ACTIVITES_METIERS[id], g = age() === '3-5', qs = questionsMetier(id, age()), titre = a.icone + ' ' + a.titre;

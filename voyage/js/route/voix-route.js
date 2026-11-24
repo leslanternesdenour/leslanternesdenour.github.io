@@ -607,6 +607,26 @@ export const PHRASES_ROUTE = [
   "exact"
  ],
  [
+  "NOUR-VOIX-RTE-67d42997",
+  "Le potier fait tourner le plateau et modèle l'argile avec ses mains.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-730bcc38",
+  "Le tour du potier : le plateau tourne, et le potier modèle l'argile avec ses mains mouillées. Peu à peu, la motte devient une jarre bien ronde.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-ad6d3f4f",
+  "Dans le four, la chaleur rend la jarre dure comme une pierre.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-b53bba43",
+  "Le four à argile : la grande chaleur durcit les jarres. Une fois cuites, elles ne se déforment plus et peuvent garder l'eau.",
+  "exact"
+ ],
+ [
   "NOUR-VOIX-RTE-c90be256",
   "Bonjour ! Entre dans l'ombre : chez moi, il fait frais.",
   "exact"
