@@ -50,6 +50,13 @@
     b.appendChild(a); var p = b.querySelector('a'); if (p) p.focus();
   }
 
+  function ecranVerification() {
+    var b = ouvrirBoite(AccesLogique.textes.verification), a = el('div', 'actions');
+    a.appendChild(el('a', 'p', '📧 Ouvrir l\'Espace famille', base + '?retour=' + encodeURIComponent(retour) + '&verification=1#verification'));
+    a.appendChild(el('a', 'l', 'Voir la présentation du village', racine + 'decouvrir/'));
+    b.appendChild(a); var p = b.querySelector('a'); if (p) p.focus();
+  }
+
   function ecranIndisponible() {
     var b = ouvrirBoite(AccesLogique.textes.indisponible), a = el('div', 'actions');
     var r = el('button', 'p', '↻ Réessayer'); r.type = 'button'; r.onclick = function () { location.reload(); };
@@ -87,8 +94,8 @@
       .catch(function () { return null; })
       .then(function (j) {
         var ouverts = !!(j && typeof j.connecte === 'boolean');
-        var d = AccesLogique.decision({ comptesOuverts: ouverts, connecte: !!(j && j.connecte), profil: profil(), hoteLocal: AccesLogique.estHoteLocal(location.hostname) });
-        if (d === 'indisponible') ecranIndisponible(); else if (d === 'connexion') ecranConnexion(); else if (d === 'profil') ecranProfil();
+        var d = AccesLogique.decision({ comptesOuverts: ouverts, connecte: !!(j && j.connecte), emailVerifie: j && j.emailVerifie, profil: profil(), hoteLocal: AccesLogique.estHoteLocal(location.hostname) });
+        if (d === 'indisponible') ecranIndisponible(); else if (d === 'verification') ecranVerification(); else if (d === 'connexion') ecranConnexion(); else if (d === 'profil') ecranProfil();
       });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', lancer); else lancer();

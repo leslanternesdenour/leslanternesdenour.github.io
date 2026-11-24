@@ -413,3 +413,23 @@ test('Droits : le serveur ignore tout ce que le navigateur prétend (niveau, abo
   assert.equal(moi.niveau, 'gratuit'); assert.equal(moi.statut, 'gratuit'); assert.equal(moi.profilsMax, 4); assert.equal(moi.admin, false);
   assert.equal((await appel('GET', '/api/premium/voyage/camp/zone.json', { cookie: c })).s, 403, 'un contenu Premium reste fermé au compte Gratuit');
 });
+
+test('E-mail non vérifié : connexion et /api/moi autorisés, mais profils enfants et progression refusés PAR LE SERVEUR (403 email-non-verifie) ; tout s\'ouvre avec une session vérifiée', async () => {
+  const nv = await connecter('uid-nonverif', { verifie: false });
+  const moi = (await appel('GET', '/api/moi', { cookie: nv })).j; assert.equal(moi.connecte, true); assert.equal(moi.emailVerifie, false);
+  const corps = { surnom: 'Amina', tranche: '3-5', avatar: 'fille' };
+  for (const [m, ch, c] of [['GET', '/api/enfants'], ['POST', '/api/enfants', corps], ['GET', '/api/enfants/abc'], ['PUT', '/api/enfants/abc/progression', { progression: {} }], ['PATCH', '/api/enfants/abc', corps], ['DELETE', '/api/enfants/abc'], ['POST', '/api/enfants/abc/actif']]) {
+    const r = await appel(m, ch, { cookie: nv, corps: c }); assert.equal(r.s, 403, `${m} ${ch}`); assert.equal(r.j.erreur, 'email-non-verifie', `${m} ${ch}`);
+  }
+  assert.equal((await base.compter('familles/uid-nonverif/enfants')), 0, 'rien n\'a été créé');
+  const v = await connecter('uid-nonverif', { verifie: true });
+  assert.equal((await appel('POST', '/api/enfants', { cookie: v, corps })).s, 201, 'après vérification, tout s\'ouvre');
+});
+
+test('E-mail non vérifié : les contenus réservés aux comptes (stockage privé) sont refusés par le serveur ; la suppression du compte reste possible', async () => {
+  const nv = await connecter('uid-nonverif2', { verifie: false });
+  const r = await appel('GET', '/api/premium/voyage/village/zone.json', { cookie: nv }); assert.equal(r.s, 403); assert.equal(r.j.erreur, 'email-non-verifie');
+  const v = await connecter('uid-verif2', { verifie: true });
+  assert.equal((await appel('GET', '/api/premium/voyage/village/zone.json', { cookie: v })).s, 200, 'avec e-mail vérifié, le contenu gratuit réservé aux comptes s\'ouvre');
+  assert.equal((await appel('DELETE', '/api/compte', { cookie: nv })).s, 200, 'un parent non vérifié peut supprimer son compte');
+});

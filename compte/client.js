@@ -70,7 +70,7 @@ export const auth = {
   async inscrire(email, mdp) {
     if (EMULATEUR) return (await emul('inscription', { email, mdp })).idToken;
     const { a, m } = await firebase(); const c = await m.createUserWithEmailAndPassword(a, email, mdp);
-    try { await m.sendEmailVerification(c.user); } catch (e) {}
+    try { await m.sendEmailVerification(c.user); sessionStorage.setItem('ldn_verif_envoi', String(Date.now())); } catch (e) {}   // le premier envoi lance le compte à rebours du renvoi
     return c.user.getIdToken();
   },
   async connecter(email, mdp) {

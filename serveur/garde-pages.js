@@ -24,6 +24,8 @@ export async function garde(requete, env, maintenant = Date.now()) {
   let session = null;
   try { session = await lireSession(lireCookie(requete.headers.get('Cookie'), NOM_COOKIE), env.SESSION_SECRET, maintenant); } catch (e) { return { action: 'indisponible' }; }
   if (!session) return { action: 'rediriger', location: '/compte/?retour=' + encodeURIComponent(url.pathname + url.search) + '#connexion' };
+  // Adresse e-mail du parent non vérifiée : jamais de jeu (décision du 24/11/2026) ; l'Espace famille affiche l'état de vérification.
+  if (!session.emailVerifie) return { action: 'rediriger', location: '/compte/?retour=' + encodeURIComponent(url.pathname + url.search) + '&verification=1#verification' };
   return { action: 'passer', protegee: true };
 }
 

@@ -129,7 +129,7 @@ input[type=text],select{width:100%;border-radius:14px;border:2px solid #3a2a7d;b
       <button id="createur-activer">Activer l'espace Créateur</button>
     </div>
     <div id="e-verif" class="choix cache">
-      <p><b>Adresse e-mail à valider.</b> Ouvrez le lien reçu par e-mail, puis touchez « C'est fait ».</p>
+      <p><b>Adresse e-mail à valider.</b> Ouvrez le lien reçu par e-mail : cette page se met à jour toute seule. Le jeu reste fermé tant que l'adresse n'est pas vérifiée (pensez à regarder les courriers indésirables).</p>
       <div class="rangee"><button class="doux" id="verif-fait">C'est fait</button><button class="doux" id="verif-renvoyer">Renvoyer le lien</button></div>
       <button class="doux cache" id="verif-simuler">SIMULATION : cliquer sur le lien reçu</button>
     </div>
@@ -274,10 +274,40 @@ async function demarrer() {
     : 'La progression de chaque enfant est enregistrée automatiquement dans le compte et se retrouve sur vos autres appareils.';
   $('inv-activer').classList.toggle('cache', !invitation());
   $('inv-texte').textContent = 'Activez l\'accès offert sur ce compte (' + D.email + '). Il doit avoir reçu l\'invitation.';
+  if (!D.emailVerifie) { voir('v-espace', 'v-securite'); surveillerVerification(); return; }   // jeu et profils fermés tant que l'adresse n'est pas vérifiée (le serveur contrôle aussi)
+  arreterSurveillance();
   voir('v-espace', 'v-enfants', 'v-offre', 'v-securite');
   afficherOffre();
   await chargerEnfants(true);
   continuer(true);
+}
+
+// ---------- vérification de l'adresse e-mail du parent (obligatoire avant le jeu ; contrôlée par le serveur) ----------
+let veille = null, enCours = false;
+const DELAI_RENVOI = 60000;
+function arreterSurveillance() { if (veille) { clearInterval(veille); veille = null; } }
+const verifieDansLeJeton = t => { try { return !!JSON.parse(atob(String(t).split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))).email_verified; } catch (e) { return null; } };   // pour ne pas recréer de session pour rien : le serveur reste seul juge
+async function verifierEmail() {
+  if (enCours || !D || !D.connecte || D.emailVerifie) return false;
+  enCours = true;
+  try {
+    const t = await C.auth.rafraichir();
+    if (verifieDansLeJeton(t) === false) return false;
+    await C.ouvrirSession(t); const m = await C.moi();
+    if (!m.emailVerifie) return false;
+    arreterSurveillance(); await demarrer(); etat('✅ Adresse validée. Le jeu est ouvert !'); return true;
+  } catch (e) { return false; } finally { enCours = false; }
+}
+function surveillerVerification() { majRenvoi(); if (!veille) veille = setInterval(() => { if (document.visibilityState === 'visible') verifierEmail(); }, 8000); }
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') verifierEmail(); });
+addEventListener('focus', () => { verifierEmail(); });
+const lireEnvoi = () => { try { return +sessionStorage.getItem('ldn_verif_envoi') || 0; } catch (e) { return 0; } };
+const noterEnvoi = t => { try { sessionStorage.setItem('ldn_verif_envoi', String(t)); } catch (e) {} };
+function majRenvoi() {
+  const b = $('verif-renvoyer'); if (!b) return;
+  const reste = Math.ceil((lireEnvoi() + DELAI_RENVOI - Date.now()) / 1000);
+  if (reste > 0) { b.disabled = true; b.textContent = 'Renvoyer le lien (' + reste + ' s)'; setTimeout(majRenvoi, 1000); }
+  else { b.disabled = false; b.textContent = 'Renvoyer le lien'; }
 }
 
 // ---------- connexion / inscription ----------
@@ -319,7 +349,15 @@ $('consent-annuler').onclick = e => occupe(e.target, async () => { await C.auth.
 
 // ---------- adresse e-mail ----------
 $('verif-fait').onclick = e => occupe(e.target, async () => { await ouvrir(await C.auth.rafraichir()); if (!D.emailVerifie) etat('L\'adresse n\'est pas encore validée. Ouvrez le lien reçu par e-mail.', true); });
-$('verif-renvoyer').onclick = e => occupe(e.target, async () => { await C.auth.renvoyerVerification(); etat('Un nouveau lien vient d\'être envoyé.'); });
+$('verif-renvoyer').onclick = async () => {      // pas d'« occupe » : le compte à rebours garde le bouton fermé
+  $('verif-renvoyer').disabled = true; etat('');
+  try { await C.auth.renvoyerVerification(); noterEnvoi(Date.now()); etat("Un nouveau lien vient d'être envoyé. Pensez à regarder les courriers indésirables."); }
+  catch (e) {
+    if (e && e.code === 'auth/too-many-requests') { noterEnvoi(Date.now() + 60000); etat("Un lien vient déjà d'être envoyé il y a peu. Patientez deux minutes avant d'en demander un autre, et regardez les courriers indésirables.", true); }
+    else etat(C.messageErreur(e), true);
+  }
+  majRenvoi();
+};
 $('verif-simuler').onclick = e => occupe(e.target, async () => { await C.auth.simulerClicVerification(); etat('SIMULATION : lien « cliqué ». Touchez « C\'est fait ».'); });
 
 // ---------- activation du rôle Créateur ----------

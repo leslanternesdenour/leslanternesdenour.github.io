@@ -11,11 +11,13 @@
   function decision(o) {
     if (!o || !o.comptesOuverts) return o && o.hoteLocal ? 'libre' : 'indisponible';
     if (!o.connecte) return 'connexion';
+    if (o.emailVerifie === false) return 'verification';   // adresse du parent non vérifiée : jamais de jeu (le serveur contrôle aussi)
     if (!o.profil || !o.profil.id) return 'profil';
     return 'ok';
   }
   var textes = {
     connexion: { titre: 'Un compte parent pour jouer', texte: 'Pour entrer dans le Monde de Nour, un parent se connecte ou crée un compte famille. L\'enfant n\'a rien à saisir : le parent crée son profil, et la progression est enregistrée automatiquement.' },
+    verification: { titre: 'Vérifiez votre adresse e-mail', texte: "Pour protéger les enfants, le jeu s'ouvre dès que l'adresse e-mail du parent est vérifiée. Ouvrez le lien reçu par e-mail : l'Espace famille vérifie tout seul et débloque le jeu." },
     indisponible: { titre: 'Le village est momentanément fermé', texte: 'Le service des comptes parents ne répond pas pour l\'instant. Par sécurité, le jeu reste fermé. Réessayez dans quelques minutes.' },
     profil: { titre: 'Qui joue aujourd\'hui ?', texte: 'Choisis le profil de l\'enfant qui va jouer. Le parent peut en créer jusqu\'à quatre dans l\'Espace famille.' }
   };

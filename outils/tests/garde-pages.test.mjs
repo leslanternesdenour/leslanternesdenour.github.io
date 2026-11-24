@@ -50,3 +50,12 @@ test('garde : session expirée, falsifiée ou illisible : redirection vers la co
   assert.equal((await garde(requete('/monde/', faux), env, T)).action, 'rediriger', 'falsifiée');
   assert.equal((await garde(requete('/monde/', 'ldn_session=n-importe-quoi'), env, T)).action, 'rediriger', 'illisible');
 });
+
+test('garde : session valide mais adresse e-mail non vérifiée : la page de jeu est refusée et le parent est renvoyé vers l\'Espace famille (état de vérification)', async () => {
+  const nv = 'ldn_session=' + encodeURIComponent(await creerSession({ uid: 'u2', email: 'p2@exemple.fr', emailVerifie: false, authTime: Math.floor(T / 1000) }, SECRET, T));
+  const r = await garde(requete('/voyage/', nv), env, T);
+  assert.equal(r.action, 'rediriger');
+  assert.equal(r.location, '/compte/?retour=' + encodeURIComponent('/voyage/') + '&verification=1#verification');
+  assert.equal((await garde(requete('/monde/', await cookieValide()), env, T)).action, 'passer', 'e-mail vérifié : la page passe');
+  assert.equal((await garde(requete('/decouvrir/', nv), env, T)).action, 'passer', 'les pages publiques ne sont jamais bloquées');
+});

@@ -196,6 +196,7 @@ export async function traiter(req, ctx) {
       const niveau = niveauDuFichier(fichier, cat);
       if (!niveau) return erreur(400, 'chemin');
       const { d, connecte } = await droitsContenus(ctx, session, req);
+      if (connecte && session && !session.emailVerifie) return erreur(403, 'email-non-verifie');   // adresse du parent à vérifier d'abord (contrôlé ici, par le serveur)
       const ok = peutAcceder(niveau, d) || (niveau === 'gratuit' && connecte);
       if (!ok) return erreur(connecte ? 403 : 401, connecte ? 'premium-requis' : 'connexion-requise');
       const obj = await ctx.stockage.get(fichier);
@@ -206,6 +207,10 @@ export async function traiter(req, ctx) {
     // ===== tout ce qui suit exige d'être connecté =====
     if (chemin.startsWith('/api/') && !session) return erreur(401, 'connexion-requise');
     const d = await droitsDe(ctx, session);
+
+    // ----- vérification de l'adresse e-mail du parent (décision du 24/11/2026) : obligatoire avant tout profil enfant et toute progression -----
+    // Contrôlée par le SERVEUR, jamais seulement par le navigateur. La connexion, /api/moi, la suppression du compte et le réglage de famille restent possibles.
+    if (chemin === '/api/enfants' || chemin.startsWith('/api/enfants/')) { if (!session.emailVerifie) return erreur(403, 'email-non-verifie'); }
 
     // ----- préférences de la famille (identiques pour tous les profils enfants) : mode sans visage -----
     if (chemin === '/api/famille/preferences' && m === 'PATCH') {
