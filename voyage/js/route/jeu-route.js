@@ -344,7 +344,7 @@ export function creerRoute(ctx) {
       return;
     }
     if (auRetourRoute(J.z)) { sortir(); return; }
-    monde.maj(J); L.animer(dt, t, J); lanternesProches(); parcoursCollines();
+    monde.maj(J); monde.eclairer(nuit, t); L.animer(dt, t, J); lanternesProches(); parcoursCollines();
     tHors += dt; if (tHors > 1) { tHors = 0; if (cooldownHors > 0) cooldownHors -= 1; else if (!dansMaison && loinDeLaPiste(J.z - DEC, J.x)) { cooldownHors = 40; ui.indice('🧭 ' + MESSAGES.horsPiste, 6000); } }
     { const p = villeVisible(J.x, J.z); if (p !== villeAffichee) { villeAffichee = p; V.montrer(dans && villeVisible(J.x, J.z)); } } V.obstacles(J); W.maj(dt, t, J);
     tVoy += dt; if (tVoy > 0.35) { tVoy = 0; for (const n of W.liste) if (n.v.trajet && n.e.racine.visible) regV(n); }

@@ -107,12 +107,14 @@ export function creerMondeRoute({ scene, Q, TX, ombres = false }) {
 
   // ---------- le décor : une seule instance de chaque forme, partagée par toutes les tuiles ----------
   const mat = materiau({ finesse: 1.6 }), matVent = materiau({ balance: 1 });
+  const matFlamme = new THREE.MeshBasicMaterial({ vertexColors: true, fog: true });   // la flamme brille d'elle-même (pas d'ombre, pas de lumière réelle : très léger)
   const B = () => new THREE.BoxGeometry(1, 1, 1), DOD = r => new THREE.DodecahedronGeometry(r, 0), ICO = r => new THREE.IcosahedronGeometry(r, 0), CYL = (a, b, h, s = 6) => new THREE.CylinderGeometry(a, b, h, s);
   const FORMES = {
     rocher: { cap: 1200, mat, ombre: true, geos: [
       fusion([piece(DOD(1), '#a38868', { p: [0, 0.35, 0], s: [1.1, 0.75, 0.95], r: [0.3, 0.4, 0] }), piece(DOD(0.6), '#8f7a5e', { p: [0.9, 0.15, 0.3], s: [1, 0.8, 1] })]),
       fusion([piece(DOD(1), '#9a8062', { p: [0, 0.5, 0], s: [0.8, 1.0, 0.85], r: [0.8, 0.1, 0.4] }), piece(DOD(0.5), '#b09672', { p: [-0.7, 0.1, 0.4], s: [1, 0.7, 1] })])] },
     poteau: { cap: 900, mat, ombre: false, geos: [fusion([piece(B(), '#6e4e34', { p: [0, 0.8, 0], s: [0.16, 1.6, 0.16] }), piece(B(), '#f3ecd8', { p: [0, 1.45, 0], s: [0.21, 0.34, 0.21] }), piece(B(), '#c0392b', { p: [0, 1.72, 0], s: [0.24, 0.14, 0.24] })])] },
+    flamme: { cap: 900, mat: matFlamme, ombre: false, geos: [fusion([piece(new THREE.IcosahedronGeometry(0.27, 0), '#ff9a2e', { p: [0, 2.05, 0], s: [0.85, 1.6, 0.85] }), piece(new THREE.IcosahedronGeometry(0.16, 0), '#fff1b0', { p: [0, 2.03, 0], s: [0.8, 1.4, 0.8] })])] },
     caillou: { cap: 2000, mat, ombre: false, geos: [fusion([piece(DOD(0.22), '#a8906e', { p: [0, 0.08, 0], s: [1, 0.6, 1] }), piece(DOD(0.14), '#8f7a5e', { p: [0.3, 0.05, 0.1], s: [1, 0.6, 1] })])] },
     buisson: { cap: 1200, mat: matVent, ombre: false, geos: [fusion([piece(ICO(0.5), '#8a7a4a', { p: [0, 0.3, 0], s: [1.2, 0.7, 1.1] }), piece(ICO(0.35), '#9a8c58', { p: [0.4, 0.2, 0.2], s: [1, 0.7, 1] }), piece(ICO(0.3), '#7d6e40', { p: [-0.35, 0.18, -0.2] })])] },
     acacia: { cap: 150, mat: matVent, ombre: true, geos: [fusion([piece(CYL(0.12, 0.2, 3, 5), '#6b4a30', { p: [0, 1.5, 0] }), piece(new THREE.SphereGeometry(2.1, 7, 4), '#7d8a45', { p: [0, 3.2, 0], s: [1.2, 0.32, 1.2] }), piece(new THREE.SphereGeometry(1.3, 6, 4), '#8a9650', { p: [0.9, 2.6, 0.3], s: [1, 0.3, 1] })])] },
@@ -168,7 +170,12 @@ export function creerMondeRoute({ scene, Q, TX, ombres = false }) {
     reconstruireDecor(); sale = false;
   }
   const animer = t => { matVent.userData.t = t; };
-  return { groupe, hauteur, matiere, colliders, maj, preparer, animer, tuiles: () => tuiles.size, nbObjets: () => Object.values(inst).reduce((a, I) => a + I.im.count, 0),
+  // les flammes des poteaux : allumées seulement quand la nuit tombe, elles vacillent doucement (la couleur de la flamme varie)
+  function eclairer(nuit, t) {
+    for (const I of Object.values(inst)) if (I.nom === 'flamme') I.im.visible = nuit > 0.25;
+    matFlamme.color.setRGB(0.85 + 0.15 * Math.sin(t * 7.3), 0.8 + 0.2 * Math.sin(t * 5.1 + 1), 0.7 + 0.3 * Math.sin(t * 9.7 + 2));
+  }
+  return { groupe, hauteur, matiere, colliders, maj, eclairer, preparer, animer, tuiles: () => tuiles.size, nbObjets: () => Object.values(inst).reduce((a, I) => a + I.im.count, 0),
     montrer(v) { groupe.visible = v; },
     detruire() { for (const k of [...tuiles.keys()]) retirerTuile(k); scene.remove(groupe); } };
 }

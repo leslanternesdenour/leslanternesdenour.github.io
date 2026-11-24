@@ -37,3 +37,19 @@ test('balisage : on dit doucement à l\'enfant de revenir quand il s\'éloigne t
   assert.ok(MESSAGES.horsPiste && MESSAGES.horsPiste.length <= 120 && !/(vite|danger|perdu|peur)/i.test(MESSAGES.horsPiste), 'message rassurant');
   assert.match(j, /loinDeLaPiste\(J\.z - DEC, J\.x\)/); assert.match(j, /MESSAGES\.horsPiste/); assert.match(j, /!dansMaison/);
 });
+
+test('balisage : chaque poteau porte une flamme (même position), elle ne bloque rien', async () => {
+  const { semerTuile } = await import('../../voyage/js/route/decor-plan.js');
+  const { pointChemin } = await import('../../voyage/js/route/relief.js');
+  const t = semerTuile(Math.floor(1300 / 64), Math.floor(pointChemin(1300).t / 64)), p = t.filter(o => o.type === 'poteau'), f = t.filter(o => o.type === 'flamme');
+  assert.ok(p.length > 0 && p.length === f.length, `${p.length} poteaux, ${f.length} flammes`);
+  for (const o of p) assert.ok(f.some(x => x.s === o.s && x.t === o.t && x.r === 0), 'une flamme au sommet de chaque poteau');
+});
+
+test('balisage : les flammes ne s\'allument que le soir (la nuit tombe), et vacillent doucement ; branchées sur le cycle jour/nuit existant', async () => {
+  const fs = await import('node:fs');
+  const m = fs.readFileSync(new URL('../../voyage/js/route/monde.js', import.meta.url), 'utf8'), j = fs.readFileSync(new URL('../../voyage/js/route/jeu-route.js', import.meta.url), 'utf8');
+  assert.match(m, /flamme: \{ cap: 900/); assert.match(m, /MeshBasicMaterial\(\{ vertexColors: true/); assert.match(m, /eclairer\(nuit, t\)/);
+  assert.match(m, /visible = nuit > 0\.25/, 'allumées seulement quand la nuit tombe'); assert.match(m, /Math\.sin\(t \*/, 'elles vacillent');
+  assert.match(j, /monde\.eclairer\(nuit, t\)/);
+});

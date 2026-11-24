@@ -61,7 +61,7 @@ export function semerTuile(i, j) {
   for (let k = Math.ceil(Math.max(s0, S_DEBUT) / 30); k * 30 < s0 + TAILLE_TUILE; k++) {
     const s = k * 30, t = pointChemin(s).t + (k % 2 ? 4.5 : -4.5);
     if (t < t0 || t >= t0 + TAILLE_TUILE || Math.hypot(s - CITE.s, t - CITE.t) < CITE.rayon + 20 || relief(s, t).lac > 0.02) continue;
-    sortie.push({ type: 'poteau', s, t: +t.toFixed(2), rot: 0, sc: 1, r: 0.2 });
+    sortie.push({ type: 'poteau', s, t: +t.toFixed(2), rot: 0, sc: 1, r: 0.2 }, { type: 'flamme', s, t: +t.toFixed(2), rot: 0, sc: 1, r: 0 });   // la flamme du poteau (allumée le soir seulement)
   }
   // un palmier ou un roseau ne doit pas être loin de l'eau : on retire ceux qui sont trop éloignés
   return sortie.filter(o => (o.type !== 'palmier' && o.type !== 'roseau') || (Math.hypot(o.s - OASIS.s, o.t - OASIS.t) > OASIS.lac + 4 && Math.hypot(o.s - OASIS.s, o.t - OASIS.t) < OASIS.r + 30));
