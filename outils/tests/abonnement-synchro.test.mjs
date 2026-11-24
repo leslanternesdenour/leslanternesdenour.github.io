@@ -20,9 +20,13 @@ const base = creerBase();
 const sessionsStripe = {};                 // id de session Checkout → objet renvoyé par Stripe (simulé)
 const appelsStripe = [];
 const abonnementsStripe = {};              // id d'abonnement → objet renvoyé par Stripe (simulé)
-let rechercheStripe = [];                  // résultat de la recherche d'abonnements par compte (simulé)
+let rechercheStripe = [];                  // résultat de la recherche d'abonnements par compte (simulé : lente à voir les nouveautés)
+const clientsStripe = {};                  // adresse e-mail → clients Stripe (simulé : lecture immédiate)
+const abonnementsDuClient = {};            // id client → abonnements (simulé : lecture immédiate)
 const fauxStripe = async (u, o) => {
   appelsStripe.push({ u, o });
+  const lc = /customers\?.*email=([^&]+)/.exec(u); if (lc) return new Response(JSON.stringify({ data: clientsStripe[decodeURIComponent(lc[1])] || [] }), { status: 200 });
+  const la = /subscriptions\?.*customer=([^&]+)/.exec(u); if (la) return new Response(JSON.stringify({ data: abonnementsDuClient[decodeURIComponent(la[1])] || [] }), { status: 200 });
   if (u.includes('subscriptions/search')) return new Response(JSON.stringify({ data: rechercheStripe }), { status: 200 });
   const a = /subscriptions\/(sub_[A-Za-z0-9_-]+)$/.exec(u);
   if (a && (!o || o.method === 'GET')) return a[1] in abonnementsStripe ? new Response(JSON.stringify(abonnementsStripe[a[1]]), { status: 200 }) : new Response(JSON.stringify({ error: { message: 'No such subscription' } }), { status: 404 });
@@ -117,6 +121,16 @@ test('un abonné qui revient sans identifiant de session (autre appareil, page r
   const rien = await appel('POST', '/api/abonnement/synchroniser', { cookie: d, corps: {} });
   assert.equal(rien.s, 404); assert.equal(rien.j.erreur, 'aucun-abonnement');
   assert.equal((await appel('GET', '/api/moi', { cookie: d })).j.statut, 'gratuit');
+});
+
+test('le repli sans identifiant de session ne dépend pas de l\'index de recherche de Stripe (lent) : il lit les clients de l\'adresse puis leurs abonnements, immédiatement', async () => {
+  const c = await connecter('uid-immediat');
+  rechercheStripe = [];                                              // l'index de recherche n'a pas encore vu le nouvel abonnement
+  clientsStripe['uid-immediat@exemple.fr'] = [{ id: 'cus_immediat' }];
+  abonnementsDuClient.cus_immediat = [{ ...sessionPayee('uid-immediat', 'price_fa').subscription, id: 'sub_immediat', customer: 'cus_immediat' }];
+  const r = await appel('POST', '/api/abonnement/synchroniser', { cookie: c, corps: {} });
+  assert.equal(r.s, 200, JSON.stringify(r.j)); assert.equal(r.j.niveau, 'famille');
+  assert.equal((await appel('GET', '/api/moi', { cookie: c })).j.statut, 'abonne');
 });
 
 test('échec de paiement au renouvellement : l\'accès Premium s\'arrête, mais le parent voit « à régulariser » (et peut mettre à jour sa carte) ; une résiliation programmée est visible aussi', async () => {

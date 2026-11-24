@@ -49,6 +49,18 @@ export function clientStripe(env, { fetcher = fetch } = {}) {
     // Retour du paiement : le serveur relit lui-même la session auprès de Stripe (le navigateur ne prouve rien), abonnement inclus.
     lireSession: id => appel('checkout/sessions/' + encodeURIComponent(id) + '?expand[]=subscription', {}, 'GET'),
     // Rattrapage sans identifiant de session : les abonnements de ce compte (métadonnée « uid » posée à la souscription).
-    chercherAbonnements: uid => appel('subscriptions/search?query=' + encodeURIComponent("metadata['uid']:'" + uid + "'"), {}, 'GET')
+    // 1) lecture IMMÉDIATE : les clients Stripe de l'adresse (celle du compte, vérifiée), puis leurs abonnements ;
+    // 2) sinon la recherche Stripe, dont l'index peut mettre plus d'une minute à voir un abonnement tout neuf.
+    chercherAbonnements: async (uid, email) => {
+      const trouves = [], dejaVus = new Set();
+      const ajouter = liste => { for (const a of liste || []) if (a && !dejaVus.has(a.id)) { dejaVus.add(a.id); trouves.push(a); } };
+      if (email) {
+        const clients = await appel('customers?limit=10&email=' + encodeURIComponent(email), {}, 'GET');
+        for (const c of (clients.data || []).slice(0, 10)) ajouter((await appel('subscriptions?status=all&limit=10&customer=' + encodeURIComponent(c.id), {}, 'GET')).data);
+      }
+      if (!trouves.some(a => a.metadata && a.metadata.uid === uid && ['active', 'trialing'].includes(a.status)))
+        ajouter((await appel('subscriptions/search?query=' + encodeURIComponent("metadata['uid']:'" + uid + "'"), {}, 'GET')).data);
+      return { data: trouves };
+    }
   };
 }

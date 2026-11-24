@@ -359,7 +359,7 @@ export async function traiter(req, ctx) {
         if (ab && ab.stripeAbonnement) { try { sub = await ctx.stripe.lireAbonnement(ab.stripeAbonnement); } catch (e) { return erreur(404, 'abonnement-inconnu'); } }
         else {   // jamais enregistré ici (autre appareil, page rechargée) : on cherche l'abonnement de CE compte chez Stripe
           if (!/^[A-Za-z0-9_-]{1,128}$/.test(session.uid)) return erreur(404, 'aucun-abonnement');
-          let r; try { r = await ctx.stripe.chercherAbonnements(session.uid); } catch (e) { return erreur(404, 'aucun-abonnement'); }
+          let r; try { r = await ctx.stripe.chercherAbonnements(session.uid, session.email); } catch (e) { return erreur(404, 'aucun-abonnement'); }
           sub = ((r && r.data) || []).filter(x => x.metadata && x.metadata.uid === session.uid && ['active', 'trialing'].includes(x.status)).sort((x, y) => (y.created || 0) - (x.created || 0))[0];
           if (!sub) return erreur(404, 'aucun-abonnement');
         }

@@ -43,11 +43,17 @@ export async function creerEmulateur({ mdpCreateur = process.env.LDN_EMUL_MDP_CR
   const boiteSimulee = [], codesAction = new Map();
   base.lienAction = async (type, email) => { if (!comptes.has(email)) return null; const oobCode = 'emul-' + crypto.randomBytes(12).toString('hex'); codesAction.set(oobCode, { type, email }); return { oobCode }; };
   const courriel = { fournisseur: 'simule', async envoyer(m) { boiteSimulee.push({ a: m.a, objet: m.objet, texte: m.texte, date: maintenant() }); return { ok: true }; } };  // ----- Stripe simulé (aucun appel réseau) -----
-  const sessionsPaiement = new Map(), abonnementsStripe = new Map(); let n = 0;
+  const sessionsPaiement = new Map(), sessionsPayees = new Map(), abonnementsStripe = new Map(); let n = 0;
   const fauxStripe = async (u, o) => {
     const p = new URLSearchParams(o.body || ''), rep = x => new Response(JSON.stringify(x), { status: 200 });
     if (u.endsWith('/checkout/sessions')) { const id = 'cs_test_emul_' + (++n); sessionsPaiement.set(id, { uid: p.get('metadata[uid]'), prix: p.get('line_items[0][price]'), succes: p.get('success_url'), annulation: p.get('cancel_url'), client: p.get('customer') || 'cus_emul_' + p.get('metadata[uid]') });
       return rep({ id, url: '/_emulateur/paiement/?session=' + id }); }
+    const ms = /checkout\/sessions\/(cs_[^/?]+)/.exec(u);   // relecture d'une session par le serveur (retour du paiement) : « open » tant qu'elle n'est pas payée
+    if (ms) { const ouverte = sessionsPaiement.get(ms[1]), payee = sessionsPayees.get(ms[1]);
+      if (ouverte) return rep({ id: ms[1], status: 'open', mode: 'subscription', client_reference_id: ouverte.uid, subscription: null });
+      if (payee) return rep({ id: ms[1], status: 'complete', mode: 'subscription', client_reference_id: payee.uid, subscription: abonnementsStripe.get(payee.sub) });
+      return new Response(JSON.stringify({ error: { message: 'inconnue' } }), { status: 404 }); }
+    if (u.includes('subscriptions/search')) { const uid = /'([^']+)'$/.exec(decodeURIComponent(u))?.[1]; return rep({ data: [...abonnementsStripe.values()].filter(a => a.metadata.uid === uid) }); }
     if (u.endsWith('/billing_portal/sessions')) return rep({ url: '/_emulateur/portail/' });
     const m = /subscriptions\/([^/?]+)$/.exec(u);
     if (m) { const a = abonnementsStripe.get(m[1]); if (!a) return new Response(JSON.stringify({ error: { message: 'inconnu' } }), { status: 404 });
@@ -62,6 +68,7 @@ export async function creerEmulateur({ mdpCreateur = process.env.LDN_EMUL_MDP_CR
       async lister() { const out = []; const tour = d => { for (const e of fs.readdirSync(d, { withFileTypes: true })) { const f = path.join(d, e.name); if (e.isDirectory()) tour(f); else out.push({ cle: path.relative(PREMIUM, f).split(path.sep).join('/'), taille: fs.statSync(f).size }); } }; if (fs.existsSync(PREMIUM)) tour(PREMIUM); return out.sort((a, b) => a.cle.localeCompare(b.cle)); } },
     stripe: clientStripe(env, { fetcher: fauxStripe }) });
   async function envoyerWebhook(type, objet) {
+    if (process.env.LDN_EMULATEUR_SANS_WEBHOOK === '1') return;   // reproduit la préproduction tant que le webhook Stripe n'y est pas configuré
     const corps = JSON.stringify({ id: 'evt_emul_' + (++n), livemode: false, type, data: { object: objet } }), t = Math.floor(maintenant() / 1000);
     const sig = crypto.createHmac('sha256', env.STRIPE_SECRET_WEBHOOK).update(t + '.' + corps).digest('hex');
     const r = await traiter(new Request('http://emulateur/api/stripe/webhook', { method: 'POST', headers: { 'Stripe-Signature': `t=${t},v1=${sig}` }, body: corps }), ctx());
@@ -122,10 +129,14 @@ export async function creerEmulateur({ mdpCreateur = process.env.LDN_EMUL_MDP_CR
         if (b.action !== 'payer') return json({ redirection: s.annulation });
         const sub = { id: 'sub_emul_' + (++n), customer: s.client, status: 'active', cancel_at_period_end: false, metadata: { uid: s.uid },
           current_period_end: Math.floor(maintenant() / 1000) + (s.prix.includes('mensuel') ? 30 : 365) * 86400, items: { data: [{ price: { id: s.prix } }] } };
-        abonnementsStripe.set(sub.id, sub);
+        abonnementsStripe.set(sub.id, sub); sessionsPayees.set(b.session, { uid: s.uid, sub: sub.id });
         await envoyerWebhook('checkout.session.completed', { id: b.session, customer: s.client, client_reference_id: s.uid, metadata: { uid: s.uid } });
         await envoyerWebhook('customer.subscription.created', sub);
-        return json({ redirection: s.succes });
+        return json({ redirection: String(s.succes).replace('{CHECKOUT_SESSION_ID}', b.session) });   // comme Stripe : le repère est remplacé par l'identifiant de la session
+      }
+      case 'echec-paiement': {                             // simule un renouvellement refusé : l'abonnement passe en « past_due » chez Stripe
+        const a = [...abonnementsStripe.values()].find(x => x.metadata.uid === (session && session.uid)); if (!a) return json({ erreur: 'aucun' }, 404);
+        a.status = 'past_due'; await envoyerWebhook('customer.subscription.updated', a); return json({ ok: true });
       }
       case 'fin-abonnement': {                             // simule la fin de période d'un abonnement résilié
         const a = [...abonnementsStripe.values()].find(x => x.metadata.uid === (session && session.uid)); if (!a) return json({ erreur: 'aucun' }, 404);
