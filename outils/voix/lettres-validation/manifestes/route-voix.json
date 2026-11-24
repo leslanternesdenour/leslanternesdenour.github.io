@@ -1,7 +1,7 @@
 {
  "jeu": "route-voix",
  "base": "/audio",
- "total": 413,
+ "total": 415,
  "phrases": [
   {
    "id": "NOUR-VOIX-RTE-924aa3cd",
@@ -4090,6 +4090,26 @@
    "texte": "Trois traversées : bravo ! Tu peux continuer, sans te presser.",
    "fichier": "fr/route/nour-voix-rte-f0cbe9e6.mp3",
    "duree": 4.72,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-d61e7aae",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Tu cueilles deux dattes mûres : elles vont dans ton panier.",
+   "fichier": "fr/route/nour-voix-rte-d61e7aae.mp3",
+   "duree": 3.36,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-2ca9634e",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Il ne reste plus de dattes mûres : laisse le reste aux oiseaux !",
+   "fichier": "fr/route/nour-voix-rte-2ca9634e.mp3",
+   "duree": 3.6,
    "prononciationVerifiee": false,
    "voixId": "hddT377hAwvRoOKqMj0E"
   },

@@ -21,6 +21,12 @@ export const TROCS = {
     manque: { petit: `Il te faut une jarre pour cet échange.`, grand: `Il te faut une jarre pour cet échange. Le potier en fabrique : va le voir avec un tissu.` } }
 };
 
+// la cueillette de dattes à la palmeraie : deux dattes à chaque fois, trois fois seulement (on laisse le reste aux oiseaux) ; S = { stock, cueillies }
+export const CUEILLETTE = { dattes: 2, max: 3 };
+export function cueillir(S) {
+  if ((S.cueillies || 0) >= CUEILLETTE.max) return false;
+  S.cueillies = (S.cueillies || 0) + 1; S.stock = { ...stockVide(), ...S.stock }; S.stock.datte += CUEILLETTE.dattes; return true;
+}
 export const stockVide = () => ({ datte: 0, tissu: 0, jarre: 0 });
 export const peutEchanger = (stock, id) => (stock[TROCS[id].veut.item] || 0) >= TROCS[id].veut.n;
 // un échange : renvoie { ok, stock } (le stock d'origine n'est jamais modifié ; s'il manque quelque chose, rien ne change)

@@ -12,7 +12,7 @@ import { creerVerificationUI } from './verification-ui.js';
 import { creerVoyageurs3D } from './voyageurs-3d.js';
 import { maisonsVille, portesJouables, villeVisible } from './ville-plan.js';
 import { ACTIVITES_METIERS, questionsMetier } from './activites-route.js';
-import { TROCS, CADEAU, stockVide, echanger, peutEchanger, bloque, panierTexte } from './troc-route.js';
+import { TROCS, CADEAU, stockVide, echanger, peutEchanger, bloque, panierTexte, cueillir } from './troc-route.js';
 import { LIEUX_SACRES } from './lieux-mecque-a-valider.js';
 import { preparerRoute, memoriserPosition, positionDeReprise } from './etat-route.js';
 import { faireEtape, progression } from './missions-route.js';
@@ -157,6 +157,10 @@ export function creerRoute(ctx) {
     if (d < 20 && !annonce.has(l.id) && !recitUI.ouverte()) { annonce.add(l.id); ui.indice('📜 ' + MESSAGES.lanterne, 4500); } } };
 
   // ---------- la cité vivante : des voyageurs à qui parler (mission « rencontres »), des maisons à observer ----------
+  // la cueillette de dattes à la palmeraie : deux dattes dans le panier du troc, trois fois, puis on laisse le reste aux oiseaux
+  { const pp = L.pos('palmeraie');
+    habitants.ajouter({ id: 'route:cueillette', x: pp.x + 3, z: pp.z + 3, rayon: 2.6, label: 'Cueillir des dattes', icone: '🌴', ouvrir: () => {
+      const S = R.vu.troc || (R.vu.troc = { stock: stockVide(), depart: false }), ok = cueillir(S); enregistrer(); ui.indice('🌴 ' + (ok ? MESSAGES.cueillette : MESSAGES.cueilletteFin), 4500); } }); }
   // le parcours entre les deux collines : des traversées d'un bout à l'autre, comptées tranquillement (aucun chronomètre, aucun classement)
   const bouts = { a: L.pos('cite-colline-a'), b: L.pos('cite-colline-b') };
   function parcoursCollines() {

@@ -2047,6 +2047,16 @@ export const PHRASES_ROUTE = [
   "exact"
  ],
  [
+  "NOUR-VOIX-RTE-d61e7aae",
+  "Tu cueilles deux dattes mûres : elles vont dans ton panier.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-2ca9634e",
+  "Il ne reste plus de dattes mûres : laisse le reste aux oiseaux !",
+  "exact"
+ ],
+ [
   "NOUR-VOIX-RTE-1c8cfd4c",
   "Bravo, tout est dans l'ordre !",
   "exact"

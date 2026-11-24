@@ -159,6 +159,8 @@ export const MESSAGES = {
   sacDit: 'Chaque objet du sac sert à quelque chose, mais aucun n\'est obligatoire : tu peux partir comme tu veux.',
   gourdePleine: 'Tu remplis ta gourde à l\'eau claire de l\'oasis.',
   gourdeAbsente: 'L\'eau de l\'oasis est claire et fraîche. Pense à emporter ta gourde la prochaine fois !',
+  cueillette: 'Tu cueilles deux dattes mûres : elles vont dans ton panier.',
+  cueilletteFin: 'Il ne reste plus de dattes mûres : laisse le reste aux oiseaux !',
   traversee: 'Une traversée de plus, tranquillement !',
   traversees3: 'Trois traversées : bravo ! Tu peux continuer, sans te presser.',
   chemin3: 'Les trois balises sont trouvées : tu as retrouvé le chemin de la grande route !',
