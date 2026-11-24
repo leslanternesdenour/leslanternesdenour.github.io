@@ -203,8 +203,8 @@ footer { border-top: 1px solid rgba(245, 185, 66, .18); padding: 22px 0 30px; co
 @media (max-width: 720px) { .cal-cote { display: none; } }
 @media (prefers-reduced-motion: reduce) { .ciel, .gl { animation: none; } }
 </style>
-<link rel="stylesheet" href="accueil/accueil.css?v=5">
-<link rel="stylesheet" href="accueil/vie.css?v=1">
+<link rel="stylesheet" href="accueil/accueil.css?v=6">
+<link rel="stylesheet" href="accueil/vie.css?v=2">
 </head>
 <body>
 <div id="intro" class="intro" tabindex="-1" role="dialog" aria-modal="true" aria-label="Bienvenue aux Lanternes de Nour">
@@ -252,13 +252,9 @@ footer { border-top: 1px solid rgba(245, 185, 66, .18); padding: 22px 0 30px; co
       <a class="b3d b3d-yt" href="https://www.youtube.com/@LesLanternesdeNour?sub_confirmation=1"><svg class="logo-yt" viewBox="0 0 64 45" aria-hidden="true"><rect width="64" height="45" rx="11" fill="#fff"/><path d="M26 12.5v20l17-10z" fill="#e50d0d"/></svg><span>S’abonner à la chaîne (gratuit)</span></a>
     </div>
     <a class="jouer" href="monde/" aria-label="Jouer : entrer dans le Monde de Nour">
-      <span class="jouer-scene" aria-hidden="true">
-      <img class="jouer-manette" src="accueil/manette.webp" width="334" height="216" alt="" loading="lazy">
-      <img class="jouer-portail" src="accueil/portail.webp?v=2" width="256" height="344" alt="" loading="lazy">
-      </span>
-      <span class="jouer-mot">JOUER</span>
-      <span class="jouer-ruban">Entrer dans le Monde de Nour</span>
-      <span class="jouer-brille" aria-hidden="true"></span>
+      <svg class="jouer-lanterne" viewBox="0 0 26 36" aria-hidden="true"><use href="#lanterne"/></svg>
+      <span class="jouer-texte"><span class="jouer-mot">JOUER</span><span class="jouer-ruban">Entrer dans le Monde de Nour</span></span>
+      <svg class="jouer-fleche" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
     </a>
   </div>
 </header>
@@ -266,7 +262,7 @@ footer { border-top: 1px solid rgba(245, 185, 66, .18); padding: 22px 0 30px; co
 <main>
   <section class="carte-monde wrap" aria-labelledby="t-portail">
     <div class="carte-monde-boite">
-      <div class="carte-image"><img src="accueil/village.webp?v=2" width="888" height="664" alt="Le village des lanternes : maisons orientales, lanternes allumées et un chameau sur le chemin" loading="lazy"></div>
+      <div class="carte-image"><img src="accueil/village-3d.webp?v=2" width="810" height="605" alt="Le village du Monde de Nour en 3D : la fontaine au centre, entourée de maisons à coupoles et de palmiers" loading="lazy"></div>
       <div class="carte-texte">
         <p class="sur"><img src="accueil/carte.webp" width="264" height="270" alt="" loading="lazy">Nouveau · le village des lanternes</p>
         <h2 id="t-portail">Découvrez le <span>Monde de Nour</span></h2>
@@ -445,7 +441,7 @@ footer { border-top: 1px solid rgba(245, 185, 66, .18); padding: 22px 0 30px; co
 </script>
 <script src="intro/intro.js?v=6" defer></script>
 <script src="accueil/miniatures.js?v=1" defer></script>
-<script src="accueil/vie.js?v=1" defer></script>
+<script src="accueil/vie.js?v=2" defer></script>
 <script src="compte/barre.js?v=2" defer data-pos="haut-droite"></script>
 </body>
 </html>

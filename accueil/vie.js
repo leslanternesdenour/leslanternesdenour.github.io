@@ -140,7 +140,7 @@
 
   function demarrer() {
     if (scene && monde) { construire(); parallaxe(); window.matchMedia('(max-width: 560px)').addEventListener && window.matchMedia('(max-width: 560px)').addEventListener('change', construire); maj(); }
-    village(); apparitions(); relief();
+    apparitions(); relief();   // village() (lueurs et lucioles calées sur l'ancienne image) n'est plus appelé : la capture 3D reste nette
     H.classList.add('vivant');
   }
   if (D.readyState === 'loading') D.addEventListener('DOMContentLoaded', demarrer); else demarrer();

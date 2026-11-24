@@ -63,8 +63,6 @@ html:not(.intro-on) .haut-scene .marque-entete img { animation: v-logo-entre 1.5
 @keyframes v-reflet { 0% { background-position: 120% 0; } 38%, 100% { background-position: -40% 0; } }
 
 /* boutons */
-.jouer::before { content: ""; position: absolute; inset: 2px; border-radius: 999px; z-index: -2; box-shadow: 0 0 56px 16px rgba(255, 196, 70, .6); animation: v-souffle 3.6s ease-in-out infinite alternate; }
-@keyframes v-souffle { from { opacity: .35; transform: scale(.985); } to { opacity: 1; transform: scale(1.03); } }
 .b3d-yt .logo-yt { transition: transform .25s ease; }
 .b3d-yt:hover .logo-yt { transform: scale(1.12) rotate(-4deg); }
 .b3d-or { transform-style: preserve-3d; }
@@ -85,5 +83,5 @@ html:not(.intro-on) .haut-scene .marque-entete img { animation: v-logo-entre 1.5
   .vie, .carte-vie, .feuille { display: none !important; }
   .haut-monde { transform: none !important; will-change: auto; }
   .rev { opacity: 1 !important; transform: none !important; transition: none !important; }
-  .jouer::before, .haut-scene .marque-entete::after, html:not(.intro-on) .haut-scene .marque-entete img { animation: none !important; }
+  .haut-scene .marque-entete::after, html:not(.intro-on) .haut-scene .marque-entete img { animation: none !important; }
 }
