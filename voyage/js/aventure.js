@@ -141,7 +141,7 @@ export function creerAventure({ scene, terrain, colliders, etat, enregistrer, ui
     if (A.ramasses.includes('jarre')) { ui.dialogue({ titre: 'La grotte des montagnes', texte: 'Ta lanterne éclaire les parois de pierre. Il fait frais et calme ici. Tu as déjà trouvé ce que la grotte cachait !' }); return; }
     A.ramasses.push('jarre'); enregistrer(); sons.sonPorte();
     gagner(100, 'La grotte des montagnes', 'grotte');
-    ui.dialogue({ titre: '🪔 La grotte des montagnes', texte: 'Grâce à ta lanterne, tu vois au fond de la grotte une vieille jarre en terre cuite, posée là par des voyageurs d\'autrefois pour garder de l\'eau au frais. Elle rejoint ta collection !' });
+    ui.dialogue({ titre: '🏮 La grotte des montagnes', texte: 'Grâce à ta lanterne, tu vois au fond de la grotte une vieille jarre en terre cuite, posée là par des voyageurs d\'autrefois pour garder de l\'eau au frais. Elle rejoint ta collection !' });
   }
 
   // ---------- animaux ----------
@@ -170,7 +170,7 @@ export function creerAventure({ scene, terrain, colliders, etat, enregistrer, ui
     }
     essai(Math.hypot(coffre.x - J.x, coffre.z - J.z), 2.6, { label: 'Ouvrir', icone: '🗝️', faire: ouvrirCoffre });
     essai(Math.hypot(pv.x - J.x, pv.z - J.z), 3, { label: 'Parler', icone: '💬', faire: parlerSalim });
-    essai(Math.hypot(grotte.x - J.x, grotte.z - J.z), 3.5, { label: 'Explorer', icone: '🪔', faire: explorerGrotte });
+    essai(Math.hypot(grotte.x - J.x, grotte.z - J.z), 3.5, { label: 'Explorer', icone: '🏮', faire: explorerGrotte });
     if (mission('voyageur') && mission('voyageur').etat !== 'finie') essai(Math.hypot(EAU.x - J.x, EAU.z - J.z), 4, { label: 'Remplir', icone: '💧', faire: remplirEau });
     for (const a of animaux.liste) essai(Math.hypot(a.x - J.x, a.z - J.z), a.id === 'gazelle' ? 6 : 3, { label: 'Observer', icone: '🔍', faire: () => observer(a.id) });
     if (objetsPortes().length) essai(Math.hypot(PANIER.x - J.x, PANIER.z - J.z), 3.2, { label: 'Déposer', icone: '🧺', faire: rendre });   // seulement quand on porte les objets perdus

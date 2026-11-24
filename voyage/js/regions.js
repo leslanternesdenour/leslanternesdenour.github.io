@@ -18,7 +18,7 @@ export const REGIONS = {
     ]
   },
   rochers: {
-    nom: 'Les rochers gravés', icone: '🪨', requis: { txt: 'découvrir l\'oasis', ok: c => c.zones.includes('oasis') },
+    nom: 'Les rochers gravés', icone: '⛰️', requis: { txt: 'découvrir l\'oasis', ok: c => c.zones.includes('oasis') },
     auChoix: [
       { txt: 'observer 3 animaux', ok: c => (c.AV.animaux || []).length >= 3 },
       { txt: 'avoir le faucon du voyageur ou la carte des secrets', ok: c => !!(c.AV.equipement.jumelles || c.AV.equipement.carte) },

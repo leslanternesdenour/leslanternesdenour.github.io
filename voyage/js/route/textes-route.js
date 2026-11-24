@@ -94,7 +94,7 @@ export const FAITS_INTERIEURS = {
     { nom: "L'outre en peau", icone: '💧', label: "Observer l'outre", forme: 'outre', petit: `Une outre en peau pour porter l'eau.`, grand: `Une outre en peau de chèvre : elle porte l'eau pendant les voyages et la garde fraîche.` }] },
   4: { titre: "Chez l'artisan", icone: '🔨', objets: [
     { nom: 'Les outils', icone: '🔨', label: 'Observer les outils', forme: 'outils', petit: `Des outils pour réparer : un marteau et une lime.`, grand: `Des outils bien rangés : avec un marteau et une lime, l'artisan répare ce qui est cassé, au lieu de le jeter.` },
-    { nom: 'Les cordes', icone: '🪢', label: 'Observer les cordes', forme: 'cordes', petit: `Des cordes tressées, très solides.`, grand: `Des cordes tressées à la main avec des fibres de palmier : elles servent à puiser l'eau et à attacher les charges.` }] },
+    { nom: 'Les cordes', icone: '🧵', label: 'Observer les cordes', forme: 'cordes', petit: `Des cordes tressées, très solides.`, grand: `Des cordes tressées à la main avec des fibres de palmier : elles servent à puiser l'eau et à attacher les charges.` }] },
   6: { titre: 'Chez le gardien des provisions', icone: '🌾', objets: [
     { nom: 'Le blé', icone: '🌾', label: 'Observer le blé', forme: 'sacs', petit: `Des sacs de blé pour toute l'année.`, grand: `Des sacs de blé et d'orge : ces provisions permettent de nourrir tout le monde, même quand la récolte est mauvaise.` },
     { nom: "L'étagère", icone: '🍯', label: "Observer l'étagère", forme: 'etagere', petit: `Une étagère avec des jarres de miel et d'huile.`, grand: `Une étagère de jarres de miel, d'huile et de dattes pressées, bien fermées pour ne pas se gâter.` }] }
@@ -102,7 +102,7 @@ export const FAITS_INTERIEURS = {
 // Les haltes du sentier de montée des deux grandes montagnes (nature et géographie seulement ; la 3e halte est le belvédère). Les histoires liées au pied des montagnes restent « À VALIDER » ailleurs.
 export const HALTES_MONTAGNE = {
   nord: [
-    { nom: 'Le premier replat', icone: '🪨', label: 'Reprendre son souffle', petit: `Un petit replat pour reprendre son souffle.`, grand: `Un petit replat pour reprendre son souffle. On monte mieux à petits pas réguliers, en buvant un peu d'eau.` },
+    { nom: 'Le premier replat', icone: '⛰️', label: 'Reprendre son souffle', petit: `Un petit replat pour reprendre son souffle.`, grand: `Un petit replat pour reprendre son souffle. On monte mieux à petits pas réguliers, en buvant un peu d'eau.` },
     { nom: 'Les plantes du rocher', icone: '🌿', label: 'Observer les plantes', petit: `Des petites plantes poussent entre les pierres.`, grand: `Entre les pierres, de petites plantes épineuses poussent : leurs longues racines vont chercher l'eau très profond.` },
     { nom: 'Le belvédère du nord', icone: '🌅', label: 'Regarder la vue', petit: `D'ici, on voit toute la cité et la plaine !`, grand: `D'ici, on voit toute la cité, ses maisons serrées, et la grande plaine tout autour. Plus on monte, plus on voit loin.` }],
   sud: [

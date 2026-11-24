@@ -604,7 +604,7 @@ async function demarrer() {
     const ligneJour = mj.length ? `<span class="sac">☀️ Missions du jour : ${faitesJour}/${mj.length}</span>` : '';
     if (!enCours.length && !AV.sac.length && !ligneJour) { hud.cacher(s); return; }
     const k = enCours.includes(AV.suiviPrefere) ? AV.suiviPrefere : enCours[0];
-    const nomsSac = AV.sac.map(x => x.startsWith('dattes') ? '🌴' : x.startsWith('eau') ? '💧' : x === 'seau' ? '🪣' : x === 'gourde' ? '🫙' : '🚿').join(' ');
+    const nomsSac = AV.sac.map(x => x.startsWith('dattes') ? '🌴' : x.startsWith('eau') ? '💧' : x === 'seau' ? '🚰' : x === 'gourde' ? '🏺' : '🚿').join(' ');
     s.innerHTML = (k ? `${MISSIONS[k].icone} <b>${MISSIONS[k].titre}</b> · ${AV.missions[k].n}/${MISSIONS[k].total}` : '') +
       (AV.sac.length ? `<span class="sac">🎒 ${nomsSac} (${AV.sac.length}/${AV.capacite})</span>` : '') + ligneJour;
     if (suiviPret) hud.temporaire(s, 6500);        // seulement quand quelque chose change ; le carnet 📖 garde le détail
@@ -661,7 +661,7 @@ async function demarrer() {
     zoneActuelle = z;
     if (z) quotidien.evenement('zone', z);
     const info = ZONES.find(o => o.id === z);
-    $('lieu').textContent = info ? info.icone + ' ' + info.nom : (J.z < -140 ? '🪨 Le chemin du col' : '🐫 Le désert');
+    $('lieu').textContent = info ? info.icone + ' ' + info.nom : (J.z < -140 ? '⛰️ Le chemin du col' : '🐫 Le désert');
     hud.temporaire($('lieu'), 4500); zoneVillage = z === 'village'; majJumelles();
     if (z && !etat.zones.includes(z)) {
       etat.zones.push(z); enregistrer();
@@ -777,7 +777,7 @@ async function demarrer() {
     }
     if (o === 'collection') {
       const l = i => AV.ramasses.includes('lanterne' + i);
-      const objets = [['seau', '🪣', 'Le seau'], ['gourde', '🫙', 'La gourde'], ['arrosoir', '🚿', 'L\'arrosoir'], ['medaillon', '⭐', 'Le médaillon de l\'oasis'], ['jarre', '🏺', 'La jarre de la grotte']];
+      const objets = [['seau', '🚰', 'Le seau'], ['gourde', '🏺', 'La gourde'], ['arrosoir', '🚿', 'L\'arrosoir'], ['medaillon', '⭐', 'Le médaillon de l\'oasis'], ['jarre', '🏺', 'La jarre de la grotte']];
       return `<h3>🏮 Les lanternes cachées</h3><div class="grille-collection">${Array.from({ length: 12 }, (_, i) => `<div class="${l(i) ? '' : 'manque'}"><span>🏮</span>${l(i) ? 'Trouvée' : '?'}</div>`).join('')}</div>
         <h3>🧺 Objets trouvés</h3><div class="grille-collection">${objets.map(([k, ic, nom]) => `<div class="${AV.ramasses.includes(k) ? '' : 'manque'}"><span>${ic}</span>${AV.ramasses.includes(k) ? nom : '?'}</div>`).join('')}</div>
         ` + pageSucces();
@@ -806,7 +806,7 @@ async function demarrer() {
             : `<span class="ou">${MARCHANDS[a.marchand] ? MARCHANDS[a.marchand].nom.split(',')[0] : ''} · <span class="piece"></span> ${a.prix}</span>`}</div>`;
       };
       const GROUPES = [['coiffe', g === 'fille' ? '🧕 Voiles' : '🧢 Coiffes'], ['corps', g === 'fille' ? '👗 Robes' : '👕 Tuniques'], ['manteau', '🧥 Manteaux et capes'], ['ceinture', '🎗️ Ceintures'],
-        ['pieds', '🩴 Sandales'], ['sac', '🎒 Sacs'], ['main', '🧺 Dans la main'], ['hanche', '🫗 À la ceinture'], ['poignets', '📿 Bracelets']];
+        ['pieds', '👡 Sandales'], ['sac', '🎒 Sacs'], ['main', '🧺 Dans la main'], ['hanche', '💧 À la ceinture'], ['poignets', '📿 Bracelets']];
       const habits = GROUPES.map(([e, titre]) => {
         const l = ARTICLES.filter(a => a.emplacement === e && convient(a, g));
         return l.length ? `<h3>${titre}</h3><div class="etal-grille">${l.map(carte).join('')}</div>` : '';
@@ -1202,7 +1202,7 @@ async function demarrer() {
   let focus = null;                            // la caméra se tourne doucement vers ce qu'on découvre
   const fileDecouvertes = [];
   const TYPES = { mot: [ICONE_MOTS, 'Nouveau mot arabe !', 'Mot arabe'], plante: ['🌿', 'Nouvelle plante observée !', 'Plante'], animal: ['🔍', 'Nouvel animal observé !', 'Animal'],
-    gravure: ['🪨', 'Gravure découverte !', 'Gravure'], nature: ['✨', 'Nouvelle découverte !', 'Découverte'], lieu: ['🗺️', 'Nouveau lieu découvert !', 'Lieu'] };
+    gravure: ['⛰️', 'Gravure découverte !', 'Gravure'], nature: ['✨', 'Nouvelle découverte !', 'Découverte'], lieu: ['🗺️', 'Nouveau lieu découvert !', 'Lieu'] };
   // une image d'un modèle du jeu (pour les animaux)
   const cacheObjets = new Map();
   function rendreObjet(obj, cle) {
@@ -1318,7 +1318,7 @@ async function demarrer() {
     zone('dunes', LIEUX.dunes.x, LIEUX.dunes.z, 'desert', 110, { rayon: 30, verrou: fermePremium('dunes') });
     zone('montagnes', 0, -258, 'montagne', 75, { rayon: 18, verrou: fermePremium('montagnes') || decor.col.ouvert ? fermePremium('montagnes') : 'Le passage vers les montagnes est encore fermé. Découvre d\'abord l\'oasis et le camp des caravanes.' });
     zone('wadi', LIEUX.wadi.x, LIEUX.wadi.z, 'desert', 50, { rayon: 14, icone: '🌼', verrou: regions.ouverte('wadi') ? null : regions.explication('wadi') });
-    zone('rochers', LIEUX.rochers.x, LIEUX.rochers.z, 'decouverte', 44, { rayon: 12, icone: '🪨', verrou: regions.ouverte('rochers') ? null : regions.explication('rochers') });
+    zone('rochers', LIEUX.rochers.x, LIEUX.rochers.z, 'decouverte', 44, { rayon: 12, icone: '⛰️', verrou: regions.ouverte('rochers') ? null : regions.explication('rochers') });
     L.push({ id: 'col', nom: 'Le col', cat: 'passage', x: 0, z: -150, connu: true, rayon: 8, verrou: fermePremium('col') || decor.col.ouvert ? fermePremium('col') : 'Ce passage s\'ouvrira quand tu auras découvert l\'oasis et le camp des caravanes.', texte: 'Le passage entre le village et les montagnes.' });
     L.push({ id: 'puits', nom: 'Le puits du village', cat: 'eau', x: 0, z: 3.4, connu: true, rayon: 4 });
     L.push({ id: 'abreuvoir', nom: 'L\'abreuvoir de l\'enclos', cat: 'eau', x: 36.5, z: -12.5, connu: true, rayon: 4 });

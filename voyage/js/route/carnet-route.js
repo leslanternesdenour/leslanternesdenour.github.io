@@ -36,7 +36,7 @@ export function pageCarnetRoute({ route, badges = {}, age = '6-10' }) {
     <div class="carte-mission"><p style="margin:0 0 6px">${route.pos ? `Tu es à environ <b>${s} m</b> du village sur la grande route (${pct} % du grand voyage).` : 'Ton voyage sur la grande route n\'a pas encore commencé.'}</p>
     <div class="barre"><i style="width:${pct}%"></i></div>
     <p style="margin:6px 0 0;font-size:14px">${regions.length ? regions.map(r => `${r.icone} ${r.nom}`).join(' → ') : 'Aucune région traversée pour l\'instant.'}</p>
-    <p style="margin:4px 0 0;font-size:14px">🪨 Haltes faites : ${(route.repos || []).length} / ${LIEUX_ROUTE.filter(l => l.type === 'repos').length}</p></div>`;
+    <p style="margin:4px 0 0;font-size:14px">⛰️ Haltes faites : ${(route.repos || []).length} / ${LIEUX_ROUTE.filter(l => l.type === 'repos').length}</p></div>`;
   const lieux = LIEUX_ROUTE.filter(l => l.type !== 'objet' && l.type !== 'personnage' && decouv.includes(l.id));
   const total = LIEUX_ROUTE.filter(l => l.type !== 'objet' && l.type !== 'personnage').length;
   const decouvertes = `<h3>✨ Mes découvertes · ${lieux.length} / ${total}</h3>
