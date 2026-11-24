@@ -63,3 +63,10 @@ test('inventaire : les objets des intérieurs de maisons sont dits par la voix d
   const parTexte = new Map((await inventaire()).map(p => [normaliserTexte(p.texte), p]));
   for (const [g, f] of Object.entries(FAITS_INTERIEURS)) for (const o of f.objets) for (const t of [o.petit, o.grand]) { const p = parTexte.get(normaliserTexte(t)); assert.ok(p, 'sans voix : ' + t.slice(0, 40)); assert.equal(p.role, HABITANTS_MAISONS[g].voix, `${g} : la voix de l'habitant`); }
 });
+
+test('inventaire : chaque marchand du troc dit son offre, la réussite, le manque (et le cadeau) avec sa propre voix', async () => {
+  const { inventaire, normaliserTexte } = await import('../voix/route/inventaire-route.mjs');
+  const { TROCS } = await import('../../voyage/js/route/troc-route.js');
+  const parTexte = new Map((await inventaire()).map(p => [normaliserTexte(p.texte), p]));
+  for (const [id, t] of Object.entries(TROCS)) for (const k of ['offre', 'ok', 'manque', 'cadeau']) { if (!t[k]) continue; for (const a of ['petit', 'grand']) { const p = parTexte.get(normaliserTexte(t[k][a])); assert.ok(p, `${id}.${k}.${a} sans voix`); assert.equal(p.role, t.voix); } }
+});

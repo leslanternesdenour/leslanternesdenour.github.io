@@ -1,7 +1,7 @@
 {
  "jeu": "route-voix",
  "base": "/audio",
- "total": 263,
+ "total": 286,
  "phrases": [
   {
    "id": "NOUR-VOIX-RTE-924aa3cd",
@@ -1614,6 +1614,206 @@
    "voixId": "8aQsvxWbavqMpn00DVgR"
   },
   {
+   "id": "NOUR-VOIX-RTE-203f5d9e",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Je donne un tissu contre deux dattes. D'accord ?",
+   "fichier": "fr/route/nour-voix-rte-203f5d9e.mp3",
+   "duree": 2.96,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-599157bb",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Mes tissus sont chauds et solides. Je te donne un tissu contre deux dattes. D'accord ?",
+   "fichier": "fr/route/nour-voix-rte-599157bb.mp3",
+   "duree": 5.52,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-d55d5272",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Merci ! Voici ton beau tissu.",
+   "fichier": "fr/route/nour-voix-rte-d55d5272.mp3",
+   "duree": 2.4,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-ae64589d",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Merci ! Voici ton tissu. Chacun y gagne : toi un tissu, moi de quoi manger.",
+   "fichier": "fr/route/nour-voix-rte-ae64589d.mp3",
+   "duree": 5.84,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-03a528e6",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Il te faut deux dattes pour cet échange.",
+   "fichier": "fr/route/nour-voix-rte-03a528e6.mp3",
+   "duree": 2.32,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-ef80ba7c",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Il te faut deux dattes pour cet échange. Le marchand de dattes pourra t'aider.",
+   "fichier": "fr/route/nour-voix-rte-ef80ba7c.mp3",
+   "duree": 4.32,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-bf05e351",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Je donne une jarre contre un tissu. D'accord ?",
+   "fichier": "fr/route/nour-voix-rte-bf05e351.mp3",
+   "duree": 2.72,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-406b8ac0",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Je fabrique des jarres, mais il me manque un tissu pour me protéger du soleil. Je te donne une jarre contre un tissu. D'accord ?",
+   "fichier": "fr/route/nour-voix-rte-406b8ac0.mp3",
+   "duree": 7.36,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-5e09caa1",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Merci ! Voici ta jarre.",
+   "fichier": "fr/route/nour-voix-rte-5e09caa1.mp3",
+   "duree": 2,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-235696d7",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Merci ! Voici une jarre. Chacun y gagne : toi une jarre, moi un tissu pour me protéger du soleil.",
+   "fichier": "fr/route/nour-voix-rte-235696d7.mp3",
+   "duree": 7.12,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-a805919e",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Il te faut un tissu pour cet échange.",
+   "fichier": "fr/route/nour-voix-rte-a805919e.mp3",
+   "duree": 2.16,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-cc8dc584",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Il te faut un tissu pour cet échange. La tisserande en a : elle aime les dattes.",
+   "fichier": "fr/route/nour-voix-rte-cc8dc584.mp3",
+   "duree": 4.88,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-d86facf3",
+   "role": "perso-karim",
+   "langue": "fr",
+   "texte": "Je donne quatre dattes contre une jarre. D'accord ?",
+   "fichier": "fr/route/nour-voix-rte-d86facf3.mp3",
+   "duree": 3.28,
+   "prononciationVerifiee": false,
+   "voixId": "lM87a4ey2IQxE37nDvti"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-3a0d762e",
+   "role": "perso-karim",
+   "langue": "fr",
+   "texte": "J'ai besoin de jarres pour ranger mes dattes. Je te donne quatre dattes contre une jarre. D'accord ?",
+   "fichier": "fr/route/nour-voix-rte-3a0d762e.mp3",
+   "duree": 5.84,
+   "prononciationVerifiee": false,
+   "voixId": "lM87a4ey2IQxE37nDvti"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-a4ae68f9",
+   "role": "perso-karim",
+   "langue": "fr",
+   "texte": "Merci ! Tu as quatre dattes de plus.",
+   "fichier": "fr/route/nour-voix-rte-a4ae68f9.mp3",
+   "duree": 2.72,
+   "prononciationVerifiee": false,
+   "voixId": "lM87a4ey2IQxE37nDvti"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-92196504",
+   "role": "perso-karim",
+   "langue": "fr",
+   "texte": "Merci ! Voilà quatre dattes. Chacun y gagne : toi des dattes, moi une jarre pour les ranger.",
+   "fichier": "fr/route/nour-voix-rte-92196504.mp3",
+   "duree": 6.72,
+   "prononciationVerifiee": false,
+   "voixId": "lM87a4ey2IQxE37nDvti"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-54de6eed",
+   "role": "perso-karim",
+   "langue": "fr",
+   "texte": "Il te faut une jarre pour cet échange.",
+   "fichier": "fr/route/nour-voix-rte-54de6eed.mp3",
+   "duree": 2.24,
+   "prononciationVerifiee": false,
+   "voixId": "lM87a4ey2IQxE37nDvti"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-12ac1ee3",
+   "role": "perso-karim",
+   "langue": "fr",
+   "texte": "Il te faut une jarre pour cet échange. Le potier en fabrique : va le voir avec un tissu.",
+   "fichier": "fr/route/nour-voix-rte-12ac1ee3.mp3",
+   "duree": 5.6,
+   "prononciationVerifiee": false,
+   "voixId": "lM87a4ey2IQxE37nDvti"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-a4a5b663",
+   "role": "perso-karim",
+   "langue": "fr",
+   "texte": "Pour commencer, voici quatre dattes pour toi !",
+   "fichier": "fr/route/nour-voix-rte-a4a5b663.mp3",
+   "duree": 2.88,
+   "prononciationVerifiee": false,
+   "voixId": "lM87a4ey2IQxE37nDvti"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-9f266602",
+   "role": "perso-karim",
+   "langue": "fr",
+   "texte": "Pour commencer, voici quatre dattes de mon étal : on n'échange bien que si l'on a quelque chose à offrir.",
+   "fichier": "fr/route/nour-voix-rte-9f266602.mp3",
+   "duree": 6.56,
+   "prononciationVerifiee": false,
+   "voixId": "lM87a4ey2IQxE37nDvti"
+  },
+  {
    "id": "NOUR-VOIX-RTE-7f5c5194",
    "role": "perso-yacine",
    "langue": "fr",
@@ -2320,6 +2520,36 @@
    "texte": "Dans la cité, chaque maison a ses habitants. Frappe à quatre portes différentes, poliment, pour savoir qui vit là et ce qu'ils font.",
    "fichier": "fr/route/nour-voix-rte-e436bc44.mp3",
    "duree": 8.88,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-917cbab4",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Au marché : échanger",
+   "fichier": "fr/route/nour-voix-rte-917cbab4.mp3",
+   "duree": 2.16,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-060cfcda",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Fais un échange avec trois marchands.",
+   "fichier": "fr/route/nour-voix-rte-060cfcda.mp3",
+   "duree": 2.56,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-7f06e3e6",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Au marché, chacun a ce qui manque à l'autre. Fais un échange avec trois marchands différents : à chaque fois, tout le monde y gagne.",
+   "fichier": "fr/route/nour-voix-rte-7f06e3e6.mp3",
+   "duree": 8,
    "prononciationVerifiee": false,
    "voixId": "hddT377hAwvRoOKqMj0E"
   },

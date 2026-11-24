@@ -133,7 +133,10 @@ export const MISSIONS_ROUTE = {
     resume: 'Les habitants t\'invitent chez eux. Entre dans trois maisons différentes de la cité pour découvrir comment on y vit.' },
   portes: { titre: 'Frapper aux portes', icone: '🚪', total: 4, recompense: 120, categorie: 'connaissance',
     simple: 'Frappe à quatre portes de la cité et dis bonjour.',
-    resume: 'Dans la cité, chaque maison a ses habitants. Frappe à quatre portes différentes, poliment, pour savoir qui vit là et ce qu\'ils font.' }
+    resume: 'Dans la cité, chaque maison a ses habitants. Frappe à quatre portes différentes, poliment, pour savoir qui vit là et ce qu\'ils font.' },
+  troc: { titre: 'Au marché : échanger', icone: '🤝', total: 3, recompense: 180, categorie: 'connaissance',
+    simple: 'Fais un échange avec trois marchands.',
+    resume: 'Au marché, chacun a ce qui manque à l\'autre. Fais un échange avec trois marchands différents : à chaque fois, tout le monde y gagne.' }
 };
 
 // Les habitants fictifs des maisons à porte (un par forme de maison ; aucun personnage historique ou religieux). Chacun parle avec une voix Nour déjà attribuée à un rôle du jeu.

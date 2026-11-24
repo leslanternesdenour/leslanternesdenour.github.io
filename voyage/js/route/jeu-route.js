@@ -8,6 +8,7 @@ import { creerInterieur3D } from './interieur-3d.js';
 import { creerVoyageurs3D } from './voyageurs-3d.js';
 import { maisonsVille, portesJouables } from './ville-plan.js';
 import { ACTIVITES_METIERS, questionsMetier } from './activites-route.js';
+import { TROCS, CADEAU, stockVide, echanger, peutEchanger, bloque, panierTexte } from './troc-route.js';
 import { LIEUX_SACRES } from './lieux-mecque-a-valider.js';
 import { preparerRoute, memoriserPosition, positionDeReprise } from './etat-route.js';
 import { faireEtape, progression } from './missions-route.js';
@@ -168,7 +169,16 @@ export function creerRoute(ctx) {
     const ko = k => ui.dialogue({ titre, texte: qs[k].ko, icone: a.icone, boutons: [{ txt: 'Réessayer', fn: () => setTimeout(() => poser(k), 60) }] });
     ui.dialogue({ titre, texte: g ? a.intro.petit : a.intro.grand, icone: a.icone, boutons: [{ txt: 'Je suis prêt !', fn: () => setTimeout(() => poser(0), 60) }, { txt: 'Plus tard', fn: () => {} }] });
   }
-  const parlerVoyageur = n => { W.saluer(n.v.id); ui.dialogue({ titre: '💬 ' + n.v.role, texte: age() === '3-5' ? n.v.texte.petit : n.v.texte.grand, boutons: [...(ACTIVITES_METIERS[n.v.id] ? [{ txt: ACTIVITES_METIERS[n.v.id].icone + ' Apprendre son métier', fn: () => setTimeout(() => lancerMetier(n.v.id), 60) }] : []), { txt: 'Merci, bonne route !', fn: () => {} }] }); if (n.v.mission) etape(n.v.mission, n.v.id); };
+  // le troc du marché : on échange des marchandises (jamais de pièces) ; le panier est rangé dans etat.route.vu ; on n'est jamais bloqué (le marchand de dattes redonne de quoi commencer)
+  function lancerTroc(v) {
+    const id = v.id, T = TROCS[id], g = age() === '3-5' ? 'petit' : 'grand', S = R.vu.troc || (R.vu.troc = { stock: stockVide(), depart: false }), titre = '🤝 ' + v.role;
+    const dire = (texte, boutons) => ui.dialogue({ titre, texte, sous: panierTexte(S.stock), icone: '🤝', boutons });
+    const faire = () => { const r = echanger(S.stock, id); if (!r.ok) return; S.stock = r.stock; enregistrer(); dire(T.ok[g], [{ txt: 'Merci !', fn: () => {} }]); etape('troc', 'echange:' + id); };
+    if (id === 'marchand-dattes' && bloque(S.stock)) { S.stock[CADEAU.item] = (S.stock[CADEAU.item] || 0) + CADEAU.n; S.depart = true; enregistrer(); dire(T.cadeau[g], [{ txt: 'Merci !', fn: () => {} }]); return; }
+    if (!peutEchanger(S.stock, id)) { dire(T.manque[g], [{ txt: 'Je vais voir', fn: () => {} }]); return; }
+    dire(T.offre[g], [{ txt: '✅ Échanger', fn: () => setTimeout(faire, 60) }, { txt: 'Non merci', fn: () => {} }]);
+  }
+  const parlerVoyageur = n => { W.saluer(n.v.id); ui.dialogue({ titre: '💬 ' + n.v.role, texte: age() === '3-5' ? n.v.texte.petit : n.v.texte.grand, boutons: [...(TROCS[n.v.id] ? [{ txt: '🤝 Échanger', fn: () => setTimeout(() => lancerTroc(n.v), 60) }] : []), ...(ACTIVITES_METIERS[n.v.id] ? [{ txt: ACTIVITES_METIERS[n.v.id].icone + ' Apprendre son métier', fn: () => setTimeout(() => lancerMetier(n.v.id), 60) }] : []), { txt: 'Merci, bonne route !', fn: () => {} }] }); if (n.v.mission) etape(n.v.mission, n.v.id); };
   const regV = n => habitants.ajouter({ id: 'route:v:' + n.v.id, x: n.x, z: n.z, rayon: 3.4, label: 'Parler', icone: '💬', ouvrir: () => parlerVoyageur(n) });
   for (const n of W.liste) regV(n);
   const faitMaison = g => {

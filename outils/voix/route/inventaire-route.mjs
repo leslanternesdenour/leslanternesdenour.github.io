@@ -10,7 +10,7 @@ const ROLE_VOYAGEUR = { 'marchand-dattes': 'perso-karim', tisserande: 'perso-war
 const hash8 = t => { let h = 0x811c9dc5; for (const c of Buffer.from(t, 'utf8')) { h ^= c; h = Math.imul(h, 0x01000193) >>> 0; } return h.toString(16).padStart(8, '0'); };
 
 export async function inventaire() {
-  const A = await import('../../../voyage/js/route/activites-route.js'), D = await import('../../../voyage/js/route/donnees.js'), T = await import('../../../voyage/js/route/textes-route.js'), S = await import('../../../voyage/js/route/lieux-mecque-a-valider.js');
+  const TR = await import('../../../voyage/js/route/troc-route.js'), A = await import('../../../voyage/js/route/activites-route.js'), D = await import('../../../voyage/js/route/donnees.js'), T = await import('../../../voyage/js/route/textes-route.js'), S = await import('../../../voyage/js/route/lieux-mecque-a-valider.js');
   const out = new Map();
   const ajouter = (role, texte, source) => { const n = normaliser(texte); if (!n || out.has(n)) return; out.set(n, { id: 'NOUR-VOIX-RTE-' + hash8(n), texte: texte.replace(/^[^\p{L}\p{N}«(]+/u, '').trim(), role, source }); };
   // les lieux (sauf ceux dont le texte attend une validation) : version 3–5 ans et 6–10 ans
@@ -24,6 +24,8 @@ export async function inventaire() {
   for (const [id, f] of Object.entries(T.FAITS_ATELIER)) { ajouter('narratrice', f.petit, 'atelier:' + id); ajouter('narratrice', f.grand, 'atelier:' + id); }   // dans l'atelier du potier : le tour et le four
   for (const [g, f] of Object.entries(T.FAITS_INTERIEURS)) for (const o of f.objets) { const v = D.HABITANTS_MAISONS[g].voix; ajouter(v, o.petit, 'interieur:' + g); ajouter(v, o.grand, 'interieur:' + g); }   // dans les maisons : chaque objet est décrit par l'habitant
   for (const [g, h] of Object.entries(D.HABITANTS_MAISONS)) { ajouter(h.voix, h.petit, 'porte:' + g); ajouter(h.voix, h.grand, 'porte:' + g); }   // les habitants derrière les portes : chacun sa voix
+  // le troc du marché : chaque marchand dit son offre, la réussite, le manque (et le cadeau de départ)
+  for (const [id, t] of Object.entries(TR.TROCS)) for (const k of ['offre', 'ok', 'manque', 'cadeau']) if (t[k]) for (const a of ['petit', 'grand']) ajouter(t.voix, t[k][a], 'troc:' + id);
   // les activités des métiers : présentation, questions, explications, fin (chaque métier a sa voix)
   for (const [id, a] of Object.entries(A.ACTIVITES_METIERS)) { for (const k of ['petit', 'grand']) { ajouter(a.voix, a.intro[k], 'metier:' + id); ajouter(a.voix, a.fin[k], 'metier:' + id); }
     for (const age of ['3-5', '6-10']) for (const q of A.questionsMetier(id, age)) { ajouter(a.voix, q.question, 'metier:' + id); ajouter(a.voix, q.ok, 'metier:' + id); ajouter(a.voix, q.ko, 'metier:' + id); } }

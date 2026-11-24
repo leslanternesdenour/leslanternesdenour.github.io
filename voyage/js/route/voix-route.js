@@ -807,6 +807,106 @@ export const PHRASES_ROUTE = [
   "exact"
  ],
  [
+  "NOUR-VOIX-RTE-203f5d9e",
+  "Je donne un tissu contre deux dattes. D'accord ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-599157bb",
+  "Mes tissus sont chauds et solides. Je te donne un tissu contre deux dattes. D'accord ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-d55d5272",
+  "Merci ! Voici ton beau tissu.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-ae64589d",
+  "Merci ! Voici ton tissu. Chacun y gagne : toi un tissu, moi de quoi manger.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-03a528e6",
+  "Il te faut deux dattes pour cet échange.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-ef80ba7c",
+  "Il te faut deux dattes pour cet échange. Le marchand de dattes pourra t'aider.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-bf05e351",
+  "Je donne une jarre contre un tissu. D'accord ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-406b8ac0",
+  "Je fabrique des jarres, mais il me manque un tissu pour me protéger du soleil. Je te donne une jarre contre un tissu. D'accord ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-5e09caa1",
+  "Merci ! Voici ta jarre.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-235696d7",
+  "Merci ! Voici une jarre. Chacun y gagne : toi une jarre, moi un tissu pour me protéger du soleil.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-a805919e",
+  "Il te faut un tissu pour cet échange.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-cc8dc584",
+  "Il te faut un tissu pour cet échange. La tisserande en a : elle aime les dattes.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-d86facf3",
+  "Je donne quatre dattes contre une jarre. D'accord ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-3a0d762e",
+  "J'ai besoin de jarres pour ranger mes dattes. Je te donne quatre dattes contre une jarre. D'accord ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-a4ae68f9",
+  "Merci ! Tu as quatre dattes de plus.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-92196504",
+  "Merci ! Voilà quatre dattes. Chacun y gagne : toi des dattes, moi une jarre pour les ranger.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-54de6eed",
+  "Il te faut une jarre pour cet échange.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-12ac1ee3",
+  "Il te faut une jarre pour cet échange. Le potier en fabrique : va le voir avec un tissu.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-a4a5b663",
+  "Pour commencer, voici quatre dattes pour toi !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-9f266602",
+  "Pour commencer, voici quatre dattes de mon étal : on n'échange bien que si l'on a quelque chose à offrir.",
+  "exact"
+ ],
+ [
   "NOUR-VOIX-RTE-7f5c5194",
   "Je suis potier. Veux-tu apprendre à faire une jarre ?",
   "exact"
@@ -1159,6 +1259,21 @@ export const PHRASES_ROUTE = [
  [
   "NOUR-VOIX-RTE-e436bc44",
   "Dans la cité, chaque maison a ses habitants. Frappe à quatre portes différentes, poliment, pour savoir qui vit là et ce qu'ils font.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-917cbab4",
+  "Au marché : échanger",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-060cfcda",
+  "Fais un échange avec trois marchands.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-7f06e3e6",
+  "Au marché, chacun a ce qui manque à l'autre. Fais un échange avec trois marchands différents : à chaque fois, tout le monde y gagne.",
   "exact"
  ],
  [
