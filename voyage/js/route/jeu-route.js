@@ -16,7 +16,7 @@ import { preparerRoute, memoriserPosition, positionDeReprise } from './etat-rout
 import { faireEtape, progression } from './missions-route.js';
 import { DEC, versRoute, S_DEBUT, S_FIN_TRANCHE, LARGEUR, OASIS, CITE, pointChemin } from './relief.js';
 import { FACTEUR_MARCHE_ROUTE, HABITANTS_MAISONS, regionA, LIEUX_ROUTE, MISSIONS_ROUTE, SAC_ROUTE, RELAIS_VILLAGE, auSeuilVillage, versLaRoute, auRetourRoute, versLeVillage } from './donnees.js';
-import { texteLieu, GUIDE, VOYAGEUSE, MESSAGES, FAITS_MAISONS, FAITS_ATELIER, FAITS_INTERIEURS, HALTES_MONTAGNE } from './textes-route.js';
+import { texteLieu, GUIDE, VOYAGEUSE, MESSAGES, FAITS_MAISONS, FAITS_ATELIER, FAITS_INTERIEURS, HALTES_MONTAGNE, SUJETS_VOYAGEURS } from './textes-route.js';
 import { CONTENU, etiquette, texteDe } from './contenu-a-valider.js';
 import { pageCarnetRoute } from './carnet-route.js';
 import { creerRecitUI } from './recit-ui.js';
@@ -194,7 +194,14 @@ export function creerRoute(ctx) {
     if (!peutEchanger(S.stock, id)) { dire(T.manque[g], [{ txt: 'Je vais voir', fn: () => {} }]); return; }
     dire(T.offre[g], [{ txt: '✅ Échanger', fn: () => setTimeout(faire, 60) }, { txt: 'Non merci', fn: () => {} }]);
   }
-  const parlerVoyageur = n => { W.saluer(n.v.id); ui.dialogue({ titre: '💬 ' + n.v.role, texte: age() === '3-5' ? n.v.texte.petit : n.v.texte.grand, boutons: [...(TROCS[n.v.id] ? [{ txt: '🤝 Échanger', fn: () => setTimeout(() => lancerTroc(n.v), 60) }] : []), ...(ACTIVITES_METIERS[n.v.id] ? [{ txt: ACTIVITES_METIERS[n.v.id].icone + ' Apprendre son métier', fn: () => setTimeout(() => lancerMetier(n.v.id), 60) }] : []), { txt: 'Merci, bonne route !', fn: () => {} }] }); if (n.v.mission) etape(n.v.mission, n.v.id); };
+  // les questions posées aux habitants : chaque réponse est dite avec la voix de l'habitant ; les réponses entendues sont gardées (une petite récompense à huit questions)
+  function repondreSujet(n, i) {
+    const s = SUJETS_VOYAGEURS[n.v.id][i], S = R.vu.sujets || (R.vu.sujets = {});
+    ui.dialogue({ titre: '💬 ' + n.v.role, texte: age() === '3-5' ? s.petit : s.grand, boutons: [{ txt: 'Une autre question', fn: () => setTimeout(() => parlerVoyageur(n), 60) }, { txt: 'Merci !', fn: () => {} }] });
+    if (!S[n.v.id + ':' + i]) { S[n.v.id + ':' + i] = true; enregistrer(); }
+    if (Object.keys(S).length >= 8 && !R.vu.sujetsRecompense) { R.vu.sujetsRecompense = true; enregistrer(); gagner('sujets', 80, 'Tu as bien discuté avec les habitants'); }
+  }
+  const parlerVoyageur = n => { W.saluer(n.v.id); ui.dialogue({ titre: '💬 ' + n.v.role, texte: age() === '3-5' ? n.v.texte.petit : n.v.texte.grand, petitsBoutons: true, boutons: [...(SUJETS_VOYAGEURS[n.v.id] || []).map((s, i) => ({ txt: '💬 ' + s.q, fn: () => setTimeout(() => repondreSujet(n, i), 60) })), ...(TROCS[n.v.id] ? [{ txt: '🤝 Échanger', fn: () => setTimeout(() => lancerTroc(n.v), 60) }] : []), ...(ACTIVITES_METIERS[n.v.id] ? [{ txt: ACTIVITES_METIERS[n.v.id].icone + ' Apprendre son métier', fn: () => setTimeout(() => lancerMetier(n.v.id), 60) }] : []), { txt: 'Merci, bonne route !', fn: () => {} }] }); if (n.v.mission) etape(n.v.mission, n.v.id); };
   const regV = n => habitants.ajouter({ id: 'route:v:' + n.v.id, x: n.x, z: n.z, rayon: 3.4, label: 'Parler', icone: '💬', ouvrir: () => parlerVoyageur(n) });
   for (const n of W.liste) regV(n);
   const faitMaison = g => {

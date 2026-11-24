@@ -98,6 +98,40 @@ export const HALTES_MONTAGNE = {
     { nom: 'Les roches de couleur', icone: '🎨', label: 'Observer les roches', petit: `Les roches ont des couleurs : rouge, jaune, gris.`, grand: `Regarde les couleurs de la roche : le rouge vient du fer, le jaune du sable, le gris de la pierre dure.` },
     { nom: 'Le belvédère du sud', icone: '🌅', label: 'Regarder la vue', petit: `D'ici, on voit les chemins et les jardins.`, grand: `D'ici, on voit les chemins des caravanes, les jardins et la cité au loin. Les montagnes servent de repères aux voyageurs.` }]
 };
+// Les questions que l'on peut poser aux habitants de la cité (deux par habitant) : leurs métiers, la vie de tous les jours. Aucun sujet religieux ; chaque réponse est dite par la voix de l'habitant.
+export const SUJETS_VOYAGEURS = {
+  'marchand-dattes': [
+    { q: `Comment choisir une datte ?`, petit: `Une bonne datte est souple et brillante.`, grand: `Une bonne datte est souple, brillante et sucrée. Si elle est très dure ou très sèche, elle est trop vieille.` },
+    { q: `D'où viennent tes dattes ?`, petit: `Des palmiers de l'oasis, tout là-bas.`, grand: `Elles poussent sur les palmiers des oasis, où l'eau est proche. Une caravane les apporte jusqu'ici en plusieurs jours.` }],
+  tisserande: [
+    { q: `Comment fais-tu les couleurs ?`, petit: `Avec des plantes et de la terre.`, grand: `Je fais bouillir des plantes, des racines et de la terre colorée. Le tissu prend la couleur, comme une peinture douce.` },
+    { q: `Combien de temps pour un tapis ?`, petit: `Plusieurs semaines, avec patience.`, grand: `Un grand tapis demande plusieurs semaines, un fil après l'autre. Il faut de la patience, et c'est ce qui le rend si beau.` }],
+  potier: [
+    { q: `Pourquoi as-tu un four ?`, petit: `Le feu rend la jarre dure comme une pierre.`, grand: `Le feu durcit l'argile. Sans cuisson, la jarre redeviendrait de la boue au premier contact avec l'eau.` },
+    { q: `Où trouves-tu l'argile ?`, petit: `Près des endroits où l'eau passe.`, grand: `On trouve l'argile près des anciens lits d'eau, là où la terre est lisse et collante quand elle est mouillée.` }],
+  'voyageuse-oasis': [
+    { q: `Comment as-tu voyagé ?`, petit: `En caravane, avec des chameaux.`, grand: `J'ai voyagé en caravane, avec des chameaux qui portaient l'eau et les provisions. On marche surtout le matin et le soir, quand il fait plus frais.` },
+    { q: `Que fais-tu quand il fait chaud ?`, petit: `On se repose à l'ombre.`, grand: `Quand le soleil est trop fort, on se repose à l'ombre d'une tente, on boit de petites gorgées et on repart plus tard.` }],
+  'porteur-eau': [
+    { q: `Combien de jarres par jour ?`, petit: `Beaucoup ! Mon dos le sait.`, grand: `Une dizaine de jarres par jour, du puits jusqu'au marché. Avec deux outres bien équilibrées, c'est plus facile.` },
+    { q: `Comment garder l'eau fraîche ?`, petit: `On la couvre avec un linge mouillé.`, grand: `On couvre les jarres d'un linge mouillé et on les met à l'ombre : en séchant, le linge rafraîchit l'eau.` }],
+  'marcheur-rue': [
+    { q: `Qu'as-tu vu en chemin ?`, petit: `Des dunes, des oasis et des montagnes.`, grand: `J'ai vu des dunes dorées, des oasis pleines de palmiers et de hautes montagnes rouges. Chaque endroit était différent.` },
+    { q: `Un conseil pour le voyage ?`, petit: `Marche doucement et bois de l'eau.`, grand: `Marche à ton rythme, bois un peu d'eau souvent et regarde autour de toi : on ne voyage pas pour arriver vite, mais pour bien voir.` }],
+  'ancien-marche': [
+    { q: `Comment sais-tu le temps qu'il fera ?`, petit: `Je regarde le ciel et le vent.`, grand: `Je regarde le ciel et le vent. Un ciel rouge au coucher du soleil annonce souvent une belle journée, et un vent chaud apporte du sable.` },
+    { q: `Que faisais-tu quand tu étais jeune ?`, petit: `J'ai guidé des caravanes.`, grand: `J'ai guidé des caravanes pendant des années. J'ai appris à lire les étoiles pour ne jamais perdre mon chemin la nuit.` }],
+  boulangere: [
+    { q: `Comment fais-tu le pain ?`, petit: `Avec de la farine, de l'eau et du feu.`, grand: `Je mélange de la farine, de l'eau et un peu de sel, je laisse reposer la pâte, puis je la cuis sur les pierres chaudes du four.` },
+    { q: `Pourquoi laisser reposer la pâte ?`, petit: `Pour qu'elle gonfle doucement.`, grand: `En reposant, la pâte gonfle doucement et devient légère. Il faut de la patience : on ne peut pas aller plus vite que la pâte !` }],
+  'jeune-berger': [
+    { q: `Comment appelles-tu tes chèvres ?`, petit: `Avec un sifflement doux.`, grand: `Je siffle un petit air, toujours le même : mes chèvres le reconnaissent et viennent vers moi, même de loin.` },
+    { q: `Que boivent tes chèvres ?`, petit: `Un peu d'eau, matin et soir.`, grand: `Elles boivent un peu d'eau matin et soir. Dans le désert, elles supportent la soif mieux que nous, mais je leur en garde toujours.` }],
+  caravanier: [
+    { q: `Que portent les chameaux ?`, petit: `Des sacs, de l'eau et des tissus.`, grand: `Ils portent des sacs de dattes, des jarres d'eau et des balles de tissu. Un chameau peut porter une lourde charge pendant des jours.` },
+    { q: `Comment ne pas se perdre ?`, petit: `On suit les étoiles et les repères.`, grand: `On suit les étoiles la nuit et, le jour, des repères comme les montagnes ou les balises de pierre.` }]
+};
+
 export const texteLieu = (id, age) => { const t = TEXTES_LIEUX[id]; return t ? (age === '3-5' ? t.petit : t.grand) : ''; };
 
 // Les personnages FICTIFS (aucun personnage historique ou religieux)

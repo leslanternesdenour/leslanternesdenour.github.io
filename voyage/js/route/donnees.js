@@ -200,5 +200,13 @@ export const VOYAGEURS_VILLE = [
   { id: 'porteur-eau', role: 'Un porteur d\'eau', tenue: { tunique: '#6b4a30', pantalon: '#cfc2a8', cheche: '#c9a26a', peau: '#a56a48', sac: true }, vitesse: 1.2, trajet: [[5692, 34], [5736, 40], [5772, 52]],
     texte: { petit: 'Je porte l\'eau du puits jusqu\'au marché.', grand: 'Je porte l\'eau du puits jusqu\'au marché, dans des jarres. L\'eau est précieuse : on ne la gaspille jamais.' } },
   { id: 'marcheur-rue', role: 'Un voyageur', tenue: { tunique: '#2bb3c0', pantalon: '#3a4f7a', cheche: '#fff3dc', peau: '#d9a27a', sac: true }, vitesse: 1.3, trajet: [[5486, 2], [5540, 3], [5596, 2]],
-    texte: { petit: 'Je viens de traverser les montagnes. Quel long chemin !', grand: 'Je viens de traverser les montagnes et le désert. Le chemin est long, mais on y fait de belles rencontres et on apprend beaucoup.' } }
+    texte: { petit: 'Je viens de traverser les montagnes. Quel long chemin !', grand: 'Je viens de traverser les montagnes et le désert. Le chemin est long, mais on y fait de belles rencontres et on apprend beaucoup.' } },
+  { id: 'ancien-marche', role: 'Un ancien du marché', s: 5526, t: 72, tenue: { tunique: '#8a7a64', pantalon: '#cdbb96', cheche: '#f1ead8', peau: '#a56a48', sac: false, barbe: '#e8e4dc' },
+    texte: { petit: `Je viens ici tous les jours pour regarder les caravanes arriver.`, grand: `Je viens au marché tous les jours : j'aime regarder les caravanes arriver et écouter les nouvelles des routes lointaines.` } },
+  { id: 'boulangere', role: 'Une boulangère', s: 5805, t: 55, tenue: { tunique: '#c9a26a', pantalon: '#cdbb96', cheche: '#e8dcc4', voile: '#e8dcc4', peau: '#c08a62', sac: false },
+    texte: { petit: `Mon pain chaud sort du four !`, grand: `Mon pain sort du four : il est chaud, doré, et il sent bon dans toute la rue. Veux-tu savoir comment on le fait ?` } },
+  { id: 'jeune-berger', role: 'Un jeune berger', tenue: { tunique: '#5f7a56', pantalon: '#cfc2a8', cheche: '#c9a26a', peau: '#b57e58', sac: true }, vitesse: 1.15, trajet: [[5614, -96], [5626, -88], [5630, -98], [5618, -102]],
+    texte: { petit: `Je garde mes chèvres : elles aiment grimper partout !`, grand: `Je garde mes chèvres. Elles grimpent partout et trouvent de l'herbe là où personne n'en voit. Il faut les compter chaque soir.` } },
+  { id: 'caravanier', role: 'Un caravanier', tenue: { tunique: '#7a3b2e', pantalon: '#3a4f7a', cheche: '#d9c9a0', peau: '#a56a48', sac: true, barbe: '#2a2018' }, vitesse: 1.2, trajet: [[5620, -26], [5650, -32], [5680, -26]],
+    texte: { petit: `Ma caravane repart demain, avec dix chameaux.`, grand: `Ma caravane repart demain avec dix chameaux chargés. Nous voyageons en groupe : c'est plus sûr, et on partage l'eau.` } }
 ];

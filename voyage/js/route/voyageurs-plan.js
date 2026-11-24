@@ -6,7 +6,7 @@ export function positionSur(pts, d) {
   let reste = k;
   for (let i = 0; i < pts.length - 1; i++) {
     const [as, at] = pts[i], [bs, bt] = pts[i + 1], seg = Math.hypot(bs - as, bt - at);
-    if (reste <= seg || i === pts.length - 2) { const f = seg ? Math.min(1, reste / seg) : 0, ds = bs - as, dt = bt - at, sens = aller ? 1 : -1; return { s: as + ds * f, t: at + dt * f, cap: Math.atan2(dt * sens, ds * sens) }; }
+    if (reste <= seg || i === pts.length - 2) { const f = seg ? Math.min(1, reste / seg) : 0, ds = bs - as, dt = bt - at, sens = aller ? 1 : -1, fin = f > 1 - 1e-9; return { s: fin ? bs : as + ds * f, t: fin ? bt : at + dt * f, cap: Math.atan2(dt * sens, ds * sens) }; }   // fin : le point d'arrivée exact, sans erreur d'arrondi
     reste -= seg;
   }
   return { s: pts[0][0], t: pts[0][1], cap: 0 };

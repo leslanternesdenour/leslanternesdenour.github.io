@@ -5,7 +5,7 @@ import { normaliser } from '../../../voyage/js/voix.js';
 export const normaliserTexte = normaliser;
 
 // qui prononce quoi : un rôle = une voix Nour stable (déjà utilisée ailleurs dans le jeu)
-const ROLE_VOYAGEUR = { 'marchand-dattes': 'perso-karim', tisserande: 'perso-warda', potier: 'perso-yacine', 'voyageuse-oasis': 'perso-salma', 'porteur-eau': 'perso-samir', 'marcheur-rue': 'narrateur' };
+const ROLE_VOYAGEUR = { 'marchand-dattes': 'perso-karim', tisserande: 'perso-warda', potier: 'perso-yacine', 'voyageuse-oasis': 'perso-salma', 'porteur-eau': 'perso-samir', 'marcheur-rue': 'narrateur', 'ancien-marche': 'perso-hakim', boulangere: 'perso-salma', 'jeune-berger': 'perso-samir', caravanier: 'narrateur' };
 
 const hash8 = t => { let h = 0x811c9dc5; for (const c of Buffer.from(t, 'utf8')) { h ^= c; h = Math.imul(h, 0x01000193) >>> 0; } return h.toString(16).padStart(8, '0'); };
 
@@ -20,6 +20,7 @@ export async function inventaire() {
   ajouter('narrateur', T.GUIDE.fermeTexte, 'guide'); ajouter('narratrice', T.VOYAGEUSE.eau, 'voyageuse'); ajouter('narratrice', T.VOYAGEUSE.provisions, 'voyageuse');
   // les voyageurs de la cité (chacun sa voix) et les maisons
   for (const v of D.VOYAGEURS_VILLE) { ajouter(ROLE_VOYAGEUR[v.id], v.texte.petit, 'voyageur:' + v.id); ajouter(ROLE_VOYAGEUR[v.id], v.texte.grand, 'voyageur:' + v.id); }
+  for (const [id, liste] of Object.entries(T.SUJETS_VOYAGEURS)) for (const x of liste) { ajouter(ROLE_VOYAGEUR[id], x.petit, 'sujet:' + id); ajouter(ROLE_VOYAGEUR[id], x.grand, 'sujet:' + id); }   // les questions posées aux habitants : chaque réponse a la voix de l'habitant
   for (const f of T.FAITS_MAISONS) { ajouter('narratrice', f.petit, 'maison'); ajouter('narratrice', f.grand, 'maison'); }
   for (const [id, f] of Object.entries(T.FAITS_ATELIER)) { ajouter('narratrice', f.petit, 'atelier:' + id); ajouter('narratrice', f.grand, 'atelier:' + id); }   // dans l'atelier du potier : le tour et le four
   for (const [g, f] of Object.entries(T.FAITS_INTERIEURS)) for (const o of f.objets) { const v = D.HABITANTS_MAISONS[g].voix; ajouter(v, o.petit, 'interieur:' + g); ajouter(v, o.grand, 'interieur:' + g); }   // dans les maisons : chaque objet est décrit par l'habitant

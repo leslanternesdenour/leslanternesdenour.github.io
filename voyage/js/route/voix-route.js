@@ -527,6 +527,246 @@ export const PHRASES_ROUTE = [
   "exact"
  ],
  [
+  "NOUR-VOIX-RTE-d450fb77",
+  "Je viens ici tous les jours pour regarder les caravanes arriver.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-751f4642",
+  "Je viens au marché tous les jours : j'aime regarder les caravanes arriver et écouter les nouvelles des routes lointaines.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-ca430591",
+  "Mon pain chaud sort du four !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-7dd44a91",
+  "Mon pain sort du four : il est chaud, doré, et il sent bon dans toute la rue. Veux-tu savoir comment on le fait ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-2c152646",
+  "Je garde mes chèvres : elles aiment grimper partout !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-6fc63dcb",
+  "Je garde mes chèvres. Elles grimpent partout et trouvent de l'herbe là où personne n'en voit. Il faut les compter chaque soir.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-96f4d81e",
+  "Ma caravane repart demain, avec dix chameaux.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-ad4640f4",
+  "Ma caravane repart demain avec dix chameaux chargés. Nous voyageons en groupe : c'est plus sûr, et on partage l'eau.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-a9d8ae5f",
+  "Une bonne datte est souple et brillante.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-ac7da8d2",
+  "Une bonne datte est souple, brillante et sucrée. Si elle est très dure ou très sèche, elle est trop vieille.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-5f71e185",
+  "Des palmiers de l'oasis, tout là-bas.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-35e8fec3",
+  "Elles poussent sur les palmiers des oasis, où l'eau est proche. Une caravane les apporte jusqu'ici en plusieurs jours.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-108280cc",
+  "Avec des plantes et de la terre.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-7741c23d",
+  "Je fais bouillir des plantes, des racines et de la terre colorée. Le tissu prend la couleur, comme une peinture douce.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-ed56183c",
+  "Plusieurs semaines, avec patience.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-b14f585c",
+  "Un grand tapis demande plusieurs semaines, un fil après l'autre. Il faut de la patience, et c'est ce qui le rend si beau.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-a6963f1c",
+  "Le feu rend la jarre dure comme une pierre.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-ed7d62a2",
+  "Le feu durcit l'argile. Sans cuisson, la jarre redeviendrait de la boue au premier contact avec l'eau.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-81ea8dcc",
+  "Près des endroits où l'eau passe.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-634580ef",
+  "On trouve l'argile près des anciens lits d'eau, là où la terre est lisse et collante quand elle est mouillée.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-62f4c7d2",
+  "En caravane, avec des chameaux.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-b7320a08",
+  "J'ai voyagé en caravane, avec des chameaux qui portaient l'eau et les provisions. On marche surtout le matin et le soir, quand il fait plus frais.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-c62772f7",
+  "On se repose à l'ombre.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-355e4828",
+  "Quand le soleil est trop fort, on se repose à l'ombre d'une tente, on boit de petites gorgées et on repart plus tard.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-e3aad7a2",
+  "Beaucoup ! Mon dos le sait.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-9093698f",
+  "Une dizaine de jarres par jour, du puits jusqu'au marché. Avec deux outres bien équilibrées, c'est plus facile.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-c71b4826",
+  "On la couvre avec un linge mouillé.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-15c38c7a",
+  "On couvre les jarres d'un linge mouillé et on les met à l'ombre : en séchant, le linge rafraîchit l'eau.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-9804a636",
+  "Des dunes, des oasis et des montagnes.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-56eb5dfd",
+  "J'ai vu des dunes dorées, des oasis pleines de palmiers et de hautes montagnes rouges. Chaque endroit était différent.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-fd382bec",
+  "Marche doucement et bois de l'eau.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-9f4418f0",
+  "Marche à ton rythme, bois un peu d'eau souvent et regarde autour de toi : on ne voyage pas pour arriver vite, mais pour bien voir.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-1e2da391",
+  "Je regarde le ciel et le vent.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-71778cdf",
+  "Je regarde le ciel et le vent. Un ciel rouge au coucher du soleil annonce souvent une belle journée, et un vent chaud apporte du sable.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-5358bf63",
+  "J'ai guidé des caravanes.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-0fd8d69c",
+  "J'ai guidé des caravanes pendant des années. J'ai appris à lire les étoiles pour ne jamais perdre mon chemin la nuit.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-669e4560",
+  "Avec de la farine, de l'eau et du feu.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-4e8b0005",
+  "Je mélange de la farine, de l'eau et un peu de sel, je laisse reposer la pâte, puis je la cuis sur les pierres chaudes du four.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-374a6f67",
+  "Pour qu'elle gonfle doucement.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-8c404e4b",
+  "En reposant, la pâte gonfle doucement et devient légère. Il faut de la patience : on ne peut pas aller plus vite que la pâte !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-e6e4b0b0",
+  "Avec un sifflement doux.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-5fb3c702",
+  "Je siffle un petit air, toujours le même : mes chèvres le reconnaissent et viennent vers moi, même de loin.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-7989ab7d",
+  "Un peu d'eau, matin et soir.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-3b051d53",
+  "Elles boivent un peu d'eau matin et soir. Dans le désert, elles supportent la soif mieux que nous, mais je leur en garde toujours.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-63294df4",
+  "Des sacs, de l'eau et des tissus.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-40a5755a",
+  "Ils portent des sacs de dattes, des jarres d'eau et des balles de tissu. Un chameau peut porter une lourde charge pendant des jours.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-349943f6",
+  "On suit les étoiles et les repères.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-817c4fe8",
+  "On suit les étoiles la nuit et, le jour, des repères comme les montagnes ou les balises de pierre.",
+  "exact"
+ ],
+ [
   "NOUR-VOIX-RTE-eb118d0e",
   "Une maison de pierre : ses murs épais gardent la fraîcheur.",
   "exact"

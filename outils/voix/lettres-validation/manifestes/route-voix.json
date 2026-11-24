@@ -1,7 +1,7 @@
 {
  "jeu": "route-voix",
  "base": "/audio",
- "total": 346,
+ "total": 394,
  "phrases": [
   {
    "id": "NOUR-VOIX-RTE-924aa3cd",
@@ -1050,6 +1050,486 @@
    "texte": "Je viens de traverser les montagnes et le désert. Le chemin est long, mais on y fait de belles rencontres et on apprend beaucoup.",
    "fichier": "fr/route/nour-voix-rte-4cfde4ec.mp3",
    "duree": 6.8,
+   "prononciationVerifiee": false,
+   "voixId": "8aQsvxWbavqMpn00DVgR"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-d450fb77",
+   "role": "perso-hakim",
+   "langue": "fr",
+   "texte": "Je viens ici tous les jours pour regarder les caravanes arriver.",
+   "fichier": "fr/route/nour-voix-rte-d450fb77.mp3",
+   "duree": 3.84,
+   "prononciationVerifiee": false,
+   "voixId": "hbGEl9097evPuRZp5BNY"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-751f4642",
+   "role": "perso-hakim",
+   "langue": "fr",
+   "texte": "Je viens au marché tous les jours : j'aime regarder les caravanes arriver et écouter les nouvelles des routes lointaines.",
+   "fichier": "fr/route/nour-voix-rte-751f4642.mp3",
+   "duree": 7.76,
+   "prononciationVerifiee": false,
+   "voixId": "hbGEl9097evPuRZp5BNY"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-ca430591",
+   "role": "perso-salma",
+   "langue": "fr",
+   "texte": "Mon pain chaud sort du four !",
+   "fichier": "fr/route/nour-voix-rte-ca430591.mp3",
+   "duree": 1.68,
+   "prononciationVerifiee": false,
+   "voixId": "HAjl4nFl1aflZ2gaim1o"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-7dd44a91",
+   "role": "perso-salma",
+   "langue": "fr",
+   "texte": "Mon pain sort du four : il est chaud, doré, et il sent bon dans toute la rue. Veux-tu savoir comment on le fait ?",
+   "fichier": "fr/route/nour-voix-rte-7dd44a91.mp3",
+   "duree": 6.64,
+   "prononciationVerifiee": false,
+   "voixId": "HAjl4nFl1aflZ2gaim1o"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-2c152646",
+   "role": "perso-samir",
+   "langue": "fr",
+   "texte": "Je garde mes chèvres : elles aiment grimper partout !",
+   "fichier": "fr/route/nour-voix-rte-2c152646.mp3",
+   "duree": 3.12,
+   "prononciationVerifiee": false,
+   "voixId": "4sifSi2zIrBX7VkoWfjD"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-6fc63dcb",
+   "role": "perso-samir",
+   "langue": "fr",
+   "texte": "Je garde mes chèvres. Elles grimpent partout et trouvent de l'herbe là où personne n'en voit. Il faut les compter chaque soir.",
+   "fichier": "fr/route/nour-voix-rte-6fc63dcb.mp3",
+   "duree": 6.72,
+   "prononciationVerifiee": false,
+   "voixId": "4sifSi2zIrBX7VkoWfjD"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-96f4d81e",
+   "role": "narrateur",
+   "langue": "fr",
+   "texte": "Ma caravane repart demain, avec dix chameaux.",
+   "fichier": "fr/route/nour-voix-rte-96f4d81e.mp3",
+   "duree": 2.72,
+   "prononciationVerifiee": false,
+   "voixId": "8aQsvxWbavqMpn00DVgR"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-ad4640f4",
+   "role": "narrateur",
+   "langue": "fr",
+   "texte": "Ma caravane repart demain avec dix chameaux chargés. Nous voyageons en groupe : c'est plus sûr, et on partage l'eau.",
+   "fichier": "fr/route/nour-voix-rte-ad4640f4.mp3",
+   "duree": 6.4,
+   "prononciationVerifiee": false,
+   "voixId": "8aQsvxWbavqMpn00DVgR"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-a9d8ae5f",
+   "role": "perso-karim",
+   "langue": "fr",
+   "texte": "Une bonne datte est souple et brillante.",
+   "fichier": "fr/route/nour-voix-rte-a9d8ae5f.mp3",
+   "duree": 2.8,
+   "prononciationVerifiee": false,
+   "voixId": "lM87a4ey2IQxE37nDvti"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-ac7da8d2",
+   "role": "perso-karim",
+   "langue": "fr",
+   "texte": "Une bonne datte est souple, brillante et sucrée. Si elle est très dure ou très sèche, elle est trop vieille.",
+   "fichier": "fr/route/nour-voix-rte-ac7da8d2.mp3",
+   "duree": 7.04,
+   "prononciationVerifiee": false,
+   "voixId": "lM87a4ey2IQxE37nDvti"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-5f71e185",
+   "role": "perso-karim",
+   "langue": "fr",
+   "texte": "Des palmiers de l'oasis, tout là-bas.",
+   "fichier": "fr/route/nour-voix-rte-5f71e185.mp3",
+   "duree": 2.4,
+   "prononciationVerifiee": false,
+   "voixId": "lM87a4ey2IQxE37nDvti"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-35e8fec3",
+   "role": "perso-karim",
+   "langue": "fr",
+   "texte": "Elles poussent sur les palmiers des oasis, où l'eau est proche. Une caravane les apporte jusqu'ici en plusieurs jours.",
+   "fichier": "fr/route/nour-voix-rte-35e8fec3.mp3",
+   "duree": 6.8,
+   "prononciationVerifiee": false,
+   "voixId": "lM87a4ey2IQxE37nDvti"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-108280cc",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Avec des plantes et de la terre.",
+   "fichier": "fr/route/nour-voix-rte-108280cc.mp3",
+   "duree": 2.08,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-7741c23d",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Je fais bouillir des plantes, des racines et de la terre colorée. Le tissu prend la couleur, comme une peinture douce.",
+   "fichier": "fr/route/nour-voix-rte-7741c23d.mp3",
+   "duree": 7.36,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-ed56183c",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Plusieurs semaines, avec patience.",
+   "fichier": "fr/route/nour-voix-rte-ed56183c.mp3",
+   "duree": 2.72,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-b14f585c",
+   "role": "perso-warda",
+   "langue": "fr",
+   "texte": "Un grand tapis demande plusieurs semaines, un fil après l'autre. Il faut de la patience, et c'est ce qui le rend si beau.",
+   "fichier": "fr/route/nour-voix-rte-b14f585c.mp3",
+   "duree": 7.6,
+   "prononciationVerifiee": false,
+   "voixId": "y01lcQwxER91RfOMk2oG"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-a6963f1c",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Le feu rend la jarre dure comme une pierre.",
+   "fichier": "fr/route/nour-voix-rte-a6963f1c.mp3",
+   "duree": 2.88,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-ed7d62a2",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Le feu durcit l'argile. Sans cuisson, la jarre redeviendrait de la boue au premier contact avec l'eau.",
+   "fichier": "fr/route/nour-voix-rte-ed7d62a2.mp3",
+   "duree": 6.32,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-81ea8dcc",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Près des endroits où l'eau passe.",
+   "fichier": "fr/route/nour-voix-rte-81ea8dcc.mp3",
+   "duree": 2.24,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-634580ef",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "On trouve l'argile près des anciens lits d'eau, là où la terre est lisse et collante quand elle est mouillée.",
+   "fichier": "fr/route/nour-voix-rte-634580ef.mp3",
+   "duree": 5.36,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-62f4c7d2",
+   "role": "perso-salma",
+   "langue": "fr",
+   "texte": "En caravane, avec des chameaux.",
+   "fichier": "fr/route/nour-voix-rte-62f4c7d2.mp3",
+   "duree": 2.16,
+   "prononciationVerifiee": false,
+   "voixId": "HAjl4nFl1aflZ2gaim1o"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-b7320a08",
+   "role": "perso-salma",
+   "langue": "fr",
+   "texte": "J'ai voyagé en caravane, avec des chameaux qui portaient l'eau et les provisions. On marche surtout le matin et le soir, quand il fait plus frais.",
+   "fichier": "fr/route/nour-voix-rte-b7320a08.mp3",
+   "duree": 7.76,
+   "prononciationVerifiee": false,
+   "voixId": "HAjl4nFl1aflZ2gaim1o"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-c62772f7",
+   "role": "perso-salma",
+   "langue": "fr",
+   "texte": "On se repose à l'ombre.",
+   "fichier": "fr/route/nour-voix-rte-c62772f7.mp3",
+   "duree": 1.44,
+   "prononciationVerifiee": false,
+   "voixId": "HAjl4nFl1aflZ2gaim1o"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-355e4828",
+   "role": "perso-salma",
+   "langue": "fr",
+   "texte": "Quand le soleil est trop fort, on se repose à l'ombre d'une tente, on boit de petites gorgées et on repart plus tard.",
+   "fichier": "fr/route/nour-voix-rte-355e4828.mp3",
+   "duree": 6.24,
+   "prononciationVerifiee": false,
+   "voixId": "HAjl4nFl1aflZ2gaim1o"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-e3aad7a2",
+   "role": "perso-samir",
+   "langue": "fr",
+   "texte": "Beaucoup ! Mon dos le sait.",
+   "fichier": "fr/route/nour-voix-rte-e3aad7a2.mp3",
+   "duree": 2.24,
+   "prononciationVerifiee": false,
+   "voixId": "4sifSi2zIrBX7VkoWfjD"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-9093698f",
+   "role": "perso-samir",
+   "langue": "fr",
+   "texte": "Une dizaine de jarres par jour, du puits jusqu'au marché. Avec deux outres bien équilibrées, c'est plus facile.",
+   "fichier": "fr/route/nour-voix-rte-9093698f.mp3",
+   "duree": 6.56,
+   "prononciationVerifiee": false,
+   "voixId": "4sifSi2zIrBX7VkoWfjD"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-c71b4826",
+   "role": "perso-samir",
+   "langue": "fr",
+   "texte": "On la couvre avec un linge mouillé.",
+   "fichier": "fr/route/nour-voix-rte-c71b4826.mp3",
+   "duree": 2.16,
+   "prononciationVerifiee": false,
+   "voixId": "4sifSi2zIrBX7VkoWfjD"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-15c38c7a",
+   "role": "perso-samir",
+   "langue": "fr",
+   "texte": "On couvre les jarres d'un linge mouillé et on les met à l'ombre : en séchant, le linge rafraîchit l'eau.",
+   "fichier": "fr/route/nour-voix-rte-15c38c7a.mp3",
+   "duree": 5.68,
+   "prononciationVerifiee": false,
+   "voixId": "4sifSi2zIrBX7VkoWfjD"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-9804a636",
+   "role": "narrateur",
+   "langue": "fr",
+   "texte": "Des dunes, des oasis et des montagnes.",
+   "fichier": "fr/route/nour-voix-rte-9804a636.mp3",
+   "duree": 3.28,
+   "prononciationVerifiee": false,
+   "voixId": "8aQsvxWbavqMpn00DVgR"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-56eb5dfd",
+   "role": "narrateur",
+   "langue": "fr",
+   "texte": "J'ai vu des dunes dorées, des oasis pleines de palmiers et de hautes montagnes rouges. Chaque endroit était différent.",
+   "fichier": "fr/route/nour-voix-rte-56eb5dfd.mp3",
+   "duree": 6.88,
+   "prononciationVerifiee": false,
+   "voixId": "8aQsvxWbavqMpn00DVgR"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-fd382bec",
+   "role": "narrateur",
+   "langue": "fr",
+   "texte": "Marche doucement et bois de l'eau.",
+   "fichier": "fr/route/nour-voix-rte-fd382bec.mp3",
+   "duree": 2.24,
+   "prononciationVerifiee": false,
+   "voixId": "8aQsvxWbavqMpn00DVgR"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-9f4418f0",
+   "role": "narrateur",
+   "langue": "fr",
+   "texte": "Marche à ton rythme, bois un peu d'eau souvent et regarde autour de toi : on ne voyage pas pour arriver vite, mais pour bien voir.",
+   "fichier": "fr/route/nour-voix-rte-9f4418f0.mp3",
+   "duree": 7.28,
+   "prononciationVerifiee": false,
+   "voixId": "8aQsvxWbavqMpn00DVgR"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-1e2da391",
+   "role": "perso-hakim",
+   "langue": "fr",
+   "texte": "Je regarde le ciel et le vent.",
+   "fichier": "fr/route/nour-voix-rte-1e2da391.mp3",
+   "duree": 2.56,
+   "prononciationVerifiee": false,
+   "voixId": "hbGEl9097evPuRZp5BNY"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-71778cdf",
+   "role": "perso-hakim",
+   "langue": "fr",
+   "texte": "Je regarde le ciel et le vent. Un ciel rouge au coucher du soleil annonce souvent une belle journée, et un vent chaud apporte du sable.",
+   "fichier": "fr/route/nour-voix-rte-71778cdf.mp3",
+   "duree": 10.16,
+   "prononciationVerifiee": false,
+   "voixId": "hbGEl9097evPuRZp5BNY"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-5358bf63",
+   "role": "perso-hakim",
+   "langue": "fr",
+   "texte": "J'ai guidé des caravanes.",
+   "fichier": "fr/route/nour-voix-rte-5358bf63.mp3",
+   "duree": 2,
+   "prononciationVerifiee": false,
+   "voixId": "hbGEl9097evPuRZp5BNY"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-0fd8d69c",
+   "role": "perso-hakim",
+   "langue": "fr",
+   "texte": "J'ai guidé des caravanes pendant des années. J'ai appris à lire les étoiles pour ne jamais perdre mon chemin la nuit.",
+   "fichier": "fr/route/nour-voix-rte-0fd8d69c.mp3",
+   "duree": 7.12,
+   "prononciationVerifiee": false,
+   "voixId": "hbGEl9097evPuRZp5BNY"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-669e4560",
+   "role": "perso-salma",
+   "langue": "fr",
+   "texte": "Avec de la farine, de l'eau et du feu.",
+   "fichier": "fr/route/nour-voix-rte-669e4560.mp3",
+   "duree": 2.8,
+   "prononciationVerifiee": false,
+   "voixId": "HAjl4nFl1aflZ2gaim1o"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-4e8b0005",
+   "role": "perso-salma",
+   "langue": "fr",
+   "texte": "Je mélange de la farine, de l'eau et un peu de sel, je laisse reposer la pâte, puis je la cuis sur les pierres chaudes du four.",
+   "fichier": "fr/route/nour-voix-rte-4e8b0005.mp3",
+   "duree": 7.2,
+   "prononciationVerifiee": false,
+   "voixId": "HAjl4nFl1aflZ2gaim1o"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-374a6f67",
+   "role": "perso-salma",
+   "langue": "fr",
+   "texte": "Pour qu'elle gonfle doucement.",
+   "fichier": "fr/route/nour-voix-rte-374a6f67.mp3",
+   "duree": 1.68,
+   "prononciationVerifiee": false,
+   "voixId": "HAjl4nFl1aflZ2gaim1o"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-8c404e4b",
+   "role": "perso-salma",
+   "langue": "fr",
+   "texte": "En reposant, la pâte gonfle doucement et devient légère. Il faut de la patience : on ne peut pas aller plus vite que la pâte !",
+   "fichier": "fr/route/nour-voix-rte-8c404e4b.mp3",
+   "duree": 7.44,
+   "prononciationVerifiee": false,
+   "voixId": "HAjl4nFl1aflZ2gaim1o"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-e6e4b0b0",
+   "role": "perso-samir",
+   "langue": "fr",
+   "texte": "Avec un sifflement doux.",
+   "fichier": "fr/route/nour-voix-rte-e6e4b0b0.mp3",
+   "duree": 1.76,
+   "prononciationVerifiee": false,
+   "voixId": "4sifSi2zIrBX7VkoWfjD"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-5fb3c702",
+   "role": "perso-samir",
+   "langue": "fr",
+   "texte": "Je siffle un petit air, toujours le même : mes chèvres le reconnaissent et viennent vers moi, même de loin.",
+   "fichier": "fr/route/nour-voix-rte-5fb3c702.mp3",
+   "duree": 6,
+   "prononciationVerifiee": false,
+   "voixId": "4sifSi2zIrBX7VkoWfjD"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-7989ab7d",
+   "role": "perso-samir",
+   "langue": "fr",
+   "texte": "Un peu d'eau, matin et soir.",
+   "fichier": "fr/route/nour-voix-rte-7989ab7d.mp3",
+   "duree": 2,
+   "prononciationVerifiee": false,
+   "voixId": "4sifSi2zIrBX7VkoWfjD"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-3b051d53",
+   "role": "perso-samir",
+   "langue": "fr",
+   "texte": "Elles boivent un peu d'eau matin et soir. Dans le désert, elles supportent la soif mieux que nous, mais je leur en garde toujours.",
+   "fichier": "fr/route/nour-voix-rte-3b051d53.mp3",
+   "duree": 6.96,
+   "prononciationVerifiee": false,
+   "voixId": "4sifSi2zIrBX7VkoWfjD"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-63294df4",
+   "role": "narrateur",
+   "langue": "fr",
+   "texte": "Des sacs, de l'eau et des tissus.",
+   "fichier": "fr/route/nour-voix-rte-63294df4.mp3",
+   "duree": 2.56,
+   "prononciationVerifiee": false,
+   "voixId": "8aQsvxWbavqMpn00DVgR"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-40a5755a",
+   "role": "narrateur",
+   "langue": "fr",
+   "texte": "Ils portent des sacs de dattes, des jarres d'eau et des balles de tissu. Un chameau peut porter une lourde charge pendant des jours.",
+   "fichier": "fr/route/nour-voix-rte-40a5755a.mp3",
+   "duree": 7.44,
+   "prononciationVerifiee": false,
+   "voixId": "8aQsvxWbavqMpn00DVgR"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-349943f6",
+   "role": "narrateur",
+   "langue": "fr",
+   "texte": "On suit les étoiles et les repères.",
+   "fichier": "fr/route/nour-voix-rte-349943f6.mp3",
+   "duree": 2.08,
+   "prononciationVerifiee": false,
+   "voixId": "8aQsvxWbavqMpn00DVgR"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-817c4fe8",
+   "role": "narrateur",
+   "langue": "fr",
+   "texte": "On suit les étoiles la nuit et, le jour, des repères comme les montagnes ou les balises de pierre.",
+   "fichier": "fr/route/nour-voix-rte-817c4fe8.mp3",
+   "duree": 5.84,
    "prononciationVerifiee": false,
    "voixId": "8aQsvxWbavqMpn00DVgR"
   },
