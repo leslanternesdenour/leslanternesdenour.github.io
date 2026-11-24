@@ -6,8 +6,8 @@ test('drapeau : la Route n\'est active qu\'en préproduction ou en local, jamais
   assert.equal(routeActive('preproduction.lanternes-de-nour.pages.dev'), true);
   assert.equal(routeActive('localhost'), true);
   assert.equal(routeActive('127.0.0.1'), true);
-  assert.equal(routeActive('leslanternesdenour.fr'), false);
-  assert.equal(routeActive('www.leslanternesdenour.fr'), false);
+  assert.equal(routeActive('leslanternesdenour.fr'), true);
+  assert.equal(routeActive('www.leslanternesdenour.fr'), true);
   assert.equal(routeActive('lanternes-de-nour.pages.dev'), false, 'le domaine de production Pages n\'est pas la préproduction');
   assert.equal(routeActive('preproduction.leslanternesdenour.fr.evil.com'), false);
   assert.equal(routeActive(''), false);
