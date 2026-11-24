@@ -460,3 +460,23 @@ body.jumelles-actives #scene{filter:none}
 
 /* Panneaux (réglages, sons, commandes…) : ils défilent verticalement quand ils dépassent de l'écran, au doigt comme à la souris */
 .panneau{max-height:calc(100% - 96px - var(--haut));overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y}
+
+/* Le bouton de la monture : « elle arrive » est animé, « occupée » est atténué */
+.action.arrive{animation:rr-arrive 1s ease-in-out infinite;background:#ffe3a3}
+.action.arrive .ico{animation:rr-trot .45s ease-in-out infinite alternate}
+.action.indispo{opacity:.72}
+@keyframes rr-arrive{0%,100%{box-shadow:0 5px 0 var(--or2),0 8px 20px rgba(0,0,0,.3)}50%{box-shadow:0 5px 0 var(--or2),0 0 0 7px rgba(245,185,66,.55),0 8px 20px rgba(0,0,0,.3)}}
+@keyframes rr-trot{from{transform:translateY(0)}to{transform:translateY(-5px)}}
+@media (prefers-reduced-motion:reduce){.action.arrive,.action.arrive .ico{animation:none}}
+/* Boutons du bas : un peu plus d'espace entre eux (tactile) */
+body.tactile .boutons-action{gap:calc(16px * var(--taille-cmd))}
+/* Écrans courts (téléphone en paysage, ~290 px de haut) : les boutons d'action se rangent EN LIGNE en bas à droite, « Courir » reste grand, et la carte monte sous la rangée du haut :
+   rien ne se touche, rien ne cache le personnage. L'ordinateur n'est pas concerné (tout est limité au tactile). */
+@media (max-height:560px){
+  body.tactile .boutons-action{flex-direction:row-reverse;align-items:flex-end;flex-wrap:wrap-reverse;justify-content:flex-start;gap:calc(14px * var(--taille-cmd))}
+  body.tactile .rond-action{width:calc(76px * var(--taille-cmd));height:calc(76px * var(--taille-cmd))}
+  body.tactile .action:not(.rond-action){min-height:calc(60px * var(--taille-cmd));font-size:calc(16px * var(--taille-cmd))}
+}
+/* La carte : dans la rangée du haut, juste à gauche de la cible (missions), du carnet et des réglages ; les jumelles viennent encore à sa gauche */
+body.tactile #outils{top:calc(10px + var(--haut));right:calc(210px + env(safe-area-inset-right,0px));flex-direction:row-reverse;gap:10px}
+@media (max-width:420px){body.tactile #outils{right:calc(177px + env(safe-area-inset-right,0px));gap:7px}}

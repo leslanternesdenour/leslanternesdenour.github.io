@@ -10,6 +10,7 @@ import { Controles, ACTIONS, nomTouche } from './controles.js?v=3';
 import { creerOiseaux } from './oiseaux.js?v=3';
 import { creerFaucon } from './faucon.js?v=4';
 import * as S from './sons.js?v=3';
+import { etatAppel, pointDeRenfort } from './monture-appel.js?v=1';
 import { chargerVoixVoyage, direTextes, direIds, direMotArabe, arreterVoixVoyage, ajouterPhrases, aUneVoix, direApres } from './voix.js?v=5';
 import { chargerPremium, MESSAGE_FERME } from './premium.js?v=1';
 import { ZONES, POINTS, BIENTOT, DESCRIPTIONS_LIEUX } from './contenu.js?v=4';
@@ -462,10 +463,17 @@ async function demarrer() {
     if (interface_ouverte || sequence) return;
     S.demarrerSons();
     const d = Math.hypot(J.x - C.x, J.z - C.z);
+    const e = etatAppel({ monte, sequence: !!sequence, venir: !!C.venir, soin: !!soin, rentre: !!C.rentre, dist: d, seuilMonter: monture(AV.monture).espece === 'elephant' ? 5 : 4 });
+    if (e.mode === 'indisponible') { montrerIndice(`${monture(AV.monture).icone} ${e.raison}`, 3500); return; }   // occupée : on explique pourquoi
+    if (e.mode === 'arrive') { montrerIndice(`${monture(AV.monture).icone} ${nomMonture()} arrive déjà !`, 1800); return; }   // elle vient déjà : pas de nouvel appel
     C.vit = 0; C.venir = false; C.rentre = false;
     if (monte) sequence = { type: 'descendre', t: 0 };
-    else if (d < (monture(AV.monture).espece === 'elephant' ? 5 : 4)) { sequence = { type: 'monter', t: 0, depart: { x: J.x, z: J.z } }; sonMonture(); }
-    else { C.venir = true; sonMonture(); montrerIndice(`${monture(AV.monture).icone} ${nomMonture()} arrive !`, 2500); }
+    else if (e.mode === 'monter') { sequence = { type: 'monter', t: 0, depart: { x: J.x, z: J.z } }; sonMonture(); }
+    else {
+      // de très loin (ou d'un autre monde : village ↔ Route) : la monture est ramenée à 60 m, derrière le joueur (hors de l'écran), sur un terrain praticable, puis elle court jusqu'à lui
+      if (d > 120) { const h0 = H(J.x, J.z), p = pointDeRenfort(J, { yaw: cam.yaw, distance: 60, acceptable: (x, z) => H(x, z) > -0.05 && Math.abs(H(x, z) - h0) < 8 }); C.x = p.x; C.z = p.z; C.a = Math.atan2(J.x - p.x, J.z - p.z); bouger(C, 0, 0, 1.1, 0.016); }   // bouger : la repousse hors des obstacles
+      C.venir = true; sonMonture(); montrerIndice(`${monture(AV.monture).icone} ${nomMonture()} arrive !`, 2500);
+    }
   }
   function avancerSequence(dt) {
     const s = sequence; s.t += dt;
@@ -1503,7 +1511,7 @@ async function demarrer() {
           const but = sortieEnclos({ x: C.x, z: C.z }, { x: J.x, z: J.z });      // appelée depuis l'enclos : la monture passe par la porte, jamais à travers la clôture
           const ecart = angleVers(C.a, Math.atan2(but.x - C.x, but.z - C.z));
           C.a += Math.sign(ecart) * Math.min(Math.abs(ecart), dt * 2.5);
-          C.vit += ((dist > 20 ? 9 : 5) - C.vit) * Math.min(1, dt * 2);
+          C.vit += ((dist > 40 ? 11 : dist > 20 ? 9 : 5) - C.vit) * Math.min(1, dt * 2);
           bouger(C, Math.sin(C.a) * C.vit * dt, Math.cos(C.a) * C.vit * dt, 1.1, dt);
         }
       } else if (!C.rentre) C.vit *= Math.max(0, 1 - dt * 4);
@@ -1686,14 +1694,16 @@ async function demarrer() {
   function majBoutons(pres, loin) {
     const avPrio = procheAv && (!proche || procheAv.d < Math.hypot(proche.x - J.x, proche.z - J.z));
     const lire = avPrio ? procheAv.label : proche ? (proche.id === 'nour' || proche.id === 'sage' || proche.id === 'ecurie' ? 'Parler' : proche.id.startsWith('boutique-') ? 'Acheter' : proche.id === 'cour' ? 'Ma cour' : 'Lire') : (pres && !sequence ? (dansEnclos(C.x, C.z) ? 'S\'occuper' : 'Caresser') : null);
-    const cham = sequence ? null : monte ? 'Descendre' : pres ? 'Monter' : loin ? 'Appeler' : null;
-    const cle = lire + '|' + cham + '|' + interface_ouverte;
+    const eA = etatAppel({ monte, sequence: !!sequence, venir: !!C.venir, soin: !!soin, rentre: !!C.rentre, dist: Math.hypot(J.x - C.x, J.z - C.z), seuilMonter: monture(AV.monture).espece === 'elephant' ? 5 : 4 });
+    const cham = eA.mode ? eA.label : null;   // le bouton de la monture est toujours là pendant l'exploration (Monter, Appeler, Arrive…, Descendre)
+    const cle = lire + '|' + cham + '|' + eA.mode + '|' + interface_ouverte;
     if (cle === dernierEtatBoutons) return;
     dernierEtatBoutons = cle;
     $('btn-action').classList.toggle('cache', !lire || interface_ouverte);
     if (lire) { $('btn-action').querySelector('.txt').textContent = lire; const ic = (avPrio && procheAv.icone) || { Parler: '💬', Caresser: '🤲', 'S\'occuper': '🤲', Examiner: '🔍', Acheter: '🛍️', 'Ma cour': '🏡' }[lire] || '✋';
       if (ic === 'mots') $('btn-action').querySelector('.ico').innerHTML = ICONE_MOTS; else $('btn-action').querySelector('.ico').textContent = ic; }
     $('btn-chameau').classList.toggle('cache', !cham || interface_ouverte);
+    $('btn-chameau').classList.toggle('arrive', eA.mode === 'arrive'); $('btn-chameau').classList.toggle('indispo', eA.mode === 'indisponible');
     if (cham) $('btn-chameau').querySelector('.txt').textContent = cham;
     if (!indiceForce && !ctl.tactile) {
       const morceaux = [];
