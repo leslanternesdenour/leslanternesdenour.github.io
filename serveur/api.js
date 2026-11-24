@@ -355,12 +355,14 @@ export async function traiter(req, ctx) {
       const b = await corpsJson(req, 1000);
       if (b.sessionId === undefined) {   // sans identifiant : on relit l'abonnement déjà connu chez Stripe (renouvellement, résiliation, échec de paiement)
         const ab = await ctx.base.lire('abonnements', session.uid);
-        let sub;
+        let sub = null;
         if (ab && ab.stripeAbonnement) { try { sub = await ctx.stripe.lireAbonnement(ab.stripeAbonnement); } catch (e) { return erreur(404, 'abonnement-inconnu'); } }
-        else {   // jamais enregistré ici (autre appareil, page rechargée) : on cherche l'abonnement de CE compte chez Stripe
+        // jamais enregistré ici (autre appareil, page rechargée) OU abonnement connu terminé (le parent s'est peut-être réabonné) : on cherche l'abonnement en cours de CE compte chez Stripe
+        if (!sub || !['active', 'trialing', 'past_due', 'unpaid'].includes(sub.status)) {
           if (!/^[A-Za-z0-9_-]{1,128}$/.test(session.uid)) return erreur(404, 'aucun-abonnement');
-          let r; try { r = await ctx.stripe.chercherAbonnements(session.uid, session.email); } catch (e) { return erreur(404, 'aucun-abonnement'); }
-          sub = ((r && r.data) || []).filter(x => x.metadata && x.metadata.uid === session.uid && ['active', 'trialing'].includes(x.status)).sort((x, y) => (y.created || 0) - (x.created || 0))[0];
+          let r = null; try { r = await ctx.stripe.chercherAbonnements(session.uid, session.email); } catch (e) { if (!sub) return erreur(404, 'aucun-abonnement'); }
+          const plusRecent = ((r && r.data) || []).filter(x => x.metadata && x.metadata.uid === session.uid && ['active', 'trialing'].includes(x.status)).sort((x, y) => (y.created || 0) - (x.created || 0))[0];
+          if (plusRecent) sub = plusRecent;
           if (!sub) return erreur(404, 'aucun-abonnement');
         }
         if (sub.metadata && sub.metadata.uid && sub.metadata.uid !== session.uid) return erreur(403, 'session-autre-compte');

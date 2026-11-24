@@ -115,7 +115,7 @@ test('un abonné qui revient sans identifiant de session (autre appareil, page r
   rechercheStripe = [sub('uid-autre-appareil')];
   const r = await appel('POST', '/api/abonnement/synchroniser', { cookie: c, corps: {} });
   assert.equal(r.s, 200, JSON.stringify(r.j)); assert.equal((await appel('GET', '/api/moi', { cookie: c })).j.statut, 'abonne');
-  assert.match(decodeURIComponent(appelsStripe.find(a => a.u.includes('subscriptions/search')).u), /metadata\['uid'\]:'uid-autre-appareil'/);
+  assert.ok(appelsStripe.some(a => a.u.includes('subscriptions/search') && /metadata\['uid'\]:'uid-autre-appareil'/.test(decodeURIComponent(a.u))), 'la recherche est faite pour CE compte');
   const d = await connecter('uid-sans-rien');
   rechercheStripe = [sub('uid-quelquun-d-autre')];
   const rien = await appel('POST', '/api/abonnement/synchroniser', { cookie: d, corps: {} });
@@ -130,6 +130,20 @@ test('le repli sans identifiant de session ne dépend pas de l\'index de recherc
   abonnementsDuClient.cus_immediat = [{ ...sessionPayee('uid-immediat', 'price_fa').subscription, id: 'sub_immediat', customer: 'cus_immediat' }];
   const r = await appel('POST', '/api/abonnement/synchroniser', { cookie: c, corps: {} });
   assert.equal(r.s, 200, JSON.stringify(r.j)); assert.equal(r.j.niveau, 'famille');
+  assert.equal((await appel('GET', '/api/moi', { cookie: c })).j.statut, 'abonne');
+});
+
+test('un parent qui se réabonne après la fin d\'un ancien abonnement est retrouvé : le nouvel abonnement actif prime sur l\'ancien terminé', async () => {
+  const c = await connecter('uid-reabonne');
+  sessionsStripe.cs_test_ancien = { ...sessionPayee('uid-reabonne'), id: 'cs_test_ancien' };
+  assert.equal((await appel('POST', '/api/abonnement/synchroniser', { cookie: c, corps: { sessionId: 'cs_test_ancien' } })).s, 200);
+  abonnementsStripe['sub_uid-reabonne'] = { ...sessionsStripe.cs_test_ancien.subscription, status: 'canceled' };         // l'ancien est terminé
+  assert.equal((await appel('POST', '/api/abonnement/synchroniser', { cookie: c, corps: {} })).s, 200);
+  assert.equal((await appel('GET', '/api/moi', { cookie: c })).j.statut, 'gratuit');
+  clientsStripe['uid-reabonne@exemple.fr'] = [{ id: 'cus_nouveau' }];
+  abonnementsDuClient.cus_nouveau = [{ ...sessionPayee('uid-reabonne', 'price_fa').subscription, id: 'sub_nouveau', customer: 'cus_nouveau', created: 2000 }, { ...sessionsStripe.cs_test_ancien.subscription, status: 'canceled', created: 1000 }];
+  const r = await appel('POST', '/api/abonnement/synchroniser', { cookie: c, corps: {} });
+  assert.equal(r.s, 200, JSON.stringify(r.j)); assert.equal(r.j.niveau, 'famille', 'le nouvel abonnement est pris, pas l\'ancien terminé');
   assert.equal((await appel('GET', '/api/moi', { cookie: c })).j.statut, 'abonne');
 });
 
