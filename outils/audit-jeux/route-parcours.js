@@ -11,6 +11,7 @@ const { chromium, TAILLES, URL0 } = require('./base.js');
   await page.route('**/cdn.jsdelivr.net/npm/three@0.170.0/**', r => { const u = r.request().url().split('three@0.170.0/')[1]; r.fulfill({ path: '/home/user/node_modules/three/' + u.replace('build/three.module.min.js', 'build/three.module.js'), contentType: 'text/javascript' }); });
   await page.goto(URL0 + '/voyage/?sandbox=1', { waitUntil: 'domcontentloaded' }); await page.waitForTimeout(6000);
   await page.mouse.click(300, 300); await page.waitForTimeout(1500);
+  const go = page.getByText("C'est parti !"); if (await go.count()) { await go.first().click(); await page.waitForTimeout(1500); }   // l'écran « Qui part en voyage ? » du premier lancement
   await page.evaluate(() => { const c = document.getElementById('musique-active'); c.checked = true; c.dispatchEvent(new Event('input')); }); await page.waitForTimeout(5000);   // la musique est un réglage : on l'active comme le ferait un parent
   const etat = () => page.evaluate(() => { const V = window.__voyage, r = V.route; return { enRoute: r.enRoute(), region: r.regionId(), z: Math.round(V.J.z), ac: window.__ctx.map(c => c.state).join(','), pistes: [...window.__src].map(s => Math.round(s.buffer.duration) + 's') }; });
   console.log('village  ', JSON.stringify(await etat()));
@@ -22,7 +23,7 @@ const { chromium, TAILLES, URL0 } = require('./base.js');
     console.log(nom.padEnd(9), JSON.stringify(await etat()));
   }
   const p = await page.evaluate(() => { const V = window.__voyage, l = V.route.lieux3d.lieux['cite-place'] || V.route.lieux3d.pos('cite-place'); V.teleporter(l.x + 1.2, l.z); return { x: Math.round(l.x), z: Math.round(l.z) }; });
-  await page.waitForTimeout(2500); console.log('à la grande place', JSON.stringify(p), 'proche:', await page.evaluate(() => { const q = window.__voyage.proche(); return q ? (q.id || q.label || 'oui') : 'rien'; }));
+  await page.waitForTimeout(2500); console.log('à la grande place', JSON.stringify(p), 'interface:', await page.evaluate(() => !!document.querySelector('.carte-voyage:not([hidden])')) );
   await page.evaluate(() => { try { window.__voyage.action(); } catch (e) {} }); await page.waitForTimeout(3000);
   await page.screenshot({ path: '/tmp/claude-0/route-place.png' });
   console.log('découvertes', JSON.stringify(await page.evaluate(() => window.__voyage.route.etat.decouvertes)));
