@@ -5,7 +5,7 @@ import fs from 'node:fs';
 test('routes : le middleware ne s\'exécute que pour /api/* et les pages d\'entrée du jeu', () => {
   const r = JSON.parse(fs.readFileSync(new URL('../../_routes.json', import.meta.url), 'utf8'));
   assert.equal(r.version, 1); assert.ok(r.include.includes('/api/*'));
-  for (const p of ['/monde/', '/voyage/', '/ablutions/', '/priere/', '/calendrier/', '/ecole-arabe/chiffres/']) assert.ok(r.include.includes(p), p);
+  for (const p of ['/monde/', '/voyage/', '/ablutions/', '/ablutions/jeu3d/', '/priere/', '/priere/jeu3d/', '/calendrier/', '/aventures/', '/aventures/chasse-aux-mots/', '/aventures/mysteres-desert/', '/aventures/quiz-nour/', '/ecole-arabe/', '/ecole-arabe/lettres/', '/ecole-arabe/lecture/', '/ecole-arabe/chiffres/']) assert.ok(r.include.includes(p), p);
   assert.ok(r.include.length <= 100, 'limite Cloudflare');
   assert.ok(!r.include.some(x => x === '/*' || /\.(js|css|mp3|webp|glb|png|json)$/.test(x)), 'aucune ressource ni joker global');
 });

@@ -4,7 +4,24 @@
 // Logique pure : testée sous Node (outils/tests/garde-pages.test.mjs), branchée par functions/_middleware.js.
 import { lireSession, lireCookie, NOM_COOKIE } from './session.js';
 
-export const PAGES_PROTEGEES = ['/monde/', '/voyage/', '/ablutions/', '/priere/', '/calendrier/', '/ecole-arabe/chiffres/'];
+// Toutes les pages d'entrée où l'enfant joue (village, Grand Voyage, ablutions et prière en 2D et en 3D, calendrier, Aventures, École arabe) : aucune ne s'ouvre sans compte parent.
+export const PAGES_PROTEGEES = [
+  '/monde/',
+  '/voyage/',
+  '/ablutions/',
+  '/ablutions/jeu3d/',
+  '/priere/',
+  '/priere/jeu3d/',
+  '/calendrier/',
+  '/aventures/',
+  '/aventures/chasse-aux-mots/',
+  '/aventures/mysteres-desert/',
+  '/aventures/quiz-nour/',
+  '/ecole-arabe/',
+  '/ecole-arabe/lettres/',
+  '/ecole-arabe/lecture/',
+  '/ecole-arabe/chiffres/'
+];
 
 // Normalise « /monde », « /monde/index.html » en « /monde/ » puis compare : seules les pages d'entrée sont concernées (pas leurs ressources).
 export function estPageProtegee(chemin) {
