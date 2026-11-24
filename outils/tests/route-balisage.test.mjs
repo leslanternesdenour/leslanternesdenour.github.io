@@ -53,3 +53,27 @@ test('balisage : les flammes ne s\'allument que le soir (la nuit tombe), et vaci
   assert.match(m, /visible = nuit > 0\.25/, 'allumées seulement quand la nuit tombe'); assert.match(m, /Math\.sin\(t \*/, 'elles vacillent');
   assert.match(j, /monde\.eclairer\(nuit, t\)/);
 });
+
+test('zone jouable : tous les lieux, sentiers, sentiers de montée et la cité sont dans la zone ; loin de tout (derrière les montagnes, très à l\'écart de la piste), c\'est dehors', async () => {
+  const { zoneJouable } = await import('../../voyage/js/route/piste-plan.js');
+  const { LIEUX_ROUTE, positionDeLieu } = await import('../../voyage/js/route/donnees.js');
+  const { pointChemin, sentiers, HAMEAU, CITE, MONTAGNE_NORD, MONTAGNE_SUD } = await import('../../voyage/js/route/relief.js');
+  const { sentierMontee } = await import('../../voyage/js/route/sentier-montee.js');
+  for (const l of LIEUX_ROUTE) { const p = positionDeLieu(l); assert.equal(zoneJouable(p.s, p.t), true, `${l.id} dans la zone`); }
+  for (const S of sentiers()) for (const [s, t] of S) assert.equal(zoneJouable(s, t), true, 'sentier');
+  for (const id of ['nord', 'sud']) for (const [s, t] of sentierMontee(id).pts) assert.equal(zoneJouable(s, t), true, `montée ${id}`);
+  for (let s = -140; s <= 5900; s += 20) { const p = pointChemin(s); for (const d of [-200, 0, 200]) assert.equal(zoneJouable(s, p.t + d), true, `bande de la piste s=${s} d=${d}`); }
+  assert.equal(zoneJouable(HAMEAU.s, HAMEAU.t + 40), true); assert.equal(zoneJouable(CITE.s, CITE.t + 250), true);
+  for (const d of [420, 600, 900]) assert.equal(zoneJouable(1300, pointChemin(1300).t + d), false, `très loin de la piste (${d} m)`);
+  assert.equal(zoneJouable(MONTAGNE_NORD.s, MONTAGNE_NORD.t - 400), false, 'derrière la montagne du nord'); assert.equal(zoneJouable(MONTAGNE_SUD.s + 100, MONTAGNE_SUD.t + 400), false, 'derrière la montagne du sud');
+});
+
+test('zone jouable : un mur invisible arrête doucement l\'enfant (avec un message), sans le piéger ; s\'il est déjà dehors on le ramène sur la piste', async () => {
+  const fs = await import('node:fs');
+  const j = fs.readFileSync(new URL('../../voyage/js/route/jeu-route.js', import.meta.url), 'utf8'), { MESSAGES } = await import('../../voyage/js/route/textes-route.js');
+  assert.match(j, /import \{ loinDeLaPiste, zoneJouable \} from '\.\/piste-plan\.js'/);
+  assert.match(j, /if \(!dansMaison && zoneJouable\(o\.z - DEC, o\.x\) && !zoneJouable\(nz - DEC, nx\)\)/, 'on ne bloque que depuis l\'intérieur de la zone (jamais piégé dehors)');
+  assert.match(j, /avertirLimite\(\)/); assert.match(j, /MESSAGES\.limite/); assert.match(j, /MESSAGES\.ramene/);
+  assert.match(j, /!dansMaison && !zoneJouable\(J\.z - DEC, J\.x\)/, 'filet de sécurité : retour sur la piste');
+  for (const k of ['limite', 'ramene']) assert.ok(MESSAGES[k] && MESSAGES[k].length > 20 && MESSAGES[k].length <= 120 && !/(danger|peur|mort|perdu)/i.test(MESSAGES[k]), `${k} : message rassurant`);
+});

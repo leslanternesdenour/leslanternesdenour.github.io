@@ -1,7 +1,7 @@
 {
  "jeu": "route-voix",
  "base": "/audio",
- "total": 455,
+ "total": 457,
  "phrases": [
   {
    "id": "NOUR-VOIX-RTE-924aa3cd",
@@ -4510,6 +4510,26 @@
    "texte": "Tu t'éloignes de la grande piste. Reviens vers les poteaux rouges, ou ouvre ta carte.",
    "fichier": "fr/route/nour-voix-rte-0ebb39ee.mp3",
    "duree": 5.28,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-5e7f6a70",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Plus loin, le désert est trop sauvage : reste près de la piste et des lumières.",
+   "fichier": "fr/route/nour-voix-rte-5e7f6a70.mp3",
+   "duree": 5.2,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-7432d7fd",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Tu t'étais trop éloigné : on te ramène sur la grande piste.",
+   "fichier": "fr/route/nour-voix-rte-7432d7fd.mp3",
+   "duree": 3.68,
    "prononciationVerifiee": false,
    "voixId": "hddT377hAwvRoOKqMj0E"
   },

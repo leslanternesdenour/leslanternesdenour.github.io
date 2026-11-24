@@ -59,12 +59,15 @@ export function creerCarteRoute({ route, age, joueur, surFermer, surOuvrir }) {
     const g = x.createLinearGradient(0, 0, w, h); g.addColorStop(0, '#ecd9ac'); g.addColorStop(1, '#e0c68f');
     x.fillStyle = g; x.fillRect(P.ox, P.oy, P.W, P.H); x.strokeStyle = '#7a5232'; x.lineWidth = 3 * d; x.strokeRect(P.ox, P.oy, P.W, P.H);
     // les régions : bandes de couleur, grisées tant qu'elles ne sont pas découvertes
+    let idxReg = 0; const etiquettes = [];
     for (const reg of REGIONS_ROUTE) {
       const a = P(Math.max(S0, reg.s0), T0), b = P(Math.min(S1, reg.s1), T1), vu = route.decouvertes.includes('region:' + reg.id);
       x.globalAlpha = vu ? 0.55 : 0.18; x.fillStyle = vu ? reg.couleur : '#8a7a62';
       const X = Math.min(a.x, b.x), Y = Math.min(a.y, b.y); x.fillRect(X, Y, Math.abs(b.x - a.x), Math.abs(b.y - a.y)); x.globalAlpha = 1;
-      x.fillStyle = '#4a3320'; x.font = `bold ${Math.round(13 * d)}px Georgia, serif`; x.textAlign = 'center';
-      const c = P(Math.max(S0, reg.s0) / 2 + Math.min(S1, reg.s1) / 2, T1 - 70); x.fillText(vu ? `${reg.icone} ${reg.nom}` : '❔', c.x, c.y);
+      // le nom : réduit à la largeur de la bande, et une région sur deux décalée d'une ligne : les noms ne se superposent jamais
+      const txt = vu ? `${reg.icone} ${reg.nom}` : '❔', bw = Math.abs(b.x - a.x); let tp = 13 * d; x.fillStyle = '#4a3320'; x.font = `bold ${tp}px Georgia, serif`; x.textAlign = 'center';
+      while (x.measureText(txt).width > bw * 0.96 && tp > 9 * d) { tp -= 0.5 * d; x.font = `bold ${tp}px Georgia, serif`; }
+      const c = P(Math.max(S0, reg.s0) / 2 + Math.min(S1, reg.s1) / 2, T1 - 70), dy = (idxReg++ % 2) * 15 * d; etiquettes.push({ txt, x: c.x, y: c.y - dy, tp });   // dessiné plus bas, par-dessus les montagnes
     }
     // des montagnes dessinées de chaque côté (comme sur le terrain)
     x.strokeStyle = '#6a4a2c'; x.fillStyle = 'rgba(214,190,140,.9)'; x.lineWidth = 1.4 * d;
@@ -76,6 +79,8 @@ export function creerCarteRoute({ route, age, joueur, surFermer, surOuvrir }) {
     for (let s = S0; s <= S_FIN_TRANCHE; s += 20) { const q = pointChemin(s), p = P(s, q.t); s === S0 ? x.moveTo(p.x, p.y) : x.lineTo(p.x, p.y); } x.stroke(); x.setLineDash([]);
     // le village, au début
     { const p = P(S0 + 20, 48); x.font = `${Math.round(24 * d)}px serif`; x.textAlign = 'center'; x.fillText('🏘️', p.x, p.y); x.font = `bold ${Math.round(12 * d)}px Georgia, serif`; x.fillStyle = '#4a3320'; x.fillText('Village de Nour', p.x, p.y + 18 * d); }
+    // les noms des régions : par-dessus tout, sur un petit fond clair pour rester lisibles
+    for (const e of etiquettes) { x.font = `bold ${e.tp}px Georgia, serif`; const lw = x.measureText(e.txt).width; x.fillStyle = 'rgba(255,248,231,.78)'; x.fillRect(e.x - lw / 2 - 3 * d, e.y - e.tp, lw + 6 * d, e.tp * 1.3); x.fillStyle = '#4a3320'; x.textAlign = 'center'; x.fillText(e.txt, e.x, e.y); }
     // les lieux : découverts (icône) ou à explorer (point d'interrogation)
     for (const l of lieuxCarte()) {
       const pp = positionDeLieu(l), p = P(pp.s, pp.t), ok = connu(l), sel = choisi && choisi.id === l.id;
@@ -102,13 +107,12 @@ export function creerCarteRoute({ route, age, joueur, surFermer, surOuvrir }) {
   function majCap() {
     if (!cap) { if (elCap) elCap.style.display = 'none'; return; }
     if (!elCap) { elCap = document.createElement('div'); elCap.id = 'route-cap'; elCap.style.cssText = 'position:fixed;top:64px;left:50%;transform:translateX(-50%);z-index:30;background:rgba(45,32,20,.82);color:#f5e9cc;padding:6px 14px;border-radius:999px;display:flex;gap:10px;align-items:center;font-size:15px';
-      elCap.innerHTML = '<span id="rc-fleche" style="display:inline-block;font-size:22px">⬆️</span><span id="rc-txt"></span><button id="rc-stop" aria-label="Arrêter le guidage" style="border:0;background:#c9a14a;border-radius:999px;min-width:34px;min-height:34px;cursor:pointer">✕</button>';
+      elCap.innerHTML = '<span id="rc-fleche" style="display:inline-block;font-size:22px">✨</span><span id="rc-txt"></span><button id="rc-stop" aria-label="Arrêter le guidage" style="border:0;background:#c9a14a;border-radius:999px;min-width:34px;min-height:34px;cursor:pointer">✕</button>';
       document.body.appendChild(elCap); elCap.querySelector('#rc-stop').onclick = () => { cap = null; majCap(); }; }
     const j = joueur(); if (!j.dans) { elCap.style.display = 'none'; return; }
     const c = capVers(j, cap); elCap.style.display = 'flex';
     if (c.distance < 12) { cap = null; elCap.style.display = 'none'; return; }
-    elCap.querySelector('#rc-fleche').style.transform = `rotate(${c.angle}rad)`;
     elCap.querySelector('#rc-txt').textContent = `${cap.l.icone} ${cap.l.nom} · ${c.distance > 950 ? (c.distance / 1000).toFixed(1).replace('.', ',') + ' km' : Math.round(c.distance / 5) * 5 + ' m'}`;
   }
-  return { ouvrir, fermer, ouverte: () => ouverte, maj(dt) { tCap += dt; if (tCap > 0.25) { tCap = 0; majCap(); if (ouverte) dessiner(); } } };
+  return { ouvrir, fermer, ouverte: () => ouverte, cap: () => cap, maj(dt) { tCap += dt; if (tCap > 0.25) { tCap = 0; majCap(); if (ouverte) dessiner(); } } };
 }

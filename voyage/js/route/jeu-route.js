@@ -6,9 +6,10 @@ import { creerLieux3D } from './lieux-3d.js';
 import { creerVille3D } from './ville-3d.js';
 import { creerInterieur3D } from './interieur-3d.js';
 import { creerMontee3D } from './montee-3d.js';
+import { creerGuidage3D } from './guidage-3d.js';
 import { suivreTraversee } from './traversees-route.js';
 import { sandboxActif } from './bac-a-sable.js';
-import { loinDeLaPiste } from './piste-plan.js';
+import { loinDeLaPiste, zoneJouable } from './piste-plan.js';
 import { creerVerificationUI } from './verification-ui.js';
 import { creerVoyageurs3D } from './voyageurs-3d.js';
 import { maisonsVille, portesJouables, villeVisible } from './ville-plan.js';
@@ -43,6 +44,7 @@ export function creerRoute(ctx) {
   const V = creerVille3D({ scene, hauteur: monde.hauteur, ombres: ctx.ombres });          // la cité ancienne
   const W = creerVoyageurs3D({ scene, hauteur: monde.hauteur, leger: !!ctx.Q.leger });   // ses voyageurs fictifs animés
   const I = creerInterieur3D({ scene, hauteur: monde.hauteur, ombres: ctx.ombres });   // la pièce d'une maison : invisible tant qu'on n'y entre pas
+  const G3 = creerGuidage3D({ scene, hauteur: monde.hauteur });                                // les lumières dorées du guidage (destination choisie sur la carte)
   const M3 = creerMontee3D({ scene, hauteur: monde.hauteur, ombres: ctx.ombres });          // les sentiers de montée des deux grandes montagnes
   let tHors = 0, cooldownHors = 0;                                                        // « reviens vers la piste » : au plus une fois toutes les 40 s
   let villeAffichee = false;                                                              // la cité est-elle dessinée ? (seulement quand elle peut être vue)
@@ -57,7 +59,7 @@ export function creerRoute(ctx) {
   const h0 = terrain.hauteur.bind(terrain), m0 = terrain.matiere.bind(terrain);
   terrain.hauteur = (x, z) => z > SEUIL_Z ? monde.hauteur(x, z) : h0(x, z);
   terrain.matiere = (x, z) => z > SEUIL_Z ? monde.matiere(x, z) : m0(x, z);
-  const montrer = v => { monde.montrer(v); L.groupe.visible = v; V.montrer(v && villeVisible(J.x, J.z)); villeAffichee = v && villeVisible(J.x, J.z); M3.groupe.visible = v; terrain.mesh.visible = !v; if (!v) for (const n of W.liste) n.e.racine.visible = false; };
+  const montrer = v => { monde.montrer(v); L.groupe.visible = v; V.montrer(v && villeVisible(J.x, J.z)); villeAffichee = v && villeVisible(J.x, J.z); M3.groupe.visible = v; G3.groupe.visible = v; terrain.mesh.visible = !v; if (!v) for (const n of W.liste) n.e.racine.visible = false; };
   montrer(false);
 
   // ---------- les lieux déjà faits (reprise d'une sauvegarde) ----------
@@ -326,9 +328,13 @@ export function creerRoute(ctx) {
     nx = Math.max(-LARGEUR + 20, Math.min(LARGEUR - 20, nx));
     const sMax = DEC + S_FIN_TRANCHE + 25;
     if (nz > sMax && !dansMaison) { nz = sMax; avertirFin(); }
+    // la zone jouable : un mur invisible, doux, arrête l'enfant avant le bout du monde (on ne bloque que depuis l'intérieur : jamais piégé dehors)
+    if (!dansMaison && zoneJouable(o.z - DEC, o.x) && !zoneJouable(nz - DEC, nx)) { if (zoneJouable(nz - DEC, o.x)) nx = o.x; else if (zoneJouable(o.z - DEC, nx)) nz = o.z; else { nx = o.x; nz = o.z; } if (o === J) avertirLimite(); }
     nz = Math.max(DEC + S_DEBUT, nz);
     o.x = nx; o.z = nz;
   }
+  let dernierLimite = 0;
+  function avertirLimite() { const t = performance.now(); if (t - dernierLimite > 12000) { dernierLimite = t; ui.indice('🧭 ' + MESSAGES.limite, 5000); } }
   let dernierFin = 0;
   function avertirFin() { const t = performance.now(); if (t - dernierFin > 9000) { dernierFin = t; ui.indice('⛰️ ' + MESSAGES.fin, 5000); } }
 
@@ -344,8 +350,10 @@ export function creerRoute(ctx) {
       return;
     }
     if (auRetourRoute(J.z)) { sortir(); return; }
-    monde.maj(J); monde.eclairer(nuit, t); L.animer(dt, t, J); lanternesProches(); parcoursCollines();
-    tHors += dt; if (tHors > 1) { tHors = 0; if (cooldownHors > 0) cooldownHors -= 1; else if (!dansMaison && loinDeLaPiste(J.z - DEC, J.x)) { cooldownHors = 40; ui.indice('🧭 ' + MESSAGES.horsPiste, 6000); } }
+    monde.maj(J); monde.eclairer(nuit, t); G3.maj(dt, t, J, carte.cap()); L.animer(dt, t, J); lanternesProches(); parcoursCollines();
+    tHors += dt; if (tHors > 1) { tHors = 0;
+      // filet de sécurité : s'il se retrouve hors de la zone (ancienne sauvegarde, bug), on le ramène sur la piste
+      if (!dansMaison && !zoneJouable(J.z - DEC, J.x)) { const p = pointChemin(Math.max(S_DEBUT, Math.min(S_FIN_TRANCHE, J.z - DEC))); J.x = p.t; J.z = DEC + p.s; J.vx = J.vz = 0; if (ctx.monte()) { C.x = J.x; C.z = J.z; } monde.preparer(J); ui.indice('🧭 ' + MESSAGES.ramene, 6000); } if (cooldownHors > 0) cooldownHors -= 1; else if (!dansMaison && loinDeLaPiste(J.z - DEC, J.x)) { cooldownHors = 40; ui.indice('🧭 ' + MESSAGES.horsPiste, 6000); } }
     { const p = villeVisible(J.x, J.z); if (p !== villeAffichee) { villeAffichee = p; V.montrer(dans && villeVisible(J.x, J.z)); } } V.obstacles(J); W.maj(dt, t, J);
     tVoy += dt; if (tVoy > 0.35) { tVoy = 0; for (const n of W.liste) if (n.v.trajet && n.e.racine.visible) regV(n); }
     // l'arrivée : la dernière crête ouvre la vue sur la cité ; la caméra se tourne doucement vers elle (sans jamais bloquer l'enfant)

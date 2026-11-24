@@ -166,6 +166,8 @@ export const MESSAGES = {
   sacDit: 'Chaque objet du sac sert à quelque chose, mais aucun n\'est obligatoire : tu peux partir comme tu veux.',
   gourdePleine: 'Tu remplis ta gourde à l\'eau claire de l\'oasis.',
   gourdeAbsente: 'L\'eau de l\'oasis est claire et fraîche. Pense à emporter ta gourde la prochaine fois !',
+  limite: "Plus loin, le désert est trop sauvage : reste près de la piste et des lumières.",
+  ramene: "Tu t'étais trop éloigné : on te ramène sur la grande piste.",
   horsPiste: "Tu t'éloignes de la grande piste. Reviens vers les poteaux rouges, ou ouvre ta carte.",
   cueillette: 'Tu cueilles deux dattes mûres : elles vont dans ton panier.',
   cueilletteFin: 'Il ne reste plus de dattes mûres : laisse le reste aux oiseaux !',
