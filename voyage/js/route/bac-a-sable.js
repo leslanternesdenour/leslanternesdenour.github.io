@@ -1,8 +1,8 @@
 // Le bac à sable des essais : avec ?sandbox=1 (local ou préproduction seulement), TOUT ce que le jeu écrit dans le stockage du navigateur est rangé
 // sous un préfixe « sandbox: » et toute écriture vers le serveur (/api, comptes, synchronisation) est refusée. Les profils réels ne peuvent donc pas être modifiés.
-import { routeActive } from './drapeau.js';
+import { hoteDeTest } from './drapeau.js';
 
-export const sandboxActif = (hote, recherche) => routeActive(hote) && /[?&]sandbox=1(&|$)/.test(recherche || '');
+export const sandboxActif = (hote, recherche) => hoteDeTest(hote) && /[?&]sandbox=1(&|$)/.test(recherche || '');
 
 const PREFIXE = 'sandbox:';
 // Un stockage qui range tout sous le préfixe : les vraies clés ne sont jamais lues, écrites ni supprimées
