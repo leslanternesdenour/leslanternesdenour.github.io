@@ -11,7 +11,7 @@
 // les garde-fous ci-dessous empêchent que cela arrive (double facturation).
 
 export const NIVEAUX = { gratuit: 0, premium: 1, famille: 2, createur: 3 };
-const PROFILS = { gratuit: 1, premium: 1, famille: 5, createur: Infinity };
+const PROFILS = { gratuit: 4, premium: 4, famille: 4, createur: Infinity };   // organisation du 24/11/2026 : 4 profils pour tout compte parent
 const FORMULES = { premium_mensuel: 'premium', premium_annuel: 'premium', famille_annuel: 'famille' };
 
 export function enMs(d) {
@@ -53,7 +53,7 @@ export function calculerDroits({ uid, claims, env, sources = {}, maintenant = Da
   const niveau = NIVEAUX[nivOffert] >= NIVEAUX[nivPaye] ? nivOffert : nivPaye;
   const statut = niveau === 'gratuit' ? 'gratuit' : (meilleurOffert && NIVEAUX[nivOffert] >= NIVEAUX[nivPaye] ? 'invite' : 'abonne');
   const expire = statut === 'invite' ? enMs(meilleurOffert.fin) : statut === 'abonne' ? enMs(ab.finPeriode) : null;
-  return { statut, niveau, profilsMax: PROFILS[niveau], synchro: niveau === 'famille', apercu: false, admin: false,
+  return { statut, niveau, profilsMax: PROFILS[niveau], synchro: true, apercu: false, admin: false,
     payant: !!ab, offert: !!meilleurOffert, expire };
 }
 

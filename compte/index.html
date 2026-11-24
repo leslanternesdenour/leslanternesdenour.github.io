@@ -48,6 +48,7 @@ input[type=text],select{width:100%;border-radius:14px;border:2px solid #3a2a7d;b
 .rangee{display:flex;gap:8px;flex-wrap:wrap}.rangee>*{flex:1}
 .interrupteur{display:flex;gap:12px;align-items:center;background:#3a2a7d;border-radius:16px;padding:14px;cursor:pointer;color:#fff}.interrupteur input{width:28px;height:28px;flex:none;accent-color:#f5b942}
 .bandeau-sim{background:#ff9fb2;color:#3d0613;font-weight:900;text-align:center;border-radius:14px;padding:8px}
+.enfant{flex-wrap:wrap}.enfant .detail{flex-basis:100%;margin-top:6px}.enfant .detail p{margin:2px 0}
 </style>
 </head>
 <body>
@@ -137,6 +138,7 @@ input[type=text],select{width:100%;border-radius:14px;border:2px solid #3a2a7d;b
   <section class="carte cache" id="v-enfants">
     <h2>Qui joue ?</h2>
     <p class="petit" id="enf-info"></p>
+    <p class="petit cache" id="enf-migration" role="note">📦 Cet appareil garde une progression de jeu. Elle sera ajoutée au premier profil choisi, sans rien perdre ; les autres profils démarrent à zéro.</p>
     <div id="enf-liste" class="choix"></div>
     <button class="lien cache" id="enf-plus">Afficher les profils suivants</button>
     <form id="f-enfant" class="choix cache" novalidate>
@@ -190,6 +192,7 @@ input[type=text],select{width:100%;border-radius:14px;border:2px solid #3a2a7d;b
   <p style="text-align:center"><a href="../decouvrir/">Découvrir le Monde de Nour</a> · <a href="../">Retour au site</a></p>
 </main>
 
+<script src="progression-resume.js?v=1"></script>
 <script type="module">
 import * as C from './client.js?v=1';
 const $ = id => document.getElementById(id);
@@ -268,8 +271,7 @@ async function demarrer() {
   $('e-verif').classList.toggle('cache', !!D.emailVerifie);
   $('e-createur').classList.toggle('cache', !D.activationCreateur);
   $('e-offre').textContent = D.statut === 'creator' ? 'Toutes les fonctions, profils illimités, aperçu des contenus en préparation.'
-    : D.synchro ? 'La progression de chaque enfant est enregistrée dans le compte et se retrouve sur vos autres appareils.'
-    : 'La progression reste gardée sur cet appareil (la synchronisation entre appareils fait partie de la formule Famille).';
+    : 'La progression de chaque enfant est enregistrée automatiquement dans le compte et se retrouve sur vos autres appareils.';
   $('inv-activer').classList.toggle('cache', !invitation());
   $('inv-texte').textContent = 'Activez l\'accès offert sur ce compte (' + D.email + '). Il doit avoir reçu l\'invitation.';
   voir('v-espace', 'v-enfants', 'v-offre', 'v-securite');
@@ -350,13 +352,43 @@ async function chargerEnfants(depuisDebut) {
     const suppr = document.createElement('button'); suppr.className = 'danger'; suppr.textContent = '✕'; suppr.title = 'Supprimer ce profil'; suppr.setAttribute('aria-label', 'Supprimer le profil ' + x.surnom);
     suppr.onclick = () => occupe(suppr, async () => { if (!confirm('Supprimer le profil « ' + x.surnom + ' » et ses progrès enregistrés ?')) return;
       await C.api('/api/enfants/' + x.id, { methode: 'DELETE' }); if ((C.profilActif() || {}).id === x.id) localStorage.removeItem('ldn_profil_actif'); await chargerEnfants(true); });
-    d.append(jouer, suppr); return d;
+    const modif = document.createElement('button'); modif.className = 'doux'; modif.textContent = 'Modifier'; modif.onclick = () => formulaireModif(d, x);
+    const prog = document.createElement('button'); prog.className = 'doux'; prog.textContent = 'Progression'; prog.onclick = () => occupe(prog, () => afficherProgression(d, x));
+    d.append(jouer, modif, prog, suppr); return d;
   }));
   $('enf-plus').classList.toggle('cache', !suite);
   const max = D.illimite ? null : D.profilsMax;
   $('enf-info').textContent = total + ' profil' + (total > 1 ? 's' : '') + (max ? ' sur ' + max + ' possible' + (max > 1 ? 's' : '') : ' · illimité') + (enfants.length < total ? ' · ' + enfants.length + ' affichés' : '');
   $('enf-ajouter').classList.toggle('cache', !!max && total >= max);
+  $('enf-migration').classList.toggle('cache', !!C.profilActif() || !C.CLES_JEU.some(k => { try { return !!localStorage.getItem(k); } catch (e) { return false; } }));
   if (!total) { $('f-enfant').classList.remove('cache'); $('enf-ajouter').classList.add('cache'); }
+}
+function fermerDetail(d) { const o = d.querySelector('.detail'); if (o) o.remove(); return !!o; }
+function formulaireModif(d, x) {
+  if (fermerDetail(d)) return;
+  const f = document.createElement('form'); f.className = 'detail choix'; f.noValidate = true;
+  f.innerHTML = '<label>Prénom ou surnom<input type="text" maxlength="20" autocomplete="off"></label><div class="rangee"><label>Âge<select class="m-tr"><option value="3-5">3 à 5 ans</option><option value="6-10">6 à 10 ans</option></select></label><label>Personnage<select class="m-av"><option value="fille">👧 Fille</option><option value="garcon">👦 Garçon</option></select></label></div><div class="rangee"><button type="submit">Enregistrer</button><button type="button" class="doux m-annuler">Annuler</button></div>';
+  f.querySelector('input').value = x.surnom; f.querySelector('.m-tr').value = x.tranche; f.querySelector('.m-av').value = x.avatar;
+  f.querySelector('.m-annuler').onclick = () => f.remove();
+  f.onsubmit = ev => { ev.preventDefault(); occupe(ev.submitter, async () => {
+    const nouveau = { surnom: f.querySelector('input').value.trim(), tranche: f.querySelector('.m-tr').value, avatar: f.querySelector('.m-av').value };
+    await C.api('/api/enfants/' + x.id, { methode: 'PATCH', corps: { surnom: nouveau.surnom, tranche: nouveau.tranche, avatar: nouveau.avatar } });
+    const pa = C.profilActif(); if (pa && pa.id === x.id) localStorage.setItem('ldn_profil_actif', JSON.stringify({ ...pa, ...nouveau }));   // l'appareil affiche le nouveau prénom ; la progression locale n'est pas touchée
+    await chargerEnfants(true); etat('Profil modifié.'); }); };
+  d.appendChild(f); f.querySelector('input').focus();
+}
+async function afficherProgression(d, x) {
+  if (fermerDetail(d)) return;
+  const e = await C.api('/api/enfants/' + x.id), r = ProgressionResume.resume(e.progression);
+  const b = document.createElement('div'); b.className = 'detail';
+  const ligne = t => { const p = document.createElement('p'); p.className = 'petit'; p.textContent = t; b.appendChild(p); };
+  if (r.vide) ligne('Pas encore de progression enregistrée pour ' + x.surnom + '.');
+  else {
+    ligne('⭐ Étoiles : ' + r.etoiles + ' · 🏮 Lanternes : ' + r.lanternes);
+    ligne('Ablutions : ' + r.jeux.ablutions + ' étoiles · Prière : ' + r.jeux.priere + ' étoiles · Ramadan : ' + r.jeux.ramadan + ' lanternes');
+    ligne('Grand Voyage : ' + r.voyage.zones + ' lieux découverts · ' + r.voyage.missions + ' missions terminées · ' + r.voyage.mots + ' mots appris · ' + r.voyage.animaux + ' animaux observés');
+  }
+  d.appendChild(b);
 }
 $('enf-plus').onclick = e => occupe(e.target, () => chargerEnfants(false));
 $('enf-ajouter').onclick = () => { $('f-enfant').classList.remove('cache'); $('enf-ajouter').classList.add('cache'); $('enf-surnom').focus(); };

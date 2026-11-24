@@ -39,9 +39,9 @@ test('Abonné : formules, statuts Stripe, échéance', () => {
   assert.equal(d('u', {}, { abonnement: ab('formule_inventee') }).statut, 'gratuit', 'formule inconnue');
 });
 
-test('Profils et synchronisation selon la formule', () => {
-  assert.deepEqual([d('u', {}, {}).profilsMax, d('u', {}, { abonnement: ab('premium_annuel') }).profilsMax, d('u', {}, { abonnement: ab('famille_annuel') }).profilsMax], [1, 1, 5]);
-  assert.equal(d('u', {}, { abonnement: ab('premium_annuel') }).synchro, false, 'synchro réservée à Famille');
+test('Profils et synchronisation : 4 profils et sauvegarde pour toute formule (organisation du 24/11/2026)', () => {
+  assert.deepEqual([d('u', {}, {}).profilsMax, d('u', {}, { abonnement: ab('premium_annuel') }).profilsMax, d('u', {}, { abonnement: ab('famille_annuel') }).profilsMax], [4, 4, 4]);
+  assert.equal(d('u', {}, { abonnement: ab('premium_annuel') }).synchro, true);
   assert.equal(d('u', {}, { abonnement: ab('famille_annuel') }).synchro, true);
 });
 

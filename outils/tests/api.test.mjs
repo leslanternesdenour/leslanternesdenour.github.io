@@ -95,7 +95,8 @@ test('Le rôle Créateur posé sur un autre compte ne donne rien', async () => {
 test('Profils enfants : limite du gratuit, minimisation des données', async () => {
   const c = await connecter('uid-p2');
   assert.equal((await appel('POST', '/api/enfants', { cookie: c, corps: { surnom: 'Amina', tranche: '3-5', avatar: 'fille' } })).s, 201);
-  assert.equal((await appel('POST', '/api/enfants', { cookie: c, corps: { surnom: 'Yanis', tranche: '6-10', avatar: 'garcon' } })).j.erreur, 'limite-profils');
+  for (const n of ['Yanis', 'Lina', 'Sara']) assert.equal((await appel('POST', '/api/enfants', { cookie: c, corps: { surnom: n, tranche: '6-10', avatar: 'garcon' } })).s, 201, 'quatre profils possibles');
+  assert.equal((await appel('POST', '/api/enfants', { cookie: c, corps: { surnom: 'Cinq', tranche: '6-10', avatar: 'garcon' } })).j.erreur, 'limite-profils', 'le 5e est refusé');
   for (const mauvais of [{ surnom: 'Amina Dupont 2015', tranche: '3-5', avatar: 'fille' }, { surnom: 'a@b.fr', tranche: '3-5', avatar: 'fille' }, { surnom: 'Ali', tranche: '12', avatar: 'fille' }])
     assert.equal((await appel('POST', '/api/enfants', { cookie: await connecter('uid-p2b' + Math.random().toString(36).slice(2, 6)), corps: mauvais })).s, 400);
   const e = (await appel('GET', '/api/enfants', { cookie: c })).j.enfants[0];
@@ -146,7 +147,7 @@ test('Invitations : 14 jours, adresse précise, e-mail vérifié, usage unique, 
   const ok = await appel('POST', '/api/invitations/activer', { cookie: soeur, corps: { code } });
   assert.equal(ok.s, 200); assert.equal(ok.j.niveau, 'famille');
   const moi = (await appel('GET', '/api/moi', { cookie: soeur })).j;
-  assert.equal(moi.statut, 'invite'); assert.equal(moi.niveau, 'famille'); assert.equal(moi.profilsMax, 5); assert.equal(moi.synchro, true);
+  assert.equal(moi.statut, 'invite'); assert.equal(moi.niveau, 'famille'); assert.equal(moi.profilsMax, 4); assert.equal(moi.synchro, true);
   assert.equal((await appel('POST', '/api/invitations/activer', { cookie: soeur, corps: { code } })).j.erreur, 'deja-utilisee');
   const j = (await appel('GET', '/api/admin/journal', { cookie: adm })).j.journal.map(x => x.action);
   assert.ok(j.includes('invitation-creee') && j.includes('invitation-activee'));
@@ -168,19 +169,20 @@ test('Révocation : retour au gratuit, profils conservés et gelés, progression
   const acces = (await appel('GET', '/api/admin/acces', { cookie: adm })).j.acces.find(a => a.uid === 'uid-frere');
   assert.equal((await appel('POST', `/api/admin/acces/${acces.id}/revoquer`, { cookie: adm })).s, 200);
   const moi = (await appel('GET', '/api/moi', { cookie: frere })).j;
-  assert.equal(moi.statut, 'gratuit'); assert.equal(moi.profilsMax, 1);
+  assert.equal(moi.statut, 'gratuit'); assert.equal(moi.profilsMax, 4);
   const enfants = (await appel('GET', '/api/enfants', { cookie: frere })).j;
   assert.equal(enfants.total, 3, 'aucun profil supprimé');
-  assert.deepEqual(enfants.enfants.map(e => e.gele), [false, true, true], 'le premier reste actif, les autres gelés');
+  assert.deepEqual(enfants.enfants.map(e => e.gele), [false, false, false], 'plus de gel : 4 profils pour tout compte parent');
   assert.deepEqual((await base.lire('familles/uid-frere/enfants', ids[1])).progression, { ablutions: { g1: 3 } }, 'progression conservée');
-  assert.equal((await appel('POST', '/api/enfants', { cookie: frere, corps: { surnom: 'Lina', tranche: '3-5', avatar: 'fille' } })).j.erreur, 'limite-profils');
+  assert.equal((await appel('POST', '/api/enfants', { cookie: frere, corps: { surnom: 'Lina', tranche: '3-5', avatar: 'fille' } })).s, 201);
+  assert.equal((await appel('POST', '/api/enfants', { cookie: frere, corps: { surnom: 'Zoe', tranche: '3-5', avatar: 'fille' } })).j.erreur, 'limite-profils');
   // le parent choisit l'enfant actif
   await appel('POST', `/api/enfants/${ids[2]}/actif`, { cookie: frere });
-  assert.deepEqual((await appel('GET', '/api/enfants', { cookie: frere })).j.enfants.map(e => e.gele), [true, true, false]);
+  assert.deepEqual((await appel('GET', '/api/enfants', { cookie: frere })).j.enfants.map(e => e.gele), [false, false, false, false]);
   // prolonger en permanent : tout est dégelé
   assert.equal((await appel('POST', `/api/admin/acces/${acces.id}/prolonger`, { cookie: adm, corps: { permanent: true } })).s, 200);
   assert.equal((await appel('GET', '/api/moi', { cookie: frere })).j.statut, 'invite');
-  assert.deepEqual((await appel('GET', '/api/enfants', { cookie: frere })).j.enfants.map(e => e.gele), [false, false, false]);
+  assert.deepEqual((await appel('GET', '/api/enfants', { cookie: frere })).j.enfants.map(e => e.gele), [false, false, false, false]);
 });
 
 test('Double facturation bloquée dans les deux sens', async () => {
@@ -214,7 +216,7 @@ test('Stripe (mode test) : paiement, webhooks signés, doublons, résiliation, f
   assert.equal((await appel('GET', '/api/moi', { cookie: c })).j.statut, 'abonne', 'accès conservé jusqu\'à la fin de la période payée');
   await webhook({ ...abo('uid-client', 'price_fa', 'canceled'), type: 'customer.subscription.deleted' });
   moi = (await appel('GET', '/api/moi', { cookie: c })).j; assert.equal(moi.statut, 'gratuit');
-  const e = (await appel('GET', '/api/enfants', { cookie: c })).j; assert.equal(e.total, 2, 'profils conservés'); assert.deepEqual(e.enfants.map(x => x.gele), [false, true]);
+  const e = (await appel('GET', '/api/enfants', { cookie: c })).j; assert.equal(e.total, 2, 'profils conservés'); assert.deepEqual(e.enfants.map(x => x.gele), [false, false], 'plus de gel');
   assert.throws(() => clientStripe({ STRIPE_CLE_SECRETE: 'sk_live_xxx' }), /mode test/, 'clé réelle refusée sans accord');
 });
 
@@ -389,4 +391,25 @@ test('Connexion Google : suppression RGPD complète comme pour un compte e-mail 
   assert.equal((await appel('DELETE', '/api/compte', { cookie: vieux })).j.erreur, 'reconnexion-requise');
   assert.equal((await appel('DELETE', '/api/compte', { cookie: c })).s, 200);
   const d = await instantane(base); assert.deepEqual(Object.keys(d).filter(k => k.includes('uid-g3')), []); assert.equal(JSON.stringify(Object.values(d)).includes('g3@exemple.fr'), false);
+});
+
+test('Isolation des familles : un parent ne peut ni lire, ni modifier, ni supprimer, ni sauvegarder, ni activer le profil d\'une autre famille, même en connaissant son identifiant', async () => {
+  const a = await connecter('uid-iso-a'), b = await connecter('uid-iso-b');
+  const ida = (await appel('POST', '/api/enfants', { cookie: a, corps: { surnom: 'Alia', tranche: '3-5', avatar: 'fille' } })).j.id;
+  assert.equal((await appel('PUT', `/api/enfants/${ida}/progression`, { cookie: a, corps: { progression: { ablutions: { g1: 2 } } } })).s, 200, 'un compte Gratuit sauvegarde sa progression');
+  for (const [m, suffixe, corps] of [['GET', '', undefined], ['PATCH', '', { surnom: 'Pirate' }], ['DELETE', '', undefined], ['PUT', '/progression', { progression: { x: 1 } }], ['POST', '/actif', undefined]])
+    assert.equal((await appel(m, `/api/enfants/${ida}${suffixe}`, { cookie: b, corps })).s, 404, `${m}${suffixe} sur le profil d'une autre famille`);
+  assert.deepEqual((await appel('GET', '/api/enfants', { cookie: b })).j.enfants, [], 'la liste de B ne contient rien de A');
+  const intact = await base.lire('familles/uid-iso-a/enfants', ida);
+  assert.equal(intact.surnom, 'Alia'); assert.deepEqual(intact.progression, { ablutions: { g1: 2 } }, 'rien n\'a changé chez A');
+  assert.equal((await appel('GET', '/api/enfants')).s, 401, 'sans connexion : refusé');
+  assert.equal((await appel('GET', `/api/enfants/${ida}`)).s, 401);
+});
+
+test('Droits : le serveur ignore tout ce que le navigateur prétend (niveau, abonnement, rôle envoyés dans la requête ou la session)', async () => {
+  const r = await appel('POST', '/api/session', { corps: { idToken: await jeton('uid-menteur'), consentements: CONSENT, niveau: 'famille', abonne: true, role: 'creator', profilsMax: 99 }, entetes: { 'X-LDN-Niveau': 'famille' } });
+  assert.equal(r.s, 200); const c = r.h.get('Set-Cookie').split(';')[0];
+  const moi = (await appel('GET', '/api/moi', { cookie: c, entetes: { 'X-LDN-Niveau': 'famille' } })).j;
+  assert.equal(moi.niveau, 'gratuit'); assert.equal(moi.statut, 'gratuit'); assert.equal(moi.profilsMax, 4); assert.equal(moi.admin, false);
+  assert.equal((await appel('GET', '/api/premium/voyage/camp/zone.json', { cookie: c })).s, 403, 'un contenu Premium reste fermé au compte Gratuit');
 });
