@@ -5,7 +5,7 @@ import { contexte, sortie, reveiller, reglerVolume } from '../../monde/socle/aud
 
 let ctx = null, bruitBlanc = null;
 let vent = null, eau = null, feu = null;
-let musique = { tampon: null, bornes: [0, 0], source: null, gain: null, voulue: false, charge: null };
+let musique = { source: null, gain: null, piste: null, voulue: false };
 
 function tamponBruit(c) {
   const n = c.sampleRate * 2, b = c.createBuffer(1, n, c.sampleRate), d = b.getChannelData(0);
@@ -113,28 +113,57 @@ function bornesBoucle(b) {
   let z = n - 1; while (z > n - 6000 && z > a && !fort(z)) z--;
   return [a / b.sampleRate, (z + 1) / b.sampleRate];
 }
-function chargerMusique() {
-  if (musique.charge) return musique.charge;
-  musique.charge = fetch('musique/grand-voyage-golden-hour.mp3?v=1')
-    .then(r => { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); })
-    .then(ab => new Promise((ok, ko) => { const p = ctx.decodeAudioData(ab, ok, ko); if (p && p.then) p.then(ok, ko); }))
-    .then(b => { musique.tampon = b; musique.bornes = bornesBoucle(b); return true; })
-    .catch(() => false);
-  return musique.charge;
+// Deux pistes, chemins relatifs à la page /voyage/ : le Grand Voyage, et La Mecque (seulement à l'arrivée sur la Route, voir musique-zone.js).
+const PISTES = {
+  voyage: 'musique/grand-voyage-golden-hour.mp3?v=1',
+  mecque: 'musique/mecque-sacred-city-at-dusk.mp3?v=1'
+};
+const chargees = {};                       // nom → promesse de { tampon, bornes }, ou false si le fichier est indisponible
+let pisteVoulue = 'voyage', dernierChangement = -1e9;
+const PAUSE_ENTRE_CHANGEMENTS = 6;         // secondes : pas d'aller-retour entre deux musiques à la frontière d'une région
+function chargerPiste(nom) {
+  if (!chargees[nom]) {
+    chargees[nom] = fetch(PISTES[nom])
+      .then(r => { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); })
+      .then(ab => new Promise((ok, ko) => { const p = ctx.decodeAudioData(ab, ok, ko); if (p && p.then) p.then(ok, ko); }))
+      .then(b => ({ tampon: b, bornes: bornesBoucle(b) }))
+      .catch(() => false);
+  }
+  return chargees[nom];
 }
-async function jouerMusique() {
-  if (!ctx || musique.source) return;
-  if (!(await chargerMusique()) || !musique.voulue || musique.source) return;
-  const s = ctx.createBufferSource(); s.buffer = musique.tampon; s.loop = true;
-  s.loopStart = musique.bornes[0]; s.loopEnd = musique.bornes[1];
-  const g = ctx.createGain(); g.gain.setValueAtTime(0.0001, ctx.currentTime); g.gain.exponentialRampToValueAtTime(1, ctx.currentTime + 3);
+const DUREE_FONDU = 5;                     // secondes : fondu enchaîné entre deux musiques (l'une baisse pendant que l'autre monte, sans creux)
+async function jouerMusique(croise = false) {
+  if (!ctx || musique.source || !musique.voulue) return;
+  const nom = pisteVoulue, p = await chargerPiste(nom);
+  if (!p || !musique.voulue || musique.source) return;
+  if (nom !== pisteVoulue) { jouerMusique(croise); return; }   // la musique voulue a changé pendant le chargement
+  const s = ctx.createBufferSource(); s.buffer = p.tampon; s.loop = true;
+  s.loopStart = p.bornes[0]; s.loopEnd = p.bornes[1];
+  const t = ctx.currentTime, g = ctx.createGain();
+  if (croise) { g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(1, t + DUREE_FONDU); }
+  else { g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(1, t + 3); }
   s.connect(g).connect(sortie('musique')); s.start();
-  musique.source = s; musique.gain = g;
+  musique.source = s; musique.gain = g; musique.piste = nom;
 }
-function arreterMusique() {
+function arreterMusique(croise = false) {
   if (!musique.source) return;
-  const s = musique.source, g = musique.gain; musique.source = null;
-  g.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.4); setTimeout(() => { try { s.stop(); } catch (e) {} }, 1600);
+  const s = musique.source, g = musique.gain, t = ctx.currentTime; musique.source = null; musique.piste = null;
+  if (croise) { g.gain.cancelScheduledValues(t); g.gain.setValueAtTime(g.gain.value, t); g.gain.linearRampToValueAtTime(0, t + DUREE_FONDU); }
+  else g.gain.setTargetAtTime(0.0001, t, 0.4);
+  setTimeout(() => { try { s.stop(); } catch (e) {} }, croise ? (DUREE_FONDU + 0.5) * 1000 : 1600);
+}
+// Change de musique en douce (appelée souvent, ne fait rien si rien ne change). On attend d'avoir chargé la nouvelle musique
+// avant de baisser l'ancienne : jamais de silence, et si le fichier est indisponible on garde l'ancienne.
+export async function choisirMusique(nom) {
+  if (!PISTES[nom] || nom === pisteVoulue) return;
+  if (ctx && ctx.currentTime - dernierChangement < PAUSE_ENTRE_CHANGEMENTS) return;   // on réessaiera au prochain appel
+  pisteVoulue = nom; if (ctx) dernierChangement = ctx.currentTime;
+  if (!musique.voulue) return;
+  if (!musique.source) { jouerMusique(); return; }
+  if (musique.piste === nom) return;
+  const p = await chargerPiste(nom);
+  if (!p || pisteVoulue !== nom || !musique.source || musique.piste === nom) return;
+  arreterMusique(true); jouerMusique(true);
 }
 export function sonCheval() { // petit hennissement doux
   if (!ctx || ctx.state !== 'running') return;
