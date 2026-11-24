@@ -18,7 +18,8 @@ export const ETAPES_VERIF = [
   { id: 'collines', icone: '🚶', titre: 'Marcher entre les deux collines (3 traversées)', aller: { type: 'collines' }, quoi: 'Marche d\'une colline à l\'autre trois fois : un message doux à chaque traversée, jamais de chronomètre.', fait: R => !!(R.vu && R.vu.travRecompense) },
   { id: 'montees', icone: '⛰️', titre: 'Monter doucement (6 haltes)', aller: { type: 'halte', id: 'nord' }, quoi: 'Monte les deux sentiers jusqu\'aux belvédères et observe les haltes : la voix décrit la nature.', fait: R => finie(R, 'montees') },
   { id: 'hameau', icone: '🏘️', titre: 'Le hameau des puits (sentier caché)', aller: { type: 'lieu', id: 'hameau-borne' }, quoi: "Suis le sentier depuis la borne jusqu'au hameau : puits, jardin, four (chacun parle). Parle au puisatier et apprends son métier.", fait: R => finie(R, 'hameau') },
-  { id: 'cite', icone: '🏙️', titre: 'Découvrir la cité', aller: { type: 'lieu', id: 'cite-place' }, quoi: 'Visite la porte, l\'atelier, la grande place et le marché : la mission se termine.', fait: R => finie(R, 'cite') }
+  { id: 'cite', icone: '🏙️', titre: 'Découvrir la cité', aller: { type: 'lieu', id: 'cite-place' }, quoi: 'Visite la porte, l\'atelier, la grande place et le marché : la mission se termine.', fait: R => finie(R, 'cite') },
+  { id: 'arrivee', icone: '🏁', titre: 'Arriver devant le monument central (fin du voyage)', aller: { type: 'lieu', id: 'cite-place' }, quoi: 'Depuis la grande place, observe le monument central au centre : on ne peut pas s\'en approcher ni y entrer. Le badge « Arrivée à La Mecque » est obtenu et la musique de La Mecque joue.', fait: R => decouvert(R, 'cite-place') }
 ];
 export function progressionVerif(R) {
   const faites = ETAPES_VERIF.filter(e => { try { return !!e.fait(R); } catch (x) { return false; } }).length;
