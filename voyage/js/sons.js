@@ -5,7 +5,7 @@ import { contexte, sortie, reveiller, reglerVolume } from '../../monde/socle/aud
 
 let ctx = null, bruitBlanc = null;
 let vent = null, eau = null, feu = null;
-let musique = { tampon: null, source: null, gain: null, voulue: false, charge: null };
+let musique = { tampon: null, bornes: [0, 0], source: null, gain: null, voulue: false, charge: null };
 
 function tamponBruit(c) {
   const n = c.sampleRate * 2, b = c.createBuffer(1, n, c.sampleRate), d = b.getChannelData(0);
@@ -102,13 +102,23 @@ export function sonChameau() { // petit « blatèrement » doux, pas effrayant
   bip(190, 140, 0.45, 0.05, 'sawtooth'); bip(200, 150, 0.4, 0.03, 'triangle', 0.05);
 }
 
-// ---------- musique (le nasheed du village, facultatif) ----------
+// ---------- musique du Grand Voyage (chant à voix seules, facultatif ; le village garde son nasheed) ----------
+// Le fichier a été préparé avec un fondu enchaîné entre la fin et le début : la boucle est sans coupure.
+// Les encodeurs ajoutent parfois un peu de silence au début et à la fin : on les écarte pour qu'aucun trou n'apparaisse.
+function bornesBoucle(b) {
+  const n = b.length, seuil = 1e-4, d = [];
+  for (let c = 0; c < b.numberOfChannels; c++) d.push(b.getChannelData(c));
+  const fort = i => d.some(x => Math.abs(x[i]) > seuil);
+  let a = 0; while (a < Math.min(n, 6000) && !fort(a)) a++;
+  let z = n - 1; while (z > n - 6000 && z > a && !fort(z)) z--;
+  return [a / b.sampleRate, (z + 1) / b.sampleRate];
+}
 function chargerMusique() {
   if (musique.charge) return musique.charge;
-  musique.charge = fetch('../monde/musique/village-nasheed.mp3?v=1')
+  musique.charge = fetch('musique/grand-voyage-golden-hour.mp3?v=1')
     .then(r => { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); })
     .then(ab => new Promise((ok, ko) => { const p = ctx.decodeAudioData(ab, ok, ko); if (p && p.then) p.then(ok, ko); }))
-    .then(b => { musique.tampon = b; return true; })
+    .then(b => { musique.tampon = b; musique.bornes = bornesBoucle(b); return true; })
     .catch(() => false);
   return musique.charge;
 }
@@ -116,6 +126,7 @@ async function jouerMusique() {
   if (!ctx || musique.source) return;
   if (!(await chargerMusique()) || !musique.voulue || musique.source) return;
   const s = ctx.createBufferSource(); s.buffer = musique.tampon; s.loop = true;
+  s.loopStart = musique.bornes[0]; s.loopEnd = musique.bornes[1];
   const g = ctx.createGain(); g.gain.setValueAtTime(0.0001, ctx.currentTime); g.gain.exponentialRampToValueAtTime(1, ctx.currentTime + 3);
   s.connect(g).connect(sortie('musique')); s.start();
   musique.source = s; musique.gain = g;
