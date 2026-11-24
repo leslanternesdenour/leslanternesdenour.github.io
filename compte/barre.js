@@ -52,7 +52,7 @@
       var q = el('button', '', 'Se déconnecter'); q.type = 'button';
       q.onclick = function () {
         q.disabled = true;
-        import(base + 'client.js?v=1').then(function (C) { return C.deconnexion(); }).catch(function () {}).then(function () { location.reload(); });
+        import(base + 'client.js?v=2').then(function (C) { return C.deconnexion(); }).catch(function () {}).then(function () { location.reload(); });
       };
       b.appendChild(q);
     }
@@ -85,7 +85,7 @@
       if (pr && pr.surnom) sec.appendChild(el('p', 'ldn-cs-p', 'Profil actif : ' + (pr.avatar === 'fille' ? '👧 ' : '👦 ') + pr.surnom));
       sec.appendChild(el('a', '', '👨‍👩‍👧 Espace famille', base));
       var q = el('button', 'ldn-cs-quitter', 'Se déconnecter'); q.type = 'button';
-      q.onclick = function () { q.disabled = true; import(base + 'client.js?v=1').then(function (C) { return C.deconnexion(); }).catch(function () {}).then(function () { location.reload(); }); };
+      q.onclick = function () { q.disabled = true; import(base + 'client.js?v=2').then(function (C) { return C.deconnexion(); }).catch(function () {}).then(function () { location.reload(); }); };
       sec.appendChild(q); c.appendChild(sec);
     });
   }

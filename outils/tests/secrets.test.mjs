@@ -25,9 +25,9 @@ test('/api/sante : état OUI/NON en préproduction, jamais une valeur ; rien en 
   const plein = { ENVIRONNEMENT: 'preproduction', SESSION_SECRET: 'S'.repeat(40) + 'SECRETXYZ', FIREBASE_PROJET: 'ldn', CREATOR_UID: 'UIDXYZ-123', STRIPE_CLE_SECRETE: 'sk_test_SECRETXYZ', STRIPE_SECRET_WEBHOOK: 'whsec_SECRETXYZ',
     FIREBASE_COMPTE_SERVICE: JSON.stringify({ type: 'service_account', project_id: 'ldn', client_email: 'a@b.iam', private_key: 'SECRETXYZ' }) };
   const j = await lire(plein); const brut = JSON.stringify(j);
-  assert.deepEqual(j.configuration, { sessions: true, sessionsEtat: 'ok', firebaseProjet: true, firebaseCompteDeService: true, cleRevoquee: false, createurDesigne: true, stripe: 'test', stripeWebhook: true, stockagePremium: 'non' });
+  assert.deepEqual(j.configuration, { sessions: true, sessionsEtat: 'ok', firebaseProjet: true, firebaseCompteDeService: true, cleRevoquee: false, createurDesigne: true, stripe: 'test', stripeWebhook: true, stockagePremium: 'non', courriel: 'non' });
   assert.ok(!brut.includes('SECRETXYZ') && !brut.includes('UIDXYZ') && !brut.includes('sk_test'), 'aucune valeur dans la réponse');
-  assert.deepEqual((await lire({ ENVIRONNEMENT: 'preproduction' })).configuration, { sessions: false, sessionsEtat: 'absent', firebaseProjet: false, firebaseCompteDeService: false, cleRevoquee: false, createurDesigne: false, stripe: 'non', stripeWebhook: false, stockagePremium: 'non' });
+  assert.deepEqual((await lire({ ENVIRONNEMENT: 'preproduction' })).configuration, { sessions: false, sessionsEtat: 'absent', firebaseProjet: false, firebaseCompteDeService: false, cleRevoquee: false, createurDesigne: false, stripe: 'non', stripeWebhook: false, stockagePremium: 'non', courriel: 'non' });
   assert.equal(etatConfiguration({ STRIPE_CLE_SECRETE: 'sk_live_x', SESSION_SECRET: 'court' }).stripe, 'cle-invalide');
   assert.equal(etatConfiguration({ FIREBASE_COMPTE_SERVICE: '{"private_key":"x' }).firebaseCompteDeService, false);
   assert.equal((await lire({ ENVIRONNEMENT: 'production', ...plein, ENVIRONNEMENT: 'production' })).configuration, undefined, 'rien en production');

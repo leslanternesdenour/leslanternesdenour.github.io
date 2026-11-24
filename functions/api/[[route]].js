@@ -6,6 +6,7 @@ import { baseFirestore } from '../../serveur/base-firestore.js';
 import { verifierJeton, cleGoogle } from '../../serveur/jeton.js';
 import { clientStripe } from '../../serveur/stripe.js';
 import { estRevoquee } from '../../serveur/cles-revoquees.js';
+import { creerCourriel } from '../../serveur/email.js';
 
 let base = null, empreinteBase = null;
 
@@ -32,7 +33,8 @@ export async function onRequest({ request, env }) {
       env, base,
       auth: { verifierIdToken: (jeton, maintenant) => verifierJeton(jeton, { projet: env.FIREBASE_PROJET, type: 'id', obtenirCle: cleGoogle, maintenant }) },
       stockage: stockagePremium(env),
-      stripe: clientStripe(env)
+      stripe: clientStripe(env),
+      courriel: creerCourriel(env)      // null tant que le prestataire d'e-mails n'est pas configuré : l'ancien envoi Firebase reste utilisé
     };
   } catch (e) {
     console.error('Configuration des secrets invalide (détail volontairement omis).');

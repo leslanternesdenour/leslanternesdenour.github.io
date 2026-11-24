@@ -103,6 +103,20 @@ export function baseFirestore({ projet, compte, fetcher = fetch, jeton = jetonGo
       const r = await fetcher(`https://identitytoolkit.googleapis.com/v1/projects/${projet}/accounts:update`, { method: 'POST', headers: { Authorization: 'Bearer ' + await jeton(), 'Content-Type': 'application/json' }, body: JSON.stringify({ localId: uid, customAttributes: JSON.stringify({ role: 'creator' }) }) });
       if (!r.ok) throw new Error('pose du rôle refusée : ' + r.status);
     },
+    // Lien d'action (vérification de l'adresse, réinitialisation du mot de passe) généré côté serveur : même appel que le SDK Firebase Admin
+    // (generateEmailVerificationLink / generatePasswordResetLink). returnOobLink = Firebase N'ENVOIE PAS d'e-mail : c'est notre serveur qui l'envoie.
+    // Renvoie { oobCode } (jeton Firebase à usage unique et à durée limitée) ou null si le compte n'existe pas.
+    async lienAction(type, email) {
+      if (!['VERIFY_EMAIL', 'PASSWORD_RESET'].includes(type)) throw new Error('type-invalide');
+      if (typeof email !== 'string' || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) throw new Error('adresse-invalide');
+      const r = await fetcher(`https://identitytoolkit.googleapis.com/v1/projects/${projet}/accounts:sendOobCode`, { method: 'POST', headers: { Authorization: 'Bearer ' + await jeton(), 'Content-Type': 'application/json' }, body: JSON.stringify({ requestType: type, email, returnOobLink: true }) });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok) { if (/EMAIL_NOT_FOUND|USER_NOT_FOUND/.test(JSON.stringify(j))) return null; throw new Error('lien-action-refuse:' + r.status); }
+      let code = typeof j.oobCode === 'string' ? j.oobCode : null;
+      if (!code && typeof j.oobLink === 'string') { try { code = new URL(j.oobLink).searchParams.get('oobCode'); } catch (e) {} }
+      if (!code) throw new Error('lien-action-vide');
+      return { oobCode: code };
+    },
     // Suppression d'un compte Firebase Authentication (RGPD)
     async supprimerUtilisateur(uid) {
       const r = await fetcher(`https://identitytoolkit.googleapis.com/v1/projects/${projet}/accounts:delete`, { method: 'POST', headers: { Authorization: 'Bearer ' + await jeton(), 'Content-Type': 'application/json' }, body: JSON.stringify({ localId: uid }) });

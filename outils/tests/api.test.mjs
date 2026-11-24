@@ -21,9 +21,14 @@ const fichiers = { 'voyage/camp/zone.json': '{"zone":"camp"}', 'maisons/sons/jeu
 const appelsStripe = [];
 const fauxStripe = async (u, o) => { appelsStripe.push({ u, o }); return new Response(JSON.stringify(u.includes('checkout') ? { id: 'cs_test_1', url: 'https://checkout.stripe.com/c/test' } : { id: 'sub_1' }), { status: 200 }); };
 const base = creerBase();
+// E-mails personnalisés : faux liens d'action (aucun appel à Google) et faux prestataire d'envoi (aucun appel réseau)
+base.liensDemandes = [];
+base.lienAction = async (type, email) => { base.liensDemandes.push({ type, email }); return email.startsWith('inconnu') ? null : { oobCode: 'OOB-' + type + '-' + email.split('@')[0] }; };
+const courrielTest = { envoyes: [], ko: false, async envoyer(m) { if (this.ko) throw new Error('courriel-refuse:500'); this.envoyes.push(m); return { ok: true }; } };
+let courrielActif = false;
 let lent = false;
 const baseLente = new Proxy(base, { get(t, k) { const v = t[k]; return typeof v === 'function' ? async (...a) => { if (lent && k === 'lire') await new Promise(r => setTimeout(r, 15)); return v.apply(t, a); } : v; } });
-const ctx = () => ({ env, base: baseLente, maintenant,
+const ctx = () => ({ env, base: baseLente, maintenant, courriel: courrielActif ? courrielTest : null,
   auth: { verifierIdToken: (t, m) => verifierJeton(t, { projet: PROJET, obtenirCle: async k => k === 'k1' ? cles.publicKey : null, maintenant: m }) },
   stockage: { async get(k) { return k in fichiers ? { body: fichiers[k], type: 'application/json' } : null; } },
   stripe: clientStripe({ STRIPE_CLE_SECRETE: 'sk_test_local' }, { fetcher: fauxStripe }) });
@@ -432,4 +437,112 @@ test('E-mail non vérifié : les contenus réservés aux comptes (stockage priv�
   const v = await connecter('uid-verif2', { verifie: true });
   assert.equal((await appel('GET', '/api/premium/voyage/village/zone.json', { cookie: v })).s, 200, 'avec e-mail vérifié, le contenu gratuit réservé aux comptes s\'ouvre');
   assert.equal((await appel('DELETE', '/api/compte', { cookie: nv })).s, 200, 'un parent non vérifié peut supprimer son compte');
+});
+
+// ---------- e-mails personnalisés (vérification, réinitialisation, confirmation, sécurité) : envoi par notre serveur, liens générés côté serveur ----------
+const viderCourriel = () => { courrielTest.envoyes.length = 0; base.liensDemandes.length = 0; courrielTest.ko = false; };
+
+test('E-mails personnalisés : sans prestataire configuré, les routes répondent 503 « email-non-configure » (le navigateur retombe alors sur l\'envoi Firebase)', async () => {
+  courrielActif = false; viderCourriel();
+  const c = await connecter('uid-em0', { verifie: false });
+  const r = await appel('POST', '/api/email/verification', { cookie: c }); assert.equal(r.s, 503); assert.equal(r.j.erreur, 'email-non-configure');
+  assert.equal((await appel('POST', '/api/email/reinitialisation', { corps: { email: 'a@exemple.fr' } })).s, 503);
+  assert.equal(courrielTest.envoyes.length, 0);
+});
+
+test('E-mails : la vérification est envoyée à l\'adresse DE LA SESSION (jamais à une adresse fournie), avec un lien sur notre domaine et le code Firebase', async () => {
+  courrielActif = true; viderCourriel();
+  const c = await connecter('uid-em1', { verifie: false });
+  const r = await appel('POST', '/api/email/verification', { cookie: c, corps: { email: 'victime@exemple.fr' } });
+  assert.equal(r.s, 200); assert.equal(r.j.envoye, true); assert.equal(r.j.delai, 90);
+  assert.equal(courrielTest.envoyes.length, 1); const m = courrielTest.envoyes[0];
+  assert.equal(m.a, 'uid-em1@exemple.fr', 'jamais l\'adresse envoyée par le navigateur'); assert.match(m.objet, /Vérifiez votre adresse e-mail/);
+  assert.deepEqual(base.liensDemandes, [{ type: 'VERIFY_EMAIL', email: 'uid-em1@exemple.fr' }]);
+  assert.ok(m.html.includes('https://leslanternesdenour.fr/compte/action/?mode=verifyEmail&amp;oobCode=OOB-VERIFY_EMAIL-uid-em1&amp;lang=fr'));
+  assert.ok(m.texte.includes('https://leslanternesdenour.fr/compte/action/?mode=verifyEmail&oobCode=OOB-VERIFY_EMAIL-uid-em1&lang=fr'));
+});
+
+test('E-mails : le lien pointe vers le site qui a fait la demande (préproduction ou production), jamais vers un domaine étranger', async () => {
+  courrielActif = true; viderCourriel();
+  const c = await connecter('uid-em2', { verifie: false });
+  const depuis = async origine => { viderCourriel(); maintenant += 100000; const r = await traiter(new Request(origine + '/api/email/verification', { method: 'POST', headers: { 'X-LDN': '1', Origin: origine, Cookie: c } }), ctx()); assert.equal(r.status, 200); return courrielTest.envoyes[0].texte; };
+  assert.ok((await depuis('https://preproduction.lanternes-de-nour.pages.dev')).includes('https://preproduction.lanternes-de-nour.pages.dev/compte/action/?mode=verifyEmail'));
+  assert.ok((await depuis('https://www.leslanternesdenour.fr')).includes('https://www.leslanternesdenour.fr/compte/action/'));
+  assert.ok((await depuis('https://pirate.exemple')).includes('https://leslanternesdenour.fr/compte/action/'), 'domaine inconnu : repli sur le vrai site');
+});
+
+test('E-mails : renvoi limité (90 s entre deux envois, 6 par jour), sans jamais contourner la vérification obligatoire', async () => {
+  courrielActif = true; viderCourriel();
+  const c = await connecter('uid-em3', { verifie: false });
+  assert.equal((await appel('POST', '/api/email/verification', { cookie: c })).s, 200);
+  const tot = await appel('POST', '/api/email/verification', { cookie: c });
+  assert.equal(tot.s, 429); assert.equal(tot.j.erreur, 'trop-tot'); assert.ok(tot.j.attente >= 1 && tot.j.attente <= 90);
+  assert.equal(courrielTest.envoyes.length, 1, 'pas de second e-mail');
+  for (let i = 0; i < 5; i++) { maintenant += 91000; assert.equal((await appel('POST', '/api/email/verification', { cookie: c })).s, 200, 'envoi ' + (i + 2)); }
+  maintenant += 91000; const jour = await appel('POST', '/api/email/verification', { cookie: c });
+  assert.equal(jour.s, 429); assert.equal(jour.j.erreur, 'limite-journaliere'); assert.equal(courrielTest.envoyes.length, 6);
+  assert.equal((await appel('GET', '/api/enfants', { cookie: c })).j.erreur, 'email-non-verifie', 'toujours bloqué tant que l\'adresse n\'est pas vérifiée');
+});
+
+test('E-mails : adresse déjà vérifiée = aucun envoi ; visiteur sans session = 401 ; deux familles ne reçoivent que leurs propres e-mails', async () => {
+  courrielActif = true; viderCourriel();
+  const v = await connecter('uid-em4', { verifie: true });
+  const r = await appel('POST', '/api/email/verification', { cookie: v }); assert.equal(r.s, 200); assert.equal(r.j.deja, true); assert.equal(courrielTest.envoyes.length, 0);
+  assert.equal((await appel('POST', '/api/email/verification')).s, 401);
+  const a = await connecter('uid-em4a', { verifie: false }), b = await connecter('uid-em4b', { verifie: false });
+  await appel('POST', '/api/email/verification', { cookie: a }); await appel('POST', '/api/email/verification', { cookie: b });
+  assert.deepEqual(courrielTest.envoyes.map(m => m.a), ['uid-em4a@exemple.fr', 'uid-em4b@exemple.fr']);
+});
+
+test('E-mails : réinitialisation du mot de passe : réponse identique que le compte existe ou non (aucune énumération), e-mail envoyé seulement si le compte existe', async () => {
+  courrielActif = true; viderCourriel();
+  await connecter('uid-em5', { verifie: true });
+  const existe = await appel('POST', '/api/email/reinitialisation', { corps: { email: 'uid-em5@exemple.fr' } });
+  const inconnu = await appel('POST', '/api/email/reinitialisation', { corps: { email: 'inconnu-xyz@exemple.fr' } });
+  assert.equal(existe.s, 200); assert.equal(inconnu.s, 200); assert.deepEqual(existe.j, inconnu.j); assert.deepEqual(existe.j, { ok: true });
+  assert.equal(courrielTest.envoyes.length, 1); const m = courrielTest.envoyes[0];
+  assert.equal(m.a, 'uid-em5@exemple.fr'); assert.match(m.objet, /Réinitialisez votre mot de passe/);
+  assert.ok(m.texte.includes('/compte/action/?mode=resetPassword&oobCode=OOB-PASSWORD_RESET-uid-em5&lang=fr'));
+  assert.equal((await appel('POST', '/api/email/reinitialisation', { corps: { email: 'pas-une-adresse' } })).j.erreur, 'adresse-invalide');
+  assert.equal((await appel('POST', '/api/email/reinitialisation', { corps: {} })).s, 400);
+});
+
+test('E-mails : réinitialisation limitée par adresse (silencieusement : même réponse, pas de second e-mail) et par IP (429)', async () => {
+  courrielActif = true; viderCourriel();
+  await connecter('uid-em6', { verifie: true });
+  await appel('POST', '/api/email/reinitialisation', { corps: { email: 'uid-em6@exemple.fr' } });
+  const encore = await appel('POST', '/api/email/reinitialisation', { corps: { email: 'UID-EM6@exemple.fr' } });
+  assert.deepEqual(encore.j, { ok: true }); assert.equal(courrielTest.envoyes.length, 1, 'adresse déjà servie il y a moins de 90 s (majuscules ignorées)');
+  maintenant += 91000; await appel('POST', '/api/email/reinitialisation', { corps: { email: 'uid-em6@exemple.fr' } }); assert.equal(courrielTest.envoyes.length, 2, 'au bout de 90 s, un nouvel envoi est possible');
+  let dernier = null; for (let i = 0; i < 12; i++) dernier = await appel('POST', '/api/email/reinitialisation', { corps: { email: 'autre' + i + '@exemple.fr' } });
+  assert.equal(dernier.s, 429); assert.equal(dernier.j.erreur, 'trop-de-tentatives');
+});
+
+test('E-mails : si le prestataire est en panne, la vérification répond 502 neutre (rien ne fuit) et la réinitialisation répond comme d\'habitude', async () => {
+  courrielActif = true; viderCourriel(); courrielTest.ko = true;
+  const c = await connecter('uid-em7', { verifie: false });
+  const r = await appel('POST', '/api/email/verification', { cookie: c }); assert.equal(r.s, 502); assert.deepEqual(r.j, { erreur: 'envoi-impossible' });
+  assert.deepEqual((await appel('POST', '/api/email/reinitialisation', { corps: { email: 'uid-em7@exemple.fr' } })).j, { ok: true });
+  courrielTest.ko = false;
+});
+
+test('E-mails : une fois l\'adresse vérifiée, UN e-mail de confirmation est envoyé à la prochaine ouverture de session, et un seul', async () => {
+  courrielActif = true; viderCourriel();
+  const nv = await connecter('uid-em8', { verifie: false });
+  await appel('POST', '/api/email/verification', { cookie: nv }); assert.equal(courrielTest.envoyes.length, 1);
+  await connecter('uid-em8', { verifie: true });
+  assert.equal(courrielTest.envoyes.length, 2); assert.match(courrielTest.envoyes[1].objet, /vérifiée/); assert.equal(courrielTest.envoyes[1].a, 'uid-em8@exemple.fr');
+  await connecter('uid-em8', { verifie: true }); assert.equal(courrielTest.envoyes.length, 2, 'pas de doublon');
+  await connecter('uid-em8b', { verifie: true }); assert.equal(courrielTest.envoyes.length, 2, 'un compte qui n\'a jamais demandé de vérification ne reçoit rien');
+});
+
+test('E-mails : la suppression du compte envoie une confirmation (sans jamais bloquer la suppression) et efface aussi les données d\'envoi', async () => {
+  courrielActif = true; viderCourriel();
+  const c = await connecter('uid-em9', { verifie: false });
+  await appel('POST', '/api/email/verification', { cookie: c }); assert.ok((await instantane(base))['courriers/uid-em9'], 'données d\'envoi créées');
+  viderCourriel(); const r = await appel('DELETE', '/api/compte', { cookie: c });
+  assert.equal(r.s, 200); assert.equal(courrielTest.envoyes.length, 1); assert.match(courrielTest.envoyes[0].objet, /supprimé/); assert.equal(courrielTest.envoyes[0].a, 'uid-em9@exemple.fr');
+  assert.equal((await instantane(base))['courriers/uid-em9'], undefined, 'tout est effacé');
+  const d = await connecter('uid-em10', { verifie: true }); viderCourriel(); courrielTest.ko = true;
+  assert.equal((await appel('DELETE', '/api/compte', { cookie: d })).s, 200, 'prestataire en panne : le compte est tout de même supprimé'); courrielTest.ko = false;
 });

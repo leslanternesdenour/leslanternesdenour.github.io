@@ -16,6 +16,9 @@ export const comptesActifs = () => !!(FIREBASE || EMULATEUR);
 export const simulation = () => !!EMULATEUR;
 
 const MESSAGES = {
+  'trop-tot': "Un e-mail vient d'être envoyé. Patientez un instant avant d'en demander un autre.", 'limite-journaliere': "Beaucoup d'e-mails ont été demandés aujourd'hui. Réessayez demain ou écrivez-nous à bonjour@leslanternesdenour.fr.",
+  'envoi-impossible': "L'e-mail n'a pas pu être envoyé. Réessayez dans quelques minutes.", 'adresse-invalide': "Cette adresse e-mail n'est pas valide.",
+  'auth/invalid-action-code': "Ce lien n'est plus valable (déjà utilisé ou expiré). Demandez-en un nouveau depuis l'Espace famille.", 'auth/expired-action-code': "Ce lien n'est plus valable (déjà utilisé ou expiré). Demandez-en un nouveau depuis l'Espace famille.",
   'auth/invalid-credential': 'Adresse ou mot de passe incorrect.', 'auth/wrong-password': 'Adresse ou mot de passe incorrect.', 'auth/user-not-found': 'Adresse ou mot de passe incorrect.',
   'auth/email-already-in-use': 'Un compte existe déjà avec cette adresse. Connectez-vous.', 'auth/weak-password': 'Mot de passe trop court (8 caractères minimum).',
   'auth/invalid-email': 'Adresse e-mail invalide.', 'auth/too-many-requests': 'Trop d\'essais. Réessayez dans quelques minutes.', 'auth/network-request-failed': 'Pas de connexion internet.',
@@ -45,7 +48,7 @@ export async function api(chemin, { methode = 'GET', corps, garder = false } = {
     headers: methode === 'GET' ? {} : { 'X-LDN': '1', 'Content-Type': 'application/json' }, body: corps === undefined ? undefined : JSON.stringify(corps) });
   let j = null; try { j = await r.json(); } catch (e) {}
   if (r.status === 401 || r.status === 403) purgerCaches();
-  if (!r.ok) throw new ErreurApi(r.status, j && j.erreur);
+  if (!r.ok) { const e = new ErreurApi(r.status, j && j.erreur); if (j && j.attente) e.attente = j.attente; throw e; }
   return j;
 }
 
@@ -75,9 +78,10 @@ async function envoyerAvecRepli(envoi, chemin) {
 const emul = (chemin, corps) => api('/api/_emulateur/' + chemin, { methode: 'POST', corps });
 export const auth = {
   async inscrire(email, mdp) {
-    if (EMULATEUR) return (await emul('inscription', { email, mdp })).idToken;
+    const marquer = () => { try { sessionStorage.setItem('ldn_verif_a_envoyer', '1'); } catch (e) {} };   // le premier e-mail est demandé à NOTRE serveur dès que la session est ouverte (Espace famille)
+    if (EMULATEUR) { const t = (await emul('inscription', { email, mdp })).idToken; marquer(); return t; }
     const { a, m } = await firebase(); const c = await m.createUserWithEmailAndPassword(a, email, mdp);
-    try { await envoyerAvecRepli(s => m.sendEmailVerification(c.user, s), '/compte/?verifie=1'); sessionStorage.setItem('ldn_verif_envoi', String(Date.now())); } catch (e) {}   // le premier envoi lance le compte à rebours du renvoi
+    marquer();   // pas d'e-mail Firebase à la création du compte
     return c.user.getIdToken();
   },
   async connecter(email, mdp) {
@@ -112,9 +116,20 @@ export const auth = {
     const { a } = await firebase(); await a.authStateReady(); const u = a.currentUser; if (!u) throw new ErreurApi(401, 'reconnexion-requise');
     await u.reload(); return u.getIdToken(true);
   },
-  async motDePasseOublie(email) { if (EMULATEUR) return; const { a, m } = await firebase(); await envoyerAvecRepli(s => m.sendPasswordResetEmail(a, email, s), '/compte/#connexion'); },
-  async renvoyerVerification() { if (EMULATEUR) return; const { a, m } = await firebase(); await a.authStateReady(); if (a.currentUser) await envoyerAvecRepli(s => m.sendEmailVerification(a.currentUser, s), '/compte/?verifie=1'); },
-  simulerClicVerification: () => emul('verifier', {}),   // SIMULATION LOCALE uniquement (bouton affiché seulement avec l'émulateur)
+  async motDePasseOublie(email) {                  // e-mail envoyé par NOTRE serveur (réponse neutre) ; repli sur Firebase tant que le prestataire n'est pas configuré
+    try { await api('/api/email/reinitialisation', { methode: 'POST', corps: { email } }); return; }
+    catch (e) { if (!(e instanceof ErreurApi && e.raison === 'email-non-configure') || EMULATEUR) throw e; }
+    const { a, m } = await firebase(); await envoyerAvecRepli(s => m.sendPasswordResetEmail(a, email, s), '/compte/#connexion');
+  },
+  async renvoyerVerification() {                   // e-mail envoyé par NOTRE serveur ; repli sur Firebase tant que le prestataire n'est pas configuré
+    try { await api('/api/email/verification', { methode: 'POST' }); return; }
+    catch (e) { if (!(e instanceof ErreurApi && e.raison === 'email-non-configure') || EMULATEUR) throw e; }
+    const { a, m } = await firebase(); await a.authStateReady(); if (a.currentUser) await envoyerAvecRepli(s => m.sendEmailVerification(a.currentUser, s), '/compte/?verifie=1');
+  },
+  // Page du lien reçu par e-mail (/compte/action/) : le code d'action est appliqué par Firebase (usage unique, durée limitée).
+  async appliquerCodeVerification(code) { if (EMULATEUR) { await emul('action', { mode: 'verifyEmail', oobCode: code }); return; } const { a, m } = await firebase(); await m.applyActionCode(a, code); },
+  async verifierCodeReinit(code) { if (EMULATEUR) return (await emul('action', { mode: 'resetPassword', oobCode: code, verifierSeulement: true })).email; const { a, m } = await firebase(); return m.verifyPasswordResetCode(a, code); },
+  async confirmerReinit(code, mdp) { if (EMULATEUR) { await emul('action', { mode: 'resetPassword', oobCode: code, mdp }); return; } const { a, m } = await firebase(); await m.confirmPasswordReset(a, code, mdp); },  simulerClicVerification: () => emul('verifier', {}),   // SIMULATION LOCALE uniquement (bouton affiché seulement avec l'émulateur)
   async quitter() { if (EMULATEUR) return; try { const { a, m } = await firebase(); await m.signOut(a); } catch (e) {} }
 };
 

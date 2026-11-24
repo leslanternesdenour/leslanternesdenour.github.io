@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Confirmation · Les Lanternes de Nour</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;color:#f4efff;font-family:Nunito,system-ui,sans-serif;background:radial-gradient(120% 80% at 50% 0%,#3a2a7d 0%,#191345 60%)}
+main{width:min(100%,480px);background:#2a2166;border:2px solid rgba(245,185,66,.8);border-radius:24px;padding:28px 24px;text-align:center;box-shadow:0 18px 50px rgba(0,0,0,.45)}
+.lanterne{font-size:42px;line-height:1}
+h1{margin:8px 0 10px;font:800 clamp(24px,6vw,30px)/1.2 Poppins,Nunito,sans-serif;color:#ffd24a}
+p{margin:0 0 16px;line-height:1.6;color:#e4dcff;font-size:17px}
+.cache{display:none!important}
+.actions{display:grid;gap:12px;margin-top:8px}
+a.bouton,button{display:flex;align-items:center;justify-content:center;min-height:56px;padding:0 20px;border-radius:16px;border:0;background:#f5b942;color:#2a1d00;font:900 18px Nunito,system-ui,sans-serif;text-decoration:none;cursor:pointer;box-shadow:0 5px 0 #b9831a}
+a.lien{color:#ffe3a3;font-weight:800}
+button:disabled{opacity:.6;cursor:wait}
+form{display:grid;gap:14px;text-align:left}
+label{display:grid;gap:6px;font-weight:800;color:#fff}
+input{width:100%;border-radius:14px;border:2px solid #3a2a7d;background:#191345;color:#fff;font:700 17px Nunito,system-ui,sans-serif;padding:13px 14px}
+input:focus{outline:none;border-color:#f5b942}
+.etat{min-height:1.4em;font-weight:800;color:#ff9fb2;text-align:center}
+a:focus-visible,button:focus-visible{outline:4px solid #fff;outline-offset:3px}
+</style>
+</head>
+<body>
+<main aria-live="polite">
+  <div class="lanterne" aria-hidden="true">🏮</div>
+
+  <section id="v-attente"><h1>Un instant…</h1><p>Nous vérifions votre lien.</p></section>
+
+  <section id="v-verifie" class="cache">
+    <h1>Adresse vérifiée, merci !</h1>
+    <p>Votre adresse e-mail est vérifiée. Le jeu est maintenant ouvert : vous pouvez créer les profils de vos enfants.</p>
+    <div class="actions"><a class="bouton" href="/compte/?verifie=1">Ouvrir l'Espace famille</a></div>
+    <p style="margin-top:14px;font-size:15px">Vous allez être redirigé automatiquement.</p>
+  </section>
+
+  <section id="v-reinit" class="cache">
+    <h1>Nouveau mot de passe</h1>
+    <p id="reinit-texte">Choisissez un nouveau mot de passe pour votre compte parent.</p>
+    <form id="f-reinit" novalidate>
+      <label>Nouveau mot de passe (8 caractères minimum)<input type="password" id="mdp1" autocomplete="new-password" minlength="8"></label>
+      <label>Confirmer le mot de passe<input type="password" id="mdp2" autocomplete="new-password" minlength="8"></label>
+      <button type="submit" id="reinit-envoyer">Enregistrer le nouveau mot de passe</button>
+      <div class="etat" id="reinit-etat" role="status"></div>
+    </form>
+  </section>
+
+  <section id="v-reinit-ok" class="cache">
+    <h1>Mot de passe modifié</h1>
+    <p>Votre mot de passe a été modifié. Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.</p>
+    <div class="actions"><a class="bouton" href="/compte/#connexion">Se connecter</a></div>
+  </section>
+
+  <section id="v-erreur" class="cache">
+    <h1>Lien non valable</h1>
+    <p id="erreur-texte"></p>
+    <div class="actions"><a class="bouton" href="/compte/">Ouvrir l'Espace famille</a><a class="lien" href="/">Retour à l'accueil</a></div>
+  </section>
+</main>
+
+<script type="module">
+import * as C from '../client.js?v=2';
+const $ = id => document.getElementById(id), params = new URLSearchParams(location.search);
+const mode = params.get('mode'), code = params.get('oobCode');
+const PLUS_VALABLE = "Ce lien n'est plus valable (déjà utilisé ou expiré). Demandez-en un nouveau depuis l'Espace famille.";
+const voir = id => { for (const s of document.querySelectorAll('main > section')) s.classList.toggle('cache', s.id !== id); };
+const erreur = t => { $('erreur-texte').textContent = t; voir('v-erreur'); };
+
+async function demarrer() {
+  if (!C.comptesActifs()) return erreur("Les comptes ne sont pas disponibles pour l'instant. Réessayez dans quelques minutes.");
+  if (!code || !['verifyEmail', 'resetPassword'].includes(mode)) return erreur("Ce lien est incomplet ou ne peut pas être utilisé ici. Ouvrez le lien reçu par e-mail en entier, ou demandez-en un nouveau depuis l'Espace famille.");
+  if (mode === 'verifyEmail') {
+    try { await C.auth.appliquerCodeVerification(code); voir('v-verifie'); setTimeout(() => { location.href = '/compte/?verifie=1'; }, 3500); }
+    catch (e) { erreur(/action-code/.test((e && e.code) || '') ? PLUS_VALABLE : C.messageErreur(e)); }
+    return;
+  }
+  try { const email = await C.auth.verifierCodeReinit(code); $('reinit-texte').textContent = 'Choisissez un nouveau mot de passe pour le compte ' + email + '.'; voir('v-reinit'); $('mdp1').focus(); }
+  catch (e) { erreur(/action-code/.test((e && e.code) || '') ? PLUS_VALABLE : C.messageErreur(e)); }
+}
+
+$('f-reinit').onsubmit = async ev => {
+  ev.preventDefault(); const a = $('mdp1').value, b = $('mdp2').value, etat = $('reinit-etat');
+  if (a.length < 8) { etat.textContent = 'Le mot de passe doit contenir au moins 8 caractères.'; return; }
+  if (a !== b) { etat.textContent = 'Les deux mots de passe ne sont pas identiques.'; return; }
+  etat.textContent = ''; $('reinit-envoyer').disabled = true;
+  try { await C.auth.confirmerReinit(code, a); voir('v-reinit-ok'); }
+  catch (e) { etat.textContent = /action-code/.test((e && e.code) || '') ? PLUS_VALABLE : C.messageErreur(e); $('reinit-envoyer').disabled = false; }
+};
+demarrer();
+</script>
+</body>
+</html>

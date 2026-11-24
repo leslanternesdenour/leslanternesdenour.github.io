@@ -15,13 +15,13 @@ test('e-mails : chaque envoi (inscription, renvoi, mot de passe oublié) porte u
   const c = client();
   assert.match(c, /function reglagesLien\(/); assert.match(c, /async function envoyerAvecRepli\(/);
   assert.match(c, /auth\/unauthorized-continue-uri/);
-  assert.match(c, /envoyerAvecRepli\([^)]*sendEmailVerification\(c\.user[^\n]*'\/compte\/\?verifie=1'/);
   assert.match(c, /envoyerAvecRepli\([^)]*sendEmailVerification\(a\.currentUser[^\n]*'\/compte\/\?verifie=1'/);
   assert.match(c, /envoyerAvecRepli\([^)]*sendPasswordResetEmail\(a, email[^\n]*'\/compte\/#connexion'/);
 });
 
-test('e-mails : le premier envoi lance toujours le compte à rebours du renvoi', () => {
-  assert.match(client(), /'\/compte\/\?verifie=1'\);[^\n]*ldn_verif_envoi/);
+test('e-mails : à l\'inscription, Firebase n\'envoie plus rien ; le premier e-mail est demandé à notre serveur par l\'Espace famille', () => {
+  assert.match(client(), /ldn_verif_a_envoyer/);
+  const h = fs.readFileSync(new URL('../../compte/index.html', import.meta.url), 'utf8'); assert.match(h, /async function premierEnvoi\(\)/);
 });
 
 test('espace famille : au retour du lien (?verifie=1), la page vérifie tout de suite et accueille le parent en français, connecté ou non', () => {

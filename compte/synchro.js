@@ -2,7 +2,7 @@
 // (retour au village, page masquée ou fermée). Aucun minuteur. Ne fait rien sans compte, sans profil actif,
 // ou si la formule ne comprend pas la synchronisation (Famille et Créateur seulement).
 // Affiche aussi, discrètement, le prénom de l'enfant qui joue (lien « Qui joue ? » vers l'Espace famille).
-import { comptesActifs, profilActif, brancherSynchroEvenementielle } from './client.js?v=1';
+import { comptesActifs, profilActif, brancherSynchroEvenementielle } from './client.js?v=2';
 
 if (comptesActifs()) {
   const p = profilActif();

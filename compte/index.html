@@ -194,7 +194,7 @@ input[type=text],select{width:100%;border-radius:14px;border:2px solid #3a2a7d;b
 
 <script src="progression-resume.js?v=1"></script>
 <script type="module">
-import * as C from './client.js?v=1';
+import * as C from './client.js?v=2';
 const $ = id => document.getElementById(id);
 const VUES = ['v-inactif', 'v-acces', 'v-espace', 'v-enfants', 'v-offre', 'v-securite'];
 const voir = (...ids) => VUES.forEach(v => $(v).classList.toggle('cache', !ids.includes(v)));
@@ -302,7 +302,13 @@ async function verifierEmail() {
     arreterSurveillance(); await demarrer(); etat('✅ Adresse validée. Le jeu est ouvert !'); return true;
   } catch (e) { return false; } finally { enCours = false; }
 }
-function surveillerVerification() { majRenvoi(); if (!veille) veille = setInterval(() => { if (document.visibilityState === 'visible') verifierEmail(); }, 8000); }
+async function premierEnvoi() {                 // premier e-mail demandé à NOTRE serveur juste après l'inscription (un seul, grâce au drapeau)
+  let a = null; try { a = sessionStorage.getItem('ldn_verif_a_envoyer'); } catch (e) {}
+  if (a !== '1') return;
+  try { sessionStorage.removeItem('ldn_verif_a_envoyer'); } catch (e) {}
+  try { await C.auth.renvoyerVerification(); noterEnvoi(Date.now()); etat("Un e-mail de vérification vient de vous être envoyé. Pensez à regarder les courriers indésirables."); majRenvoi(); }
+  catch (e) { if (e && e.raison === 'trop-tot') noterEnvoi(Date.now() - DELAI_RENVOI + (e.attente || 90) * 1000); else etat(C.messageErreur(e), true); majRenvoi(); }
+}function surveillerVerification() { premierEnvoi(); majRenvoi(); if (!veille) veille = setInterval(() => { if (document.visibilityState === 'visible') verifierEmail(); }, 8000); }
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') verifierEmail(); });
 addEventListener('focus', () => { verifierEmail(); });
 const lireEnvoi = () => { try { return +sessionStorage.getItem('ldn_verif_envoi') || 0; } catch (e) { return 0; } };
@@ -357,12 +363,12 @@ $('verif-renvoyer').onclick = async () => {      // pas d'« occupe » : le comp
   $('verif-renvoyer').disabled = true; etat('');
   try { await C.auth.renvoyerVerification(); noterEnvoi(Date.now()); etat("Un nouveau lien vient d'être envoyé. Pensez à regarder les courriers indésirables."); }
   catch (e) {
-    if (e && e.code === 'auth/too-many-requests') { noterEnvoi(Date.now() + 60000); etat("Un lien vient déjà d'être envoyé il y a peu. Patientez deux minutes avant d'en demander un autre, et regardez les courriers indésirables.", true); }
+    if (e && e.raison === 'trop-tot') { noterEnvoi(Date.now() - DELAI_RENVOI + (e.attente || 90) * 1000); etat("Un e-mail vient d'être envoyé. Patientez " + (e.attente || 90) + " secondes avant d'en demander un autre, et regardez les courriers indésirables.", true); }
+    else if (e && e.code === 'auth/too-many-requests') { noterEnvoi(Date.now() + 60000); etat("Un lien vient déjà d'être envoyé il y a peu. Patientez deux minutes avant d'en demander un autre, et regardez les courriers indésirables.", true); }
     else etat(C.messageErreur(e), true);
   }
   majRenvoi();
-};
-$('verif-simuler').onclick = e => occupe(e.target, async () => { await C.auth.simulerClicVerification(); etat('SIMULATION : lien « cliqué ». Touchez « C\'est fait ».'); });
+};$('verif-simuler').onclick = e => occupe(e.target, async () => { await C.auth.simulerClicVerification(); etat('SIMULATION : lien « cliqué ». Touchez « C\'est fait ».'); });
 
 // ---------- activation du rôle Créateur ----------
 $('createur-activer').onclick = e => occupe(e.target, async () => {

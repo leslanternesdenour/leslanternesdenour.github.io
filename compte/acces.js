@@ -68,7 +68,7 @@
     var b = ouvrirBoite(AccesLogique.textes.profil), liste = el('div', 'actions'), etat = el('div', 'etat'); etat.setAttribute('role', 'status');
     b.appendChild(liste); b.appendChild(etat);
     function pied() { var a = el('div', 'actions'); a.style.marginTop = '14px'; a.appendChild(el('a', 'l', '👨‍👩‍👧 Espace famille (créer ou modifier les profils)', versCompte)); b.appendChild(a); }
-    import(base + 'client.js?v=1').then(function (C) {
+    import(base + 'client.js?v=2').then(function (C) {
       return Promise.all([C.api('/api/enfants'), C.moi()]).then(function (r) {
         var enfants = r[0].enfants || [];
         if (!enfants.length) { b.querySelector('p').textContent = "Aucun profil enfant n'existe encore. Le parent peut en créer un dans l'Espace famille."; liste.appendChild(el('a', 'p', '➕ Créer un profil enfant', versCompte)); pied(); return; }

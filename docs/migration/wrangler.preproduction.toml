@@ -12,6 +12,10 @@ FIREBASE_PROJET = "lanternes-de-nour"
 STRIPE_PRIX_PREMIUM_MENSUEL = "price_1Uev94D88y9eITej7dv4VPA9"
 STRIPE_PRIX_PREMIUM_ANNUEL = "price_1Uev96D88y9eITejxWarVO7v"
 STRIPE_PRIX_FAMILLE_ANNUEL = "price_1Uev97D88y9eITejrIU7gGiF"
+# E-mails personnalisés (valeurs NON secrètes). Le SECRET EMAIL_CLE_API (clé du prestataire) se saisit dans le tableau de bord, type « Secret » : sans lui, l'envoi Firebase reste utilisé.
+EMAIL_FOURNISSEUR = "resend"
+EMAIL_EXPEDITEUR_ADRESSE = "bonjour@leslanternesdenour.fr"
+EMAIL_EXPEDITEUR_NOM = "Les Lanternes de Nour"
 
 # --- Raccordements (rien n'est activé ici ; voir _documentation/PREPRODUCTION_ACTIONS.md) ---
 # Avec ce fichier, Cloudflare le traite comme référence : les variables NON secrètes (identifiants publics) se déclarent ICI

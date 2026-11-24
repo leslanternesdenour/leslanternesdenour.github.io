@@ -19,9 +19,9 @@ test('espace famille : le renvoi du lien a un compte à rebours de 90 s et gère
   assert.match(h, /ldn_verif_envoi/); assert.match(h, /Renvoyer le lien \(/); assert.match(h, /auth\/too-many-requests/); assert.match(h, /Patientez/);
 });
 
-test('inscription : le premier envoi du lien lance le compte à rebours du renvoi (pas de « Trop d\'essais » immédiat)', () => {
-  const c = fs.readFileSync(new URL('../../compte/client.js', import.meta.url), 'utf8');
-  assert.match(c, /sendEmailVerification\(c\.user, s\)[^\n]*ldn_verif_envoi/);
+test('inscription : le premier envoi lance le compte à rebours du renvoi (pas de « Trop d\'essais » immédiat)', () => {
+  const h = page();
+  assert.match(h, /async function premierEnvoi\(\)/); assert.match(h, /noterEnvoi\(Date\.now\(\)\); etat\("Un e-mail de vérification vient de vous être envoyé/);
 });
 
 test('espace famille : le texte explique que le jeu reste fermé tant que l\'adresse n\'est pas vérifiée et que la page se met à jour toute seule', () => {

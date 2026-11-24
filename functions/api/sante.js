@@ -1,6 +1,7 @@
 // GET /api/sante : vérifie que les fonctions serveur Cloudflare répondent.
 // En préproduction seulement, ajoute un état de configuration sous forme de OUI/NON : aucune valeur, aucun secret, jamais.
 import { estRevoquee } from '../../serveur/cles-revoquees.js';
+import { creerCourriel } from '../../serveur/email.js';
 function lireCompte(texte) { try { const c = JSON.parse(texte); return c && c.type === 'service_account' && !!c.private_key && !!c.client_email && !!c.project_id ? c : null; } catch (e) { return null; } }
 const compteDeServiceValide = (texte) => { const c = lireCompte(texte); return !!c && !estRevoquee(c); };
 export function etatConfiguration(env) {
@@ -17,7 +18,9 @@ export function etatConfiguration(env) {
     createurDesigne: typeof env.CREATOR_UID === 'string' && env.CREATOR_UID.trim().length > 0,
     stripe: !cleStripe ? 'non' : cleStripe.startsWith('sk_test_') ? 'test' : 'cle-invalide',
     stripeWebhook: !!env.STRIPE_SECRET_WEBHOOK,
-    stockagePremium: env.R2_PREMIUM ? 'lie' : 'non'
+    stockagePremium: env.R2_PREMIUM ? 'lie' : 'non',
+    // Envoi d'e-mails personnalisé : non | resend | brevo | invalide (variables présentes mais refusées) ; jamais la clé
+    courriel: !env.EMAIL_FOURNISSEUR && !env.EMAIL_CLE_API ? 'non' : (env.EMAIL_FOURNISSEUR && !env.EMAIL_CLE_API) ? 'cle-absente' : (creerCourriel(env) || { fournisseur: 'invalide' }).fournisseur
   };
 }
 export function onRequestGet({ env }) {

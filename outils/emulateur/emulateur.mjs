@@ -39,7 +39,10 @@ export async function creerEmulateur({ mdpCreateur = process.env.LDN_EMUL_MDP_CR
     return tete + '.' + Buffer.from(await crypto.webcrypto.subtle.sign('RSASSA-PKCS1-v1_5', cles.privateKey, new TextEncoder().encode(tete))).toString('base64url');
   }
   base.supprimerUtilisateur = async uid => { const e = parUid(uid); if (e) comptes.delete(e[0]); };
-  // ----- Stripe simulé (aucun appel réseau) -----
+  // ----- e-mails personnalisés simulés : une boîte en mémoire et des codes d'action à usage unique (imitation de Firebase Authentication) -----
+  const boiteSimulee = [], codesAction = new Map();
+  base.lienAction = async (type, email) => { if (!comptes.has(email)) return null; const oobCode = 'emul-' + crypto.randomBytes(12).toString('hex'); codesAction.set(oobCode, { type, email }); return { oobCode }; };
+  const courriel = { fournisseur: 'simule', async envoyer(m) { boiteSimulee.push({ a: m.a, objet: m.objet, texte: m.texte, date: maintenant() }); return { ok: true }; } };  // ----- Stripe simulé (aucun appel réseau) -----
   const sessionsPaiement = new Map(), abonnementsStripe = new Map(); let n = 0;
   const fauxStripe = async (u, o) => {
     const p = new URLSearchParams(o.body || ''), rep = x => new Response(JSON.stringify(x), { status: 200 });
@@ -52,7 +55,7 @@ export async function creerEmulateur({ mdpCreateur = process.env.LDN_EMUL_MDP_CR
       return rep(a); }
     return new Response('{}', { status: 404 });
   };
-  const ctx = () => ({ env, base, maintenant: maintenant(),
+  const ctx = () => ({ env, base, maintenant: maintenant(), courriel,
     auth: { verifierIdToken: (t, m) => verifierJeton(t, { projet: PROJET, type: 'id', obtenirCle: async k => k === 'emul' ? cles.publicKey : null, maintenant: m }) },
     stockage: { type: 'r2-simule',
       async get(cle) { const f = path.join(PREMIUM, cle); if (!f.startsWith(PREMIUM + path.sep) || !fs.existsSync(f) || !fs.statSync(f).isFile()) return null; return { body: fs.readFileSync(f), type: TYPES[path.extname(f)] }; },
@@ -95,7 +98,16 @@ export async function creerEmulateur({ mdpCreateur = process.env.LDN_EMUL_MDP_CR
         if (!c || c.empreinte === null || hacher(b.mdp, c.sel) !== c.empreinte) return json({ erreur: 'auth/invalid-credential' }, 401);
         return json({ idToken: await jeton(e, c) });
       }
-      case 'verifier': {                                   // simule le clic sur le lien reçu par e-mail
+      case 'boite': return json({ messages: boiteSimulee });          // la boîte de réception simulée (e-mails « envoyés » par notre serveur)
+      case 'action': {                                       // simule la page du lien : applique un code d'action (vérification, nouveau mot de passe), à usage unique
+        const a = codesAction.get(String(b.oobCode || ''));
+        if (!a || a.type !== (b.mode === 'verifyEmail' ? 'VERIFY_EMAIL' : b.mode === 'resetPassword' ? 'PASSWORD_RESET' : '')) return json({ erreur: 'auth/invalid-action-code' }, 400);
+        const c = comptes.get(a.email); if (!c) return json({ erreur: 'auth/invalid-action-code' }, 400);
+        if (b.mode === 'verifyEmail') { c.verifie = true; codesAction.delete(b.oobCode); return json({ ok: true }); }
+        if (b.verifierSeulement) return json({ email: a.email });
+        if (String(b.mdp || '').length < 8) return json({ erreur: 'auth/weak-password' }, 400);
+        c.sel = crypto.randomBytes(16).toString('hex'); c.empreinte = hacher(b.mdp, c.sel); codesAction.delete(b.oobCode); return json({ ok: true });
+      }      case 'verifier': {                                   // simule le clic sur le lien reçu par e-mail
         const e = session && parUid(session.uid)?.[0]; if (!e) return json({ erreur: 'connexion-requise' }, 401);
         comptes.get(e).verifie = true; return json({ ok: true });
       }

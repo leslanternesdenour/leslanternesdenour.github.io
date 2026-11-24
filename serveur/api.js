@@ -5,6 +5,7 @@ import { creerSession, lireSession, lireCookie, enteteCookie } from './session.j
 import { connexionRecente } from './jeton.js';
 import { catalogueEffectif, niveauDuFichier, ETATS } from './catalogue.js';
 import { verifierSignatureStripe } from './stripe.js';
+import { modeles } from './email-modeles.js';
 
 const J = 86400000, PAGE = 20, VALIDITE_INVITATION = 14 * J;
 const FORMULE_PRIX = { premium_mensuel: 'STRIPE_PRIX_PREMIUM_MENSUEL', premium_annuel: 'STRIPE_PRIX_PREMIUM_ANNUEL', famille_annuel: 'STRIPE_PRIX_FAMILLE_ANNUEL' };
@@ -115,6 +116,21 @@ function validerEnfant(b) {
   return { surnom, tranche: b.tranche, avatar: b.avatar };
 }
 
+// ---------- e-mails personnalisés (vérification, réinitialisation, confirmation) : envoyés par NOTRE serveur ----------
+// Le lien est fabriqué ici : le code d'action vient de Firebase (jeton à usage unique, durée limitée) et mène à notre page /compte/action/.
+const DELAI_ENVOI_S = 90, MAX_PAR_JOUR = 6;
+const ORIGINES_SITE = [/^https:\/\/(www\.)?leslanternesdenour\.fr$/, /^https:\/\/preproduction\.[a-z0-9-]+\.pages\.dev$/, /^http:\/\/(localhost|127\.0\.0\.1):\d+$/];
+const origineSite = url => ORIGINES_SITE.some(r => r.test(url.origin)) ? url.origin : 'https://leslanternesdenour.fr';   // jamais un domaine étranger dans un lien envoyé
+const lienAction = (url, mode, code) => `${origineSite(url)}/compte/action/?mode=${mode}&oobCode=${encodeURIComponent(code)}&lang=fr`;
+async function empreinteAdresse(email) { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(email)); return [...new Uint8Array(b)].slice(0, 16).map(x => x.toString(16).padStart(2, '0')).join(''); }
+// 90 s entre deux envois et 6 par jour, mémorisés dans Firestore (collection « courriers », clé = uid ou empreinte de l'adresse) : valables sur toutes les instances.
+async function reserverEnvoi(ctx, cle) {
+  const d = await ctx.base.lire('courriers', cle) || {}, jour = new Date(ctx.maintenant).toISOString().slice(0, 10), n = d.jour === jour ? d.n || 0 : 0;
+  if (d.dernier && ctx.maintenant - d.dernier < DELAI_ENVOI_S * 1000) return { ok: false, raison: 'trop-tot', attente: Math.ceil((DELAI_ENVOI_S * 1000 - (ctx.maintenant - d.dernier)) / 1000) };
+  if (n >= MAX_PAR_JOUR) return { ok: false, raison: 'limite-journaliere', attente: 3600 };
+  await ctx.base.ecrire('courriers', cle, { dernier: ctx.maintenant, jour, n: n + 1 });
+  return { ok: true };
+}
 // ======================================================================
 export async function traiter(req, ctx) {
   const url = new URL(req.url), chemin = url.pathname.replace(/\/+$/, ''), m = req.method;
@@ -149,7 +165,10 @@ export async function traiter(req, ctx) {
         await majDroits(ctx, v.uid, { claims: v.claims });
       } else if (normaliserEmail(v.email) !== famille.email) await ctx.base.maj('familles', v.uid, { email: normaliserEmail(v.email) });
       const valeur = await creerSession({ uid: v.uid, email: v.email, emailVerifie: v.emailVerifie, role: v.claims.role, authTime: v.authTime, fournisseur: v.fournisseur }, ctx.env.SESSION_SECRET, ctx.maintenant);
-      return json({ ok: true }, 200, { 'Set-Cookie': enteteCookie(valeur, { secure }) });
+      // Adresse tout juste vérifiée après une demande d'e-mail : UN message de confirmation, une seule fois (drapeau posé avant l'envoi).
+      if (v.emailVerifie && ctx.courriel && famille.verifDemandeeLe && !famille.verifConfirmeeLe && v.email) {
+        try { await ctx.base.maj('familles', v.uid, { verifConfirmeeLe: ctx.maintenant }); await ctx.courriel.envoyer({ a: v.email, ...modeles.confirmationVerification({ lienJeu: origineSite(url) + '/compte/' }) }); } catch (e) { /* la connexion ne doit jamais échouer à cause d'un e-mail */ }
+      }      return json({ ok: true }, 200, { 'Set-Cookie': enteteCookie(valeur, { secure }) });
     }
     if (chemin === '/api/session/fin' && m === 'POST') return json({ ok: true }, 200, { 'Set-Cookie': enteteCookie('', { secure, effacer: true }) });
 
@@ -204,10 +223,36 @@ export async function traiter(req, ctx) {
       return new Response(m === 'HEAD' ? null : obj.body, { headers: entetesPremium(fichier, obj.type) });
     }
 
+    // ----- réinitialisation du mot de passe par e-mail personnalisé (publique : le parent n'est pas connecté) -----
+    // Réponse identique que le compte existe ou non (aucune énumération) ; limitée par IP (429) et par adresse (silencieusement).
+    if (chemin === '/api/email/reinitialisation' && m === 'POST') {
+      if (!ctx.courriel) return erreur(503, 'email-non-configure');
+      if (tropDeTentatives('reinit:' + ip, 8, 15 * 60000, ctx.maintenant)) return erreur(429, 'trop-de-tentatives');
+      const b = await corpsJson(req, 1000), email = typeof b.email === 'string' ? normaliserEmail(b.email) : '';
+      if (!email || email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return erreur(400, 'adresse-invalide');
+      const lim = await reserverEnvoi(ctx, 'r' + await empreinteAdresse(email));
+      if (!lim.ok) return json({ ok: true });
+      try { const lien = await ctx.base.lienAction('PASSWORD_RESET', email); if (lien) await ctx.courriel.envoyer({ a: email, ...modeles.reinitialisation({ lien: lienAction(url, 'resetPassword', lien.oobCode) }) }); } catch (e) { /* neutre : rien n'est révélé */ }
+      return json({ ok: true });
+    }
     // ===== tout ce qui suit exige d'être connecté =====
     if (chemin.startsWith('/api/') && !session) return erreur(401, 'connexion-requise');
     const d = await droitsDe(ctx, session);
 
+    // ----- vérification de l'adresse e-mail : e-mail personnalisé envoyé par notre serveur (adresse = celle de la SESSION, jamais celle d'une requête) -----
+    if (chemin === '/api/email/verification' && m === 'POST') {
+      if (!ctx.courriel) return erreur(503, 'email-non-configure');       // le navigateur retombe alors sur l'envoi Firebase
+      if (session.emailVerifie) return json({ deja: true });
+      if (!session.email) return erreur(400, 'adresse-absente');
+      if (tropDeTentatives('email:' + ip, 20, 10 * 60000, ctx.maintenant)) return erreur(429, 'trop-de-tentatives');
+      const lim = await reserverEnvoi(ctx, session.uid);
+      if (!lim.ok) return json({ erreur: lim.raison, attente: lim.attente }, 429);
+      let lien; try { lien = await ctx.base.lienAction('VERIFY_EMAIL', session.email); } catch (e) { return erreur(502, 'envoi-impossible'); }
+      if (!lien) return erreur(404, 'compte-introuvable');
+      try { await ctx.courriel.envoyer({ a: session.email, ...modeles.verification({ lien: lienAction(url, 'verifyEmail', lien.oobCode) }) }); } catch (e) { return erreur(502, 'envoi-impossible'); }
+      await ctx.base.maj('familles', session.uid, { verifDemandeeLe: ctx.maintenant });
+      return json({ envoye: true, delai: DELAI_ENVOI_S });
+    }
     // ----- vérification de l'adresse e-mail du parent (décision du 24/11/2026) : obligatoire avant tout profil enfant et toute progression -----
     // Contrôlée par le SERVEUR, jamais seulement par le navigateur. La connexion, /api/moi, la suppression du compte et le réglage de famille restent possibles.
     if (chemin === '/api/enfants' || chemin.startsWith('/api/enfants/')) { if (!session.emailVerifie) return erreur(403, 'email-non-verifie'); }
@@ -314,7 +359,9 @@ export async function traiter(req, ctx) {
       if (!connexionRecente(session, ctx.maintenant)) return erreur(401, 'reconnexion-requise');
       const ab = await ctx.base.lire('abonnements', session.uid);
       if (ab && abonnementActif(ab, ctx.maintenant) && !ab.annulationFinPeriode) return erreur(409, 'abonnement-actif');
+      const emailSuppr = session.email;
       await supprimerToutesLesDonnees(ctx, session.uid);
+      if (ctx.courriel && emailSuppr) { try { await ctx.courriel.envoyer({ a: emailSuppr, ...modeles.compteSupprime() }); } catch (e) { /* la suppression ne dépend pas de l'e-mail */ } }
       return json({ ok: true }, 200, { 'Set-Cookie': enteteCookie('', { secure, effacer: true }) });
     }
 
@@ -344,6 +391,8 @@ export async function supprimerToutesLesDonnees(ctx, uid) {
   // Stripe : le lien client → compte est effacé ; la preuve de consentement d'achat est CONSERVÉE (obligation légale, clé = identifiant de session Stripe) mais détachée du compte.
   for (const c of await ctx.base.chercher('stripe_clients', 'uid', uid)) await ctx.base.supprimer('stripe_clients', c.id);
   for (const c of await ctx.base.chercher('consentements_achat', 'uid', uid)) await ctx.base.maj('consentements_achat', c.id, { uid: 'anonymise' });
+  await ctx.base.supprimer('courriers', uid);
+  if (email) await ctx.base.supprimer('courriers', 'r' + await empreinteAdresse(email));   // données d'envoi : horodatages seulement, clé = empreinte de l'adresse
   await ctx.base.supprimer('droits', uid);
   await ctx.base.supprimer('abonnements', uid);
   await ctx.base.supprimer('familles', uid);
