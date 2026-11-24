@@ -261,6 +261,10 @@ if (window.LDN_SV) window.LDN_SV.abonner(() => { if ($('rf-etat')) afficherSansV
 async function demarrer() {
   etat('Chargement…');
   D = await C.moi(); etat('');
+  if (params.get('verifie') === '1') {          // retour du lien reçu par e-mail : on vérifie tout de suite, sans rien demander au parent
+    if (D.connecte && !D.emailVerifie) { await verifierEmail(); if (D.emailVerifie) return; }
+    else if (!D.connecte) etat('Votre adresse e-mail est validée. Connectez-vous pour continuer.');
+  }
   await reglagesFamille();
   if (!D.connecte || D.fournisseur === 'google.com') C.prechargerAuth();   // fenêtre Google ouverte immédiatement au clic (Safari / iPhone)
   $('v-invitation').classList.toggle('cache', !invitation());

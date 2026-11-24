@@ -21,7 +21,7 @@ test('espace famille : le renvoi du lien a un compte à rebours de 60 s et gère
 
 test('inscription : le premier envoi du lien lance le compte à rebours du renvoi (pas de « Trop d\'essais » immédiat)', () => {
   const c = fs.readFileSync(new URL('../../compte/client.js', import.meta.url), 'utf8');
-  assert.match(c, /sendEmailVerification\(c\.user\);[^\n]*ldn_verif_envoi/);
+  assert.match(c, /sendEmailVerification\(c\.user, s\)[^\n]*ldn_verif_envoi/);
 });
 
 test('espace famille : le texte explique que le jeu reste fermé tant que l\'adresse n\'est pas vérifiée et que la page se met à jour toute seule', () => {

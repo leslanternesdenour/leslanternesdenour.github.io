@@ -62,15 +62,22 @@ async function firebase() {
   const V = 'https://www.gstatic.com/firebasejs/10.12.2/';
   const [app, auth] = await Promise.all([import(V + 'firebase-app.js'), import(V + 'firebase-auth.js')]);
   const a = auth.getAuth(app.initializeApp(FIREBASE));
+  a.languageCode = 'fr';   // tous les e-mails de Firebase (vérification, mot de passe oublié) partent en français : sans ce réglage, Firebase envoie son modèle anglais
   fb = { a, m: auth };
   return fb;
+}
+// Lien de retour des e-mails : après la validation, le parent revient sur le site (le domaine doit figurer dans « Domaines autorisés » de Firebase ; sinon, repli sans lien de retour).
+function reglagesLien(chemin) { return { url: location.origin + chemin, handleCodeInApp: false }; }
+async function envoyerAvecRepli(envoi, chemin) {
+  try { return await envoi(reglagesLien(chemin)); }
+  catch (e) { if (e && ['auth/unauthorized-continue-uri', 'auth/invalid-continue-uri', 'auth/missing-continue-uri'].includes(e.code)) return envoi(undefined); throw e; }
 }
 const emul = (chemin, corps) => api('/api/_emulateur/' + chemin, { methode: 'POST', corps });
 export const auth = {
   async inscrire(email, mdp) {
     if (EMULATEUR) return (await emul('inscription', { email, mdp })).idToken;
     const { a, m } = await firebase(); const c = await m.createUserWithEmailAndPassword(a, email, mdp);
-    try { await m.sendEmailVerification(c.user); sessionStorage.setItem('ldn_verif_envoi', String(Date.now())); } catch (e) {}   // le premier envoi lance le compte à rebours du renvoi
+    try { await envoyerAvecRepli(s => m.sendEmailVerification(c.user, s), '/compte/?verifie=1'); sessionStorage.setItem('ldn_verif_envoi', String(Date.now())); } catch (e) {}   // le premier envoi lance le compte à rebours du renvoi
     return c.user.getIdToken();
   },
   async connecter(email, mdp) {
@@ -105,8 +112,8 @@ export const auth = {
     const { a } = await firebase(); await a.authStateReady(); const u = a.currentUser; if (!u) throw new ErreurApi(401, 'reconnexion-requise');
     await u.reload(); return u.getIdToken(true);
   },
-  async motDePasseOublie(email) { if (EMULATEUR) return; const { a, m } = await firebase(); await m.sendPasswordResetEmail(a, email); },
-  async renvoyerVerification() { if (EMULATEUR) return; const { a, m } = await firebase(); await a.authStateReady(); if (a.currentUser) await m.sendEmailVerification(a.currentUser); },
+  async motDePasseOublie(email) { if (EMULATEUR) return; const { a, m } = await firebase(); await envoyerAvecRepli(s => m.sendPasswordResetEmail(a, email, s), '/compte/#connexion'); },
+  async renvoyerVerification() { if (EMULATEUR) return; const { a, m } = await firebase(); await a.authStateReady(); if (a.currentUser) await envoyerAvecRepli(s => m.sendEmailVerification(a.currentUser, s), '/compte/?verifie=1'); },
   simulerClicVerification: () => emul('verifier', {}),   // SIMULATION LOCALE uniquement (bouton affiché seulement avec l'émulateur)
   async quitter() { if (EMULATEUR) return; try { const { a, m } = await firebase(); await m.signOut(a); } catch (e) {} }
 };
