@@ -45,6 +45,10 @@ export function clientStripe(env, { fetcher = fetch } = {}) {
     },
     creerPortail: ({ client, retour }) => appel('billing_portal/sessions', { customer: client, return_url: retour }),
     resilierFinPeriode: abonnementId => appel('subscriptions/' + abonnementId, { cancel_at_period_end: 'true' }),
-    lireAbonnement: abonnementId => appel('subscriptions/' + abonnementId, {}, 'GET')
+    lireAbonnement: abonnementId => appel('subscriptions/' + abonnementId, {}, 'GET'),
+    // Retour du paiement : le serveur relit lui-même la session auprès de Stripe (le navigateur ne prouve rien), abonnement inclus.
+    lireSession: id => appel('checkout/sessions/' + encodeURIComponent(id) + '?expand[]=subscription', {}, 'GET'),
+    // Rattrapage sans identifiant de session : les abonnements de ce compte (métadonnée « uid » posée à la souscription).
+    chercherAbonnements: uid => appel('subscriptions/search?query=' + encodeURIComponent("metadata['uid']:'" + uid + "'"), {}, 'GET')
   };
 }

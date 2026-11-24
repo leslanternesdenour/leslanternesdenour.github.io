@@ -158,6 +158,7 @@ input[type=text],select{width:100%;border-radius:14px;border:2px solid #3a2a7d;b
     <h2>Ma formule</h2>
     <p id="off-texte"></p>
     <a class="lien" id="off-tarifs" href="../tarifs/">Voir les formules</a>
+    <button class="doux cache" id="off-verifier">J'ai déjà payé : actualiser ma formule</button>
     <button class="doux cache" id="off-portail">Moyen de paiement et factures</button>
     <button class="doux cache" id="off-resilier">Résilier l'abonnement</button>
     <div id="off-confirmer" class="choix cache">
@@ -269,7 +270,8 @@ async function demarrer() {
   if (!D.connecte || D.fournisseur === 'google.com') C.prechargerAuth();   // fenêtre Google ouverte immédiatement au clic (Safari / iPhone)
   $('v-invitation').classList.toggle('cache', !invitation());
   if (!D.connecte) { voir('v-acces'); onglet(location.hash === '#inscription' || invitation() ? 'inscription' : 'connexion'); if (retour()) etat('Connectez-vous (ou créez un compte) pour continuer vers ' + nomRetour(retour()) + '.'); return; }
-  if (params.get('paiement') === 'ok') etat('Merci ! Le paiement est confirmé. La formule s\'affiche dès que la banque l\'a validé.');
+  if (params.get('paiement') === 'ok') await confirmerPaiement();
+  else await rafraichirAbonnement();
   $('e-email').textContent = D.email + (D.fournisseur === 'google.com' ? ' (compte Google)' : '');
   const google = D.fournisseur === 'google.com'; $('s-mdp-label').classList.toggle('cache', google); $('s-google-info').classList.toggle('cache', !google); $('e-statut').textContent = C.NOMS_STATUT[D.statut] + (D.niveau !== 'gratuit' && D.statut !== 'creator' ? ' · ' + C.NOMS_NIVEAU[D.niveau] : '');
   $('e-verif').classList.toggle('cache', !!D.emailVerifie);
@@ -448,12 +450,33 @@ $('f-enfant').onsubmit = e => { e.preventDefault(); occupe(e.submitter, async ()
 $('entrer').onclick = () => { if (!C.profilActif() && total) return etat('Choisissez d\'abord qui joue.', true); location.href = '../monde/?ouverture=1'; };
 
 // ---------- formule ----------
+// Retour du paiement : le serveur relit la session chez Stripe et active tout de suite (sans attendre le webhook) ; si Stripe n'a pas encore validé, on réessaie quelques secondes.
+async function confirmerPaiement() {
+  const id = params.get('session_id');
+  etat('Merci ! Nous vérifions votre paiement…');
+  for (let i = 0; i < 6; i++) {
+    try {
+      const r = await C.api('/api/abonnement/synchroniser', { methode: 'POST', corps: i === 0 && /^cs_/.test(id || '') ? { sessionId: id } : {} });
+      if (r.niveau && r.niveau !== 'gratuit') { D = await C.moi(); etat('Merci ! Votre abonnement est activé.'); history.replaceState(null, '', location.pathname); return; }
+    } catch (e) { /* pas encore confirmé par Stripe : on réessaie */ }
+    await new Promise(ok => setTimeout(ok, 2500));
+  }
+  etat('Merci ! Le paiement est enregistré, la formule s\'affichera dans un instant. Actualisez la page si besoin.');
+}
+// Un abonné qui revient (renouvellement, résiliation ou carte modifiée dans le portail Stripe) : le serveur relit l'abonnement chez Stripe ; on recharge l'état seulement s'il a changé.
+async function rafraichirAbonnement() {
+  if (!D.emailVerifie || !D.abonnement) return;
+  try { const r = await C.api('/api/abonnement/synchroniser', { methode: 'POST', corps: {} }); if (r.niveau !== D.niveau || r.statut !== D.statut) D = await C.moi(); } catch (e) { /* Stripe injoignable : on garde l'état connu */ }
+}
 function afficherOffre() {
   const t = { creator: 'Compte Créateur : tout est ouvert.', invite: 'Accès ' + C.NOMS_NIVEAU[D.niveau] + ' offert' + (D.expire ? ' jusqu\'au ' + date(D.expire) : ', sans date de fin') + '.',
     abonne: 'Abonnement ' + C.NOMS_NIVEAU[D.niveau] + (D.expire ? ', période en cours jusqu\'au ' + date(D.expire) : '') + '.', gratuit: 'Formule Gratuite : ablutions, prière, calendrier du Ramadan, et le début du Grand Voyage.' };
-  $('off-texte').textContent = t[D.statut] || '';
-  $('off-tarifs').classList.toggle('cache', D.statut === 'creator' || D.payant);
-  $('off-portail').classList.toggle('cache', !D.payant); $('off-resilier').classList.toggle('cache', !D.payant);
+  const aRegulariser = !!(D.abonnement && D.abonnement.aRegulariser);   // renouvellement refusé : l'accès est suspendu jusqu'à la mise à jour de la carte
+  const resiliation = D.payant && D.abonnement && D.abonnement.annulationFinPeriode ? ' Résiliation programmée : aucun nouveau prélèvement, accès conservé jusqu\'à la fin de la période payée.' : '';
+  $('off-texte').textContent = aRegulariser ? 'Le dernier paiement a échoué : votre accès Premium est suspendu. Mettez à jour votre moyen de paiement pour le retrouver.' : (t[D.statut] || '') + resiliation;
+  $('off-tarifs').classList.toggle('cache', D.statut === 'creator' || D.payant || aRegulariser);
+  $('off-portail').classList.toggle('cache', !(D.payant || aRegulariser)); $('off-resilier').classList.toggle('cache', !D.payant);
+  $('off-verifier').classList.toggle('cache', D.statut !== 'gratuit' || aRegulariser);
   $('off-admin').classList.toggle('cache', !D.admin);
 }
 // résiliation en 3 gestes : bouton → confirmation → oui (la loi impose une résiliation simple)
@@ -461,6 +484,7 @@ $('off-resilier').onclick = () => { $('off-confirmer').classList.remove('cache')
 $('off-non').onclick = () => { $('off-confirmer').classList.add('cache'); $('off-resilier').classList.remove('cache'); };
 $('off-oui').onclick = e => occupe(e.target, async () => { const r = await C.api('/api/abonnement/resilier', { methode: 'POST' }); $('off-confirmer').classList.add('cache');
   etat('Résiliation enregistrée. Accès conservé jusqu\'au ' + date(r.finAcces) + '.'); });
+$('off-verifier').onclick = e => occupe(e.target, async () => { await C.api('/api/abonnement/synchroniser', { methode: 'POST', corps: {} }); D = await C.moi(); afficherOffre(); etat('Votre formule est à jour.'); });
 $('off-portail').onclick = e => occupe(e.target, async () => { location.href = (await C.api('/api/abonnement/portail', { methode: 'POST' })).url; });
 
 // ---------- déconnexion et suppression ----------

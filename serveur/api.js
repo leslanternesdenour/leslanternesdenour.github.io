@@ -192,8 +192,9 @@ export async function traiter(req, ctx) {
     // ----- qui suis-je -----
     if (chemin === '/api/moi' && m === 'GET') {
       if (!session) return json({ connecte: false, statut: 'visiteur' });
-      const d = await droitsDe(ctx, session); const f = await ctx.base.lire('familles', session.uid);
+      const d = await droitsDe(ctx, session); const f = await ctx.base.lire('familles', session.uid); const ab = await ctx.base.lire('abonnements', session.uid);
       return json({ connecte: true, uid: session.uid, email: session.email, emailVerifie: session.emailVerifie, fournisseur: session.fournisseur, ...d, vue: vueDemandee(req, ctx, session),
+        abonnement: ab ? { statut: ab.statut, formule: ab.formule, finPeriode: ab.finPeriode, annulationFinPeriode: !!ab.annulationFinPeriode, aRegulariser: ['past_due', 'unpaid'].includes(ab.statut) } : null,   // pour l'affichage seulement : les droits viennent de « statut » et « niveau »
         profilsMax: d.profilsMax === Infinity ? null : d.profilsMax, illimite: d.profilsMax === Infinity, profilActif: f && f.profilActif || null, preferences: preferencesFamille(f),
         activationCreateur: d.statut !== 'creator' && session.emailVerifie && !!String(ctx.env.CREATOR_UID || '').trim() && session.uid === String(ctx.env.CREATOR_UID).trim() });
     }
@@ -336,7 +337,7 @@ export async function traiter(req, ctx) {
       if (!(b.consentements && b.consentements.cgv === true && b.consentements.executionImmediate === true)) return erreur(428, 'consentement-requis');
       const prix = ctx.env[FORMULE_PRIX[b.formule]]; if (!prix) return erreur(503, 'prix-non-configure');
       const ab = await ctx.base.lire('abonnements', session.uid);
-      const s = await ctx.stripe.creerCheckout({ uid: session.uid, email: session.email, prix, client: ab && ab.stripeClient, succes: url.origin + '/compte/?paiement=ok', annulation: url.origin + '/tarifs/?paiement=annule' });
+      const s = await ctx.stripe.creerCheckout({ uid: session.uid, email: session.email, prix, client: ab && ab.stripeClient, succes: url.origin + '/compte/?paiement=ok&session_id={CHECKOUT_SESSION_ID}', annulation: url.origin + '/tarifs/?paiement=annule' });
       await ctx.base.ecrire('consentements_achat', s.id, { uid: session.uid, formule: b.formule, cgv: ctx.maintenant, executionImmediate: ctx.maintenant, version: ctx.env.VERSION_TEXTES || '2026-11' });
       return json({ url: s.url });
     }
@@ -347,6 +348,33 @@ export async function traiter(req, ctx) {
       await ctx.base.maj('abonnements', session.uid, { annulationFinPeriode: true, resilieLe: ctx.maintenant });
       await majDroits(ctx, session.uid, { claims: session.claims });
       return json({ ok: true, finAcces: ab.finPeriode });
+    }
+    if (chemin === '/api/abonnement/synchroniser' && m === 'POST') {
+      if (!ctx.stripe) return erreur(503, 'paiement-non-configure');
+      if (!session.emailVerifie) return erreur(403, 'email-non-verifie');
+      const b = await corpsJson(req, 1000);
+      if (b.sessionId === undefined) {   // sans identifiant : on relit l'abonnement déjà connu chez Stripe (renouvellement, résiliation, échec de paiement)
+        const ab = await ctx.base.lire('abonnements', session.uid);
+        let sub;
+        if (ab && ab.stripeAbonnement) { try { sub = await ctx.stripe.lireAbonnement(ab.stripeAbonnement); } catch (e) { return erreur(404, 'abonnement-inconnu'); } }
+        else {   // jamais enregistré ici (autre appareil, page rechargée) : on cherche l'abonnement de CE compte chez Stripe
+          if (!/^[A-Za-z0-9_-]{1,128}$/.test(session.uid)) return erreur(404, 'aucun-abonnement');
+          let r; try { r = await ctx.stripe.chercherAbonnements(session.uid); } catch (e) { return erreur(404, 'aucun-abonnement'); }
+          sub = ((r && r.data) || []).filter(x => x.metadata && x.metadata.uid === session.uid && ['active', 'trialing'].includes(x.status)).sort((x, y) => (y.created || 0) - (x.created || 0))[0];
+          if (!sub) return erreur(404, 'aucun-abonnement');
+        }
+        if (sub.metadata && sub.metadata.uid && sub.metadata.uid !== session.uid) return erreur(403, 'session-autre-compte');
+        const d = await enregistrerAbonnement(ctx, session.uid, sub);
+        return json({ ok: true, statut: d.statut, niveau: d.niveau });
+      }
+      const id = String(b.sessionId || '');
+      if (!/^cs_(test|live)_[A-Za-z0-9_]{4,200}$/.test(id)) return erreur(400, 'session-invalide');   // format d'identifiant Stripe, rien d'autre n'est envoyé à Stripe
+      let s; try { s = await ctx.stripe.lireSession(id); } catch (e) { return erreur(404, 'session-inconnue'); }
+      if ((s.client_reference_id || (s.metadata && s.metadata.uid)) !== session.uid) return erreur(403, 'session-autre-compte');   // seule la session de CE compte est acceptée
+      const sub = s.subscription && typeof s.subscription === 'object' ? s.subscription : null;
+      if (s.mode !== 'subscription' || s.status !== 'complete' || !sub) return erreur(409, 'paiement-non-termine');   // rien n'est activé tant que Stripe n'a pas confirmé
+      await enregistrerAbonnement(ctx, session.uid, sub);
+      return json({ ok: true });
     }
     if (chemin === '/api/abonnement/portail' && m === 'POST') {
       const ab = await ctx.base.lire('abonnements', session.uid);
@@ -523,6 +551,21 @@ async function administration(req, ctx, session, chemin, url) {
   return erreur(404, 'inconnu');
 }
 
+// Enregistre l'état d'un abonnement Stripe (objet « subscription ») pour un compte, puis recalcule ses droits.
+// Utilisée par le webhook ET par la synchronisation au retour du paiement : une seule logique.
+async function enregistrerAbonnement(ctx, uid, o, supprime = false) {
+  const formuleDuPrix = prix => Object.entries(FORMULE_PRIX).find(([, cle]) => ctx.env[cle] === prix)?.[0] || null;
+  const prix = o.items && o.items.data && o.items.data[0] && o.items.data[0].price && o.items.data[0].price.id;
+  const statut = supprime ? 'canceled' : o.status;
+  // Fin de période : au niveau de l'abonnement (anciennes versions d'API), sinon dans le premier article (versions récentes, comme le compte Stripe actuel).
+  const finSecondes = o.current_period_end || (o.items && o.items.data && o.items.data[0] && o.items.data[0].current_period_end) || 0;
+  await ctx.base.ecrire('abonnements', uid, { statut, formule: formuleDuPrix(prix), finPeriode: finSecondes * 1000, stripeClient: o.customer, stripeAbonnement: o.id, annulationFinPeriode: !!o.cancel_at_period_end, majLe: ctx.maintenant });
+  // garde-fou : un abonnement payé alors qu'un accès offert est actif → signalé au Créateur (aucun remboursement automatique)
+  if (statut === 'active' && (await ctx.base.chercher('acces_offerts', 'uid', uid)).some(a => accesOffertActif(a.data, ctx.maintenant)))
+    await journal(ctx, 'alerte-double-acces', { uid, abonnement: o.id });
+  return majDroits(ctx, uid);
+}
+
 // ======================================================================
 // Webhooks Stripe : seule source de vérité des abonnements payants.
 async function webhookStripe(req, ctx) {
@@ -532,7 +575,6 @@ async function webhookStripe(req, ctx) {
   if (ev.livemode === true && ctx.env.STRIPE_MODE_REEL !== 'autorise') return erreur(400, 'mode-reel-refuse');
   if (!(await ctx.base.creerSiAbsent('stripe_evenements', ev.id, { t: ctx.maintenant, type: ev.type }))) return json({ ok: true, doublon: true });   // chaque événement traité une seule fois
   const o = ev.data && ev.data.object || {};
-  const formuleDuPrix = prix => Object.entries(FORMULE_PRIX).find(([, cle]) => ctx.env[cle] === prix)?.[0] || null;
   let uid = (o.metadata && o.metadata.uid) || o.client_reference_id || null;
   if (!uid && o.customer) { const c = await ctx.base.lire('stripe_clients', o.customer); uid = c && c.uid; }
   if (!uid) { await journal(ctx, 'stripe-sans-compte', { evenement: ev.id, type: ev.type }); return json({ ok: true }); }
@@ -541,15 +583,7 @@ async function webhookStripe(req, ctx) {
   if (o.customer) await ctx.base.ecrire('stripe_clients', o.customer, { uid });
 
   if (ev.type === 'customer.subscription.created' || ev.type === 'customer.subscription.updated' || ev.type === 'customer.subscription.deleted') {
-    const prix = o.items && o.items.data && o.items.data[0] && o.items.data[0].price && o.items.data[0].price.id;
-    const statut = ev.type === 'customer.subscription.deleted' ? 'canceled' : o.status;
-    // Fin de période : au niveau de l'abonnement (anciennes versions d'API), sinon dans le premier article (versions récentes, comme le compte Stripe actuel).
-    const finSecondes = o.current_period_end || (o.items && o.items.data && o.items.data[0] && o.items.data[0].current_period_end) || 0;
-    await ctx.base.ecrire('abonnements', uid, { statut, formule: formuleDuPrix(prix), finPeriode: finSecondes * 1000, stripeClient: o.customer, stripeAbonnement: o.id, annulationFinPeriode: !!o.cancel_at_period_end, majLe: ctx.maintenant });
-    // garde-fou : un abonnement payé alors qu'un accès offert est actif → signalé au Créateur (aucun remboursement automatique)
-    if (statut === 'active' && (await ctx.base.chercher('acces_offerts', 'uid', uid)).some(a => accesOffertActif(a.data, ctx.maintenant)))
-      await journal(ctx, 'alerte-double-acces', { uid, abonnement: o.id });
-    await majDroits(ctx, uid);
+    await enregistrerAbonnement(ctx, uid, o, ev.type === 'customer.subscription.deleted');
   } else if (ev.type === 'checkout.session.completed') {
     await journal(ctx, 'paiement-confirme', { uid, session: o.id });
   } else if (ev.type === 'invoice.payment_failed') {
