@@ -1,4 +1,4 @@
-# Copie de référence du wrangler.toml de PRÉPRODUCTION (sert aux tests du garde-fou, indépendants de la branche courante). Voir wrangler.toml.
+# Configuration Cloudflare Pages (préproduction). Aucun secret ici : les secrets se règlent dans le tableau de bord Cloudflare.
 name = "lanternes-de-nour"
 pages_build_output_dir = "dist"
 compatibility_date = "2026-11-01"
@@ -23,3 +23,21 @@ EMAIL_EXPEDITEUR_NOM = "Les Lanternes de Nour"
 #   Variables publiques à ajouter ici : FIREBASE_PROJET, STRIPE_PRIX_PREMIUM_MENSUEL, STRIPE_PRIX_PREMIUM_ANNUEL, STRIPE_PRIX_FAMILLE_ANNUEL, VERSION_TEXTES
 #   Secrets (tableau de bord) : SESSION_SECRET, FIREBASE_COMPTE_SERVICE, CREATOR_UID, STRIPE_CLE_SECRETE (sk_test_ seulement), STRIPE_SECRET_WEBHOOK
 # Stockage privé Premium : liaison R2 « R2_PREMIUM » à ajouter ([[r2_buckets]]) UNIQUEMENT après votre décision d'activer R2 (moyen de paiement demandé).
+
+# --- Environnement PREVIEW (préproduction) : seul endroit où le stockage privé Premium est relié ---
+# Cloudflare n'hérite pas des [vars] du haut du fichier dans une section d'environnement : elles sont donc recopiées à l'identique ci-dessous
+# (valeurs NON secrètes uniquement). Les secrets (Stripe, Firebase, Resend, session) restent dans le tableau de bord et ne sont pas touchés.
+# La production n'a aucune liaison R2 tant qu'elle n'est pas décidée séparément.
+[env.preview.vars]
+ENVIRONNEMENT = "preproduction"
+FIREBASE_PROJET = "lanternes-de-nour"
+STRIPE_PRIX_PREMIUM_MENSUEL = "price_1Uev94D88y9eITej7dv4VPA9"
+STRIPE_PRIX_PREMIUM_ANNUEL = "price_1Uev96D88y9eITejxWarVO7v"
+STRIPE_PRIX_FAMILLE_ANNUEL = "price_1Uev97D88y9eITejrIU7gGiF"
+EMAIL_FOURNISSEUR = "resend"
+EMAIL_EXPEDITEUR_ADRESSE = "bonjour@leslanternesdenour.fr"
+EMAIL_EXPEDITEUR_NOM = "Les Lanternes de Nour"
+
+[[env.preview.r2_buckets]]
+binding = "R2_PREMIUM"
+bucket_name = "ldn-premium"
