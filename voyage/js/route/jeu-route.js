@@ -6,6 +6,7 @@ import { creerLieux3D } from './lieux-3d.js';
 import { creerVille3D } from './ville-3d.js';
 import { creerInterieur3D } from './interieur-3d.js';
 import { creerMontee3D } from './montee-3d.js';
+import { suivreTraversee } from './traversees-route.js';
 import { creerVoyageurs3D } from './voyageurs-3d.js';
 import { maisonsVille, portesJouables } from './ville-plan.js';
 import { ACTIVITES_METIERS, questionsMetier } from './activites-route.js';
@@ -153,6 +154,15 @@ export function creerRoute(ctx) {
     if (d < 20 && !annonce.has(l.id) && !recitUI.ouverte()) { annonce.add(l.id); ui.indice('📜 ' + MESSAGES.lanterne, 4500); } } };
 
   // ---------- la cité vivante : des voyageurs à qui parler (mission « rencontres »), des maisons à observer ----------
+  // le parcours entre les deux collines : des traversées d'un bout à l'autre, comptées tranquillement (aucun chronomètre, aucun classement)
+  const bouts = { a: L.pos('cite-colline-a'), b: L.pos('cite-colline-b') };
+  function parcoursCollines() {
+    const S = R.vu.trav || (R.vu.trav = { dernier: null, n: 0 });
+    const bout = Math.hypot(J.x - bouts.a.x, J.z - bouts.a.z) < 8 ? 'a' : Math.hypot(J.x - bouts.b.x, J.z - bouts.b.z) < 8 ? 'b' : null;
+    if (!suivreTraversee(S, bout)) return;
+    enregistrer(); ui.indice('🚶 ' + (S.n === 3 ? MESSAGES.traversees3 : MESSAGES.traversee), 4500);
+    if (S.n >= 3 && !R.vu.travRecompense) { R.vu.travRecompense = true; enregistrer(); gagner('traversees', 60, 'Trois traversées tranquilles entre les deux collines'); }
+  }
   // les haltes du sentier de montée : de la nature à observer, puis la vue du belvédère (mission « Monter doucement », sans course ni chronomètre)
   for (const id of Object.keys(HALTES_MONTAGNE)) HALTES_MONTAGNE[id].forEach((h, k) => { const p = M3.haltes[id + ':' + k];
     habitants.ajouter({ id: 'route:montee:' + id + ':' + k, x: p.x + 1.5, z: p.z, rayon: 3.6, label: h.label, icone: h.icone, ouvrir: () => {
@@ -318,7 +328,7 @@ export function creerRoute(ctx) {
       return;
     }
     if (auRetourRoute(J.z)) { sortir(); return; }
-    monde.maj(J); L.animer(dt, t, J); lanternesProches(); V.obstacles(J); W.maj(dt, t, J);
+    monde.maj(J); L.animer(dt, t, J); lanternesProches(); parcoursCollines(); V.obstacles(J); W.maj(dt, t, J);
     tVoy += dt; if (tVoy > 0.35) { tVoy = 0; for (const n of W.liste) if (n.v.trajet && n.e.racine.visible) regV(n); }
     // l'arrivée : la dernière crête ouvre la vue sur la cité ; la caméra se tourne doucement vers elle (sans jamais bloquer l'enfant)
     if (!R.vu.arrivee) { const c = L.lieux['crete-vue']; if (c && Math.hypot(J.x - c.x, J.z - c.z) < 30) { R.vu.arrivee = true; enregistrer(); ui.bandeau(MESSAGES.citeApparait, '🌅 ' + infoLieu('crete-vue').nom); if (ctx.regarder) ctx.regarder(CITE.t, DEC + CITE.s, 9); } }

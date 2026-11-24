@@ -1,7 +1,7 @@
 {
  "jeu": "route-voix",
  "base": "/audio",
- "total": 301,
+ "total": 303,
  "phrases": [
   {
    "id": "NOUR-VOIX-RTE-924aa3cd",
@@ -2970,6 +2970,26 @@
    "texte": "Les trois balises sont trouvées : tu as retrouvé le chemin de la grande route !",
    "fichier": "fr/route/nour-voix-rte-7fc0ec04.mp3",
    "duree": 4.56,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-b9bdff35",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Une traversée de plus, tranquillement !",
+   "fichier": "fr/route/nour-voix-rte-b9bdff35.mp3",
+   "duree": 2.8,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-f0cbe9e6",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Trois traversées : bravo ! Tu peux continuer, sans te presser.",
+   "fichier": "fr/route/nour-voix-rte-f0cbe9e6.mp3",
+   "duree": 4.72,
    "prononciationVerifiee": false,
    "voixId": "hddT377hAwvRoOKqMj0E"
   },

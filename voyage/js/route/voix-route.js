@@ -1487,6 +1487,16 @@ export const PHRASES_ROUTE = [
   "exact"
  ],
  [
+  "NOUR-VOIX-RTE-b9bdff35",
+  "Une traversée de plus, tranquillement !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-f0cbe9e6",
+  "Trois traversées : bravo ! Tu peux continuer, sans te presser.",
+  "exact"
+ ],
+ [
   "NOUR-VOIX-RTE-1c8cfd4c",
   "Bravo, tout est dans l'ordre !",
   "exact"

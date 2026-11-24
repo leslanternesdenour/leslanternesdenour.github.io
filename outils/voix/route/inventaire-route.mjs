@@ -35,7 +35,7 @@ export async function inventaire() {
   for (const [id, m] of Object.entries(D.MISSIONS_ROUTE)) { ajouter('narratrice', m.titre, 'mission:' + id); ajouter('narratrice', m.simple, 'mission:' + id); ajouter('narratrice', m.resume, 'mission:' + id); }
   // régions, messages utiles, retours des activités
   for (const r of D.REGIONS_ROUTE) ajouter('narratrice', r.nom, 'region:' + r.id);
-  const M = T.MESSAGES; for (const k of ['sacTexte', 'panneauOuvert', 'panneauFerme', 'lanterne', 'affairesRetrouvees', 'fin', 'etape1', 'etape1Cadeau', 'lanterneSac', 'maisonNote', 'nouvelleMission', 'histoireAjoutee', 'entreDans', 'citeApparait', 'decouvres', 'grandeRoute', 'gourdePleine', 'gourdeAbsente', 'chemin3']) ajouter('narratrice', M[k], 'message:' + k);
+  const M = T.MESSAGES; for (const k of ['sacTexte', 'panneauOuvert', 'panneauFerme', 'lanterne', 'affairesRetrouvees', 'fin', 'etape1', 'etape1Cadeau', 'lanterneSac', 'maisonNote', 'nouvelleMission', 'histoireAjoutee', 'entreDans', 'citeApparait', 'decouvres', 'grandeRoute', 'gourdePleine', 'gourdeAbsente', 'chemin3', 'traversee', 'traversees3']) ajouter('narratrice', M[k], 'message:' + k);
   for (const t of Object.values(T.FEEDBACK)) ajouter('narratrice', t, 'retour');
   return [...out.values()];
 }

@@ -117,6 +117,8 @@ export const MESSAGES = {
   sacDit: 'Chaque objet du sac sert à quelque chose, mais aucun n\'est obligatoire : tu peux partir comme tu veux.',
   gourdePleine: 'Tu remplis ta gourde à l\'eau claire de l\'oasis.',
   gourdeAbsente: 'L\'eau de l\'oasis est claire et fraîche. Pense à emporter ta gourde la prochaine fois !',
+  traversee: 'Une traversée de plus, tranquillement !',
+  traversees3: 'Trois traversées : bravo ! Tu peux continuer, sans te presser.',
   chemin3: 'Les trois balises sont trouvées : tu as retrouvé le chemin de la grande route !',
   sacTexte: 'Chaque objet du sac sert à quelque chose, mais aucun n\'est obligatoire : tu peux partir comme tu veux. Touche un objet pour le mettre dans ton sac, ou l\'en retirer.',
   panneauOuvert: 'Une très longue piste part d\'ici, vers l\'est. Parle à Rachid pour préparer ton sac, puis suis la piste.',
