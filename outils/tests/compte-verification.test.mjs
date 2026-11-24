@@ -14,7 +14,7 @@ test('espace famille : la page vérifie toute seule (toutes les 8 s et au retour
   assert.match(h, /Adresse validée/); assert.match(h, /arreterSurveillance\(\)/);
 });
 
-test('espace famille : le renvoi du lien a un compte à rebours de 60 s et gère la limite de Firebase avec un message clair', () => {
+test('espace famille : le renvoi du lien a un compte à rebours de 90 s et gère la limite de Firebase avec un message clair', () => {
   const h = page();
   assert.match(h, /ldn_verif_envoi/); assert.match(h, /Renvoyer le lien \(/); assert.match(h, /auth\/too-many-requests/); assert.match(h, /Patientez/);
 });

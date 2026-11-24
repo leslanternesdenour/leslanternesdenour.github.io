@@ -288,7 +288,7 @@ async function demarrer() {
 
 // ---------- vérification de l'adresse e-mail du parent (obligatoire avant le jeu ; contrôlée par le serveur) ----------
 let veille = null, enCours = false;
-const DELAI_RENVOI = 60000;
+const DELAI_RENVOI = 90000;   // Firebase limite les envois par adresse : en dessous d environ 90 s, le renvoi est souvent refusé
 function arreterSurveillance() { if (veille) { clearInterval(veille); veille = null; } }
 const verifieDansLeJeton = t => { try { return !!JSON.parse(atob(String(t).split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))).email_verified; } catch (e) { return null; } };   // pour ne pas recréer de session pour rien : le serveur reste seul juge
 async function verifierEmail() {
