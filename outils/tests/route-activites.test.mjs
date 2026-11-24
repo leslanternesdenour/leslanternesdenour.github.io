@@ -7,7 +7,7 @@ test('activités des métiers : un potier et un marchand, trois questions chacun
   const { ACTIVITES_METIERS, questionsMetier } = await import('../../voyage/js/route/activites-route.js');
   const { VOYAGEURS_VILLE } = await import('../../voyage/js/route/donnees.js');
   const roles = JSON.parse(fs.readFileSync(new URL('../voix/jeux/voix-roles.json', import.meta.url), 'utf8'));
-  assert.deepEqual(Object.keys(ACTIVITES_METIERS), ['potier', 'marchand-dattes', 'tisserande', 'porteur-eau']);
+  assert.deepEqual(Object.keys(ACTIVITES_METIERS), ['potier', 'marchand-dattes', 'tisserande', 'porteur-eau', 'puisatier']);
   for (const [id, a] of Object.entries(ACTIVITES_METIERS)) {
     assert.ok(VOYAGEURS_VILLE.some(v => v.id === id), `${id} : le métier est enseigné par un voyageur de la cité`);
     assert.ok(roles[a.voix], `${id} : voix Nour inconnue`); assert.ok(a.icone && a.titre && a.recompense > 0);

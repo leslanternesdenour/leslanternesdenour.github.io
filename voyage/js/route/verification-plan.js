@@ -17,6 +17,7 @@ export const ETAPES_VERIF = [
   { id: 'sujets', icone: '💬', titre: 'Bavarder avec les habitants (8 questions)', aller: { type: 'voyageur', id: 'boulangere' }, quoi: 'Pose 8 questions à des habitants différents : chaque réponse est dite avec leur voix.', fait: R => !!(R.vu && R.vu.sujetsRecompense) },
   { id: 'collines', icone: '🚶', titre: 'Marcher entre les deux collines (3 traversées)', aller: { type: 'collines' }, quoi: 'Marche d\'une colline à l\'autre trois fois : un message doux à chaque traversée, jamais de chronomètre.', fait: R => !!(R.vu && R.vu.travRecompense) },
   { id: 'montees', icone: '⛰️', titre: 'Monter doucement (6 haltes)', aller: { type: 'halte', id: 'nord' }, quoi: 'Monte les deux sentiers jusqu\'aux belvédères et observe les haltes : la voix décrit la nature.', fait: R => finie(R, 'montees') },
+  { id: 'hameau', icone: '🏘️', titre: 'Le hameau des puits (sentier caché)', aller: { type: 'lieu', id: 'hameau-borne' }, quoi: "Suis le sentier depuis la borne jusqu'au hameau : puits, jardin, four (chacun parle). Parle au puisatier et apprends son métier.", fait: R => finie(R, 'hameau') },
   { id: 'cite', icone: '🏙️', titre: 'Découvrir la cité', aller: { type: 'lieu', id: 'cite-place' }, quoi: 'Visite la porte, l\'atelier, la grande place et le marché : la mission se termine.', fait: R => finie(R, 'cite') }
 ];
 export function progressionVerif(R) {

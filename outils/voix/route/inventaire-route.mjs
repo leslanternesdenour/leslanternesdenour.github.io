@@ -5,7 +5,7 @@ import { normaliser } from '../../../voyage/js/voix.js';
 export const normaliserTexte = normaliser;
 
 // qui prononce quoi : un rôle = une voix Nour stable (déjà utilisée ailleurs dans le jeu)
-const ROLE_VOYAGEUR = { 'marchand-dattes': 'perso-karim', tisserande: 'perso-warda', potier: 'perso-yacine', 'voyageuse-oasis': 'perso-salma', 'porteur-eau': 'perso-samir', 'marcheur-rue': 'narrateur', 'ancien-marche': 'perso-hakim', boulangere: 'perso-salma', 'jeune-berger': 'perso-samir', caravanier: 'narrateur' };
+const ROLE_VOYAGEUR = { 'marchand-dattes': 'perso-karim', tisserande: 'perso-warda', potier: 'perso-yacine', 'voyageuse-oasis': 'perso-salma', 'porteur-eau': 'perso-samir', 'marcheur-rue': 'narrateur', puisatier: 'perso-yacine', 'ancien-marche': 'perso-hakim', boulangere: 'perso-salma', 'jeune-berger': 'perso-samir', caravanier: 'narrateur' };
 
 const hash8 = t => { let h = 0x811c9dc5; for (const c of Buffer.from(t, 'utf8')) { h ^= c; h = Math.imul(h, 0x01000193) >>> 0; } return h.toString(16).padStart(8, '0'); };
 

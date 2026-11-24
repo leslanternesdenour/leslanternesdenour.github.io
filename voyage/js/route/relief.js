@@ -19,7 +19,7 @@ const PISTE = [[-300, 50], [-150, 48], [-40, 45], [120, 30], [300, -10], [520, -
   [1600, 90], [1850, 60], [2100, 20], [2350, -10], [2440, 0], [2650, 10], [2900, 40], [3100, 60], [3300, 90], [3500, 60], [3700, 5], [3900, -45], [4100, -70], [4300, -60], [4500, -50],
   [4700, -40], [4900, -10], [5100, -10], [5300, 0], [5500, 0], [5650, 0], [5800, 0], [6000, 0]];
 // Les sentiers : vers l'eau de l'oasis, vers le pied de la grande montagne du nord, vers le pied de celle du sud
-const SENTIERS = [[[2400, -4], [2440, 22], [2480, 44]], [[5100, -10], [5170, -140], [5220, -280], [5250, -390]], [[5780, 0], [5810, 160], [5830, 300], [5840, 420]]];
+const SENTIERS = [[[1950, 46], [1960, 150], [1952, 260], [1950, 370], [1950, 418]], [[2400, -4], [2440, 22], [2480, 44]], [[5100, -10], [5170, -140], [5220, -280], [5250, -390]], [[5780, 0], [5810, 160], [5830, 300], [5840, 420]]];
 
 // Lieux aplatis : le campement des voyageurs et l'oasis (positions en s, t)
 export const OASIS = { s: 2500, t: 62, r: 52, lac: 13 };
@@ -35,7 +35,9 @@ export const TERRASSES = [{ id: 'pied-nord', s: 5250, t: -390, r: 26 }, { id: 'p
 
 // Le plateau des intérieurs : un rond de sol parfaitement plat, loin de la cité, où l'on pose la pièce d'une maison quand l'enfant y entre (invisible le reste du temps)
 export const PLATEAU_INTERIEURS = { s: 6040, t: 0, r: 14 };
-let hPlateau = null;   // la hauteur du terrain naturel au centre du plateau (calculée une fois)
+// Le hameau des puits : un petit hameau caché dans les dunes, à l'écart de la grande piste, relié par un sentier (sol plat, comme le campement)
+export const HAMEAU = { s: 1950, t: 446, r: 30 };
+const hPlats = new Map();   // la hauteur du terrain naturel au centre de chaque rond plat (calculée une fois)
 
 function interpoler(pts, s) {
   if (s <= pts[0][0]) return pts[0][1];
@@ -109,7 +111,7 @@ export function relief(s, t, sansTerrasses = false) {
   h = melange(h, 0.6, plaza);
   for (const c of COLLINES_CITE) { const d = Math.hypot(s - c.s, t - c.t); h += c.h * Math.pow(Math.max(0, 1 - d / c.r), 1.2) * (1 + 0.2 * fbm(s * 0.05, t * 0.05, 2)); }
   if (!sansTerrasses) for (const T of TERRASSES) { const d = Math.hypot(s - T.s, t - T.t), m = lisse(T.r + 16, T.r, d); if (m > 0) h = melange(h, hauteurTerrasse(T), m); }
-  if (!sansTerrasses) { const P = PLATEAU_INTERIEURS, d = Math.hypot(s - P.s, t - P.t); if (d < P.r + 24) { if (hPlateau === null) hPlateau = relief(P.s, P.t, true).h; h = melange(h, hPlateau, lisse(P.r + 24, P.r, d)); } }
+  if (!sansTerrasses) for (const P of [PLATEAU_INTERIEURS, HAMEAU]) { const d = Math.hypot(s - P.s, t - P.t); if (d < P.r + 24) { if (!hPlats.has(P)) hPlats.set(P, relief(P.s, P.t, true).h); h = melange(h, hPlats.get(P), lisse(P.r + 24, P.r, d)); } }
   // le campement et l'oasis sont plats
   const camp = lisse(CAMP.r + 16, CAMP.r - 2, dCamp);
   h = melange(h, 0.5 + plaine * 0.1, camp);

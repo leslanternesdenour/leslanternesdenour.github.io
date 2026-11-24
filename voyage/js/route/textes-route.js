@@ -2,6 +2,10 @@
 // « petit » : phrase courte pour les 3–5 ans. « grand » : un peu plus de détails pour les 6–10 ans. Les lieux sont imaginaires.
 // Les contenus historiques et religieux sont ailleurs (contenu-a-valider.js).
 export const TEXTES_LIEUX = {
+  'hameau-borne': { petit: `Une borne de pierre montre le sentier vers le hameau.`, grand: `Une borne de pierre marque le départ d'un petit sentier. Il mène à un hameau caché entre les dunes, où l'on garde une source précieuse.` },
+  'hameau-puits': { petit: `Un puits profond : l'eau est tout en bas.`, grand: `Un puits profond, creusé à la main. Un seau attaché à une corde descend chercher l'eau, et un treuil de bois aide à le remonter.` },
+  'hameau-jardin': { petit: `Ce petit jardin pousse grâce à l'eau du puits.`, grand: `Un petit jardin de légumes, entouré d'une clôture de branches qui protège les plantes du vent. Chaque matin, on l'arrose avec l'eau du puits.` },
+  'hameau-four': { petit: `Ce four en terre cuit le pain de tout le hameau.`, grand: `Un four en terre : on y chauffe des braises, puis on pose les pains sur les pierres chaudes. Tout le hameau partage ce four.` },
   fourmiliere: { petit: `Des fourmis portent des graines jusqu'à leur nid.`, grand: `Des fourmis du désert transportent des graines jusqu'à leur nid sous le sable. Chacune a sa tâche : elles s'entraident, comme une petite caravane.` },
   'fleurs-pluie': { petit: `Quand il pleut, le désert se couvre de fleurs !`, grand: `Après une rare pluie, les graines endormies se réveillent et le désert se couvre de fleurs en quelques jours. Elles vivent peu de temps, puis laissent des graines pour la prochaine pluie.` },
   'nid-tisserins': { petit: `Les tisserins font des nids ronds avec de l'herbe.`, grand: `Les oiseaux tisserins tissent des nids ronds avec de l'herbe, accrochés aux branches d'un acacia. Ils les construisent ensemble, comme un petit village.` },
@@ -108,6 +112,9 @@ export const HALTES_MONTAGNE = {
 };
 // Les questions que l'on peut poser aux habitants de la cité (deux par habitant) : leurs métiers, la vie de tous les jours. Aucun sujet religieux ; chaque réponse est dite par la voix de l'habitant.
 export const SUJETS_VOYAGEURS = {
+  puisatier: [
+    { q: `Comment trouve-t-on l'eau ?`, petit: `On cherche où la terre est fraîche.`, grand: `On cherche les endroits où la terre reste fraîche et où poussent des plantes vertes. Là, l'eau n'est pas loin sous le sable.` },
+    { q: `Pourquoi un puits si profond ?`, petit: `L'eau fraîche est tout en bas.`, grand: `Plus on creuse, plus l'eau est fraîche et propre, à l'abri du soleil et de la poussière. Mais il faut une bonne corde !` }],
   'marchand-dattes': [
     { q: `Comment choisir une datte ?`, petit: `Une bonne datte est souple et brillante.`, grand: `Une bonne datte est souple, brillante et sucrée. Si elle est très dure ou très sèche, elle est trop vieille.` },
     { q: `D'où viennent tes dattes ?`, petit: `Des palmiers de l'oasis, tout là-bas.`, grand: `Elles poussent sur les palmiers des oasis, où l'eau est proche. Une caravane les apporte jusqu'ici en plusieurs jours.` }],

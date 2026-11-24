@@ -90,3 +90,13 @@ test('intérieurs : un plateau plat, à l\'écart de la cité, pour les pièces 
   for (let a = 0; a < 6.3; a += 0.7) for (const d of [0, 5, 10, P.r]) assert.ok(Math.abs(hauteur(P.s + Math.cos(a) * d, P.t + Math.sin(a) * d) - h0) < 0.02, `plat à ${d} m`);
   assert.ok(Math.abs(hauteur(P.s + P.r + 40, P.t) - h0) < 14, 'pas de falaise autour');
 });
+
+test('hameau des puits : un rond de sol plat dans les dunes, relié à la piste par un sentier que l\'on peut marcher de bout en bout', async () => {
+  const { hauteur, HAMEAU, sentiers, distanceSentier, pointChemin } = await import('../../voyage/js/route/relief.js');
+  const h0 = hauteur(HAMEAU.s, HAMEAU.t);
+  for (let a = 0; a < 6.3; a += 0.7) for (const d of [0, 10, 20, HAMEAU.r]) assert.ok(Math.abs(hauteur(HAMEAU.s + Math.cos(a) * d, HAMEAU.t + Math.sin(a) * d) - h0) < 0.02, `plat à ${d} m`);
+  const S = sentiers().find(p => Math.hypot(p.at(-1)[0] - HAMEAU.s, p.at(-1)[1] - HAMEAU.t) < HAMEAU.r + 5); assert.ok(S, 'un sentier arrive au hameau');
+  assert.ok(Math.hypot(S[0][0] - 1950, S[0][1] - pointChemin(1950).t) < 12, 'il part de la piste');
+  for (let i = 1; i < S.length; i++) for (let u = 0; u < 1; u += 0.02) { const a = S[i - 1], b = S[i], s = a[0] + (b[0] - a[0]) * u, t = a[1] + (b[1] - a[1]) * u, s2 = a[0] + (b[0] - a[0]) * (u + 0.02), t2 = a[1] + (b[1] - a[1]) * (u + 0.02), l = Math.hypot(s2 - s, t2 - t); assert.ok(Math.abs(hauteur(s2, t2) - hauteur(s, t)) / l < 0.9, 'pente douce le long du sentier'); }
+  assert.ok(distanceSentier(S[1][0], S[1][1]) < 1, 'le sentier est marqué au sol');
+});

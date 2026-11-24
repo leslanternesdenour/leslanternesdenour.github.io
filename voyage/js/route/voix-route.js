@@ -182,6 +182,46 @@ export const PHRASES_ROUTE = [
   "exact"
  ],
  [
+  "NOUR-VOIX-RTE-335e89ed",
+  "Une borne de pierre montre le sentier vers le hameau.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-0a82e22c",
+  "Une borne de pierre marque le départ d'un petit sentier. Il mène à un hameau caché entre les dunes, où l'on garde une source précieuse.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-0fc3016a",
+  "Un puits profond : l'eau est tout en bas.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-92485db6",
+  "Un puits profond, creusé à la main. Un seau attaché à une corde descend chercher l'eau, et un treuil de bois aide à le remonter.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-d74f438b",
+  "Ce petit jardin pousse grâce à l'eau du puits.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-78ff451c",
+  "Un petit jardin de légumes, entouré d'une clôture de branches qui protège les plantes du vent. Chaque matin, on l'arrose avec l'eau du puits.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-f538c433",
+  "Ce four en terre cuit le pain de tout le hameau.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-0faa3249",
+  "Un four en terre : on y chauffe des braises, puis on pose les pains sur les pierres chaudes. Tout le hameau partage ce four.",
+  "exact"
+ ],
+ [
   "NOUR-VOIX-RTE-1cf2a394",
   "Le vent et le sable ont creusé ce rocher.",
   "exact"
@@ -547,6 +587,16 @@ export const PHRASES_ROUTE = [
   "exact"
  ],
  [
+  "NOUR-VOIX-RTE-7963bf9d",
+  "Je creuse et j'entretiens les puits.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-39a47386",
+  "Je creuse et j'entretiens les puits. Sans eau, il n'y aurait ni jardin ni hameau : c'est un travail qui rend service à tous.",
+  "exact"
+ ],
+ [
   "NOUR-VOIX-RTE-b3b014c5",
   "Bonjour ! Mes dattes viennent d'une oasis lointaine.",
   "exact"
@@ -644,6 +694,26 @@ export const PHRASES_ROUTE = [
  [
   "NOUR-VOIX-RTE-ad4640f4",
   "Ma caravane repart demain avec dix chameaux chargés. Nous voyageons en groupe : c'est plus sûr, et on partage l'eau.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-77f5d230",
+  "On cherche où la terre est fraîche.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-52cbc342",
+  "On cherche les endroits où la terre reste fraîche et où poussent des plantes vertes. Là, l'eau n'est pas loin sous le sable.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-e09b13ee",
+  "L'eau fraîche est tout en bas.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-b1f0b89f",
+  "Plus on creuse, plus l'eau est fraîche et propre, à l'abri du soleil et de la poussière. Mais il faut une bonne corde !",
   "exact"
  ],
  [
@@ -1722,6 +1792,116 @@ export const PHRASES_ROUTE = [
   "exact"
  ],
  [
+  "NOUR-VOIX-RTE-e1bef44a",
+  "Je creuse des puits. Veux-tu apprendre mon métier ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-64627c93",
+  "Bravo, tu sais comment on trouve l'eau !",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-5a60d531",
+  "Je suis puisatier : je creuse des puits pour trouver l'eau. Veux-tu apprendre mon métier ? Réponds à mes trois questions, sans te presser.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-faeb0c24",
+  "Bravo, tu connais maintenant le métier de puisatier. Un bon puits, bien entretenu, donne de l'eau à tout un hameau.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-20d84c35",
+  "On creuse un puits pour…",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-8a5c262e",
+  "Oui ! Un puits donne de l'eau.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-8be6c574",
+  "Pas tout à fait : on creuse un puits pour trouver de l'eau.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-edf9fca9",
+  "Pour remonter l'eau, on utilise…",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-cea940b6",
+  "Oui ! Une corde, avec un seau.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-fd4b791d",
+  "Pas tout à fait : on utilise une corde et un seau.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-f5197f2b",
+  "Un puits propre, c'est…",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-7aa86257",
+  "Oui ! Un puits propre est bon pour tous.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-a73d4ce6",
+  "Pas tout à fait : un puits propre est bon pour tous.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-569add4d",
+  "Pourquoi creuse-t-on un puits profond ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-ed763fd9",
+  "Oui ! Plus on creuse, plus l'eau est fraîche et propre, à l'abri du soleil.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-61b5645d",
+  "Pas tout à fait : un puits sert à trouver de l'eau fraîche et propre, tout en bas.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-e00cdf40",
+  "Comment remonte-t-on le seau d'eau ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-68d9d611",
+  "Oui ! Le treuil tourne et la corde remonte le seau, sans trop se fatiguer.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-76a276a0",
+  "Pas tout à fait : on tire le seau avec une corde, aidée d'un treuil.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-f80bbb4d",
+  "Pourquoi garde-t-on un puits propre ?",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-f6ebb226",
+  "Oui ! Une eau propre protège la santé de tout le hameau.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-f664b609",
+  "Pas tout à fait : on garde le puits propre pour que tout le monde boive une eau saine.",
+  "exact"
+ ],
+ [
   "NOUR-VOIX-RTE-b00d68c6",
   "Retrouver le chemin de la grande route",
   "exact"
@@ -1854,6 +2034,21 @@ export const PHRASES_ROUTE = [
  [
   "NOUR-VOIX-RTE-e436bc44",
   "Dans la cité, chaque maison a ses habitants. Frappe à quatre portes différentes, poliment, pour savoir qui vit là et ce qu'ils font.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-b22beac6",
+  "Le hameau des puits",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-7bbcb346",
+  "Suis le petit sentier jusqu'au hameau caché dans les dunes.",
+  "exact"
+ ],
+ [
+  "NOUR-VOIX-RTE-8290777a",
+  "À l'écart de la grande piste, un petit sentier mène à un hameau caché entre les dunes. Suis-le et découvre la borne, le puits, le jardin et le four à pain.",
   "exact"
  ],
  [

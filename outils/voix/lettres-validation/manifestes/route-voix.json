@@ -1,7 +1,7 @@
 {
  "jeu": "route-voix",
  "base": "/audio",
- "total": 415,
+ "total": 454,
  "phrases": [
   {
    "id": "NOUR-VOIX-RTE-924aa3cd",
@@ -360,6 +360,86 @@
    "texte": "Ici, de l'eau a coulé après de rares pluies. En séchant, la boue s'est fendue en grandes plaques : on appelle cela une terre craquelée.",
    "fichier": "fr/route/nour-voix-rte-b2fd36e6.mp3",
    "duree": 9.36,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-335e89ed",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Une borne de pierre montre le sentier vers le hameau.",
+   "fichier": "fr/route/nour-voix-rte-335e89ed.mp3",
+   "duree": 3.36,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-0a82e22c",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Une borne de pierre marque le départ d'un petit sentier. Il mène à un hameau caché entre les dunes, où l'on garde une source précieuse.",
+   "fichier": "fr/route/nour-voix-rte-0a82e22c.mp3",
+   "duree": 8.88,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-0fc3016a",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Un puits profond : l'eau est tout en bas.",
+   "fichier": "fr/route/nour-voix-rte-0fc3016a.mp3",
+   "duree": 3.44,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-92485db6",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Un puits profond, creusé à la main. Un seau attaché à une corde descend chercher l'eau, et un treuil de bois aide à le remonter.",
+   "fichier": "fr/route/nour-voix-rte-92485db6.mp3",
+   "duree": 8.8,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-d74f438b",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Ce petit jardin pousse grâce à l'eau du puits.",
+   "fichier": "fr/route/nour-voix-rte-d74f438b.mp3",
+   "duree": 3.12,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-78ff451c",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Un petit jardin de légumes, entouré d'une clôture de branches qui protège les plantes du vent. Chaque matin, on l'arrose avec l'eau du puits.",
+   "fichier": "fr/route/nour-voix-rte-78ff451c.mp3",
+   "duree": 8.48,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-f538c433",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Ce four en terre cuit le pain de tout le hameau.",
+   "fichier": "fr/route/nour-voix-rte-f538c433.mp3",
+   "duree": 3.2,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-0faa3249",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Un four en terre : on y chauffe des braises, puis on pose les pains sur les pierres chaudes. Tout le hameau partage ce four.",
+   "fichier": "fr/route/nour-voix-rte-0faa3249.mp3",
+   "duree": 8,
    "prononciationVerifiee": false,
    "voixId": "hddT377hAwvRoOKqMj0E"
   },
@@ -1094,6 +1174,26 @@
    "voixId": "hddT377hAwvRoOKqMj0E"
   },
   {
+   "id": "NOUR-VOIX-RTE-7963bf9d",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Je creuse et j'entretiens les puits.",
+   "fichier": "fr/route/nour-voix-rte-7963bf9d.mp3",
+   "duree": 2.48,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-39a47386",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Je creuse et j'entretiens les puits. Sans eau, il n'y aurait ni jardin ni hameau : c'est un travail qui rend service à tous.",
+   "fichier": "fr/route/nour-voix-rte-39a47386.mp3",
+   "duree": 7.76,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
    "id": "NOUR-VOIX-RTE-b3b014c5",
    "role": "perso-karim",
    "langue": "fr",
@@ -1292,6 +1392,46 @@
    "duree": 6.4,
    "prononciationVerifiee": false,
    "voixId": "8aQsvxWbavqMpn00DVgR"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-77f5d230",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "On cherche où la terre est fraîche.",
+   "fichier": "fr/route/nour-voix-rte-77f5d230.mp3",
+   "duree": 2.16,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-52cbc342",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "On cherche les endroits où la terre reste fraîche et où poussent des plantes vertes. Là, l'eau n'est pas loin sous le sable.",
+   "fichier": "fr/route/nour-voix-rte-52cbc342.mp3",
+   "duree": 7.04,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-e09b13ee",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "L'eau fraîche est tout en bas.",
+   "fichier": "fr/route/nour-voix-rte-e09b13ee.mp3",
+   "duree": 1.92,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-b1f0b89f",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Plus on creuse, plus l'eau est fraîche et propre, à l'abri du soleil et de la poussière. Mais il faut une bonne corde !",
+   "fichier": "fr/route/nour-voix-rte-b1f0b89f.mp3",
+   "duree": 6.96,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
   },
   {
    "id": "NOUR-VOIX-RTE-a9d8ae5f",
@@ -3444,6 +3584,226 @@
    "voixId": "4sifSi2zIrBX7VkoWfjD"
   },
   {
+   "id": "NOUR-VOIX-RTE-e1bef44a",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Je creuse des puits. Veux-tu apprendre mon métier ?",
+   "fichier": "fr/route/nour-voix-rte-e1bef44a.mp3",
+   "duree": 2.96,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-64627c93",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Bravo, tu sais comment on trouve l'eau !",
+   "fichier": "fr/route/nour-voix-rte-64627c93.mp3",
+   "duree": 2.4,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-5a60d531",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Je suis puisatier : je creuse des puits pour trouver l'eau. Veux-tu apprendre mon métier ? Réponds à mes trois questions, sans te presser.",
+   "fichier": "fr/route/nour-voix-rte-5a60d531.mp3",
+   "duree": 7.92,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-faeb0c24",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Bravo, tu connais maintenant le métier de puisatier. Un bon puits, bien entretenu, donne de l'eau à tout un hameau.",
+   "fichier": "fr/route/nour-voix-rte-faeb0c24.mp3",
+   "duree": 7.12,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-20d84c35",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "On creuse un puits pour…",
+   "fichier": "fr/route/nour-voix-rte-20d84c35.mp3",
+   "duree": 1.92,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-8a5c262e",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Oui ! Un puits donne de l'eau.",
+   "fichier": "fr/route/nour-voix-rte-8a5c262e.mp3",
+   "duree": 2.48,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-8be6c574",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Pas tout à fait : on creuse un puits pour trouver de l'eau.",
+   "fichier": "fr/route/nour-voix-rte-8be6c574.mp3",
+   "duree": 3.52,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-edf9fca9",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Pour remonter l'eau, on utilise…",
+   "fichier": "fr/route/nour-voix-rte-edf9fca9.mp3",
+   "duree": 2.4,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-cea940b6",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Oui ! Une corde, avec un seau.",
+   "fichier": "fr/route/nour-voix-rte-cea940b6.mp3",
+   "duree": 2.72,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-fd4b791d",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Pas tout à fait : on utilise une corde et un seau.",
+   "fichier": "fr/route/nour-voix-rte-fd4b791d.mp3",
+   "duree": 3.28,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-f5197f2b",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Un puits propre, c'est…",
+   "fichier": "fr/route/nour-voix-rte-f5197f2b.mp3",
+   "duree": 1.92,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-7aa86257",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Oui ! Un puits propre est bon pour tous.",
+   "fichier": "fr/route/nour-voix-rte-7aa86257.mp3",
+   "duree": 3.04,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-a73d4ce6",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Pas tout à fait : un puits propre est bon pour tous.",
+   "fichier": "fr/route/nour-voix-rte-a73d4ce6.mp3",
+   "duree": 3.44,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-569add4d",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Pourquoi creuse-t-on un puits profond ?",
+   "fichier": "fr/route/nour-voix-rte-569add4d.mp3",
+   "duree": 2.16,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-ed763fd9",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Oui ! Plus on creuse, plus l'eau est fraîche et propre, à l'abri du soleil.",
+   "fichier": "fr/route/nour-voix-rte-ed763fd9.mp3",
+   "duree": 4.96,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-61b5645d",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Pas tout à fait : un puits sert à trouver de l'eau fraîche et propre, tout en bas.",
+   "fichier": "fr/route/nour-voix-rte-61b5645d.mp3",
+   "duree": 4.64,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-e00cdf40",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Comment remonte-t-on le seau d'eau ?",
+   "fichier": "fr/route/nour-voix-rte-e00cdf40.mp3",
+   "duree": 1.92,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-68d9d611",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Oui ! Le treuil tourne et la corde remonte le seau, sans trop se fatiguer.",
+   "fichier": "fr/route/nour-voix-rte-68d9d611.mp3",
+   "duree": 4.88,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-76a276a0",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Pas tout à fait : on tire le seau avec une corde, aidée d'un treuil.",
+   "fichier": "fr/route/nour-voix-rte-76a276a0.mp3",
+   "duree": 4.32,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-f80bbb4d",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Pourquoi garde-t-on un puits propre ?",
+   "fichier": "fr/route/nour-voix-rte-f80bbb4d.mp3",
+   "duree": 2.16,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-f6ebb226",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Oui ! Une eau propre protège la santé de tout le hameau.",
+   "fichier": "fr/route/nour-voix-rte-f6ebb226.mp3",
+   "duree": 3.68,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-f664b609",
+   "role": "perso-yacine",
+   "langue": "fr",
+   "texte": "Pas tout à fait : on garde le puits propre pour que tout le monde boive une eau saine.",
+   "fichier": "fr/route/nour-voix-rte-f664b609.mp3",
+   "duree": 5.04,
+   "prononciationVerifiee": false,
+   "voixId": "IbnTg9TZjxSEt8tJQteX"
+  },
+  {
    "id": "NOUR-VOIX-RTE-b00d68c6",
    "role": "narratrice",
    "langue": "fr",
@@ -3710,6 +4070,36 @@
    "texte": "Dans la cité, chaque maison a ses habitants. Frappe à quatre portes différentes, poliment, pour savoir qui vit là et ce qu'ils font.",
    "fichier": "fr/route/nour-voix-rte-e436bc44.mp3",
    "duree": 8.88,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-b22beac6",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Le hameau des puits",
+   "fichier": "fr/route/nour-voix-rte-b22beac6.mp3",
+   "duree": 1.52,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-7bbcb346",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "Suis le petit sentier jusqu'au hameau caché dans les dunes.",
+   "fichier": "fr/route/nour-voix-rte-7bbcb346.mp3",
+   "duree": 3.84,
+   "prononciationVerifiee": false,
+   "voixId": "hddT377hAwvRoOKqMj0E"
+  },
+  {
+   "id": "NOUR-VOIX-RTE-8290777a",
+   "role": "narratrice",
+   "langue": "fr",
+   "texte": "À l'écart de la grande piste, un petit sentier mène à un hameau caché entre les dunes. Suis-le et découvre la borne, le puits, le jardin et le four à pain.",
+   "fichier": "fr/route/nour-voix-rte-8290777a.mp3",
+   "duree": 10.72,
    "prononciationVerifiee": false,
    "voixId": "hddT377hAwvRoOKqMj0E"
   },

@@ -44,3 +44,9 @@ test('dialogues : le voyageur propose ses deux questions, la réponse est dite a
   assert.match(j, /SUJETS_VOYAGEURS\[n\.v\.id\]/); assert.match(j, /petitsBoutons: true/);
   assert.match(f, /R\.vu\.sujets/); assert.match(f, /Object\.keys\(S\)\.length >= 8/); assert.match(f, /!R\.vu\.sujetsRecompense/); assert.match(f, /gagner\('sujets'/); assert.match(f, /Une autre question/);
 });
+
+test('dialogues : sur téléphone, le point d\'interrogation d\'une question ne se retrouve jamais seul à la ligne (espace insécable)', async () => {
+  const fs = await import('node:fs');
+  const j = fs.readFileSync(new URL('../../voyage/js/route/jeu-route.js', import.meta.url), 'utf8');
+  assert.match(j, /s\.q\.replace\(' \?', '\\u00a0\?'\)/);
+});

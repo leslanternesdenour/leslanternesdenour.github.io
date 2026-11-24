@@ -7,7 +7,7 @@ import { positionSur } from './voyageurs-plan.js';
 
 const DISTANCE_VISIBLE = 150;
 export function creerVoyageurs3D({ scene, hauteur, leger = false }) {
-  const garde = leger ? ['marchand-dattes', 'potier', 'porteur-eau', 'marcheur-rue'] : VOYAGEURS_VILLE.map(v => v.id);   // téléphone : moins de personnages
+  const garde = leger ? ['marchand-dattes', 'potier', 'porteur-eau', 'marcheur-rue', 'puisatier'] : VOYAGEURS_VILLE.map(v => v.id);   // téléphone : moins de personnages
   const liste = VOYAGEURS_VILLE.filter(v => garde.includes(v.id)).map((v, i) => {
     const e = new Enfant(false, v.tenue); e.racine.visible = false; scene.add(e.racine);
     const L = v.trajet ? 1 : 0;

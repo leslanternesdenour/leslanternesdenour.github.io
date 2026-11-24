@@ -45,6 +45,17 @@ export const ACTIVITES_METIERS = {
         grand: { question: `Que fait-on de l'eau qu'on ne boit pas tout de suite ?`, choix: [`On la garde dans une jarre`, `On la jette au sable`, `On la verse par terre`], bonne: 0, ok: `Oui ! L'eau est précieuse : on la garde pour plus tard.`, ko: `Pas tout à fait : on ne gaspille jamais l'eau. On la garde dans une jarre.` } },
       { petit: { question: `Pour porter l'eau, on équilibre avec…`, choix: [`Deux outres`, `Une pierre`], bonne: 0, ok: `Oui ! Deux outres, une de chaque côté.`, ko: `Pas tout à fait : deux outres, une de chaque côté.` },
         grand: { question: `Comment porte-t-on beaucoup d'eau sans se fatiguer ?`, choix: [`Avec deux outres, une de chaque côté`, `Avec une seule grosse jarre sur la tête`, `En courant très vite`], bonne: 0, ok: `Oui ! Deux charges égales de chaque côté gardent l'équilibre.`, ko: `Pas tout à fait : il faut deux charges égales, une de chaque côté, pour garder l'équilibre.` } }
+    ] },
+  puisatier: { icone: '💧', titre: 'Le métier de puisatier', voix: 'perso-yacine', recompense: 40,
+    intro: { petit: `Je creuse des puits. Veux-tu apprendre mon métier ?`, grand: `Je suis puisatier : je creuse des puits pour trouver l'eau. Veux-tu apprendre mon métier ? Réponds à mes trois questions, sans te presser.` },
+    fin: { petit: `Bravo, tu sais comment on trouve l'eau !`, grand: `Bravo, tu connais maintenant le métier de puisatier. Un bon puits, bien entretenu, donne de l'eau à tout un hameau.` },
+    questions: [
+      { petit: { question: `On creuse un puits pour…`, choix: [`Trouver de l'eau`, `Cacher un trésor`], bonne: 0, ok: `Oui ! Un puits donne de l'eau.`, ko: `Pas tout à fait : on creuse un puits pour trouver de l'eau.` },
+        grand: { question: `Pourquoi creuse-t-on un puits profond ?`, choix: [`Pour trouver de l'eau fraîche et propre`, `Pour cacher des trésors`, `Pour jouer`], bonne: 0, ok: `Oui ! Plus on creuse, plus l'eau est fraîche et propre, à l'abri du soleil.`, ko: `Pas tout à fait : un puits sert à trouver de l'eau fraîche et propre, tout en bas.` } },
+      { petit: { question: `Pour remonter l'eau, on utilise…`, choix: [`Une corde`, `Un parapluie`], bonne: 0, ok: `Oui ! Une corde, avec un seau.`, ko: `Pas tout à fait : on utilise une corde et un seau.` },
+        grand: { question: `Comment remonte-t-on le seau d'eau ?`, choix: [`Avec une corde et un treuil`, `En sautant dedans`, `Avec un parapluie`], bonne: 0, ok: `Oui ! Le treuil tourne et la corde remonte le seau, sans trop se fatiguer.`, ko: `Pas tout à fait : on tire le seau avec une corde, aidée d'un treuil.` } },
+      { petit: { question: `Un puits propre, c'est…`, choix: [`Bon pour tous`, `Seulement joli`], bonne: 0, ok: `Oui ! Un puits propre est bon pour tous.`, ko: `Pas tout à fait : un puits propre est bon pour tous.` },
+        grand: { question: `Pourquoi garde-t-on un puits propre ?`, choix: [`Pour que tout le monde puisse boire en bonne santé`, `Pour qu'il brille`, `Pour qu'il parle`], bonne: 0, ok: `Oui ! Une eau propre protège la santé de tout le hameau.`, ko: `Pas tout à fait : on garde le puits propre pour que tout le monde boive une eau saine.` } }
     ] }
 };
 

@@ -133,6 +133,24 @@ export function creerLieux3D({ scene, hauteur, colliders, ombres, TX }) {
   { const p = pos('oasis'), g = [];
     for (let k = 0; k < 5; k++) g.push(piece(B(), '#8a6440', { p: [0, 0.2, k * 1.0 + 1], s: [1.5, 0.1, 0.95], m: M.bois }));
     monter(fusion(g), mat, p.x, p.z); lieux.oasis = { x: p.x, z: p.z }; }
+  // ---- le hameau des puits : la borne du sentier, le puits à treuil, le jardin clôturé, le four à pain, trois petites maisons de pierre ----
+  { const p = pos('hameau-borne'), g = [piece(B(), '#b8a07a', { p: [0, 0.9, 0], s: [0.7, 1.8, 0.7], m: M.pierre }), piece(B(), '#a58c64', { p: [0, 1.9, 0], s: [0.95, 0.22, 0.95], m: M.pierre }), piece(B(), '#8a6440', { p: [0.55, 1.4, 0], s: [0.9, 0.4, 0.08], r: [0, 0, -0.15], m: M.bois }), piece(DOD(0.45), '#a8906e', { p: [0.8, 0.2, 0.5], m: M.pierre })];
+    monter(fusion(g), mat, p.x, p.z, { rot: 0.5 }); bloquer(p.x, p.z, 0.8); lieux['hameau-borne'] = { x: p.x + 1.8, z: p.z - 1.8 }; gemme('hameau-borne', p.x, p.z, 2.9); }
+  { const p = pos('hameau-puits'), g = [piece(CYL(1.2, 1.3, 0.9, 12), '#b8a07a', { p: [0, 0.45, 0], m: M.pierre }), piece(CYL(0.85, 0.85, 0.05, 12), '#1c2a30', { p: [0, 0.9, 0] }),
+      piece(B(), '#6e4e34', { p: [-1.1, 1.5, 0], s: [0.15, 2.2, 0.15], m: M.bois }), piece(B(), '#6e4e34', { p: [1.1, 1.5, 0], s: [0.15, 2.2, 0.15], m: M.bois }), piece(CYL(0.12, 0.12, 2.4, 6), '#8a6440', { p: [0, 2.5, 0], r: [0, 0, Math.PI / 2], m: M.bois }),
+      piece(CYL(0.02, 0.02, 1.0, 4), '#b59a64', { p: [0, 2.0, 0] }), piece(CYL(0.22, 0.17, 0.3, 8), '#7a5a3a', { p: [0, 1.4, 0], m: M.bois })];
+    monter(fusion(g), mat, p.x, p.z); bloquer(p.x, p.z, 1.6); lieux['hameau-puits'] = { x: p.x + 2.4, z: p.z - 2.4 }; gemme('hameau-puits', p.x, p.z, 3.4);
+    // trois petites maisons de pierre autour du puits (on ne peut pas y entrer : ce sont des décors)
+    [[-15, -9, 0.2], [14, -11, -0.3], [3, 17, 0.1]].forEach(([dx, dz, r]) => { const x = p.x + dx, z = p.z + dz, h = [piece(B(), '#c4a77d', { p: [0, 1.3, 0], s: [5.4, 2.6, 4.2], m: M.terre }), piece(B(), '#a8996f', { p: [0, 2.7, 0], s: [5.7, 0.2, 4.5], m: M.pierre }), piece(B(), '#4a3322', { p: [0.8, 0.85, 2.12], s: [0.9, 1.7, 0.06], m: M.bois }), piece(B(), '#3a2e24', { p: [-1.4, 1.6, 2.12], s: [0.6, 0.6, 0.06] })];
+      monter(fusion(h), mat, x, z, { rot: r }); [-1.6, 0, 1.6].forEach(u => bloquer(x + Math.cos(r) * u, z - Math.sin(r) * u, 2.0)); }); }
+  { const p = pos('hameau-jardin'), g = [];
+    for (let k = 0; k < 5; k++) for (let j = 0; j < 7; j++) g.push(piece(SPH(0.22, 6, 4), (k + j) % 3 ? '#6f9a4a' : '#7fb04e', { p: [-1.9 + j * 0.64, 0.2 + (j % 2) * 0.05, -1.6 + k * 0.8], s: [1, 1.1, 1] }));
+    for (let a = 0; a < 12; a++) { g.push(piece(B(), '#8a6440', { p: [-2.6 + a * 0.47, 0.35, -2.2], s: [0.07, 0.7, 0.07], m: M.bois }), piece(B(), '#8a6440', { p: [-2.6 + a * 0.47, 0.35, 2.2], s: [0.07, 0.7, 0.07], m: M.bois })); }
+    for (let a = 0; a < 9; a++) g.push(piece(B(), '#8a6440', { p: [-2.6, 0.35, -2.2 + a * 0.55], s: [0.07, 0.7, 0.07], m: M.bois }), piece(B(), '#8a6440', { p: [2.6, 0.35, -2.2 + a * 0.55], s: [0.07, 0.7, 0.07], m: M.bois }));
+    monter(fusion(g), matVent, p.x, p.z); lieux['hameau-jardin'] = { x: p.x, z: p.z - 3.4 }; gemme('hameau-jardin', p.x, p.z, 2.2); }
+  { const p = pos('hameau-four'), g = [piece(SPH(1.4, 10, 6), '#a8906e', { p: [0, 0.5, 0], s: [1, 0.85, 1], m: M.terre }), piece(B(), '#2a1e16', { p: [0, 0.45, 1.15], s: [0.8, 0.6, 0.2], m: M.terre }), piece(CYL(0.22, 0.28, 0.8, 8), '#8f7a5e', { p: [0.4, 1.7, -0.3], m: M.terre }), piece(B(), '#8a6440', { p: [1.9, 0.5, 0.6], s: [0.9, 0.12, 0.5], m: M.bois }), piece(B(), '#8a6440', { p: [1.9, 0.25, 0.6], s: [0.12, 0.5, 0.45], m: M.bois })];
+    monter(fusion(g), mat, p.x, p.z, { rot: -0.3 }); bloquer(p.x, p.z, 1.7); lieux['hameau-four'] = { x: p.x + 1.4, z: p.z + 3.4 }; gemme('hameau-four', p.x, p.z, 3.0); }
+
   // ---- les découvertes de la nature (plaines, dunes, oasis) : de petits modèles à observer, un par site ----
   const alea = k => { const x = Math.sin(k * 12.9898 + 4.1414) * 43758.5453; return x - Math.floor(x); };    // petit hasard déterministe : toujours les mêmes fleurs, toujours les mêmes fissures
   const NATURE = {
