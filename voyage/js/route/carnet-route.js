@@ -5,6 +5,7 @@ import { BADGES_ROUTE } from './badges-route.js';
 import { CONTENU, etiquette, texteDe } from './contenu-a-valider.js';
 import { DEC } from './relief.js';
 import { recit, ORIGINES, STATUT } from './recits-a-valider.js';
+import { VALIDATION } from './validation-contenu.js';
 import { illustrationSvg } from './recits-illustrations.js';
 import { recitsDuCarnet, questionsPour } from './recits-route.js';
 
@@ -19,7 +20,7 @@ function histoires(route, age) {
   const grand = age !== '3-5';
   return '<h3>📜 Mes histoires découvertes · ' + ids.length + '</h3>' + ids.map(id => {
     const r = recit(id), e = route.recits[id], qs = questionsPour(id, age);
-    return '<div class="carte-mission"><h4>' + r.titre + '<span class="etiquette">⚠️ ' + STATUT + '</span></h4>' +
+    return '<div class="carte-mission"><h4>' + r.titre + '<span class="etiquette">' + (VALIDATION.valide ? '✅ Validé' : '⚠️ ' + STATUT) + '</span></h4>' +
       '<p style="margin:0 0 4px;font-size:14px">📍 ' + r.lieuNom + ' · ' + r.periode + '</p>' + illustrationSvg(r.illustration.scene, r.illustration.description) +
       r.enonces.map(x => '<p style="margin:6px 0"><b>' + ORIGINES[x.origine].icone + ' ' + ORIGINES[x.origine].nom + '.</b> ' + (grand ? x.grand : x.petit) + '</p>').join('') +
       (grand ? '<p style="margin:6px 0;font-size:13px">Sources : ' + r.sources.map(s => s.ref ? ORIGINES[s.type].nom + ' : ' + s.ref + ' (à vérifier)' : (s.indication || 'Référence à vérifier')).join(' · ') + '</p>' : '') +

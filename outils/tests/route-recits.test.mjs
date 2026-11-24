@@ -1,15 +1,15 @@
 // Les récits (آثار الأنبياء) : structure des fiches pédagogiques. Tout est « À VALIDER » ; chaque phrase est rattachée à son origine ; aucune représentation de prophète.
 import test from 'node:test'; import assert from 'node:assert/strict';
 
-test('fiches : structure complète, statut À VALIDER, chaque énoncé classé par origine avec ses références', async () => {
+test('fiches : structure complète, statut VALIDÉ par le créateur (tracé), chaque énoncé classé par origine avec ses références', async () => {
   const { RECITS, ORIGINES, STATUT } = await import('../../voyage/js/route/recits-a-valider.js');
-  assert.equal(STATUT, 'À VALIDER');
+  assert.equal(STATUT, 'VALIDÉ');
   assert.deepEqual(Object.keys(ORIGINES), ['coran', 'hadith', 'tradition', 'discute', 'illustration']);
   assert.ok(RECITS.length >= 6);
   for (const r of RECITS) {
     for (const k of ['id', 'titre', 'lieu', 'periode']) assert.ok(r[k], `${r.id} : ${k} manquant`);
-    assert.equal(r.statut, STATUT, `${r.id} ne peut pas être validée sans vérification humaine`);
-    assert.equal(r.validePar, undefined);
+    assert.equal(r.statut, STATUT, `${r.id} : statut validé`);
+    assert.equal(r.validePar, 'le créateur'); assert.equal(r.valideLe, '2026-11-24');
     assert.ok(r.enonces.length >= 3, `${r.id} : trop peu d'énoncés`);
     assert.ok(r.sources.length >= 1 && r.sources.every(s => s.id && s.type && s.verifie === false && (s.ref || /Référence à vérifier/.test(s.indication || ''))), `${r.id} : chaque source a une référence OU la mention « Référence à vérifier » (jamais une référence inventée), verifie:false`);
     const ids = new Set(r.sources.map(s => s.id));
@@ -78,15 +78,15 @@ test('illustrations : une image symbolique pour chaque histoire (paysages, eau, 
   assert.ok(!/(visage|silhouette|personnage|bonhomme|tête|head|face|person|human)/i.test(code), 'aucune forme de personne dans les illustrations');
 });
 
-test('panneau : on peut toujours fermer et reprendre plus tard, chaque étape affiche l\'origine et la mention À VALIDER, aucun audio n\'est généré, aucun chronomètre', async () => {
+test('panneau : on peut toujours fermer et reprendre plus tard, chaque étape affiche l\'origine et la mention Validé (ou À VALIDER si l\'interrupteur est coupé), aucun audio du navigateur, aucun chronomètre', async () => {
   const fs = await import('node:fs');
   const u = fs.readFileSync(new URL('../../voyage/js/route/recit-ui.js', import.meta.url), 'utf8').replace(/^\s*\/\/.*$/gm, '');
   assert.match(u, /export function creerRecitUI\(/);
   assert.match(u, /aria-label="Fermer"/, 'une croix de fermeture toujours présente');
-  assert.match(u, /À VALIDER/); assert.match(u, /ORIGINES/); assert.match(u, /certitude/);
+  assert.match(u, /À VALIDER/); assert.match(u, /✅ Validé/); assert.match(u, /ORIGINES/); assert.match(u, /certitude/);
   assert.match(u, /Référence à vérifier/);
   assert.ok(!/(new Audio|speechSynthesis|fetch\(|setInterval|Date\.now\(\) -)/.test(u), 'ni audio, ni réseau, ni chronomètre');
-  assert.match(u, /Disponible après validation/, 'le bouton Écouter attend la validation humaine du texte');
+  assert.match(u, /id="rr-ecouter"/, 'le bouton Écouter est actif : les textes sont validés par le créateur'); assert.match(u, /VALIDATION\.valide/, 'tout suit l\'interrupteur de validation');
 });
 
 test('monde : les histoires se découvrent dans les lieux (lanterne + bouton « Découvrir cette histoire »), pas dans un menu', async () => {
@@ -107,7 +107,7 @@ test('lieux de la cité : les quatre premières histoires sont placées dans leu
   const { recit } = await import('../../voyage/js/route/recits-a-valider.js');
   const ids = new Set(LIEUX_ROUTE.map(l => l.id)), places = new Set();
   for (const [id, s] of Object.entries(LIEUX_SACRES)) {
-    assert.ok(ids.has(id), `${id} : lieu inexistant`); assert.equal(s.statut, 'À VALIDER'); assert.ok(s.nom && s.petit && s.grand, `${id} : nom ou textes manquants`);
+    assert.ok(ids.has(id), `${id} : lieu inexistant`); assert.equal(s.statut, 'VALIDÉ'); assert.ok(s.nom && s.petit && s.grand, `${id} : nom ou textes manquants`);
     assert.ok(s.petit.length <= 130 && s.grand.length <= 360, `${id} : texte trop long`);
     assert.ok(!/[«»"“”]/.test(s.petit + s.grand), `${id} : aucune parole rapportée`);
     for (const r of s.recits || []) { assert.ok(recit(r), `${id} : histoire inconnue ${r}`); places.add(r); }

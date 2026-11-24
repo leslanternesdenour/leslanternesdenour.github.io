@@ -20,9 +20,12 @@ const car = aFaire.reduce((s, p) => s + p.texte.length, 0);
 console.log(`${liste.length} phrases dans l'inventaire ; ${liste.length - aFaire.length} déjà enregistrées ; ${aFaire.length} à générer (${car} caractères)`);
 // la table des phrases du jeu et le manifeste d'écoute : toujours réécrits (sans coût)
 function ecrireTables() {
-  const phrases = liste.filter(p => registre[p.id]).map(p => [p.id, p.texte, 'exact']);
+  const sacre = p => /^(recit|sacre):/.test(p.source), toutes = liste.filter(p => registre[p.id]);
+  const phrases = toutes.filter(p => !sacre(p)).map(p => [p.id, p.texte, 'exact']);
+  // les récits et les lieux religieux validés vont dans leur PROPRE fichier « …-a-valider.js » : le contenu religieux ne se mélange jamais au reste du code
+  fs.writeFileSync(path.join(RACINE, 'voyage/js/route/voix-recits-a-valider.js'), '// GÉNÉRÉ par outils/voix/route/produire-route.mjs — ne pas modifier à la main.\n// Les voix Nour des récits et des lieux religieux ou historiques VALIDÉS par le créateur (voir validation-contenu.js). Aucun verset récité.\nexport const PHRASES_RECITS = ' + JSON.stringify(toutes.filter(sacre).map(p => [p.id, p.texte, 'exact']), null, 1) + ';\n');
   fs.writeFileSync(path.join(RACINE, 'voyage/js/route/voix-route.js'), '// GÉNÉRÉ par outils/voix/route/produire-route.mjs — ne pas modifier à la main.\n// Les phrases de la Route qui ont une voix Nour enregistrée (jamais de récit « À VALIDER », jamais de contenu religieux, aucun mot arabe).\nexport const PHRASES_ROUTE = ' + JSON.stringify(phrases, null, 1) + ';\n');
-  const manif = { jeu: 'route-voix', base: '/audio', total: phrases.length, phrases: liste.filter(p => registre[p.id]).map(p => ({ id: p.id, role: p.role, langue: 'fr', texte: p.texte, fichier: registre[p.id][0], duree: registre[p.id][2], prononciationVerifiee: false, voixId: roles[p.role] })) };
+  const manif = { jeu: 'route-voix', base: '/audio', total: toutes.length, phrases: toutes.map(p => ({ id: p.id, role: p.role, langue: 'fr', texte: p.texte, fichier: registre[p.id][0], duree: registre[p.id][2], prononciationVerifiee: false, voixId: roles[p.role] })) };
   fs.writeFileSync(path.join(RACINE, 'outils/voix/lettres-validation/manifestes/route-voix.json'), JSON.stringify(manif, null, 1));
   fs.writeFileSync(REGISTRE, JSON.stringify(registre, null, 1));
 }

@@ -205,7 +205,7 @@ async function demarrer() {
   const route = ROUTE ? (await import('./route/jeu-route.js')).creerRoute({ regarder: (x, z, s) => { regard = { x, z, t: s }; }, scene, terrain, Q, TX, ombres: !!Q.ombres, etat, AV, enregistrer, habitants, regions, village, J, C,
     monte: () => monte, age: () => sauvegarde.get().age,
     donner: (id, n, raison) => bourse.recompense(id, n, raison, ouDonner()),
-    voixRoute: async () => { try { const [m, r] = await Promise.all([import('./route/voix-route.js'), fetch('../audio/route-voix.json', { cache: 'no-cache' }).then(x => x.json())]); ajouterPhrases(m.PHRASES_ROUTE, r); } catch (e) { /* sans voix : le jeu reste jouable */ } },
+    voixRoute: async () => { try { const [m, rc, r] = await Promise.all([import('./route/voix-route.js'), import('./route/voix-recits-a-valider.js').catch(() => ({ PHRASES_RECITS: [] })), fetch('../audio/route-voix.json', { cache: 'no-cache' }).then(x => x.json())]); ajouterPhrases([...m.PHRASES_ROUTE, ...rc.PHRASES_RECITS], r); } catch (e) { /* sans voix : le jeu reste jouable */ } },
     arreterGuide: () => { guide.arreter(); etat.guidage = null; enregistrer(); majGuidage(null); },
     surSaut: () => { cam.cible.set(J.x, H(J.x, J.z) + 1.4, J.z); cam.distVue = null; cam.yawCible = cam.yaw = J.a + Math.PI; },
     ui: { dialogue: p => dialogue(p), decouvrir: d => decouvrir(d), bandeau: (a, b, silence) => { bandeau(a, b, silence); S.sonDecouverte(); }, indice: (h, ms) => montrerIndice(h, ms), dire: seg => direApres(seg),

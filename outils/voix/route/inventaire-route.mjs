@@ -29,6 +29,14 @@ export async function inventaire() {
   for (const [id, liste] of Object.entries(T.HALTES_MONTAGNE)) for (const x of liste) { ajouter('narratrice', x.petit, 'montee:' + id); ajouter('narratrice', x.grand, 'montee:' + id); }
   // le troc du marché : chaque marchand dit son offre, la réussite, le manque (et le cadeau de départ)
   for (const [id, t] of Object.entries(TR.TROCS)) for (const k of ['offre', 'ok', 'manque', 'cadeau']) if (t[k]) for (const a of ['petit', 'grand']) ajouter(t.voix, t[k][a], 'troc:' + id);
+  // les récits et les lieux religieux/historiques : UNIQUEMENT s'ils sont validés par le créateur (validation-contenu.js) — sinon aucune voix. Jamais de verset récité (les textes n'en contiennent pas : testé).
+  const VA = await import('../../../voyage/js/route/validation-contenu.js');
+  if (VA.VALIDATION.valide) {
+    const RC = await import('../../../voyage/js/route/recits-a-valider.js');
+    for (const [id, s] of Object.entries(S.LIEUX_SACRES)) { ajouter('narratrice', s.petit, 'sacre:' + id); ajouter('narratrice', s.grand, 'sacre:' + id); }
+    for (const r of RC.RECITS) { for (const e of r.enonces) { ajouter('narratrice', e.petit, 'recit:' + r.id); ajouter('narratrice', e.grand, 'recit:' + r.id); }
+      if (r.activite) { if (r.activite.consigne_petit) ajouter('narratrice', r.activite.consigne_petit, 'recit:' + r.id); if (r.activite.consigne_grand) ajouter('narratrice', r.activite.consigne_grand, 'recit:' + r.id); } }
+  }
   // les activités des métiers : présentation, questions, explications, fin (chaque métier a sa voix)
   for (const [id, a] of Object.entries(A.ACTIVITES_METIERS)) { for (const k of ['petit', 'grand']) { ajouter(a.voix, a.intro[k], 'metier:' + id); ajouter(a.voix, a.fin[k], 'metier:' + id); }
     for (const age of ['3-5', '6-10']) for (const q of A.questionsMetier(id, age)) { ajouter(a.voix, q.question, 'metier:' + id); ajouter(a.voix, q.ok, 'metier:' + id); ajouter(a.voix, q.ko, 'metier:' + id); } }

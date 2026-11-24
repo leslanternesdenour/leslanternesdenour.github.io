@@ -4,10 +4,11 @@ import { recit, ORIGINES, STATUT } from './recits-a-valider.js';
 import { illustrationSvg } from './recits-illustrations.js';
 import { questionsPour, etatRecit, ouvrirRecit, avancer, repondre, ajouterAuCarnet } from './recits-route.js';
 import { FEEDBACK } from './textes-route.js';
+import { VALIDATION, dateLisible } from './validation-contenu.js';
 
 const CSS = `#recit-panneau{position:fixed;inset:0;z-index:80;background:rgba(40,28,16,.72);display:flex;align-items:center;justify-content:center;padding:10px;font-family:inherit}
 #recit-panneau .carte{background:#fff8e6;color:#3a2a1a;border-radius:18px;max-width:600px;width:100%;max-height:96vh;overflow:auto;padding:14px 16px;position:relative;box-shadow:0 10px 40px rgba(0,0,0,.4)}
-#recit-panneau h2{margin:0 36px 4px 0;font-size:clamp(18px,4.5vw,24px)} #recit-panneau .valider{display:inline-block;background:#f5b942;color:#4a2f00;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:700}
+#recit-panneau h2{margin:0 36px 4px 0;font-size:clamp(18px,4.5vw,24px)} #recit-panneau .valider{display:inline-block;background:#f5b942;color:#4a2f00;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:700} #recit-panneau .valide{display:inline-block;background:#d9f3e3;color:#1f5a3a;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:700}
 #recit-panneau .fermer{position:absolute;top:8px;right:8px;min-width:44px;min-height:44px;border:0;border-radius:12px;background:#e9dcc0;font-size:20px;cursor:pointer}
 #recit-panneau svg{width:100%;height:auto;border-radius:12px;display:block;margin:8px 0}
 #recit-panneau .enonce{margin:8px 0;padding:8px 10px;background:#fff;border-radius:12px;border-left:5px solid #c9a14a;font-size:clamp(15px,3.6vw,18px);line-height:1.4}
@@ -39,19 +40,24 @@ export function creerRecitUI({ route, age, surCarnet, surFermer, surChange, dire
   }
   function dessiner() {
     const r = recit(cible), liste = etapes(r), nom = liste[Math.min(etape, liste.length - 1)], grand = A() !== '3-5';
-    const tete = `<h2>${r.titre}</h2><span class="valider" title="À VALIDER par une personne compétente en sciences islamiques">⚠️ ${STATUT}</span> <small>${r.periode}</small>`;
+    const badge = VALIDATION.valide ? `<span class="valide" title="Validé par ${VALIDATION.par} le ${dateLisible()}. Les références restent à vérifier.">✅ Validé</span>` : `<span class="valider" title="À VALIDER par une personne compétente en sciences islamiques">⚠️ ${STATUT}</span>`;
+    const tete = `<h2>${r.titre}</h2>${badge} <small>${r.periode}</small>`;
     let corps = '';
-    if (nom === 'image') corps = `${illustrationSvg(r.illustration.scene, r.illustration.description)}<p><button class="petit" disabled title="Disponible après validation">🔊 Écouter — Disponible après validation du texte</button></p>`;
+    if (nom === 'image') corps = `${illustrationSvg(r.illustration.scene, r.illustration.description)}<p><button class="petit" id="rr-ecouter">🔊 Écouter l'histoire</button></p>`;
     else if (nom === 'recit') corps = r.enonces.map(x => `<div class="enonce">${tag(x.origine)}<div>${grand ? x.grand : x.petit}</div>${grand ? `<span class="certitude">${ORIGINES[x.origine].certitude}</span>` : ''}</div>`).join('');
     else if (nom === 'activite') corps = `<p><b>${grand ? r.activite.consigne_grand : r.activite.consigne_petit}</b></p><div id="rr-act"></div>`;
     else if (nom === 'questions') corps = `<div id="rr-q"></div>`;
     else corps = `${illustrationSvg(r.illustration.scene, r.illustration.description)}<p>${grand ? 'Sources : ' + r.sources.map(s => s.ref ? `${ORIGINES[s.type].nom} : ${s.ref} (à vérifier)` : (s.indication || 'Référence à vérifier')).join(' · ') : 'Tu peux garder cette histoire dans ton carnet.'}</p>`;
+    const lireRecit = () => dire(r.enonces.map(x => ({ t: grand ? x.grand : x.petit })));   // l'histoire est dite par la narratrice (voix Nour) ; seulement des textes validés
     const suiv = nom === 'fin' ? '' : `<button class="gros" id="rr-suiv">Suivant ▶</button>`, prec = etape > 0 ? `<button class="petit" id="rr-prec">◀ Retour</button>` : '';
     const carnet = nom === 'fin' ? `<button class="gros" id="rr-carnet">📖 ${etatRecit(route, cible) && etatRecit(route, cible).carnet ? 'Dans mon carnet ✓' : 'Ajouter à mon carnet'}</button>` : '';
-    el.innerHTML = `<div class="carte"><button class="fermer" aria-label="Fermer">✕</button>${tete}${corps}<div class="bas">${prec}${suiv}${carnet}<button class="petit" id="rr-plus-tard">Fermer, je reprendrai plus tard</button></div></div>`;
+    el.innerHTML = `<div class="carte"><button class="fermer" aria-label="Fermer">✕</button>${tete}${corps}<div class="bas">${prec}${suiv}${carnet}${nom === 'recit' ? '<button class="petit" id="rr-reecouter">🔊 Réécouter</button>' : ''}<button class="petit" id="rr-plus-tard">Fermer, je reprendrai plus tard</button></div></div>`;
     el.querySelector('.fermer').onclick = fermer; el.querySelector('#rr-plus-tard').onclick = fermer;
     const sv = el.querySelector('#rr-suiv'); if (sv) sv.onclick = () => { etape++; avancer(route, cible, etape); surChange && surChange(); dessiner(); };
     const pv = el.querySelector('#rr-prec'); if (pv) pv.onclick = () => { etape--; dessiner(); };
+    const ec = el.querySelector('#rr-ecouter'); if (ec) ec.onclick = lireRecit; const re = el.querySelector('#rr-reecouter'); if (re) re.onclick = lireRecit;
+    if (nom === 'recit') lireRecit();   // lecture automatique à l'ouverture de l'histoire
+    if (nom === 'activite') dire([{ t: grand ? r.activite.consigne_grand : r.activite.consigne_petit }]);
     if (nom === 'activite') activite(r);
     if (nom === 'questions') questions(r);
     const cb = el.querySelector('#rr-carnet'); if (cb) cb.onclick = () => { const neuf = ajouterAuCarnet(route, cible); surChange && surChange(); if (neuf && surCarnet) surCarnet(cible); dessiner(); };

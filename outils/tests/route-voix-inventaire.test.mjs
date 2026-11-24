@@ -18,9 +18,10 @@ test('inventaire : chaque texte non religieux affiché a sa phrase et sa voix No
   for (const m of Object.values(MISSIONS_ROUTE)) { a(m.titre); a(m.simple); a(m.resume); }
   // jamais de voix pour ce qui attend une validation humaine
   const interdits = new Set([...RECITS.flatMap(r => [...r.enonces.flatMap(e => [e.petit, e.grand]), ...r.questions.flatMap(q => [q.petit, q.grand, ...q.choix])]), ...Object.values(LIEUX_SACRES).flatMap(s => [s.petit, s.grand])].filter(Boolean).map(normaliserTexte));
-  for (const [n, p] of textes) { assert.ok(!interdits.has(n), `texte « À VALIDER » enregistré : ${p.texte.slice(0, 50)}`); assert.ok(!/(allah|coran|kaaba|zamzam|safa|marwa|prophète|hadith|hajj|omra|qibla|hira|thawr|jabal|ismaïl|hajar|ibrahim|mecque)/i.test(p.texte), `terme religieux : ${p.texte.slice(0, 50)}`); assert.ok(!/À VALIDER/.test(p.texte)); }
+  const { VALIDATION } = await import('../../voyage/js/route/validation-contenu.js');
+  for (const [n, p] of textes) { const sacre = /^(recit|sacre):/.test(p.source); assert.ok(VALIDATION.valide || !interdits.has(n), `texte « À VALIDER » enregistré : ${p.texte.slice(0, 50)}`); assert.ok(sacre || !/(allah|coran|kaaba|zamzam|safa|marwa|prophète|hadith|hajj|omra|qibla|hira|thawr|jabal|ismaïl|hajar|ibrahim|mecque)/i.test(p.texte), `terme religieux dans un texte non religieux : ${p.texte.slice(0, 50)}`); assert.ok(!/À VALIDER/.test(p.texte)); }
   const car = liste.reduce((s, p) => s + p.texte.length, 0);
-  assert.ok(car > 8000 && car < 45000, `budget de caractères : ${car}`);
+  assert.ok(car > 8000 && car < 90000, `budget de caractères : ${car}`);
 });
 
 test('production des voix : refuse toute voix hors des 10 voix Nour, ne régénère jamais l\'existant, ne montre jamais la clé, n\'utilise jamais la voix du navigateur', () => {
@@ -76,4 +77,17 @@ test('inventaire : les haltes du sentier de montée sont dites par la narratrice
   const { HALTES_MONTAGNE } = await import('../../voyage/js/route/textes-route.js');
   const parTexte = new Map((await inventaire()).map(p => [normaliserTexte(p.texte), p]));
   for (const liste of Object.values(HALTES_MONTAGNE)) for (const x of liste) for (const t of [x.petit, x.grand]) { const p = parTexte.get(normaliserTexte(t)); assert.ok(p, 'sans voix : ' + t.slice(0, 40)); assert.equal(p.role, 'narratrice'); }
+});
+
+test('inventaire : les récits et les lieux VALIDÉS par le créateur ont leur voix (narratrice) ; jamais de verset récité, d\'écriture arabe ni de guillemets dans un texte dit', async () => {
+  const { inventaire, normaliserTexte } = await import('../voix/route/inventaire-route.mjs');
+  const { RECITS } = await import('../../voyage/js/route/recits-a-valider.js');
+  const { LIEUX_SACRES } = await import('../../voyage/js/route/lieux-mecque-a-valider.js');
+  const { VALIDATION } = await import('../../voyage/js/route/validation-contenu.js');
+  assert.equal(VALIDATION.valide, true);
+  const liste = await inventaire(), parTexte = new Map(liste.map(p => [normaliserTexte(p.texte), p]));
+  const attendus = [...RECITS.flatMap(r => r.enonces.flatMap(e => [e.petit, e.grand])), ...Object.values(LIEUX_SACRES).flatMap(s => [s.petit, s.grand])].filter(Boolean);
+  assert.ok(attendus.length > 80, `assez de textes (${attendus.length})`);
+  for (const t of attendus) { const p = parTexte.get(normaliserTexte(t)); assert.ok(p, 'sans voix : ' + t.slice(0, 50)); assert.equal(p.role, 'narratrice'); }
+  for (const p of liste.filter(x => /^(recit|sacre):/.test(x.source))) { assert.ok(!/[؀-ۿ]/.test(p.texte), 'aucune écriture arabe dans un texte dit : ' + p.texte.slice(0, 40)); assert.ok(!/[«»"“”]/.test(p.texte), 'aucune citation entre guillemets (pas de verset récité) : ' + p.texte.slice(0, 40)); }
 });

@@ -7,7 +7,8 @@
 //  - chaque phrase (« énoncé ») porte son ORIGINE (Coran / hadith / tradition historique / discuté / illustration du jeu) et nomme cette origine dans le texte ;
 //  - aucune date présentée comme certaine ; aucun mot arabe ni verset en arabe tant qu'ils ne sont pas validés ;
 //  - sources : toutes `verifie: false` tant qu'une personne compétente n'a pas confirmé la référence exacte (numéros, formulations).
-export const STATUT = 'À VALIDER';
+import { STATUT_ACTUEL, VALIDATION } from './validation-contenu.js';
+export const STATUT = STATUT_ACTUEL;   // « VALIDÉ » depuis la validation du créateur (validation-contenu.js) ; les références restent « à vérifier »
 
 export const ORIGINES = {
   coran: { icone: '📖', nom: 'Dans le Coran', certitude: 'Texte coranique (référence à faire vérifier)' },
@@ -184,6 +185,8 @@ export const RECITS = [
     questions: [{ id: 'q1', enonce: 'm1', ages: ['3-5', '6-10'], petit: 'Que trouve-t-on au marché ?', grand: 'Selon les récits, que trouvait-on au marché ?', choix: ['Des dattes, des tissus et des jarres', 'Des voitures'], bonne: 0 }] }
 ];
 
+// la trace de la validation sur chaque récit : qui, quand (les références, elles, restent « à vérifier »)
+for (const r of RECITS) { if (VALIDATION.valide) { r.validePar = VALIDATION.par; r.valideLe = VALIDATION.date; } }
 export const recit = id => RECITS.find(r => r.id === id) || null;
 // L'ordre de réalisation demandé : d'abord les quatre premières découvertes ; les suivantes (Quraysh, redécouverte de Zamzam, Jabal an-Nour, Jabal Thawr) viendront ensuite
 export const ORDRE_PREVU = ['hajar-ismail-zamzam', 'safa-marwa', 'communaute-mecque', 'fondations-kaaba', 'quraysh-reconstruction', 'redecouverte-zamzam', 'jabal-an-nour', 'jabal-thawr'];

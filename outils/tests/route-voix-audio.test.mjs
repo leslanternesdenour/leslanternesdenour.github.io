@@ -17,7 +17,8 @@ test('voix de la Route : chaque texte du jeu a son fichier mp3 et une durée pla
 });
 
 test('voix de la Route : le texte enregistré est exactement le texte affiché, aucune phrase orpheline', async () => {
-  const { PHRASES_ROUTE } = await import('../../voyage/js/route/voix-route.js');
+  const { PHRASES_ROUTE: neutres } = await import('../../voyage/js/route/voix-route.js'), { PHRASES_RECITS: recits } = await import('../../voyage/js/route/voix-recits-a-valider.js');
+  const PHRASES_ROUTE = [...neutres, ...recits];   // le contenu religieux validé est dans son propre fichier
   const inv = await inventaire(), parId = new Map(inv.map(p => [p.id, p.texte]));
   assert.equal(PHRASES_ROUTE.length, inv.length);
   for (const [id, texte] of PHRASES_ROUTE) assert.equal(texte, parId.get(id), 'texte différent pour ' + id);

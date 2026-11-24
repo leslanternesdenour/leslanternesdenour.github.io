@@ -42,7 +42,7 @@ test('carnet : « Mes histoires découvertes » — titre, lieu, contexte, résu
   const grand = pageCarnetRoute({ route, badges: {}, age: '6-10' }), petit = pageCarnetRoute({ route, badges: {}, age: '3-5' });
   assert.ok(grand.includes('Safa et Marwa') && grand.includes('<svg'), 'titre, lieu et illustration');
   assert.ok(!grand.includes('L\'eau, un trésor du désert'), 'une histoire seulement ouverte (pas ajoutée au carnet) n\'y est pas');
-  assert.ok(grand.includes('À VALIDER') && grand.includes('Référence à vérifier'), 'statut et références à vérifier');
+  assert.ok(grand.includes('Validé') && grand.includes('Référence à vérifier'), 'statut validé ; les références restent à vérifier');
   assert.ok(grand.includes('Dans le Coran') && grand.includes('Récit rapporté dans un hadith'), 'chaque phrase garde son origine');
   assert.ok(grand.length > petit.length, 'les 6–10 ans ont plus de détails que les 3–5 ans');
   assert.ok(grand.includes('Question') && grand.includes('✓'), 'les questions et la réponse juste conservée');

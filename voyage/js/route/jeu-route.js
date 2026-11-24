@@ -16,6 +16,7 @@ import { maisonsVille, portesJouables, villeVisible } from './ville-plan.js';
 import { ACTIVITES_METIERS, questionsMetier } from './activites-route.js';
 import { TROCS, CADEAU, stockVide, echanger, peutEchanger, bloque, panierTexte, cueillir } from './troc-route.js';
 import { LIEUX_SACRES } from './lieux-mecque-a-valider.js';
+import { VALIDATION } from './validation-contenu.js';
 import { preparerRoute, memoriserPosition, positionDeReprise } from './etat-route.js';
 import { faireEtape, progression } from './missions-route.js';
 import { DEC, versRoute, S_DEBUT, S_FIN_TRANCHE, LARGEUR, OASIS, CITE, pointChemin } from './relief.js';
@@ -82,7 +83,7 @@ export function creerRoute(ctx) {
   }
   const lieu = id => LIEUX_ROUTE.find(l => l.id === id);
   // nom, icône et texte d'un lieu : neutres, ou « À VALIDER » quand le lieu est lié à un récit religieux ou historique
-  const infoLieu = id => { const l = lieu(id), sa = LIEUX_SACRES[id]; return { nom: sa ? sa.nom : l.nom, icone: sa ? sa.icone : l.icone, texte: sa ? (age() === '3-5' ? sa.petit : sa.grand) : texteLieu(id, age()), valider: !!sa }; };
+  const infoLieu = id => { const l = lieu(id), sa = LIEUX_SACRES[id]; return { nom: sa ? sa.nom : l.nom, icone: sa ? sa.icone : l.icone, texte: sa ? (age() === '3-5' ? sa.petit : sa.grand) : texteLieu(id, age()), valider: !!sa && !VALIDATION.valide }; };
   const recitsDe = l => [...(l.recit ? [l.recit] : []), ...((LIEUX_SACRES[l.id] && LIEUX_SACRES[l.id].recits) || [])];
   const dialogueLieu = (id, plus = {}) => { const i = infoLieu(id); ui.dialogue({ titre: `${i.icone} ${i.nom}`, texte: i.texte, icone: i.icone, sous: i.valider ? '⚠️ À VALIDER par une personne compétente' : undefined, ...plus }); };
   function decouvrirLieu(id, type = 'nature') {

@@ -1,7 +1,8 @@
 // LES LIEUX DE LA CITÉ ET DES MONTAGNES — noms et textes « À VALIDER ». Les données neutres (positions, décor) sont dans donnees.js ; ici, seulement ce qui doit être relu
 // par une personne compétente : noms réels des lieux, textes pédagogiques, histoires placées dans chaque lieu. Aucun dialogue, aucune parole attribuée, aucune date.
 // Les lieux de la cité sont une INTERPRÉTATION artistique (jamais une reconstitution exacte).
-const STATUT = 'À VALIDER';
+import { STATUT_ACTUEL } from './validation-contenu.js';
+const STATUT = STATUT_ACTUEL;
 const l = (nom, icone, petit, grand, recits = [], extra = {}) => ({ nom, icone, petit, grand, recits, statut: STATUT, ...extra });
 
 export const LIEUX_SACRES = {
