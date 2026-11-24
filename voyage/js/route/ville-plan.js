@@ -27,6 +27,8 @@ export function portesJouables() {
     .filter(c => toutes.every(o => o === c.maison || Math.hypot(c.x - o.t, c.z - (DEC + o.s)) > Math.hypot(o.l, o.w) / 2 + 0.5))
     .sort((a, b) => a.d - b.d)[0]);
 }
+// la cité n'est dessinée que si l'enfant est assez près pour la voir à travers le brouillard (portée maximale du brouillard : 650 m) : de la plaine, 29 000 triangles économisés
+export const villeVisible = (x, z) => Math.hypot(x - CITE.t, z - (DEC + CITE.s)) < CITE.rayon + 700;
 export function maisonsVille() {
   if (cache) return cache;
   const R = hasard(0x4d454343), liste = [], lieux = LIEUX_ROUTE.map(positionDeLieu);

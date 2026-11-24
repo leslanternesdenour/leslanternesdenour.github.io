@@ -7,8 +7,10 @@ import { creerVille3D } from './ville-3d.js';
 import { creerInterieur3D } from './interieur-3d.js';
 import { creerMontee3D } from './montee-3d.js';
 import { suivreTraversee } from './traversees-route.js';
+import { sandboxActif } from './bac-a-sable.js';
+import { creerVerificationUI } from './verification-ui.js';
 import { creerVoyageurs3D } from './voyageurs-3d.js';
-import { maisonsVille, portesJouables } from './ville-plan.js';
+import { maisonsVille, portesJouables, villeVisible } from './ville-plan.js';
 import { ACTIVITES_METIERS, questionsMetier } from './activites-route.js';
 import { TROCS, CADEAU, stockVide, echanger, peutEchanger, bloque, panierTexte } from './troc-route.js';
 import { LIEUX_SACRES } from './lieux-mecque-a-valider.js';
@@ -41,6 +43,7 @@ export function creerRoute(ctx) {
   const W = creerVoyageurs3D({ scene, hauteur: monde.hauteur, leger: !!ctx.Q.leger });   // ses voyageurs fictifs animés
   const I = creerInterieur3D({ scene, hauteur: monde.hauteur, ombres: ctx.ombres });   // la pièce d'une maison : invisible tant qu'on n'y entre pas
   const M3 = creerMontee3D({ scene, hauteur: monde.hauteur, ombres: ctx.ombres });          // les sentiers de montée des deux grandes montagnes
+  let villeAffichee = false;                                                              // la cité est-elle dessinée ? (seulement quand elle peut être vue)
   let dansMaison = null;                                                                  // { gabarit, retour : devant la porte }
   const Couleur = scene.fog.color.constructor, cible = new Couleur();
   const fog0 = { near: scene.fog.near, far: scene.fog.far };
@@ -52,7 +55,7 @@ export function creerRoute(ctx) {
   const h0 = terrain.hauteur.bind(terrain), m0 = terrain.matiere.bind(terrain);
   terrain.hauteur = (x, z) => z > SEUIL_Z ? monde.hauteur(x, z) : h0(x, z);
   terrain.matiere = (x, z) => z > SEUIL_Z ? monde.matiere(x, z) : m0(x, z);
-  const montrer = v => { monde.montrer(v); L.groupe.visible = v; V.montrer(v); M3.groupe.visible = v; terrain.mesh.visible = !v; if (!v) for (const n of W.liste) n.e.racine.visible = false; };
+  const montrer = v => { monde.montrer(v); L.groupe.visible = v; V.montrer(v && villeVisible(J.x, J.z)); villeAffichee = v && villeVisible(J.x, J.z); M3.groupe.visible = v; terrain.mesh.visible = !v; if (!v) for (const n of W.liste) n.e.racine.visible = false; };
   montrer(false);
 
   // ---------- les lieux déjà faits (reprise d'une sauvegarde) ----------
@@ -335,7 +338,8 @@ export function creerRoute(ctx) {
       return;
     }
     if (auRetourRoute(J.z)) { sortir(); return; }
-    monde.maj(J); L.animer(dt, t, J); lanternesProches(); parcoursCollines(); V.obstacles(J); W.maj(dt, t, J);
+    monde.maj(J); L.animer(dt, t, J); lanternesProches(); parcoursCollines();
+    { const p = villeVisible(J.x, J.z); if (p !== villeAffichee) { villeAffichee = p; V.montrer(dans && villeVisible(J.x, J.z)); } } V.obstacles(J); W.maj(dt, t, J);
     tVoy += dt; if (tVoy > 0.35) { tVoy = 0; for (const n of W.liste) if (n.v.trajet && n.e.racine.visible) regV(n); }
     // l'arrivée : la dernière crête ouvre la vue sur la cité ; la caméra se tourne doucement vers elle (sans jamais bloquer l'enfant)
     if (!R.vu.arrivee) { const c = L.lieux['crete-vue']; if (c && Math.hypot(J.x - c.x, J.z - c.z) < 30) { R.vu.arrivee = true; enregistrer(); ui.bandeau(MESSAGES.citeApparait, '🌅 ' + infoLieu('crete-vue').nom); if (ctx.regarder) ctx.regarder(CITE.t, DEC + CITE.s, 9); } }
@@ -358,6 +362,21 @@ export function creerRoute(ctx) {
     }
     carte.maj(dt);
   }
+
+  // le parcours de test (mode bac à sable seulement) : un panneau qui téléporte à chaque étape clé et coche ce qui est fait, pour tout vérifier sur un téléphone sans marcher 5,6 km
+  const versXZ = (x, z) => { if (dansMaison) sortirMaison(); J.x = x; J.z = z; if (ctx.monte()) { C.x = J.x; C.z = J.z; } if (!dans) { dans = true; monde.preparer(J); montrer(true); } else monde.preparer(J); };
+  function allerVerif(e) {
+    const a = e.aller; let x, z;
+    if (a.type === 'lieu') { const p = L.lieux[a.id] || L.pos(a.id); x = p.x; z = p.z; }
+    else if (a.type === 'porte') { const P = portesJouables(), k = Math.min((R.missions.portes ? R.missions.portes.faits.length : 0), P.length - 1); x = P[k].x; z = P[k].z; }
+    else if (a.type === 'halte') { const p = M3.haltes[a.id + ':0']; x = p.x + 1.5; z = p.z; }
+    else if (a.type === 'voyageur') { const n = W.liste.find(o => o.v.id === a.id); x = n.x + 1.2; z = n.z + 1.2; }
+    else { x = bouts.a.x; z = bouts.a.z; }
+    versXZ(x, z);
+  }
+  if (sandboxActif(location.hostname, location.search)) creerVerificationUI({ etatRoute: () => R, surRoute: () => dans, aller: allerVerif,
+    ouvrirRoute: () => { for (const z of ['oasis', 'camp']) if (!etat.zones.includes(z)) etat.zones.push(z); for (const a of ['lezard', 'gerboise', 'renard']) if (!AV.animaux.includes(a)) AV.animaux.push(a);
+      J.x = 326; J.z = 50; if (ctx.monte()) { C.x = J.x; C.z = J.z; } ui.indice('🐪 Avance vers l' + String.fromCharCode(39) + 'est pour entrer sur la Route', 5000); } });
 
   return {
     ville: V, voyageurs: W, enRoute: () => dans, facteurMarche: FACTEUR_MARCHE_ROUTE, ouvrirHistoire, fermerHistoire: () => recitUI.fermer(), histoireOuverte: () => recitUI.ouverte(), maj, bouger, ouvrirCarte, ouvrirSac, parlerGuide,

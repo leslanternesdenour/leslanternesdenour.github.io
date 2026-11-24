@@ -120,6 +120,8 @@ export function creerMondeRoute({ scene, Q, TX, ombres = false }) {
       ...[0, 1, 2, 3, 4, 5, 6].map(k => piece(B(), k % 2 ? '#4f8a3a' : '#5f9a44', { p: [Math.cos(k * 0.9) * 1.4, 6.3, Math.sin(k * 0.9) * 1.4], s: [3.0, 0.05, 0.55], r: [0, -k * 0.9, -0.35] }))])] },
     roseau: { cap: 500, mat: matVent, ombre: false, geos: [fusion([0, 1, 2, 3].map(k => piece(CYL(0.025, 0.035, 1.5, 3), '#7f9a52', { p: [Math.cos(k * 1.6) * 0.15, 0.75, Math.sin(k * 1.6) * 0.15], r: [Math.cos(k) * 0.12, 0, Math.sin(k) * 0.12] })))] }
   };
+  // téléphone modeste (profil faible) : des cailloux de 8 triangles (au lieu de 72) et des buissons de 20 (au lieu de 60) ; les autres profils gardent le décor complet
+  if (Q.leger) { FORMES.caillou.geos = [fusion([piece(new THREE.OctahedronGeometry(0.22, 0), '#a8906e', { p: [0, 0.08, 0], s: [1, 0.6, 1] })])]; FORMES.buisson.geos = [fusion([piece(ICO(0.5), '#8a7a4a', { p: [0, 0.3, 0], s: [1.3, 0.75, 1.2] })])]; }
   const inst = {};
   for (const [nom, f] of Object.entries(FORMES)) f.geos.forEach((g, v) => {
     const im = new THREE.InstancedMesh(g, f.mat, f.cap); im.count = 0; im.frustumCulled = false; im.castShadow = ombres && f.ombre; im.receiveShadow = ombres; im.name = 'route-' + nom;

@@ -40,5 +40,5 @@ test('montée : le sentier est dessiné (cairns, haltes, belvédère), visible s
   const m = fs.readFileSync(new URL('../../voyage/js/route/montee-3d.js', import.meta.url), 'utf8');
   assert.match(m, /export function creerMontee3D/); assert.match(m, /sentierMontee\(/); assert.match(m, /haltes/);
   assert.match(j, /creerMontee3D\(/); assert.match(j, /HALTES_MONTAGNE/); assert.match(j, /etape\('montees', id \+ ':' \+ k\)/);
-  assert.match(j, /groupe\.visible = v; V\.montrer\(v\); M3\.groupe\.visible = v/, 'le sentier suit la visibilité du monde de la Route');
+  assert.match(j, /groupe\.visible = v; V\.montrer\(v && villeVisible\(J\.x, J\.z\)\);[^\n]*M3\.groupe\.visible = v/, 'le sentier suit la visibilité du monde de la Route');
 });
