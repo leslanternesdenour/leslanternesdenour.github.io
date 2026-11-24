@@ -83,12 +83,14 @@ body.tactile #indice{top:calc(78px + var(--haut));bottom:auto;white-space:normal
   background:radial-gradient(circle at 35% 30%,#fffdf6,#ffe3a3 60%,#f5b942);box-shadow:0 4px 12px rgba(0,0,0,.35),inset 0 -3px 0 rgba(217,149,42,.6);
   color:#d9952a;font-size:calc(24px * var(--taille-cmd))}
 .boutons-action{position:absolute;right:calc(18px + env(safe-area-inset-right,0px));bottom:calc(22px + var(--bas));
-  display:flex;flex-direction:column;gap:calc(12px * var(--taille-cmd));align-items:flex-end;opacity:var(--opacite-cmd)}
+  display:flex;flex-direction:column;gap:calc(12px * var(--taille-cmd));align-items:flex-end;opacity:var(--opacite-cmd);
+  max-width:calc(100vw - (26px + 150px * var(--taille-cmd)) - 30px)}   /* jamais par-dessus le joystick, même avec un libellé long */
 .action{pointer-events:auto;touch-action:none;display:flex;align-items:center;gap:8px;min-width:calc(96px * var(--taille-cmd));
-  height:calc(72px * var(--taille-cmd));padding:0 calc(18px * var(--taille-cmd));border:0;border-radius:40px;
+  min-height:calc(72px * var(--taille-cmd));padding:0 calc(14px * var(--taille-cmd));border:0;border-radius:40px;
   background:rgba(255,248,231,.96);color:var(--tx);font:800 calc(18px * var(--taille-cmd)) Poppins,sans-serif;cursor:pointer;
   box-shadow:0 5px 0 #d8c9a6,0 8px 20px rgba(0,0,0,.3);-webkit-user-select:none;user-select:none}
-.action .ico{font-size:calc(34px * var(--taille-cmd))}
+.action .ico{font-size:calc(34px * var(--taille-cmd));flex:none}
+.action .txt{white-space:normal;line-height:1.1;text-align:left;font-size:.94em}
 .action:active,.action.appuye{transform:translateY(4px);box-shadow:0 1px 0 #d8c9a6,0 4px 10px rgba(0,0,0,.3)}
 #btn-chameau{background:#ffe3a3;box-shadow:0 5px 0 var(--or2),0 8px 20px rgba(0,0,0,.3)}
 #btn-action{background:#c9f1f7;box-shadow:0 5px 0 #2bb3c0,0 8px 20px rgba(0,0,0,.3)}
