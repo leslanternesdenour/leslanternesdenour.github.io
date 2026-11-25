@@ -3,9 +3,9 @@
 //  - elles sont COMPATIBLES avec le mode sans visage : en mode activé, aucune expression n'est visible (images identiques), les gestes du corps restent visibles ;
 //  - les proportions n'ont pas changé, les originaux sont intacts, rien n'est branché sur le site ni sur les jeux.
 // Démarrer : bash outils/tests/amelioration-personnages.sh
-import { createRequire } from 'module'; import fs from 'node:fs'; import path from 'node:path'; import crypto from 'node:crypto';
+import { createRequire } from 'module'; import fs from 'node:fs'; import path from 'node:path'; import crypto from 'node:crypto'; import { fileURLToPath } from 'node:url';
 const { chromium } = createRequire(import.meta.url)(process.env.PLAYWRIGHT || 'playwright');
-const BASE = process.argv[2] || 'http://localhost:8797', R = new URL('../../', import.meta.url).pathname;
+const BASE = process.argv[2] || 'http://localhost:8797', R = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const THREE = ['/home/user/node_modules/three', path.join(R, 'node_modules/three')].find(d => fs.existsSync(d));
 let ok = 0, ko = 0; const res = [], erreurs = [];
 const t = (nom, c, d = '') => { c ? ok++ : ko++; res.push(`${c ? '✓' : '✗'} ${nom}${d && !c ? ' — ' + d : ''}`); };

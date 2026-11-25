@@ -5,10 +5,10 @@
 //  C. Compte famille : activation, deux profils enfants, progression intacte, déconnexion puis reconnexion sur un APPAREIL NEUF (stockage local vidé),
 //     réglage relu depuis le compte et identique pour tous les profils.
 // Démarrer : bash outils/tests/sans-visage.sh   (construit la préproduction, lance le serveur local avec émulateur, puis ce script)
-import { createRequire } from 'module'; import fs from 'node:fs';
+import { createRequire } from 'module'; import fs from 'node:fs'; import { fileURLToPath } from 'node:url'; import path from 'node:path';
 const { chromium } = createRequire(import.meta.url)(process.env.PLAYWRIGHT || 'playwright');
 const BASE = process.argv[2] || 'http://localhost:8796';
-const THREE = ['/home/user/node_modules/three', new URL('../../node_modules/three', import.meta.url).pathname].find(d => fs.existsSync(d));
+const THREE = ['/home/user/node_modules/three', path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../node_modules/three')].find(d => fs.existsSync(d));
 const TEXTE_CLIENT = 'Au sein de la communauté musulmane, il existe différentes opinions et interprétations concernant la représentation des êtres vivants et des visages. Les Lanternes de Nour souhaite respecter ces différents avis et permettre à chaque famille de profiter de son univers éducatif selon l\'avis religieux qu\'elle suit. C\'est pourquoi nous proposons un mode sans visage facultatif.';
 const lancement = { args: ['--use-gl=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] };
 if (fs.existsSync('/usr/bin/google-chrome')) lancement.executablePath = '/usr/bin/google-chrome';

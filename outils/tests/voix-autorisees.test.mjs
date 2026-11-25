@@ -1,6 +1,6 @@
 // Voix des jeux : SEULES les 10 voix « Nour - … » du compte ElevenLabs sont autorisées. Aucune voix extérieure (ex. voix professionnelles), aucune création.
-import test from 'node:test'; import assert from 'node:assert/strict'; import fs from 'node:fs'; import path from 'node:path';
-const RACINE = path.resolve(new URL('../..', import.meta.url).pathname), lire = f => JSON.parse(fs.readFileSync(path.join(RACINE, f), 'utf8'));
+import test from 'node:test'; import assert from 'node:assert/strict'; import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
+const RACINE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..'), lire = f => JSON.parse(fs.readFileSync(path.join(RACINE, f), 'utf8'));
 const NOUR = lire('outils/voix/jeux/voix-nour.json'), ROLES = lire('outils/voix/jeux/voix-roles.json'), IDS = new Set(NOUR.voix.map(v => v.id));
 const JEUX = ['chasse-aux-mots', 'mysteres-desert', 'quiz-nour', 'ecole-lettres', 'ecole-lecture', 'ecole-chiffres'].filter(j => fs.existsSync(path.join(RACINE, `audio/jeux/${j}/manifeste.json`)));
 

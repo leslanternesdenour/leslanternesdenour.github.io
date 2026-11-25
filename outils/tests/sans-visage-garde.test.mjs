@@ -2,8 +2,8 @@
 //   node --test outils/tests/sans-visage-garde.test.mjs
 // Règles pour un futur personnage : pièces 3D de visage avec l'option « v: 1 » (formes.js), groupes SVG de visage avec la classe « sv-visage »,
 // modèles GLB : méthode sansVisage(actif) ; chaque page HTML charge monde/socle/sans-visage.js.
-import test from 'node:test'; import assert from 'node:assert/strict'; import fs from 'node:fs'; import path from 'node:path';
-const R = new URL('../../', import.meta.url).pathname, lire = f => fs.readFileSync(path.join(R, f), 'utf8');
+import test from 'node:test'; import assert from 'node:assert/strict'; import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
+const R = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..'), lire = f => fs.readFileSync(path.join(R, f), 'utf8');
 const compte = (f, re) => (lire(f).match(re) || []).length;
 
 test('3D : les pièces de visage de chaque personnage et animal sont étiquetées (v: 1)', () => {

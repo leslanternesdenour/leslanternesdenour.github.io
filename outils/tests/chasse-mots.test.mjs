@@ -47,9 +47,9 @@ test('suite : niveau suivant, puis un autre lieu ; rien à proposer quand tout e
 });
 
 // ---- contenus et audio ----
-import fs from 'node:fs'; import path from 'node:path';
+import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
 const M = await import('../../aventures/chasse-aux-mots/mots.js');
-const RACINE = path.resolve(new URL('../..', import.meta.url).pathname);
+const RACINE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 test('contenus : chaque lieu a 8 objets existants, chaque objet a un mot arabe en alphabet arabe, une énigme et un article', () => {
   for (const [l, d] of Object.entries(M.LIEUX)) { assert.equal(d.objets.length, 8, l); assert.ok(M.GUIDES[d.guide], l + ' : guide'); for (const o of d.objets) assert.ok(M.OBJETS[o], l + '/' + o); }
   for (const [id, o] of Object.entries(M.OBJETS)) { assert.match(o.ar, /^[؀-ۿ\s]+$/, id + ' : alphabet arabe (pas de translittération latine)'); assert.match(o.enigme, /Qui suis-je \?$/, id); assert.ok(o.det.length > 2); }

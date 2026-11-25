@@ -1,0 +1,12 @@
+{
+  "session_id": "1d41832d-1fb6-4603-abad-8bd275fc7506",
+  "transcript_path": "C:\\Users\\zakar\\.claude\\projects\\C--Users-zakar-leslanternesdenour-preproduction\\1d41832d-1fb6-4603-abad-8bd275fc7506.jsonl",
+  "hook_event_name": "PreToolUse",
+  "tool_name": "Edit",
+  "tool_input": {
+    "file_path": "C:\\Users\\zakar\\leslanternesdenour-preproduction\\outils\\tests\\portail.mjs",
+    "old_string": "import { createRequire } from 'module'; import fs from 'node:fs';\nconst { chromium } = createRequire(import.meta.url)(process.env.PLAYWRIGHT || 'playwright');\nconst BASE = process.argv[2] || 'http://localhost:8795';\nconst THREE = ['/home/user/node_modules/three', new URL('../../node_modules/three', import.meta.url).pathname].find(d => fs.existsSync(d));\nconst CLIP_ESSAI = new URL('../voix/lots/lot21/monde-accueil-portail-prise1.mp3', import.meta.url).pathname;",
+    "new_string": "import { createRequire } from 'module'; import fs from 'node:fs'; import { fileURLToPath } from 'node:url'; import path from 'node:path';\nconst { chromium } = createRequire(import.meta.url)(process.env.PLAYWRIGHT || 'playwright');\nconst BASE = process.argv[2] || 'http://localhost:8795';\nconst THREE = ['/home/user/node_modules/three', path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../node_modules/three')].find(d => fs.existsSync(d));\nconst CLIP_ESSAI = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../voix/lots/lot21/monde-accueil-portail-prise1.mp3');",
+    "replace_all": false
+  }
+}

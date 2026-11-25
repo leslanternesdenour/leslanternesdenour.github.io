@@ -1,7 +1,7 @@
 // Quiz de Nour — contenus rigoureux (une seule bonne réponse, explications, âges), logique, sauvegarde, audio.
-import test from 'node:test'; import assert from 'node:assert/strict'; import fs from 'node:fs'; import path from 'node:path';
+import test from 'node:test'; import assert from 'node:assert/strict'; import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
 const C = await import('../../aventures/quiz-nour/contenu.js'); const L = await import('../../aventures/quiz-nour/logique.js');
-const RACINE = path.resolve(new URL('../..', import.meta.url).pathname); const seed = a => () => (a = (a * 16807) % 2147483647) / 2147483647;
+const RACINE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..'); const seed = a => () => (a = (a * 16807) % 2147483647) / 2147483647;
 const toutes = () => Object.entries(C.CATEGORIES).flatMap(([c, d]) => C.NIVEAUX.flatMap(n => d.questions[n].map((q, i) => ({ c, n, i, q, d }))));
 
 test('8 catégories × 3 niveaux × 4 questions = 96, chacune avec guide et décor', () => {

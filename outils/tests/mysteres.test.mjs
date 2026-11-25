@@ -1,7 +1,7 @@
 // Mystères du désert — logique, contenus, énigmes (toujours solvables), sauvegarde, audio.
-import test from 'node:test'; import assert from 'node:assert/strict'; import fs from 'node:fs'; import path from 'node:path';
+import test from 'node:test'; import assert from 'node:assert/strict'; import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
 const C = await import('../../aventures/mysteres-desert/contenu.js'); const L = await import('../../aventures/mysteres-desert/logique.js');
-const RACINE = path.resolve(new URL('../..', import.meta.url).pathname);
+const RACINE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const seed = a => () => (a = (a * 16807) % 2147483647) / 2147483647;
 
 test('7 chapitres dans l\'ordre de l\'histoire, chacun avec guide, 4 indices, une énigme et un trésor', () => {

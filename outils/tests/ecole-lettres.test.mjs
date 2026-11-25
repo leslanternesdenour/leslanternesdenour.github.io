@@ -1,7 +1,7 @@
 // École des lettres arabes — données exactes (28 lettres, formes, mots), moteur pédagogique (stades, maîtrise réelle, âges, adaptation), composition de mots, inventaire audio.
-import test from 'node:test'; import assert from 'node:assert/strict'; import fs from 'node:fs'; import path from 'node:path';
+import test from 'node:test'; import assert from 'node:assert/strict'; import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
 const D = await import('../../ecole-arabe/lettres/donnees/lettres.js'); const C = await import('../../ecole-arabe/lettres/moteur/competences.js'); const M = await import('../../ecole-arabe/lettres/moteur/mots.js'); const A = await import('../../ecole-arabe/lettres/donnees/audio.js');
-const RACINE = path.resolve(new URL('../..', import.meta.url).pathname), G = JSON.parse(fs.readFileSync(path.join(RACINE, 'ecole-arabe/lettres/donnees/glyphes.json'), 'utf8'));
+const RACINE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..'), G = JSON.parse(fs.readFileSync(path.join(RACINE, 'ecole-arabe/lettres/donnees/glyphes.json'), 'utf8'));
 const seed = a => () => (a = (a * 16807) % 2147483647) / 2147483647; const sansVoyelles = s => s.replace(/[ً-ْٰ]/g, '');
 
 test('28 lettres arabes, uniques, dans l\'ordre de l\'alphabet, avec nom arabe, nom français et son', () => {

@@ -5,11 +5,11 @@
 // uniquement dans le navigateur de test) ; le scénario « sans voix » est simulé par interception.
 // Démarrer : node outils/construire.mjs && LDN_EMULATEUR=1 LDN_EMUL_MDP_CREATEUR=createur-local-123 node outils/serveur-preprod.mjs 8795
 // Puis : node outils/tests/portail.mjs http://localhost:8795     (script complet : bash outils/tests/portail.sh)
-import { createRequire } from 'module'; import fs from 'node:fs';
+import { createRequire } from 'module'; import fs from 'node:fs'; import { fileURLToPath } from 'node:url'; import path from 'node:path';
 const { chromium } = createRequire(import.meta.url)(process.env.PLAYWRIGHT || 'playwright');
 const BASE = process.argv[2] || 'http://localhost:8795';
-const THREE = ['/home/user/node_modules/three', new URL('../../node_modules/three', import.meta.url).pathname].find(d => fs.existsSync(d));
-const CLIP_ESSAI = new URL('../voix/lots/lot21/monde-accueil-portail-prise1.mp3', import.meta.url).pathname;
+const THREE = ['/home/user/node_modules/three', path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../node_modules/three')].find(d => fs.existsSync(d));
+const CLIP_ESSAI = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../voix/lots/lot21/monde-accueil-portail-prise1.mp3');
 let ok = 0, ko = 0; const res = [];
 const t = (nom, c, d = '') => { c ? ok++ : ko++; res.push(`${c ? '✓' : '✗'} ${nom}${d && !c ? ' — ' + d : ''}`); };
 const lancement = { args: ['--use-gl=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--autoplay-policy=no-user-gesture-required'] };

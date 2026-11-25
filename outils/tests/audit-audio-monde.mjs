@@ -5,8 +5,9 @@ import { readFileSync, existsSync } from 'node:fs';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 const sh = promisify(execFile);
-const racine = path.resolve(path.dirname(new URL(import.meta.url).pathname), '../..');
+const racine = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const jeux = ['ablutions', 'priere', 'calendrier'];
 const problemes = [], resume = {};
 async function dur(f) { try { const { stdout } = await sh('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', f]); return parseFloat(stdout); } catch { return NaN; } }
