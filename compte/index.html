@@ -209,7 +209,7 @@ if (params.get('invite')) { sessionStorage.setItem('ldn_invite', params.get('inv
 const invitation = () => sessionStorage.getItem('ldn_invite');
 // ---------- retour : la page que le visiteur voulait ouvrir avant de se connecter ----------
 // Seules les pages du site sont acceptées (jamais une adresse extérieure, jamais /compte/ lui-même : pas de boucle).
-const PAGES_RETOUR = { '': "l'accueil", monde: 'le village', voyage: 'le Grand Voyage', ablutions: 'les ablutions', priere: 'la prière', calendrier: 'le calendrier du Ramadan', tarifs: 'les formules', decouvrir: 'la page Découvrir', admin: "l'administration", apercu: "l'aperçu Créateur" };
+const PAGES_RETOUR = { '': "l'accueil", monde: 'le village', voyage: 'le Grand Voyage', ablutions: 'les ablutions', priere: 'la prière', calendrier: 'le calendrier du Ramadan', aventures: 'les Aventures', 'ecole-arabe': "l'École arabe", tarifs: 'les formules', decouvrir: 'la page Découvrir', admin: "l'administration", apercu: "l'aperçu Créateur" };
 function retourValide(r) {
   try {
     if (!r || r[0] !== '/' || r[1] === '/' || r.indexOf('\\') >= 0) return null;

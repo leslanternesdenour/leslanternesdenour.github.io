@@ -19,7 +19,7 @@ test('badges : se méritent en explorant et en aidant, jamais présentés comme 
   assert.ok(BADGES_ROUTE.length >= 5);
   assert.equal(new Set(BADGES_ROUTE.map(b => b.id)).size, BADGES_ROUTE.length);
   for (const b of BADGES_ROUTE) { assert.ok(b.id.startsWith('route-'), 'les identifiants ne peuvent pas entrer en conflit avec les badges existants'); assert.equal(b.ok(vide), false, `${b.id} ne doit pas être acquis au départ`); assert.ok(!/(bénédiction|saint|pieu|prière|récompense d'allah)/i.test(b.nom + b.desc)); }
-  const fini = { etat: { route: { decouvertes: ['seuil', 'oasis'], repos: ['a', 'b', 'c'], missions: { chemin: { etat: 'finie' }, traces: { etat: 'finie' }, campement: { etat: 'finie' } }, recits: { 'eau-desert': { carnet: true }, 'caravanes-hospitalite': { carnet: true } }, vu: { campementRendu: true } } } };
+  const fini = { etat: { route: { decouvertes: ['seuil', 'oasis', 'cite-place'], repos: ['a', 'b', 'c'], missions: { chemin: { etat: 'finie' }, traces: { etat: 'finie' }, campement: { etat: 'finie' } }, recits: { 'eau-desert': { carnet: true }, 'caravanes-hospitalite': { carnet: true } }, vu: { campementRendu: true } } } };
   assert.ok(BADGES_ROUTE.some(b => b.id === 'route-histoires'), 'un badge récompense la curiosité pour les histoires (jamais présenté comme spirituel)');
   assert.equal(BADGES_ROUTE.every(b => b.ok(fini)), true, 'tous acquis quand tout est fait');
 });

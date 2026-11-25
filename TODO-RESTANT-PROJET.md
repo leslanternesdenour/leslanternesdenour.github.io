@@ -16,8 +16,9 @@
 - **Action** : rejouer à la main le mode Apprendre jusqu'à l'étape 5 (ordinateur puis téléphone) ; si reproductible, corriger ; sinon corriger le test (attendre l'état « assis » avant chaque étape) et le relancer jusqu'au bout (Apprendre, S'entraîner, Libre).
 - **Validation** : les 3 modes se terminent (écran de fin) sans retour parasite ; test `ablu3d-jeu.js` entièrement vert.
 
-### P1-2 — Garde-fou « mode sans visage » en échec : `ecole-arabe/index.html`
-- **Description** : `node --test outils/tests/sans-visage-garde.test.mjs` → 1 échec : « ecole-arabe/index.html ne charge pas sans-visage.js ». **Préexistant** (la page n'a jamais chargé le script depuis `6ab0a4c`) ; les 3 jeux de l'École le chargent.
+### P1-2 — ✅ RÉSOLU le 24/11/2026 (`7058a56`, vérifié en ligne) — Garde-fou « mode sans visage »
+- **Résolution** : `ecole-arabe/index.html` avait déjà été corrigé par une autre session ; la seule page restante, `compte/action/index.html` (liens des e-mails, ajoutée depuis), charge maintenant `sans-visage.js`. `sans-visage-garde.test.mjs` : 9/9. (Reste 2 liens du vérificateur en échec dans `outils/voix/lettres-validation/*.html` : outils internes non publiés, sans rapport.)
+- *Historique de la description initiale* : `node --test outils/tests/sans-visage-garde.test.mjs` → 1 échec : « ecole-arabe/index.html ne charge pas sans-visage.js ». **Préexistant** (la page n'a jamais chargé le script depuis `6ab0a4c`) ; les 3 jeux de l'École le chargent.
 - **Fichiers** : `ecole-arabe/index.html` (modèle : `ecole-arabe/lettres/index.html` ligne 10 : `<script src="../../monde/socle/sans-visage.js?v=1"></script>`, ici avec le chemin `../monde/socle/sans-visage.js?v=1`).
 - **Action** : ajouter la balise tôt dans le `<head>`, vérifier que la bannière/le réglage « sans visage » s'applique à la mascotte Maktoub de cette page.
 - **Validation** : `bash outils/tests/tout.sh` entièrement vert (hors le contrôle Premium sauté faute de pack privé).
