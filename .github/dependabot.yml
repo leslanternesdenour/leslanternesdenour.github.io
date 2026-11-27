@@ -1,0 +1,12 @@
+# Mises à jour automatiques. Le dépôt n'a aucun package.json : seules les actions GitHub utilisées
+# par les workflows sont surveillées. Les propositions arrivent sous forme de demandes de fusion
+# vers « preproduction » ; rien n'est fusionné ni déployé sans validation.
+# NB : GitHub ne lit ce fichier que sur la branche par défaut (main).
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    target-branch: preproduction
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 3

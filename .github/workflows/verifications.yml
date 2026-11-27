@@ -1,0 +1,46 @@
+# Vérifications automatiques : lance la suite de tests hors ligne du projet (outils/tests/tout.sh).
+# Ne déploie rien, n'utilise aucun secret, ne reçoit que des droits de lecture.
+# Le déploiement reste fait par Cloudflare Pages à partir des branches.
+name: Vérifications
+
+on:
+  pull_request:
+  push:
+    branches: [preproduction, production, main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verifications-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  suite-hors-ligne:
+    name: Suite de tests hors ligne
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+
+      # `age` sert à l'exercice de restauration chiffrée des sauvegardes (outils/sauvegarde).
+      - name: Installer age
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq age
+
+      # three.js n'est utilisé que par les tests 3D. Il doit être résolu par `import('three')` depuis le dépôt
+      # (donc dans un dossier parent) ET exister dans /home/user/node_modules/three, chemin en dur hérité
+      # de la machine d'origine que tout.sh teste. On l'installe dans le dossier parent du dépôt et on relie
+      # /home/user/node_modules vers lui. Le dépôt reste intact.
+      - name: Installer three.js pour les tests 3D
+        run: |
+          PARENT="$(dirname "$GITHUB_WORKSPACE")"
+          npm install --prefix "$PARENT" --no-save --no-package-lock --no-audit --no-fund three@0.170.0
+          sudo mkdir -p /home/user && sudo ln -sfn "$PARENT/node_modules" /home/user/node_modules
+          ls /home/user/node_modules/three/package.json
+
+      - name: Lancer les vérifications
+        run: bash outils/tests/tout.sh
