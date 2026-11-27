@@ -35,10 +35,10 @@ jobs:
       # (donc dans un dossier parent) ET exister dans /home/user/node_modules/three, chemin en dur hérité
       # de la machine d'origine que tout.sh teste. On l'installe dans le dossier parent du dépôt et on relie
       # /home/user/node_modules vers lui. Le dépôt reste intact.
-      - name: Installer three.js pour les tests 3D
+      - name: Installer three.js (tests 3D) et age-encryption (sauvegarde chiffrée)
         run: |
           PARENT="$(dirname "$GITHUB_WORKSPACE")"
-          npm install --prefix "$PARENT" --no-save --no-package-lock --no-audit --no-fund three@0.170.0
+          npm install --prefix "$PARENT" --no-save --no-package-lock --no-audit --no-fund three@0.170.0 age-encryption@0.3.1
           sudo mkdir -p /home/user && sudo ln -sfn "$PARENT/node_modules" /home/user/node_modules
           ls /home/user/node_modules/three/package.json
 
