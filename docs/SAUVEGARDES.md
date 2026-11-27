@@ -111,14 +111,23 @@ Règle appliquée par `r2.mjs retention` : **tout garder 14 jours**, puis **1 pa
 ### Automatisation
 `outils/sauvegarde/sauvegarde-quotidienne.ps1` enchaîne : sauvegarde Firestore + Authentication, chiffrement, copie vérifiée vers R2, simulation de rétention, et écrit un journal `journal-sauvegarde.log` (sans donnée personnelle). Sans `CLOUDFLARE_API_TOKEN`, il garde les fichiers en local et le dit dans le journal. Il lit le compte de service et le jeton dans les variables d'environnement **utilisateur** ; il n'utilise jamais la clé privée.
 
-Pour l'exécuter chaque jour à 3 h (l'ordinateur doit être allumé ; sinon la tâche rattrape au prochain démarrage) :
+**Mise en place du 27/11/2026** : la tâche planifiée `Sauvegarde Lanternes de Nour` s'exécute chaque jour à **3 h** sous le compte de l'utilisateur (sans droits administrateur ; si l'ordinateur est éteint à 3 h, elle se lance dès que possible). Elle ne lance **pas** le dépôt de travail : elle utilise une **copie dédiée** (`C:\Users\zakar\outils-claude\depot-sauvegarde`, un `git worktree` du dépôt), pour que changer de branche dans le dépôt de travail ne casse jamais la sauvegarde.
 ```powershell
-$a = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument '-NoProfile -ExecutionPolicy Bypass -File "C:\Users\zakar\leslanternesdenour.github.io\outils\sauvegarde\sauvegarde-quotidienne.ps1"'
-$d = New-ScheduledTaskTrigger -Daily -At 3:00
-$p = New-ScheduledTaskSettingsSet -StartWhenAvailable -WakeToRun:$false
-Register-ScheduledTask -TaskName 'Sauvegarde Lanternes de Nour' -Action $a -Trigger $d -Settings $p -Description 'Sauvegarde chiffree Firestore + Authentication vers R2'
+# Créer la copie dédiée et la tâche (déjà fait) :
+git worktree add --detach "$env:USERPROFILE\outils-claude\depot-sauvegarde" <branche-contenant-les-scripts>
+$a = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument "-NoProfile -ExecutionPolicy Bypass -File `"$env:USERPROFILE\outils-claude\depot-sauvegarde\outils\sauvegarde\sauvegarde-quotidienne.ps1`""
+Register-ScheduledTask -TaskName 'Sauvegarde Lanternes de Nour' -Action $a -Trigger (New-ScheduledTaskTrigger -Daily -At 3:00) -Settings (New-ScheduledTaskSettingsSet -StartWhenAvailable -ExecutionTimeLimit (New-TimeSpan -Minutes 20) -MultipleInstances IgnoreNew)
+# Mettre la copie à jour (par exemple après la fusion dans preproduction) :
+git -C "$env:USERPROFILE\outils-claude\depot-sauvegarde" fetch origin; git -C "$env:USERPROFILE\outils-claude\depot-sauvegarde" checkout --detach origin/preproduction
+# Retirer la tâche :
+Unregister-ScheduledTask -TaskName 'Sauvegarde Lanternes de Nour' -Confirm:$false
 ```
-Pour la retirer : `Unregister-ScheduledTask -TaskName 'Sauvegarde Lanternes de Nour' -Confirm:$false`. Le dépôt doit être sur la branche qui contient ces scripts (`preproduction` après fusion).
+Où regarder si ça marche : `outils-claude\sauvegardes\firestore\journal-sauvegarde.log` (une ligne « Sauvegarde terminee » par jour), puis `node outils/sauvegarde/r2.mjs statut --dossier=…`. Le script a été exécuté de bout en bout à la main le 27/11/2026 (code 0) ; un lancement manuel depuis l'outil de l'administrateur est resté « en attente » sans démarrer, donc **le premier déclenchement automatique à 3 h est à confirmer le 28/11 dans le journal**.
 
+### Validation de la copie R2 (27/11/2026)
+- Bucket `ldn-sauvegardes` créé en **Europe de l'Ouest**, accès public `r2.dev` **désactivé**, **aucun domaine** connecté ; règle de verrouillage `verrou-30-jours` sur le préfixe `sauvegardes/` (30 jours).
+- 3 archives envoyées puis **relues depuis R2** avec la même empreinte SHA-256 ; un second passage n'a rien à renvoyer.
+- **Restauration depuis R2** : les 3 fichiers téléchargés, déchiffrés avec la clé privée du propriétaire et contrôlés (empreinte, format, comptes) ; copies temporaires supprimées.
+- Le jeton Cloudflare `LDN-Sauvegardes-R2` (**Stockage R2 : Modifier**, compte seul) est dans la variable utilisateur `CLOUDFLARE_API_TOKEN` ; il **expire le 27/11/2027** : à renouveler avant. Il a été transmis dans une conversation : le **renouveler** (Cloudflare > Jetons API > Rouler) dès que possible est recommandé ; il suffit ensuite de poser la nouvelle valeur dans la variable.
 ### Restaurer depuis R2
 `wrangler r2 object get ldn-sauvegardes/sauvegardes/<type>/<année>/<mois>/<fichier> --file <fichier> --remote`, puis la procédure « Vérifier » et « Restaurer » ci-dessus (clé privée du propriétaire).
