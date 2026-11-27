@@ -53,3 +53,11 @@ Les Auth (comptes de connexion) ne sont pas dans cet export : ils se réexporten
 ## Tests
 - `bash outils/tests/tout.sh` : étape « Sauvegarde chiffrée » (base fictive, mauvaise clé et fichier altéré refusés, la source n'est jamais modifiée).
 - `bash outils/sauvegarde/exercice-restauration.sh` : même exercice avec la commande `age` officielle.
+## Validation de la procédure (27/11/2026)
+Première sauvegarde réelle de `lanternes-de-nour` (85 documents : 4 familles, 4 profils enfants, 4 droits, 2 invitations, 35 événements Stripe, 9 consentements d'achat, 26 journaux d'administration, 1 accès offert), contrôlée avec la clé privée du propriétaire :
+- empreinte SHA-256 conforme, déchiffrement réussi, format `ldn-export-1` reconnu ;
+- restauration dans une base **isolée en mémoire** (aucune écriture réseau) : 85 documents sur 85, 0 différence avec la sauvegarde ; un second import dans une base non vide est refusé ;
+- cohérence des données : chaque compte avec droits a une famille, chaque profil enfant est rattaché à une famille, 4 profils au plus par famille ;
+- comparaison en lecture seule avec la base réelle au même moment : aucun écart.
+
+Non couvert : les comptes de connexion Firebase Authentication (adresses, fournisseurs) ne sont pas dans l'export, et la restauration dans un vrai projet Firebase de test n'a pas encore été faite (elle demande de créer un projet de test, avec l'accord du propriétaire).
