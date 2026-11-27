@@ -76,3 +76,49 @@ node --input-type=module -e "import fs from 'fs'; import { dechiffrer } from './
 Ensuite, comparer avec `comparerAuth` (dates de dernière connexion ignorées) et tester une connexion avec un compte de test. Les adresses des vrais parents ne doivent pas être utilisées pour envoyer des e-mails depuis un projet de test.
 
 **Validé le 27/11/2026 (production, lecture seule)** : 4 comptes (2 e-mail + mot de passe, 2 Google ; 4 adresses vérifiées ; 1 rôle Créateur), 0 compte désactivé. Chaque famille Firestore a un compte de connexion et inversement ; les 2 comptes à mot de passe ont leur empreinte et leur sel ; la sauvegarde est identique aux comptes réels au même moment. La restauration a été validée par les tests (API fictive : mêmes comptes, SCRYPT, sans écrasement, production refusée). **Une restauration dans un vrai projet Firebase de test n'a pas été faite** : elle demande de créer un projet, ce que le compte de service `claude-admin` n'a pas le droit de faire.
+
+## Copie hors de l'ordinateur : bucket R2 privé `ldn-sauvegardes`
+Une sauvegarde qui n'existe que sur l'ordinateur ne protège pas d'une panne ou d'un vol. Les archives **déjà chiffrées** sont copiées dans un bucket R2 **distinct** de `ldn-premium` (l'outil refuse `ldn-premium`), privé, sans domaine public, lié à aucun site. R2 est déjà activé sur le compte Cloudflare ; le volume (quelques Ko par sauvegarde) reste très en dessous du palier gratuit (10 Go).
+
+### Mise en place (une seule fois)
+1. **Jeton Cloudflare limité** (à créer par le propriétaire, dans Cloudflare > Mon profil > Jetons API > Créer un jeton > personnalisé) : autorisation **Compte › Stockage R2 Workers › Modifier**, sur votre compte seulement. Ne le collez jamais dans un chat ni dans le dépôt. Rangez-le dans une variable d'environnement **utilisateur** sans l'afficher :
+   ```powershell
+   $s = Read-Host "Collez le jeton Cloudflare (rien ne s'affiche)" -AsSecureString
+   [Environment]::SetEnvironmentVariable('CLOUDFLARE_API_TOKEN', [System.Net.NetworkCredential]::new('', $s).Password, 'User')
+   ```
+2. **Créer le bucket** (privé par défaut, placé en Europe de l'Ouest) et le **verrouiller 30 jours** : un objet ne peut plus être supprimé ni écrasé pendant 30 jours, même par erreur ou par un pirate qui aurait le jeton.
+   ```powershell
+   wrangler r2 bucket create ldn-sauvegardes --location weur
+   wrangler r2 bucket lock add ldn-sauvegardes verrou-30-jours sauvegardes/ --retention-days 30
+   ```
+3. Ne **jamais** activer `r2.dev` ni un domaine personnalisé sur ce bucket.
+
+### Envoyer, vérifier
+```powershell
+node outils/sauvegarde/r2.mjs envoyer --dossier="$env:USERPROFILE\outils-claude\sauvegardes\firestore" --bucket=ldn-sauvegardes            # simulation
+node outils/sauvegarde/r2.mjs envoyer --dossier="$env:USERPROFILE\outils-claude\sauvegardes\firestore" --bucket=ldn-sauvegardes --executer
+node outils/sauvegarde/r2.mjs statut  --dossier="$env:USERPROFILE\outils-claude\sauvegardes\firestore"
+```
+- Seuls les fichiers `firestore-…age` et `auth-…age` dont l'empreinte SHA-256 est conforme partent ; tout autre fichier du dossier est ignoré (jamais une clé, jamais un `.json` en clair).
+- Chaque fichier est **relu depuis R2 et comparé (SHA-256)** avant d'être inscrit au manifeste `manifeste-r2.json` ; une différence arrête l'envoi.
+- Les objets sont rangés `sauvegardes/<type>/<année>/<mois>/<fichier>`. Un second passage n'envoie que les nouveaux fichiers.
+
+### Rétention
+Règle appliquée par `r2.mjs retention` : **tout garder 14 jours**, puis **1 par semaine pendant 8 semaines**, puis **1 par mois pendant 12 mois** ; au-delà, un fichier devient candidat à la suppression. Les **3 plus récents** de chaque type sont toujours gardés, et un objet non vérifié n'est jamais proposé.
+- Par défaut c'est une **simulation** ; `--appliquer` supprime, **5 objets au plus par passage**. Rien n'est jamais supprimé automatiquement, ni dans le dossier local.
+- Le verrou de 30 jours empêche toute suppression plus précoce.
+
+### Automatisation
+`outils/sauvegarde/sauvegarde-quotidienne.ps1` enchaîne : sauvegarde Firestore + Authentication, chiffrement, copie vérifiée vers R2, simulation de rétention, et écrit un journal `journal-sauvegarde.log` (sans donnée personnelle). Sans `CLOUDFLARE_API_TOKEN`, il garde les fichiers en local et le dit dans le journal. Il lit le compte de service et le jeton dans les variables d'environnement **utilisateur** ; il n'utilise jamais la clé privée.
+
+Pour l'exécuter chaque jour à 3 h (l'ordinateur doit être allumé ; sinon la tâche rattrape au prochain démarrage) :
+```powershell
+$a = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument '-NoProfile -ExecutionPolicy Bypass -File "C:\Users\zakar\leslanternesdenour.github.io\outils\sauvegarde\sauvegarde-quotidienne.ps1"'
+$d = New-ScheduledTaskTrigger -Daily -At 3:00
+$p = New-ScheduledTaskSettingsSet -StartWhenAvailable -WakeToRun:$false
+Register-ScheduledTask -TaskName 'Sauvegarde Lanternes de Nour' -Action $a -Trigger $d -Settings $p -Description 'Sauvegarde chiffree Firestore + Authentication vers R2'
+```
+Pour la retirer : `Unregister-ScheduledTask -TaskName 'Sauvegarde Lanternes de Nour' -Confirm:$false`. Le dépôt doit être sur la branche qui contient ces scripts (`preproduction` après fusion).
+
+### Restaurer depuis R2
+`wrangler r2 object get ldn-sauvegardes/sauvegardes/<type>/<année>/<mois>/<fichier> --file <fichier> --remote`, puis la procédure « Vérifier » et « Restaurer » ci-dessus (clé privée du propriétaire).
