@@ -31,10 +31,12 @@ jobs:
       - name: Installer age
         run: sudo apt-get update -qq && sudo apt-get install -y -qq age
 
-      # three.js n'est utilisé que par les tests 3D. Installé dans le dossier PARENT du dépôt
-      # (comme le demande tout.sh) : le dépôt n'a pas de package.json et reste intact.
+      # three.js n'est utilisé que par les tests 3D. Les tests le cherchent dans /home/user/node_modules/three
+      # (chemin en dur hérité de la machine d'origine) : on l'y installe, le dépôt reste intact.
       - name: Installer three.js pour les tests 3D
-        run: cd .. && npm install --no-save --no-package-lock --no-audit --no-fund three@0.170.0
+        run: |
+          sudo mkdir -p /home/user && sudo chown "$USER" /home/user
+          cd /home/user && npm install --no-save --no-package-lock --no-audit --no-fund three@0.170.0
 
       - name: Lancer les vérifications
         run: bash outils/tests/tout.sh
