@@ -1,4 +1,4 @@
-# Sauvegardes chiffrées de la base des comptes (Firestore)
+# Sauvegardes chiffrées des comptes (Firestore et Firebase Authentication)
 
 Objectif : pouvoir retrouver les comptes, les profils enfants, les droits et les consentements si la base est perdue ou abîmée.
 Le projet Firebase n'a pas de facturation : il n'a donc ni restauration à un instant donné ni sauvegarde planifiée native. Cette méthode est gratuite.
@@ -6,7 +6,7 @@ Le projet Firebase n'a pas de facturation : il n'a donc ni restauration à un in
 ## Principe
 1. **Export** de la base en lecture seule (rien n'est écrit ni supprimé dans Firestore).
 2. **Compression**, puis **chiffrement au format `age`** avec une clé **publique**.
-3. Un fichier daté `firestore-AAAA-MM-JJ-HH-MM.json.gz.age` et son empreinte `.sha256`, rangés **hors du dépôt**.
+3. Deux fichiers datés, rangés **hors du dépôt**, chacun avec son empreinte `.sha256` : `firestore-AAAA-MM-JJ-HH-MM.json.gz.age` (familles, profils enfants, droits, invitations, consentements, journaux) et `auth-AAAA-MM-JJ-HH-MM.json.gz.age` (comptes de connexion).
 
 Le fichier est illisible sans la **clé privée**, qui reste chez le propriétaire. Une fuite du fichier (ou de l'espace de stockage) ne révèle donc aucune donnée.
 La collection `courriers` (compteurs anti-spam) n'est pas sauvegardée : elle ne contient que des horodatages.
@@ -48,7 +48,7 @@ node outils/sauvegarde/verifier-sauvegarde.mjs --fichier="<fichier>.age" --cle-p
 3. Importer : `outils/sauvegarde/restauration.mjs importer export.json` (voir l'en-tête du fichier : l'import refuse une base non vide et un projet qui ne ressemble pas à un projet de test). `export.json` contient des données personnelles : à supprimer après l'exercice.
 4. `outils/sauvegarde/restauration.mjs comparer export.json` doit répondre « base identique à l'export ».
 
-Les Auth (comptes de connexion) ne sont pas dans cet export : ils se réexportent par la console Firebase (Authentication) ou l'API Admin si besoin.
+Les comptes de connexion se restaurent avec la sauvegarde `auth-…` (section suivante).
 
 ## Tests
 - `bash outils/tests/tout.sh` : étape « Sauvegarde chiffrée » (base fictive, mauvaise clé et fichier altéré refusés, la source n'est jamais modifiée).
@@ -60,4 +60,19 @@ Première sauvegarde réelle de `lanternes-de-nour` (85 documents : 4 familles, 
 - cohérence des données : chaque compte avec droits a une famille, chaque profil enfant est rattaché à une famille, 4 profils au plus par famille ;
 - comparaison en lecture seule avec la base réelle au même moment : aucun écart.
 
-Non couvert : les comptes de connexion Firebase Authentication (adresses, fournisseurs) ne sont pas dans l'export, et la restauration dans un vrai projet Firebase de test n'a pas encore été faite (elle demande de créer un projet de test, avec l'accord du propriétaire).
+Non couvert : la restauration dans un vrai projet Firebase de test n'a pas encore été faite (elle demande de créer un projet de test, avec l'accord du propriétaire).
+
+## Comptes de connexion (Firebase Authentication)
+**Ce que contient l'export `auth-…`** : pour chaque compte, l'identifiant, l'adresse, l'état de vérification, les fournisseurs (e-mail + mot de passe, Google), l'empreinte du mot de passe et son sel, le rôle éventuel (`customAttributes`), les dates. Il contient aussi la **configuration de hachage du projet** (SCRYPT, clé de signature, séparateur de sel) : sans elle, les mots de passe importés ne seraient plus valides. Cette clé de signature est un **secret** : l'export n'est donc jamais écrit en clair (mémoire, puis fichier `age` chiffré avec la clé publique du propriétaire). Les messages d'erreur ne reprennent jamais le contenu des réponses de l'API.
+
+**Restauration** (projet de **test** uniquement, jamais la production) : `accounts:batchCreate` avec la configuration de hachage de l'export, sans écrasement (`allowOverwrite: false`).
+- `lanternes-de-nour` (la production) est **refusé en dur** par l'outil, même avec une confirmation.
+- Tout autre projet dont le nom ne contient ni « test » ni « restauration » exige `--cible-confirmee=<nom exact>`.
+- Un projet qui contient déjà des comptes est refusé.
+```powershell
+# 1. déchiffrer en mémoire puis importer, dans un projet de TEST (compte de service de CE projet de test) :
+node --input-type=module -e "import fs from 'fs'; import { dechiffrer } from './outils/sauvegarde/age-js.mjs'; import { importerAuth } from './outils/sauvegarde/auth.mjs'; const e = JSON.parse((await dechiffrer(fs.readFileSync(process.argv[1]), fs.readFileSync(process.argv[2],'utf8').trim())).toString()); console.log(await importerAuth(e, { projet: process.argv[3], compte: JSON.parse(fs.readFileSync(process.argv[4],'utf8')) }), 'compte(s) importé(s)')" "<auth-….age>" "<cle-privee>.txt" "ldn-restauration-test" "<compte-de-service-du-projet-de-test>.json"
+```
+Ensuite, comparer avec `comparerAuth` (dates de dernière connexion ignorées) et tester une connexion avec un compte de test. Les adresses des vrais parents ne doivent pas être utilisées pour envoyer des e-mails depuis un projet de test.
+
+**Validé le 27/11/2026 (production, lecture seule)** : 4 comptes (2 e-mail + mot de passe, 2 Google ; 4 adresses vérifiées ; 1 rôle Créateur), 0 compte désactivé. Chaque famille Firestore a un compte de connexion et inversement ; les 2 comptes à mot de passe ont leur empreinte et leur sel ; la sauvegarde est identique aux comptes réels au même moment. La restauration a été validée par les tests (API fictive : mêmes comptes, SCRYPT, sans écrasement, production refusée). **Une restauration dans un vrai projet Firebase de test n'a pas été faite** : elle demande de créer un projet, ce que le compte de service `claude-admin` n'a pas le droit de faire.
