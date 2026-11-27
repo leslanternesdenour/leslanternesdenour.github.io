@@ -2,7 +2,7 @@
 // Ce fichier relie tout : terrain, décors, ciel, personnages, commandes, sons, découvertes et carnet.
 import './route/bac-a-sable-demarrage.js';   // mode test isolé (?sandbox=1) : doit rester le PREMIER import
 import * as THREE from 'three';
-import { Terrain, LIEUX, LIMITE, lisse, activerSortieRoute } from './terrain.js?v=3';
+import { Terrain, LIEUX, CHEMINS, LIMITE, lisse, activerSortieRoute } from './terrain.js?v=3';
 import { creerDecor } from './decor.js?v=6';
 import { Ciel } from './ciel.js?v=3';
 import { Enfant, Chameau } from './personnages.js?v=4';
@@ -34,7 +34,7 @@ import { creerRegions, REGIONS } from './regions.js?v=4';
 import { illustration, ICONE_MOTS, ICONE_SON } from './illustrations.js?v=3';
 import { creerEffetDecouverte } from './decouverte.js?v=3';
 import { MOTS } from './quetes.js?v=4';
-import { creerCarte, CATEGORIES } from './carte.js?v=3';
+import { creerCarte, CATEGORIES } from './carte.js?v=4';
 import { creerBourse } from './economie.js?v=3';
 import { creerQuotidien } from './quotidien.js?v=3';
 import { reglageGrain, materiau } from './formes.js?v=4';
@@ -84,9 +84,10 @@ async function demarrer() {
   await attendre();
   // La Route vers La Mecque : préproduction et machine locale seulement (voir route/drapeau.js). Sur le vrai site, rien de tout cela n'existe.
   const ROUTE = routeActive();
-  let donneesRoute = null;
+  let donneesRoute = null, lieuVersLaMecque = null, voirTouteLaRoute = null;
   if (ROUTE) {
     donneesRoute = await import('./route/donnees.js');
+    ({ lieuVersLaMecque, voirTouteLaRoute } = await import('./route/carte-pays-route.js'));
     activerSortieRoute(donneesRoute.SORTIE_VILLAGE);
     LIEUX.route = { x: 352, z: 50, r: 30 };
     REGIONS.route = donneesRoute.REGION_ROUTE;
@@ -746,6 +747,8 @@ async function demarrer() {
     document.querySelector('.onglets').appendChild(b); b.addEventListener('click', () => ouvrirCarnet('route'));
     const c = document.createElement('button'); c.textContent = '🐪'; c.setAttribute('aria-label', 'Carte de la grande route vers La Mecque'); c.title = 'La grande route';
     c.addEventListener('click', () => { fermerCarte(); setTimeout(() => route.ouvrirCarte(), 60); }); document.querySelector('.carte-outils').appendChild(c);
+    const m = document.createElement('button'); m.id = 'carte-vers-mecque'; m.textContent = '🕋 Route vers La Mecque';
+    m.addEventListener('click', () => carte.ouvrir('route')); $('carte-pays').insertBefore(m, $('carte-fiche'));
   }
   function pageCarnet(o) {
     if (o === 'route' && route) return route.pageCarnet();
@@ -1330,6 +1333,8 @@ async function demarrer() {
     zone('wadi', LIEUX.wadi.x, LIEUX.wadi.z, 'desert', 50, { rayon: 14, icone: '🌼', verrou: regions.ouverte('wadi') ? null : regions.explication('wadi') });
     zone('rochers', LIEUX.rochers.x, LIEUX.rochers.z, 'decouverte', 44, { rayon: 12, icone: '⛰️', verrou: regions.ouverte('rochers') ? null : regions.explication('rochers') });
     L.push({ id: 'col', nom: 'Le col', cat: 'passage', x: 0, z: -150, connu: true, rayon: 8, verrou: fermePremium('col') || decor.col.ouvert ? fermePremium('col') : 'Ce passage s\'ouvrira quand tu auras découvert l\'oasis et le camp des caravanes.', texte: 'Le passage entre le village et les montagnes.' });
+    // la grande route : toujours montrée sur la carte ; l'accès reste décidé par regions.js (l'éboulis du seuil)
+    if (route) L.push(lieuVersLaMecque({ chemin: CHEMINS[0], ouverte: regions.ouverte('route'), explication: regions.explication('route') }));
     L.push({ id: 'puits', nom: 'Le puits du village', cat: 'eau', x: 0, z: 3.4, connu: true, rayon: 4 });
     L.push({ id: 'abreuvoir', nom: 'L\'abreuvoir de l\'enclos', cat: 'eau', x: 36.5, z: -12.5, connu: true, rayon: 4 });
     L.push({ id: 'ecurie', nom: 'L\'écurie de Nabil', cat: 'ecurie', x: ecurie.point.x, z: ecurie.point.z, connu: true, rayon: 4, texte: 'Pour choisir ou adopter une monture.' });
@@ -1362,7 +1367,8 @@ async function demarrer() {
     monture: () => ({ x: C.x, z: C.z, icone: monture(AV.monture).icone, avecToi: monte }),
     route: () => guide.route, dest: () => guide.dest,
     guider: l => guiderVers({ id: l.id, x: l.x, z: l.z, nom: l.connu ? l.nom : 'un lieu inconnu', icone: l.connu ? (l.icone || CATEGORIES[l.cat].icone) : '❔', rayon: l.rayon || 5 }),
-    arreter: () => { guide.arreter(); etat.guidage = null; enregistrer(); majGuidage(null); }, fermer: () => fermerCarte()
+    arreter: () => { guide.arreter(); etat.guidage = null; enregistrer(); majGuidage(null); }, fermer: () => fermerCarte(),
+    voirRoute: () => voirTouteLaRoute({ fermerCarte, route })
   });
   function ouvrirCarte(lieuId) {
     if (route && route.enRoute()) { if (!interface_ouverte) route.ouvrirCarte(); return; }

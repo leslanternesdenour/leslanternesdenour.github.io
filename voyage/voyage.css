@@ -372,6 +372,15 @@ body.jumelles-actives #scene{filter:none}
 .fiche-boutons:empty{display:none}
 .carte-aide{position:absolute;left:50%;bottom:calc(12px + var(--bas));transform:translateX(-50%);margin:0;padding:6px 14px;border-radius:14px;background:rgba(58,42,26,.7);color:#fff3dc;font-weight:700;font-size:14px;pointer-events:none}
 #carte-fiche:not(.cache) ~ .carte-aide{display:none}
+#carte-vers-mecque{position:absolute;left:50%;bottom:calc(52px + var(--bas));transform:translateX(-50%);min-height:48px;padding:8px 20px;border:3px solid #f5b942;border-radius:999px;white-space:nowrap;
+  background:#fff3dc;color:#5a3d22;font:800 16px Poppins,sans-serif;cursor:pointer;box-shadow:0 3px 0 #b39468,0 6px 14px rgba(0,0,0,.35)}
+#carte-pays:has(#carte-fiche:not(.cache)) #carte-vers-mecque{display:none}
+@media (max-width:600px) and (orientation:portrait){
+  /* carte du pays */
+  .carte-outils{top:auto;bottom:calc(52px + var(--bas));right:50%;transform:translateX(50%);flex-direction:row}
+  #carte-vers-mecque{bottom:calc(116px + var(--bas))}
+  .carte-aide{white-space:nowrap}
+}
 /* ===== Guidage ===== */
 #guidage{position:fixed;left:50%;top:calc(70px + var(--haut));transform:translateX(-50%);z-index:9;display:flex;align-items:center;gap:8px;
   padding:6px 8px 6px 12px;border-radius:24px;background:rgba(58,42,26,.82);color:#fff3dc;font:800 16px Poppins,sans-serif;box-shadow:0 4px 14px rgba(0,0,0,.3);max-width:calc(100% - 24px)}

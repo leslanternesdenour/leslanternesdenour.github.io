@@ -88,6 +88,12 @@ export function creerCarteRoute({ route, age, joueur, surFermer, surOuvrir }) {
       if (sel) { x.beginPath(); x.arc(p.x, p.y - 6 * d, 18 * d, 0, 6.283); x.fillStyle = 'rgba(255,211,107,.55)'; x.fill(); }
       x.fillStyle = '#3a2a1a'; x.fillText(ok ? l.icone : '❔', p.x, p.y); x.globalAlpha = 1;
     }
+    // le bout de la route : La Mecque, toujours écrite (la montrer ne compte pas comme l'avoir découverte)
+    { const pp = positionDeLieu(LIEUX_ROUTE.find(l => l.id === 'cite-place')), p = P(pp.s, pp.t), txt = '🕋 La Mecque';
+      x.beginPath(); x.arc(p.x, p.y - 6 * d, 15 * d, 0, 6.283); x.strokeStyle = '#5a3d22'; x.lineWidth = 6 * d; x.stroke(); x.strokeStyle = '#f5b942'; x.lineWidth = 3.5 * d; x.stroke();
+      x.font = `bold ${15 * d}px Georgia, serif`; x.textAlign = 'center'; const lw = x.measureText(txt).width;
+      const tx = Math.max(lw / 2 + 6 * d, Math.min(w - lw / 2 - 6 * d, p.x)), ty = p.y + 32 * d;
+      x.fillStyle = '#fff8e7'; x.fillRect(tx - lw / 2 - 5 * d, ty - 16 * d, lw + 10 * d, 22 * d); x.fillStyle = '#4a2e16'; x.fillText(txt, tx, ty); }
     // la destination choisie
     if (cap) { const p = P(cap.s, cap.t); x.strokeStyle = '#c0392b'; x.lineWidth = 3 * d; x.beginPath(); x.arc(p.x, p.y - 6 * d, 22 * d, 0, 6.283); x.stroke(); }
     // la position de l'enfant

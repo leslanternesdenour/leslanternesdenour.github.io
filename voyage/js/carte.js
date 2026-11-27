@@ -125,6 +125,14 @@ export function creerCarte(terrain, api) {
       g.addColorStop(0, 'rgba(226,206,160,.92)'); g.addColorStop(1, 'rgba(226,206,160,0)');
       ctx.fillStyle = g; ctx.beginPath(); ctx.arc(c.X, c.Y, r, 0, Math.PI * 2); ctx.fill();
     }
+    // les grandes routes (La Mecque) : un trait doré par-dessus le parchemin, y compris sur son bord bruni
+    for (const l of L) if (l.trace) {
+      ctx.setLineDash([]); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      for (const [couleur, largeur] of [['#5a3d22', 9], ['#f5b942', 5.5]]) {
+        ctx.strokeStyle = couleur; ctx.lineWidth = largeur * d;
+        ctx.beginPath(); l.trace.forEach(([wx, wz], n) => { const c = ecran(wx, wz); n ? ctx.lineTo(c.X, c.Y) : ctx.moveTo(c.X, c.Y); }); ctx.stroke();
+      }
+    }
     // le chemin du guidage
     const route = api.route();
     if (route && route.length > 1) {
@@ -146,7 +154,10 @@ export function creerCarte(terrain, api) {
       if (l.fait) { ctx.font = `${12 * d}px sans-serif`; ctx.fillText('✅', R * 0.75, -R * 0.75); }
       if (l.grand || vue.zoom > 3.4 || sel || dest) {
         ctx.font = `italic bold ${(l.grand ? 16 : 13) * d}px Georgia, serif`; ctx.lineWidth = 4 * d; ctx.strokeStyle = 'rgba(243,227,195,.9)'; ctx.fillStyle = '#4a2e16';
-        const txt = l.connu ? l.nom : 'Lieu inconnu'; ctx.strokeText(txt, 0, R + 13 * d); ctx.fillText(txt, 0, R + 13 * d);
+        const txt = l.connu ? l.nom : 'Lieu inconnu';
+        // au bout d'une grande route (tout au bord du parchemin), le nom se décale pour rester entier à l'écran
+        const dx = l.trace && c.X <= w ? Math.min(0, w - 4 * d - c.X - ctx.measureText(txt).width / 2) : 0;
+        ctx.strokeText(txt, dx, R + 13 * d); ctx.fillText(txt, dx, R + 13 * d);
       }
       ctx.restore();
     }
@@ -204,11 +215,12 @@ export function creerCarte(terrain, api) {
     const estDest = api.dest() && api.dest().id === l.id;
     f.innerHTML = `<div class="fiche-tete"><span>${l.connu ? (l.icone || cat.icone) : '❔'}</span><div><b>${l.connu ? l.nom : 'Un lieu encore inconnu'}</b><small>${cat.nom}${l.fait ? ' · déjà vu ✓' : ''} · à ${dist} m</small></div><button class="fermer-fiche" aria-label="Fermer">✕</button></div>
       ${l.texte ? `<p>${l.texte}</p>` : ''}${l.verrou ? `<p class="verrou">🔒 ${l.verrou}</p>` : ''}
-      <div class="fiche-boutons">${estDest ? '<button class="petit-bouton" data-arreter>Arrêter le guidage</button>' : l.guidable !== false && !l.verrou ? '<button class="gros-bouton" data-guider>🧭 Me guider</button>' : ''}</div>`;
+      <div class="fiche-boutons">${estDest ? '<button class="petit-bouton" data-arreter>Arrêter le guidage</button>' : l.guidable !== false && !l.verrou ? '<button class="gros-bouton" data-guider>🧭 Me guider</button>' : ''}${l.trace && api.voirRoute ? '<button class="petit-bouton" data-voir-route>🗺️ Voir toute la route</button>' : ''}</div>`;
     f.classList.remove('cache');
     f.querySelector('.fermer-fiche').onclick = () => choisir(null);
     const gb = f.querySelector('[data-guider]'); if (gb) gb.onclick = () => { const ok = api.guider(l); if (ok) { choisir(null); api.fermer(); } };
     const ab = f.querySelector('[data-arreter]'); if (ab) ab.onclick = () => { api.arreter(); choisir(l); };
+    const vr = f.querySelector('[data-voir-route]'); if (vr) vr.onclick = () => api.voirRoute();
   }
 
   return {

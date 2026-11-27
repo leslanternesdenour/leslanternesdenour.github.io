@@ -1,0 +1,68 @@
+{
+  "limites": {
+    "parAppelUSD": 1,
+    "parJourUSD": 3,
+    "parMoisUSD": 20,
+    "appelsParJourParAgent": 25,
+    "delaiSecondes": 240,
+    "tentatives": 3,
+    "caracteresMax": 300000,
+    "imagesMax": 6,
+    "imageOctetsMax": 5000000
+  },
+  "agents": {
+    "claude": { "actif": true, "type": "session" },
+    "gemini": { "actif": true, "modele": "gemini-3.8-flash", "effort": "medium", "jetonsSortieMax": 16000 }
+  },
+  "orientation": {
+    "_note": "Mots cherchés au début d'un mot, sans accents. « ordreInitial » est un point de départ réglable, PAS un classement de compétence : tant que les mesures manquent, le système fait tourner les modèles.",
+    "domaines": {
+      "securite": ["securite", "faille", "paiement", "stripe", "mot de passe", "authentification", "injection", "xss", "jeton", "droits d acces", "donnees personnelles", "firestore.rules", "functions/api/"],
+      "visuel": ["visuel", "interface", "affichage", "capture", "mise en page", "mobile", "design", "couleur", "bouton", "deborde", ".css"],
+      "histoire": ["histoire", "historique", "mecque", "hajj", "kaaba", "prophete", "coran", "hadith", "geograph", "anachron"],
+      "pedagogie": ["pedagog", "enfant", "lecon", "consigne", "contenu", "apprentissage", "prononciation"],
+      "redaction": ["faute de frappe", "coquille", "orthograph", "reformul", "traduction"],
+      "tests": ["test", "qualite", "couverture"],
+      "architecture": ["architecture", "refonte", "migration", "structure du projet"],
+      "code": ["bogue", "bug", "erreur", "plante", "regression", "fonction", "javascript", "ne demarre", "ne marche"]
+    },
+    "domaineParDefaut": "code",
+    "motsCritiques": ["securite", "faille", "paiement", "stripe", "mot de passe", "authentification", "donnees personnelles", "production", "suppression", "migration", "firestore.rules", "functions/api/"],
+    "motsComplexes": ["regression", "refonte", "architecture", "intermittent", "plusieurs pages"],
+    "motsPetits": ["faute de frappe", "coquille", "renommer", "reformuler"],
+    "seuils": { "caracteresComplexe": 20000, "fichiersComplexe": 4, "caracteresPetit": 6000 },
+    "niveaux": {
+      "petite": { "analystes": 1, "profil": "economique" },
+      "moyenne": { "analystes": 1, "profil": "standard" },
+      "complexe": { "analystes": 2, "profil": "standard" },
+      "critique": { "analystes": 2, "profil": "approfondi" }
+    },
+    "ordreInitial": {
+      "securite": ["claude", "gemini"],
+      "code": ["claude", "gemini"],
+      "tests": ["claude", "gemini"],
+      "architecture": ["claude", "gemini"],
+      "visuel": ["gemini", "claude"],
+      "pedagogie": ["gemini", "claude"],
+      "histoire": ["gemini", "claude"],
+      "redaction": ["gemini", "claude"]
+    },
+    "mesuresMinimum": 5
+  },
+  "profils": {
+    "standard": {},
+    "economique": {
+      "gemini": { "modele": "gemini-3.5-flash-lite", "effort": "low", "jetonsSortieMax": 8000 }
+    },
+    "approfondi": {
+      "gemini": { "modele": "gemini-4-carbon", "effort": "high" }
+    }
+  },
+  "tarifs": {
+    "_note": "Dollars par million de jetons, relevés le 26/11/2026 sur les pages officielles. Quand une hausse est annoncée (Gemini 4 Carbon au 01/12/2026, 3.8 Flash au 01/01/2027), le prix le plus haut est déjà inscrit.",
+    "gemini-4-carbon": { "entree": 4, "sortie": 20 },
+    "gemini-4-hydrogen": { "entree": 1.5, "sortie": 7.5 },
+    "gemini-3.8-flash": { "entree": 1.5, "sortie": 7.5 },
+    "gemini-3.5-flash-lite": { "entree": 0.3, "sortie": 2.5 }
+  }
+}
