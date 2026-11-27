@@ -116,13 +116,21 @@ Règle appliquée par `r2.mjs retention` : **tout garder 14 jours**, puis **1 pa
 # Créer la copie dédiée et la tâche (déjà fait) :
 git worktree add --detach "$env:USERPROFILE\outils-claude\depot-sauvegarde" <branche-contenant-les-scripts>
 $a = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument "-NoProfile -ExecutionPolicy Bypass -File `"$env:USERPROFILE\outils-claude\depot-sauvegarde\outils\sauvegarde\sauvegarde-quotidienne.ps1`""
-Register-ScheduledTask -TaskName 'Sauvegarde Lanternes de Nour' -Action $a -Trigger (New-ScheduledTaskTrigger -Daily -At 3:00) -Settings (New-ScheduledTaskSettingsSet -StartWhenAvailable -ExecutionTimeLimit (New-TimeSpan -Minutes 20) -MultipleInstances IgnoreNew)
+$r = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -WakeToRun -RunOnlyIfNetworkAvailable -ExecutionTimeLimit (New-TimeSpan -Minutes 45) -MultipleInstances IgnoreNew
+Register-ScheduledTask -TaskName 'Sauvegarde Lanternes de Nour' -Action $a -Trigger (New-ScheduledTaskTrigger -Daily -At 3:00) -Settings $r
 # Mettre la copie à jour (par exemple après la fusion dans preproduction) :
 git -C "$env:USERPROFILE\outils-claude\depot-sauvegarde" fetch origin; git -C "$env:USERPROFILE\outils-claude\depot-sauvegarde" checkout --detach origin/preproduction
 # Retirer la tâche :
 Unregister-ScheduledTask -TaskName 'Sauvegarde Lanternes de Nour' -Confirm:$false
 ```
-Où regarder si ça marche : `outils-claude\sauvegardes\firestore\journal-sauvegarde.log` (une ligne « Sauvegarde terminee » par jour), puis `node outils/sauvegarde/r2.mjs statut --dossier=…`. Le script a été exécuté de bout en bout à la main le 27/11/2026 (code 0) ; un lancement manuel depuis l'outil de l'administrateur est resté « en attente » sans démarrer, donc **le premier déclenchement automatique à 3 h est à confirmer le 28/11 dans le journal**.
+Où regarder si ça marche : `outils-claude\sauvegardes\firestore\journal-sauvegarde.log` (une ligne « Sauvegarde terminee » par jour), puis `node outils/sauvegarde/r2.mjs statut --dossier=…`. Le script a été exécuté de bout en bout le 27/11/2026 : à la main, par `schtasks /run` et par le déclencheur horaire réel (code 0 à chaque fois, 2 archives + envoi R2 vérifié, aucune suppression). **Le premier déclenchement automatique à 3 h reste à confirmer le 28/11 dans le journal.**
+
+Réglages de la tâche et leur raison :
+- **Batterie autorisée** (`AllowStartIfOnBatteries`, `DontStopIfGoingOnBatteries`) : par défaut Windows ne démarre pas une tâche sur batterie ; sur un portable, la tâche restait « En attente » indéfiniment.
+- **`StartWhenAvailable`** : si l'ordinateur est éteint ou en veille à 3 h, la tâche part dès qu'il est rallumé **et que la session de l'utilisateur est ouverte** (la tâche ne s'exécute que session ouverte, sans mot de passe stocké).
+- **`WakeToRun`** : réveille l'ordinateur en veille à 3 h, mais seulement **sur secteur** (les minuteurs de réveil sont désactivés sur batterie par le plan d'alimentation ; ce réglage n'a pas été modifié pour éviter qu'un portable dans un sac ne se réveille). Sur batterie en veille, la sauvegarde part au réveil suivant.
+- **`RunOnlyIfNetworkAvailable`** : pas de lancement sans réseau.
+- **Reprise après échec** : le Planificateur Windows ne relance **pas** une tâche qui se termine avec un code d'erreur (essai réel : aucune relance). C'est donc le script qui fait jusqu'à **3 essais, 5 minutes d'écart** (`-Essais`, `-PauseEssais`), journalisés ; après le troisième, il écrit « ECHEC DEFINITIF » et sort avec le code 1. Durée maximale de la tâche : 45 minutes.
 
 ### Validation de la copie R2 (27/11/2026)
 - Bucket `ldn-sauvegardes` créé en **Europe de l'Ouest**, accès public `r2.dev` **désactivé**, **aucun domaine** connecté ; règle de verrouillage `verrou-30-jours` sur le préfixe `sauvegardes/` (30 jours).
