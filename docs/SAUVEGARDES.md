@@ -34,7 +34,10 @@ Garder au moins **deux copies** à des endroits différents (ordinateur + disque
 ```powershell
 Get-FileHash "<fichier>.age" -Algorithm SHA256   # doit être égal au contenu du fichier .sha256
 ```
-Une vraie vérification de lecture se fait avec la clé privée (exercice de restauration ci-dessous).
+Vérification complète avec la clé privée (à lancer par le propriétaire ; n'affiche que des nombres, jamais de donnée ni la clé) :
+```powershell
+node outils/sauvegarde/verifier-sauvegarde.mjs --fichier="<fichier>.age" --cle-privee="<fichier de la clé privée>"
+```
 
 ## Restaurer (exercice à faire dans un projet de TEST, jamais directement en production)
 1. Créer un projet Firebase de test (nom contenant « test » ou « restauration »).
