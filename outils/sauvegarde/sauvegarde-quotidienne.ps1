@@ -9,6 +9,8 @@ param(
   [switch]$SansR2
 )
 $ErrorActionPreference = 'Stop'
+# Les sorties de Node sont en UTF-8 : sans ceci, PowerShell 5.1 les lit en page de code OEM et les accents du journal sont abimes.
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8
 $racine = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
 New-Item -ItemType Directory -Force $Dossier | Out-Null
 $journal = Join-Path $Dossier 'journal-sauvegarde.log'
