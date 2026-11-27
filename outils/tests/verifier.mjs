@@ -29,11 +29,13 @@ for (const f of fichiers.filter(f => /\.(html|css|webmanifest)$/.test(f))) {
   const s = fs.readFileSync(f, 'utf8'), d = path.dirname(f);
   const liens = [...s.matchAll(/(?:src|href)="([^"]+)"/g)].map(m => m[1])
     .concat([...s.matchAll(/srcset="([^"]+)"/g)].flatMap(m => m[1].split(',').map(x => x.trim().split(' ')[0])))
-    .concat([...s.matchAll(/url\(\s*['"]?([^'")]+)['"]?\s*\)/g)].map(m => m[1]))
+    // url() CSS = une seule adresse : « url(sel.value, c) » est un appel de fonction JavaScript, pas un lien.
+    .concat([...s.matchAll(/url\(\s*['"]?([^'")]+)['"]?\s*\)/g)].map(m => m[1]).filter(v => !v.includes(',')))
     .concat([...s.matchAll(/"src"\s*:\s*"([^"]+)"/g)].map(m => m[1]));
   for (let u of liens) { if (externe(u)) continue; u = u.split('#')[0].split('?')[0]; if (!u) continue;
     let t = u.startsWith('/') ? path.join(RACINE, u) : path.resolve(d, u); if (fs.existsSync(t) && fs.statSync(t).isDirectory()) t = path.join(t, 'index.html');
-    test(`lien ${rel(f)} → ${u}`, fs.existsSync(t)); }
+    // Cloudflare Pages sert « /ecoute » depuis « ecoute.html » (adresses sans extension).
+    test(`lien ${rel(f)} → ${u}`, fs.existsSync(t) || fs.existsSync(t + '.html')); }
 }
 // imports ES des modules
 for (const f of fichiers.filter(f => f.endsWith('.js'))) {
