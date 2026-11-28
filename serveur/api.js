@@ -206,7 +206,7 @@ export async function traiter(req, ctx) {
       const { d, connecte, vue: simulee } = await droitsContenus(ctx, session, req);
       const vue = {};
       for (const [g, items] of Object.entries(cat)) vue[g] = Object.fromEntries(Object.entries(items).map(([id, n]) => [id, { niveau: n, publie: n !== 'apercu', ouvert: peutAcceder(n, d) || (n === 'gratuit' && connecte) }]));
-      return json({ catalogue: vue, vue: simulee, bandeau: ((await ctx.base.lire('catalogue', 'bandeau')) || {}).texte || null });
+      return json({ catalogue: vue, vue: simulee, createur: !simulee && !!d && d.statut === 'creator', bandeau: ((await ctx.base.lire('catalogue', 'bandeau')) || {}).texte || null });
     }
 
     // ----- contenus Premium (stockage privé R2) -----

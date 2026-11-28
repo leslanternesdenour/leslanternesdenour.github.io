@@ -22,7 +22,7 @@ export function appliquerPack(pack, { POINTS, DESCRIPTIONS_LIEUX, SPOTS, ajouter
 
 // Demande au serveur ce qui est ouvert, puis le contenu de chaque zone ouverte.
 export async function chargerPremium(tables, { fetcher = (u, o) => fetch(u, o) } = {}) {
-  const acces = { zones: new Set(), missions: new Set(), vue: null, raison: null };
+  const acces = { zones: new Set(), missions: new Set(), sansPack: new Set(), createur: false, vue: null, raison: null };
   let cat;
   try {
     const r = await fetcher('/api/catalogue', { credentials: 'same-origin', cache: 'no-store' });
@@ -30,6 +30,7 @@ export async function chargerPremium(tables, { fetcher = (u, o) => fetch(u, o) }
     cat = await r.json();
   } catch (e) { acces.raison = 'hors-ligne'; return finir(acces); }
   acces.vue = cat.vue || null;
+  acces.createur = cat.createur === true;   // décidé par le serveur (rôle + UID secret) ; jamais vrai en « voir comme »
   const voyage = (cat.catalogue && cat.catalogue.voyage) || {}, missions = (cat.catalogue && cat.catalogue.missions) || {};
   for (const id of MISSIONS_PREMIUM) if (missions[id] && missions[id].ouvert) acces.missions.add(id);
   await Promise.all(ZONES_PREMIUM.map(async id => {
@@ -37,8 +38,11 @@ export async function chargerPremium(tables, { fetcher = (u, o) => fetch(u, o) }
     if (!AVEC_CONTENU.includes(id)) { acces.zones.add(id); return; }
     try {
       const r = await fetcher(`/api/premium/voyage/${id}/contenu.json`, { credentials: 'same-origin', cache: 'no-store' });
-      if (r.ok && appliquerPack(await r.json(), tables)) acces.zones.add(id);
-    } catch (e) { /* zone laissée fermée */ }
+      if (r.ok && appliquerPack(await r.json(), tables)) { acces.zones.add(id); return; }
+    } catch (e) { /* contenu non reçu */ }
+    // Le Créateur n'est pas bloqué par un pack non importé : sa zone s'ouvre SANS textes ni voix (rien n'est inventé) et le jeu le lui signale.
+    // Pour tout autre compte, une zone sans contenu reçu reste fermée.
+    if (acces.createur) { acces.zones.add(id); acces.sansPack.add(id); }
   }));
   // le col mène aux montagnes : il n'est ouvert que si les montagnes le sont aussi
   if (!acces.zones.has('montagnes')) acces.zones.delete('col');

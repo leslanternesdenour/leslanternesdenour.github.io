@@ -101,6 +101,8 @@ async function demarrer() {
   $('chargement-detail').textContent = 'On construit le village';
   await attendre();
   const acces = await accesPromis;
+  // Créateur seulement : zones ouvertes mais pack Premium pas encore importé (ni textes ni voix) — on le lui dit clairement, une fois.
+  if (acces.sansPack && acces.sansPack.size) setTimeout(() => montrerIndice('🛠️ Créateur : le pack Premium n\'est pas importé. Les zones sont ouvertes sans textes ni voix. Importe-le dans Administration → Pack Premium.', 12000), 9000);
   const decor = creerDecor(scene, terrain, Q, TX);
   decor.construireZone('village');   // avant l'aventure : les objets cachés évitent les maisons
   const effets = creerEffets(scene, terrain, Q);

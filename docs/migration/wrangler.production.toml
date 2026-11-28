@@ -18,4 +18,9 @@ FIREBASE_PROJET = "lanternes-de-nour"
 #   2. Secrets (tableau de bord, environnement « Production », type « Secret ») : STRIPE_CLE_SECRETE (sk_live_…), STRIPE_CLE_PUBLIABLE (pk_live_…),
 #      STRIPE_SECRET_WEBHOOK (whsec_… du webhook https://leslanternesdenour.fr/api/stripe/webhook), puis STRIPE_MODE_REEL = autorise (interrupteur final).
 #   3. Le contrôle outils/migration/basculer-cloudflare.mjs (« aucune variable STRIPE_* en production ») est fait pour la bascule initiale : il doit être adapté à ce moment-là.
-# Stockage privé Premium (R2_PREMIUM) : non activé.
+# Stockage privé Premium : liaison R2 « R2_PREMIUM » (décision du créateur, 28/11/2026). Le seau « ldn-premium » est PRIVÉ (aucune URL publique) :
+# son contenu n'est lisible que par /api/premium/*, qui applique les droits côté serveur (Gratuit/visiteur refusés, Premium/Famille/Créateur selon le catalogue).
+# Les fichiers y sont déposés par le Créateur (page /admin/ → Pack Premium) ou par outils/sauvegarde ; il n'y a aucun contenu inventé : seau vide = zones fermées.
+[[r2_buckets]]
+binding = "R2_PREMIUM"
+bucket_name = "ldn-premium"

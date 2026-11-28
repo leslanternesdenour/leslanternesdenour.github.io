@@ -8,7 +8,8 @@ test('ouverture : la Route est active sur le vrai site (avec et sans www), jamai
   assert.equal(routeActive('www.leslanternesdenour.fr'), true);
   assert.equal(routeActive('leslanternesdenour.fr.evil.com'), false);
   assert.equal(routeActive('evil-leslanternesdenour.fr'), false);
-  assert.equal(routeActive('lanternes-de-nour.pages.dev'), false, 'le domaine Pages de production n\'est pas le vrai site');
+  assert.equal(routeActive('lanternes-de-nour.pages.dev'), true, 'le domaine Pages de production sert le même site public (28/11/2026)');
+  assert.equal(routeActive('lanternes-de-nour.pages.dev.evil.com'), false);
 });
 
 test('ouverture : hoteDeTest reste réservé à la préproduction et au local (bac à sable, panneau de test)', async () => {
