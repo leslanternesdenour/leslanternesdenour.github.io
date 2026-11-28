@@ -3,6 +3,7 @@
 // L'enfant peut toucher un lieu pour que la flèche de cap l'y conduise (aucune téléportation).
 import { REGIONS_ROUTE, LIEUX_ROUTE, positionDeLieu, regionA } from './donnees.js';
 import { pointChemin, OASIS, S_FIN_TRANCHE } from './relief.js';
+import { LIEU_HALTE } from './halte-plan.js';
 
 const S0 = -300, S1 = 6100, T0 = -800, T1 = 800;          // l'étendue de la carte (m)
 export function creerProjection(w, h, portrait) {
@@ -23,7 +24,7 @@ export function capVers(j, c) {
 
 export function creerCarteRoute({ route, age, joueur, surFermer, surOuvrir }) {
   let el = null, cv = null, ctx2 = null, info = null, ouverte = false, choisi = null, cap = null, elCap = null, tCap = 0, fond = null, fondTaille = '';
-  const lieuxCarte = () => LIEUX_ROUTE.filter(l => l.type !== 'objet' && l.type !== 'personnage');
+  const lieuxCarte = () => [...LIEUX_ROUTE.filter(l => l.type !== 'objet' && l.type !== 'personnage'), LIEU_HALTE];   // + la halte de repos (à découvrir en passant, jamais comptée dans une mission)
   const connu = l => route.decouvertes.includes(l.id) || route.repos.includes(l.id) || Object.values(route.missions).some(m => (m.faits || []).includes(l.id));
 
   function construire() {

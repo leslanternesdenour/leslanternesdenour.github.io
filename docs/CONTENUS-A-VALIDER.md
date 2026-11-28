@@ -16,6 +16,7 @@ Règle respectée : aucune représentation de prophète (textes uniquement ; tes
 | Calendrier du Ramadan (30 missions) | `calendrier/data.js` | Missions « prophètes » (Adam, Nouh, Ibrahim, Youssouf, Younous) renvoient aux 5 épisodes de la chaîne (existants). Références cohérentes (Coran 7:23, 29:14, 12:92, 21:87, 97:3, 2:185). **À valider : chaque référence de hadith, la zakât al-fitr (donnée aux enfants « même les enfants » : formulation à confirmer), les devinettes à la première personne (« Mes frères m'ont jeté dans un puits… ») : texte seulement, aucun visage.** |
 | Mystères du désert | `aventures/mysteres-desert/contenu.js` | Aucun contenu religieux (énigmes d'observation). Rien à valider. |
 | Page Conditions | `conditions/index.html` | Clause de rétractation (L221-28 13°) : relecture juridique avant ouverture commerciale. |
+| Halte de repos de la Route (8 textes courts, 2 âges) | `voyage/js/route/textes-halte.js` | Aucun contenu religieux ni fait historique inventé : matériaux et vivres de l'Arabie du VIIe siècle (tente en poils de chèvre, tapis de laine, outres, jarres, dattes, pain d'orge, palmiers). Un conseil de voyageur (boire souvent, à petites gorgées) et un fait (les dattes se gardent longtemps). Relecture de ton souhaitée, rien d'obligatoire. |
 
 ## Règle pour les jeux « Bientôt »
 Les trois cartes restantes de la page Aventures ne contiennent AUCUN texte coranique tapé, aucune sourate, aucun récit de prophète : voir `docs/AVENTURES-NOUVEAUX-JEUX.md`.

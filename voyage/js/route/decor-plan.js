@@ -1,7 +1,7 @@
 // Le semis du décor de La Route, tuile par tuile (pur, sans Three.js) : toujours le même pour la même tuile, léger, et la piste reste libre.
 // Le décor de chaque tuile est choisi selon la région (rochers à la sortie, buissons dans la plaine, palmiers à l'oasis…).
 import { TAILLE_TUILE } from './tuiles-plan.js';
-import { relief, distanceChemin, pointChemin, S_DEBUT, OASIS, CAMP, CITE } from './relief.js';
+import { relief, distanceChemin, pointChemin, S_DEBUT, OASIS, CAMP, CITE, HALTE } from './relief.js';
 import { lisse } from './bruit.js';
 import { regionA, LIEUX_ROUTE, positionDeLieu } from './donnees.js';
 
@@ -35,6 +35,7 @@ export function semerTuile(i, j) {
     const r = relief(s, t);
     if (type !== 'roseau' && (r.lac > 0.02 || r.dOasis < OASIS.lac + 3)) return false;
     if (r.dCamp < CAMP.r + 6) return false;
+    if (Math.hypot(s - HALTE.s, t - HALTE.t) < HALTE.r + 4) return false;     // la halte de repos : son décor est dessiné à la main, aucun rocher ni buisson semé dedans
     for (const p of lieux()) if (Math.hypot(p.s - s, p.t - t) < 5) return false;
     return true;
   };

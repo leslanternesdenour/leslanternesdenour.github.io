@@ -231,8 +231,12 @@ export class Voyageur {
     this.geste = null; this.balJupe = 0; this.angPrec = null;
   }
 
-  // Un petit geste : 'prendre' (se pencher pour ramasser), 'caresser', 'salut', 'joie'
-  faire(type) { this.geste = { type, t: 0, d: { prendre: 0.95, caresser: 1.6, salut: 1.3, joie: 1.1 }[type] || 1 }; }
+  // Un petit geste : 'prendre' (se pencher pour ramasser), 'caresser', 'salut', 'joie', 'boire' (la main à la bouche), 'assis' (s'asseoir un moment : on se relève dès qu'on marche).
+  // duree : en secondes (facultatif) ; faire(null) arrête le geste en cours.
+  faire(type, duree) {
+    if (!type) { this.geste = null; this.jupe.scale.y = 1; this.jupe.rotation.x = 0; return; }
+    this.geste = { type, t: 0, d: duree > 0 ? duree : ({ prendre: 0.95, caresser: 1.6, salut: 1.3, joie: 1.1, boire: 2.2, assis: 6 }[type] || 1) };
+  }
 
   animer(dt, vitesse, t) {
     const [jg, jd] = this.jambes, [bg, bd] = this.bras, f = this.genre === 'fille';
@@ -302,8 +306,9 @@ export class Voyageur {
     }
     // les gestes par-dessus le reste
     const g = this.geste;
-    if (g) {
-      g.t += dt; const k = Math.sin(Math.min(1, g.t / g.d) * Math.PI);
+    if (g && g.type === 'assis' && v > 0.6) { this.geste = null; this.jupe.scale.y = 1; this.jupe.rotation.x = 0; }   // on se relève dès qu'on repart : rien ne retient l'enfant
+    else if (g) {
+      g.t += dt; const k = g.type === 'assis' ? Math.min(1, g.t / 0.8, Math.max(0, (g.d - g.t) / 0.8)) : Math.sin(Math.min(1, g.t / g.d) * Math.PI);
       if (g.type === 'prendre') {
         // s'accroupir pour ramasser : les genoux plient vraiment, le bassin descend d'autant (les pieds restent au sol),
         // le dos reste assez droit, la tête suit le regard vers le sol, la main droite descend devant les pieds
@@ -322,11 +327,24 @@ export class Voyageur {
       } else if (g.type === 'salut') {
         // le bras se lève vers l'EXTÉRIEUR (avant : signe inversé, le bras passait devant le corps et la main finissait derrière la tête)
         bd.haut.rotation.set(-0.3 * k, 0, bd.s * 2.4 * k); bd.bas.rotation.set(0, 0, bd.s * (0.3 * k + Math.sin(g.t * 12) * 0.35 * k));
+      } else if (g.type === 'assis') {
+        // accroupi puis assis sur le tapis : les genoux plient franchement, le dos reste droit, les mains se posent sur les genoux, on respire doucement
+        const e = k * k * (3 - 2 * k), cuisse = -1.45 * e, genou = 2.3 * e;
+        for (const j of this.jambes) { j.haut.rotation.x = cuisse; j.bas.rotation.x = genou; }
+        corpsY -= 0.585 - (0.3 * Math.cos(cuisse) + 0.285 * Math.cos(cuisse + genou));
+        this.buste.rotation.x = this.buste.rotation.x * (1 - e) + (0.06 + Math.sin(t * 1.8) * 0.015) * e;
+        this.tete.rotation.x = this.tete.rotation.x * (1 - e) + (-0.04 + Math.sin(t * 0.7) * 0.03) * e;
+        this.jupe.scale.y = 1 - 0.55 * e; this.jupe.rotation.x = -0.35 * e;
+        for (const b of this.bras) { b.haut.rotation.set(-0.55 * e + b.haut.rotation.x * (1 - e), 0, b.s * 0.12 * e); b.bas.rotation.x = -1.1 * e + b.bas.rotation.x * (1 - e); }
+      } else if (g.type === 'boire') {
+        // la main droite (en coupe) monte vers la bouche, la tête se penche un peu en arrière, puis on repose la main
+        bd.haut.rotation.set(-1.75 * k, 0, -0.1 * k); bd.bas.rotation.set(-1.7 * k, 0, 0);
+        this.tete.rotation.x = this.tete.rotation.x * (1 - k) + (-0.22 * k);
       } else if (g.type === 'joie') {
         corpsY += Math.abs(Math.sin(g.t * Math.PI * 2 / g.d * 2)) * 0.12 * k;
         for (const b of this.bras) b.haut.rotation.set(-0.3 * k, 0, b.s * 2.3 * k);
       }
-      if (g.t >= g.d) { this.geste = null; this.jupe.scale.y = 1; }
+      if (this.geste && g.t >= g.d) { this.geste = null; this.jupe.scale.y = 1; this.jupe.rotation.x = 0; }
     }
     this.corps.position.y = corpsY;
   }
