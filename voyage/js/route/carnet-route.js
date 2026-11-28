@@ -41,7 +41,7 @@ export function pageCarnetRoute({ route, badges = {}, age = '6-10' }) {
   const lieux = LIEUX_ROUTE.filter(l => l.type !== 'objet' && l.type !== 'personnage' && decouv.includes(l.id));
   const total = LIEUX_ROUTE.filter(l => l.type !== 'objet' && l.type !== 'personnage').length;
   const decouvertes = `<h3>✨ Mes découvertes · ${lieux.length} / ${total}</h3>
-    <div class="grille-collection">${lieux.length ? lieux.map(l => `<div class="badge-gagne"><span>${l.icone}</span><b>${l.nom}</b></div>`).join('') : '<p class="note">Rien encore : explore la route !</p>'}</div>`;
+    <div class="grille-collection">${lieux.length ? lieux.map(l => `<div class="badge-gagne"><span>${l.icone}</span><b>${l.nom}</b></div>`).join('') : '<p class="note" style="grid-column:1/-1">Rien encore : explore la route !</p>'}</div>`;
   const missions = `<h3>🎯 Mes missions</h3>${Object.entries(MISSIONS_ROUTE).map(([id, M]) => {
     const m = (route.missions || {})[id], n = m ? (m.faits || []).length : 0, fini = m && m.etat === 'finie';
     return `<div class="carte-mission ${fini ? 'finie' : ''}"><h4>${M.icone} ${M.titre}${fini ? '<span class="etiquette">Réussie ✓</span>' : ''}</h4>

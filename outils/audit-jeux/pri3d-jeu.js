@@ -28,7 +28,7 @@ const PRIERE2 = ['takbir', 'mains', 'roukou', 'debout', 'soujoud', 'assis', 'sou
     if (i === 5) await page.screenshot({ path: `/tmp/claude-0/aud/pri3d-${taille}-roukou.png` });
     await page.click('#actions .geste');
     const s = await page.waitForSelector('#actions .suivant', { timeout: 45000 }).catch(() => null); t(`guidé étape ${i + 1} : bouton suivant après le geste`, !!s);
-    if (s) { await page.waitForTimeout(300); await s.click(); await page.waitForTimeout(500); }
+    if (s) { await page.waitForTimeout(300); await s.click({ force: true }); await page.waitForTimeout(500); }   // le bouton pulse volontairement (animation « attire ») : Playwright le juge instable sans force
   }
   await page.waitForSelector('#fin:not(.cache)', { timeout: 15000 }).catch(() => {});
   t("guidé : écran de fin « Machâ'Allah »", (await page.isVisible('#fin')) && /Mach/.test(await page.textContent('#fin-titre')));

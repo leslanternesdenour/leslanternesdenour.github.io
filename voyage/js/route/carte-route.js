@@ -78,12 +78,23 @@ export function creerCarteRoute({ route, age, joueur, surFermer, surOuvrir }) {
     x.strokeStyle = 'rgba(122,62,36,.9)'; x.lineWidth = 3.2 * d; x.setLineDash([10 * d, 8 * d]); x.lineCap = 'round'; x.beginPath();
     for (let s = S0; s <= S_FIN_TRANCHE; s += 20) { const q = pointChemin(s), p = P(s, q.t); s === S0 ? x.moveTo(p.x, p.y) : x.lineTo(p.x, p.y); } x.stroke(); x.setLineDash([]);
     // le village, au début
-    { const p = P(S0 + 20, 48); x.font = `${Math.round(24 * d)}px serif`; x.textAlign = 'center'; x.fillText('🏘️', p.x, p.y); x.font = `bold ${Math.round(12 * d)}px Georgia, serif`; x.fillStyle = '#4a3320'; x.fillText('Village de Nour', p.x, p.y + 18 * d); }
+    // (l'etiquette est decalee vers l'interieur de la carte : sinon elle est coupee par le bord)
+    { const p = P(S0 + 20, 48); x.font = `bold ${Math.round(12 * d)}px Georgia, serif`; const lw = x.measureText('Village de Nour').width, m = 6 * d;
+      const px = Math.min(Math.max(p.x, lw / 2 + m), w - lw / 2 - m);
+      x.font = `${Math.round(24 * d)}px serif`; x.textAlign = 'center'; x.fillStyle = '#3a2a1a'; const py0 = Math.max(p.y, 26 * d); x.fillText('🏘️', Math.max(p.x, 16 * d), py0);
+      x.font = `bold ${Math.round(12 * d)}px Georgia, serif`; x.fillStyle = '#4a3320'; x.fillText('Village de Nour', px, py0 + 18 * d); }
+    // La Mecque, au bout de la piste : un repere toujours visible (le nom est deja dans le titre de la carte ; rien de religieux n'est montre ici)
+    { const q = pointChemin(S_FIN_TRANCHE), p = P(S_FIN_TRANCHE, q.t), vu = route.decouvertes.includes('cite-place');
+      x.textAlign = 'center'; x.font = `${Math.round(26 * d)}px serif`; x.fillStyle = '#3a2a1a'; x.fillText('🏁', Math.min(p.x, w - 18 * d), p.y);
+      x.font = `bold ${Math.round(13 * d)}px Georgia, serif`; const lt = vu ? 'La Mecque · arrivée !' : 'La Mecque', lw = x.measureText(lt).width, px = Math.min(p.x, w - lw / 2 - 6 * d), py = p.y - 30 * d;
+      x.fillStyle = 'rgba(255,248,231,.88)'; x.fillRect(px - lw / 2 - 5 * d, py - 14 * d, lw + 10 * d, 20 * d); x.fillStyle = '#4a3320'; x.fillText(lt, px, py); }
     // les noms des régions : par-dessus tout, sur un petit fond clair pour rester lisibles
     for (const e of etiquettes) { x.font = `bold ${e.tp}px Georgia, serif`; const lw = x.measureText(e.txt).width; x.fillStyle = 'rgba(255,248,231,.78)'; x.fillRect(e.x - lw / 2 - 3 * d, e.y - e.tp, lw + 6 * d, e.tp * 1.3); x.fillStyle = '#4a3320'; x.textAlign = 'center'; x.fillText(e.txt, e.x, e.y); }
     // les lieux : découverts (icône) ou à explorer (point d'interrogation)
+    const inconnus = [];   // les ❔ trop proches d'un autre ne sont pas redessines (grappes illisibles) ; ils restent touchables
     for (const l of lieuxCarte()) {
       const pp = positionDeLieu(l), p = P(pp.s, pp.t), ok = connu(l), sel = choisi && choisi.id === l.id;
+      if (!ok && !sel) { if (inconnus.some(q => Math.hypot(q.x - p.x, q.y - p.y) < 17 * d)) continue; inconnus.push(p); }
       x.font = `${Math.round((ok ? 22 : 16) * d)}px serif`; x.textAlign = 'center'; x.globalAlpha = ok ? 1 : 0.55;
       if (sel) { x.beginPath(); x.arc(p.x, p.y - 6 * d, 18 * d, 0, 6.283); x.fillStyle = 'rgba(255,211,107,.55)'; x.fill(); }
       x.fillStyle = '#3a2a1a'; x.fillText(ok ? l.icone : '❔', p.x, p.y); x.globalAlpha = 1;

@@ -5,3 +5,6 @@ node_modules/
 # clés de service Firebase / Stripe : ne JAMAIS les versionner
 *-service-account*.json
 cles/
+
+# donnees locales de l'outil tdd-guard (propres a chaque poste, ne pas publier)
+.claude/tdd-guard/
