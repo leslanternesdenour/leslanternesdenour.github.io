@@ -3,6 +3,23 @@
 > Relevé du 23/11/2026. Complète `PASSATION-PREMIER-CLAUDE.md` (contexte, règles), `ETAT-TECHNIQUE-ACTUEL.md` (Git/Cloudflare/tests), `DEBRIEF-COMPLET-PROJET.md` (historique). **Rien n'est caché** : ce qui est incomplet est listé. Travailler **uniquement sur `preproduction`**.
 > Légende : 🧑 = attend une décision/action du responsable du projet (le premier Claude ne doit pas la prendre à sa place).
 
+## MISE À JOUR 28/11/2026 — état mesuré (prime sur ce qui suit en cas de contradiction)
+**Clos ce jour (vérifié par exécution, serveur local, Chromium sans carte graphique, un script à la fois)**
+- **P1-1 (Ablutions 3D, « retour inattendu »)** : *artefact du test, pas un bug du jeu*. Le script ne faisait jamais asseoir le personnage devant un robinet : le jeu attendait donc, à juste titre, « Touche un cercle doré… ». Corrigé dans `outils/audit-jeux/ablu3d-jeu.js` (appel à `__abl.asseoir(1)`). Résultat : Ablutions 3D ordinateur 51/52 (le seul écart était une attente périmée : 12 gestes en mode Libre, pas 11 ; corrigée), téléphone 52/52, aucune erreur JS.
+- **P1-3 (audit des jeux)** : Prière 3D (jamais lancée avant) ordinateur 60/60 et téléphone 60/60 ; Quiz téléphone 34/34 et tablette 34/34 ; Chasse aux mots tablette 23/23, téléphone 22/23 (le seul échec : le test « toucher réel » vise parfois une cible tirée au hasard hors de l'écran ; un toucher réel sur la cible fonctionne, vérifié à part) ; Mystères du désert téléphone 77/77 et tablette 77/77 ; Calendrier/Ramadan ordinateur 89/89 (téléphone et tablette : 87/88 avant correction de l'attente « grille de 30 lanternes », qui n'existe qu'une fois le profil créé) ; Ablutions 2D et Prière 2D ordinateur et téléphone 43/43 et 55/55. Non relancé (déjà fait le 23/11) : Quiz ordinateur complet. Reste hors de portée de la machine : **vrais appareils**.
+- **P2 « fichiers de débogage publiés »** : déjà résolu (plus aucun `dbg_*.png` ni `ecoute.png` à la racine ni dans `dist/`). Un fichier vide `ERROR` (artefact local) était publié : supprimé. Données de l'outil tdd-guard (suivies dans le dépôt public) : retirées de l'index Git et ignorées (`.gitignore`).
+**Corrigé / ajouté ce jour**
+- Carte de la grande route : repère « La Mecque » (drapeau + nom, rien de religieux) au bout de la piste ; étiquette « Village de Nour » plus coupée par le bord (ordinateur et téléphone) ; les « ❔ » ne se superposent plus en grappes ; message « Rien encore » du carnet Itinéraire sur toute la largeur.
+- Calendrier du Ramadan : le premier profil reprend le prénom et le genre du profil enfant du compte (l'âge reste à choisir : il n'est pas connu). Service worker v9.
+- Audits : chemins réglables (`PLAYWRIGHT_DIR`, `THREE_DIR`), mode d'emploi Windows dans `outils/audit-jeux/LISEZMOI.md`.
+**Toujours bloquant pour une mise en ligne définitive (décisions ou informations du créateur — rien n'a été inventé)**
+- `conditions/index.html` : éditeur, statut juridique, adresse, SIREN, TVA, médiateur, politique de remboursement `[À COMPLÉTER]` ; le garde-fou de `promouvoir.sh` refuse la promotion tant qu'il en reste.
+- Contenu religieux « À VALIDER » (fiches de La Route, Kaaba, prononciations, devinettes) : à valider par une personne compétente.
+- Pack Premium : toujours absent (stockage R2 `ldn-premium` relié, contenu à importer par le créateur).
+- Production : secrets Cloudflare de production (`SESSION_SECRET`, `FIREBASE_COMPTE_SERVICE`, `CREATOR_UID`, `EMAIL_CLE_API`, clés Stripe) à poser avant de promouvoir les comptes ; DMARC à ajouter dans le DNS.
+- Jeux « Bientôt » de la page Aventures (Bâtisseurs de l'oasis, Trésor des sourates, Défi des cinq prières) et maisons Premium : non créés volontairement (contenu Premium hors dépôt public, contenu religieux à valider, voix sans crédit à dépenser).
+
+
 ## P0 — Bloquant (empêche le fonctionnement ou la reprise)
 **Aucun bloquant technique identifié.** `preproduction` est accessible, propre et synchronisée ; la préproduction en ligne sert le dernier commit de code ; le build et le vérificateur sont verts. (Seul point de surveillance : si Cloudflare échoue encore avec « build failed to initialize in time », relancer le déploiement — voir `ETAT-TECHNIQUE-ACTUEL.md` § 3.)
 
