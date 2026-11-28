@@ -18,8 +18,8 @@ export const LIEUX = {
 };
 
 // Le replat du portail de la grande route (route/portail-plan.js) : plat sur `plat` m autour de (x, z), puis il se fond dans les dunes sur `lisse` m. h : sa hauteur.
-// Le maillage du terrain est grossier (3 à 6 m par maille) : le rayon plat couvre le portail ET une maille de plus, pour que le sol soit plan à tous les niveaux de qualité.
-export const PLATEFORME_PORTAIL = { x: 73, z: 32, plat: 13, lisse: 10, h: 2.2 };
+// Le maillage du terrain est grossier (3 à 6 m par maille) : le rayon plat couvre le portail ET une maille de plus (plan à tous les niveaux sauf le plus faible, à quelques cm près). plat + lisse < 17,2 m : le replat s'arrête AVANT la piste de l'oasis, qui ne bouge pas.
+export const PLATEFORME_PORTAIL = { x: 72.5, z: 32, plat: 12, lisse: 5, h: 2.2 };
 
 // Les chemins (lignes brisées). Ils aplanissent les dunes et se colorent.
 export const CHEMINS = [

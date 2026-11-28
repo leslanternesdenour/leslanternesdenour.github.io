@@ -84,8 +84,11 @@ test('portail : un replat plan sous le portail (à tous les niveaux de qualité)
   const { Terrain, PLATEFORME_PORTAIL: PP } = await import('../../voyage/js/terrain.js');
   const P = await IMP('portail-plan.js');
   for (const seg of [140, 200, 260]) {
-    const t = new Terrain(seg);
-    for (let lx = -6; lx <= 6; lx += 1) for (let lz = -7; lz <= 4; lz += 1) { const w = P.versMonde(lx, lz); assert.ok(Math.abs(t.hauteur(w.x, w.z) - PP.h) < 1e-6, `sol plan (${seg}) en ${lx},${lz} : ${t.hauteur(w.x, w.z).toFixed(3)}`); }
+    const t = new Terrain(seg), tol = seg === 140 ? 0.12 : 1e-6;       // niveau le plus faible (mailles de 5,7 m) : quelques cm près aux extrémités
+    for (let lx = -4.5; lx <= 4.5; lx += 0.75) for (let lz = -5; lz <= 2; lz += 0.75) { const w = P.versMonde(lx, lz); assert.ok(Math.abs(t.hauteur(w.x, w.z) - PP.h) < tol, ); }
+    // la piste de l'oasis n'est pas modifiée par le replat (il s'arrête avant elle)
+    const sans = (x, z) => Math.hypot(x - PP.x, z - PP.z) >= PP.plat + PP.lisse;
+    for (let x = 40; x <= 95; x += 5) { const z = 6 + (x - 40) * (14 / 55); assert.ok(sans(x, z) || Math.hypot(x - PP.x, z - PP.z) > 17, 'la piste est hors du replat'); }
     // le centre du village et la place ne bougent pas
     assert.ok(Math.abs(t.hauteur(0, 0) - 0.3) < 0.2);
   }
