@@ -24,7 +24,7 @@ const { chromium, TAILLES, URL0 } = require('./base.js');
   }
   const p = await page.evaluate(() => { const V = window.__voyage, l = V.route.lieux3d.lieux['cite-place'] || V.route.lieux3d.pos('cite-place'); V.teleporter(l.x + 1.2, l.z); window.__voyage.route.fermerCarte && window.__voyage.route.fermerCarte(); return { x: Math.round(l.x), z: Math.round(l.z) }; });
   await page.waitForTimeout(2500); console.log('à la grande place', JSON.stringify(p), 'interaction:', await page.evaluate(() => { const V = window.__voyage, i = V.habitants.interaction(V.J); return i ? (i.label + ' d=' + (i.d || 0).toFixed(1)) : 'aucune'; }));
-  await page.evaluate(() => { try { window.__voyage.action(); } catch (e) {} }); await page.waitForTimeout(14000);   // les badges sont vérifiés à chaque sauvegarde périodique
+  await page.evaluate(() => { try { window.__voyage.action(); } catch (e) {} }); await page.waitForFunction(() => !!window.__voyage.aventure.A.badges['route-mecque'], null, { timeout: 120000 }).catch(() => {});   // les badges sont vérifiés à chaque sauvegarde périodique (toutes les 3 s de jeu : plus de 30 s de mur quand le rendu 3D est logiciel)
   await page.screenshot({ path: '/tmp/claude-0/route-place.png' });
   console.log('découvertes', JSON.stringify(await page.evaluate(() => window.__voyage.route.etat.decouvertes)));
   console.log('badge arrivée', await page.evaluate(() => { const V = window.__voyage; return JSON.stringify(Object.keys(V.aventure.A.badges || {}).filter(k => /route/.test(k))); }));
