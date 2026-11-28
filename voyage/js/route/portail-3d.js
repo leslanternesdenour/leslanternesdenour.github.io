@@ -3,7 +3,7 @@
 // Époque : Arabie du VIIe siècle → pierre, brique de terre, bois de palmier, laine, lampes à huile. Aucun écrit, aucune figure : seulement des motifs géométriques.
 import * as THREE from 'three';
 import { piece, fusion, materiau, M } from '../formes.js?v=4';
-import { PORTAIL, obstacles } from './portail-plan.js';
+import { PORTAIL, BLOCS, obstacles } from './portail-plan.js';
 
 const B = () => new THREE.BoxGeometry(1, 1, 1), CYL = (a, b, h, s = 8) => new THREE.CylinderGeometry(a, b, h, s), SPH = (r, w = 8, h = 6) => new THREE.SphereGeometry(r, w, h);
 
@@ -25,12 +25,13 @@ export function creerPortail3D({ scene, H, colliders, ombres }) {
   const mat = materiau({ finesse: 1.4 });
   const groupe = new THREE.Group(); groupe.name = 'route-portail'; scene.add(groupe);
   const { x, z, cap } = PORTAIL;
-  // le sol monte doucement vers l'est : on pose le portail sur son point le plus HAUT et on enfonce un socle de pierre dans la pente
-  let y0 = -1e9; for (const dx of [-4, 0, 4]) for (const dz of [-1.5, 0, 1.5]) y0 = Math.max(y0, H(x + dz * Math.sin(cap) + dx * Math.cos(cap), z + dz * Math.cos(cap) - dx * Math.sin(cap)));
+  // le sol est PLAN sous le portail (replat de terrain.js) : y0 est la hauteur du sol, et les marches sont mesurées à partir de lui (portail-plan.js : BLOCS)
+  const y0 = H(x, z);
   groupe.position.set(x, y0, z); groupe.rotation.y = cap;        // repère local : z = sens de la traversée, x = de gauche à droite
 
   const pierre = '#b8a07a', pierreSombre = '#a58c64', brique = '#c4ab80', g = [];
-  g.push(piece(B(), '#9a8062', { p: [0, -0.6, 0], s: [8.6, 2.2, 3.0], m: M.pierre }), piece(B(), pierreSombre, { p: [0, 0.2, -1.9], s: [6.2, 0.4, 1.4], m: M.pierre }), piece(B(), brique, { p: [0, 0.05, -2.8], s: [4.4, 0.3, 1.0], m: M.pierre }));   // le socle et deux marches
+  const COULEURS = { 'marche-basse': brique, 'marche-haute': pierreSombre, socle: '#9a8062' }, PROFOND = 1.2;
+  for (const b of BLOCS) g.push(piece(B(), COULEURS[b.id], { p: [(b.x0 + b.x1) / 2, (b.haut - PROFOND) / 2, (b.z0 + b.z1) / 2], s: [b.x1 - b.x0, b.haut + PROFOND, b.z1 - b.z0], m: M.pierre }));   // les marches et le socle : le DESSUS de chaque bloc est exactement sa hauteur, enfoncé dans le sol
   for (const s of [-1, 1]) {
     g.push(piece(B(), pierreSombre, { p: [s * 2.5, 0.45, 0], s: [1.95, 0.5, 1.95], m: M.pierre }), piece(B(), pierre, { p: [s * 2.5, 2.7, 0], s: [1.5, 4.0, 1.5], m: M.pierre }),
       piece(B(), pierreSombre, { p: [s * 2.5, 4.9, 0], s: [1.85, 0.36, 1.85], m: M.pierre }));
@@ -51,8 +52,8 @@ export function creerPortail3D({ scene, H, colliders, ombres }) {
     const cage = new THREE.Mesh(CYL(0.2, 0.2, 0.34, 6), new THREE.MeshLambertMaterial({ color: '#5a3f28', wireframe: true })); cage.position.copy(l.position); groupe.add(cage); return l; });
   const voile = new THREE.Mesh(new THREE.PlaneGeometry(3.4, 4.5), new THREE.MeshBasicMaterial({ map: textureVoile(), transparent: true, opacity: 0.94, side: THREE.DoubleSide, depthWrite: false }));
   voile.position.set(0, 2.45, 0); groupe.add(voile);
-  const halo = new THREE.Mesh(new THREE.CircleGeometry(2.3, 24), new THREE.MeshBasicMaterial({ color: '#ffd98a', transparent: true, opacity: 0.35, depthWrite: false }));
-  halo.rotation.x = -Math.PI / 2; halo.position.set(0, 0.28, -2.9); groupe.add(halo);
+  const halo = new THREE.Mesh(new THREE.CircleGeometry(0.74, 24), new THREE.MeshBasicMaterial({ color: '#ffd98a', transparent: true, opacity: 0.35, depthWrite: false }));
+  halo.rotation.x = -Math.PI / 2; halo.scale.set(2.4, 1.0, 1); halo.position.set(0, 0.41, -2.25); groupe.add(halo);          // un reflet de lumière sur la marche haute, là où l'on se tient
 
   for (const o of obstacles()) colliders.push(o);
   return {

@@ -17,6 +17,10 @@ export const LIEUX = {
   rochers:   { x: 150,  z: -95,  r: 40 }      // région à débloquer : les rochers gravés
 };
 
+// Le replat du portail de la grande route (route/portail-plan.js) : plat sur `plat` m autour de (x, z), puis il se fond dans les dunes sur `lisse` m. h : sa hauteur.
+// Le maillage du terrain est grossier (3 à 6 m par maille) : le rayon plat couvre le portail ET une maille de plus, pour que le sol soit plan à tous les niveaux de qualité.
+export const PLATEFORME_PORTAIL = { x: 73, z: 32, plat: 13, lisse: 10, h: 2.2 };
+
 // Les chemins (lignes brisées). Ils aplanissent les dunes et se colorent.
 export const CHEMINS = [
   [[0, 0], [40, 6], [95, 20], [140, 26], [164, 28]],                       // vers l'oasis (s'arrête au bord de l'eau)
@@ -106,6 +110,9 @@ function relief(x, z) {
     const pas = 7 + fbm(x * 0.004, z * 0.004, 2) * 4, q = h / pas, f = q - Math.floor(q);
     h = melange(h, (Math.floor(q) + lisse(0.5, 0.88, f)) * pas, gradins * 0.8);
   }
+
+  // le replat du portail de la grande route : le sol y est PLAN (le terrain penche d'1,3 m d'un pilier à l'autre), pour que le portail et ses marches reposent de niveau
+  { const p = lisse(PLATEFORME_PORTAIL.plat + PLATEFORME_PORTAIL.lisse, PLATEFORME_PORTAIL.plat, Math.hypot(x - PLATEFORME_PORTAIL.x, z - PLATEFORME_PORTAIL.z)); if (p > 0) h = melange(h, PLATEFORME_PORTAIL.h, p); }
 
   // le village et l'oasis sont plats
   const v = lisse(LIEUX.village.r + 22, LIEUX.village.r, dist(x, z, LIEUX.village));
