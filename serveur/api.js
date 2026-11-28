@@ -6,6 +6,7 @@ import { connexionRecente } from './jeton.js';
 import { catalogueEffectif, niveauDuFichier, ETATS } from './catalogue.js';
 import { verifierSignatureStripe } from './stripe.js';
 import { modeles } from './email-modeles.js';
+import { MENTIONS_COMPLETES } from './ouverture.js';
 
 const J = 86400000, PAGE = 20, VALIDITE_INVITATION = 14 * J;
 const FORMULE_PRIX = { premium_mensuel: 'STRIPE_PRIX_PREMIUM_MENSUEL', premium_annuel: 'STRIPE_PRIX_PREMIUM_ANNUEL', famille_annuel: 'STRIPE_PRIX_FAMILLE_ANNUEL' };
@@ -592,7 +593,7 @@ async function webhookStripe(req, ctx) {
   const corps = await req.text();
   if (!(await verifierSignatureStripe(corps, req.headers.get('Stripe-Signature'), ctx.env.STRIPE_SECRET_WEBHOOK, ctx.maintenant))) return erreur(400, 'signature');
   const ev = JSON.parse(corps);
-  if (ev.livemode === true && ctx.env.STRIPE_MODE_REEL !== 'autorise') return erreur(400, 'mode-reel-refuse');
+  if (ev.livemode === true && (ctx.env.STRIPE_MODE_REEL !== 'autorise' || !MENTIONS_COMPLETES)) return erreur(400, 'mode-reel-refuse');
   if (!(await ctx.base.creerSiAbsent('stripe_evenements', ev.id, { t: ctx.maintenant, type: ev.type }))) return json({ ok: true, doublon: true });   // chaque événement traité une seule fois
   const o = ev.data && ev.data.object || {};
   let uid = (o.metadata && o.metadata.uid) || o.client_reference_id || null;

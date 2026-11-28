@@ -56,6 +56,13 @@ if (PREPROD) { // page d'écoute des voix (outil interne, non indexée) disponib
   fs.writeFileSync(path.join(SORTIE, 'robots.txt'), '# Préproduction : rien ne doit être indexé\nUser-agent: *\nDisallow: /\n');
   fs.rmSync(path.join(SORTIE, 'sitemap.xml'), { force: true });
 }
+// Production : la page Conditions publiée n'affiche jamais les emplacements « EN ATTENTE » (vue publique), et aucune page légale ou tarifaire ne garde de marqueur provisoire.
+if (PRODUCTION) {
+  const { vuePublique, MARQUEURS_PROVISOIRES } = await import('./legal/vue-publique.mjs');
+  const cond = path.join(SORTIE, 'conditions/index.html');
+  if (fs.existsSync(cond)) fs.writeFileSync(cond, vuePublique(fs.readFileSync(cond, 'utf8')));
+  for (const p of ['conditions/index.html', 'tarifs/index.html']) { const f = path.join(SORTIE, p); if (fs.existsSync(f) && MARQUEURS_PROVISOIRES.test(fs.readFileSync(f, 'utf8'))) { console.error('Build refusé : ' + p + ' contient encore un marqueur provisoire ([EN ATTENTE], [À COMPLÉTER], brouillon).'); process.exit(1); } }
+}
 // Quel commit est réellement en ligne ? (le dépôt est public : le numéro de commit n'est pas un secret)
 fs.writeFileSync(path.join(SORTIE, 'version.json'), JSON.stringify({ commit: process.env.CF_PAGES_COMMIT_SHA || 'local', branche: process.env.CF_PAGES_BRANCH || 'local' }) + '\n');
 console.log(`dist/ : ${n} fichiers, ${(octets / 1048576).toFixed(1)} Mo${PREPROD ? ' (préproduction)' : PRODUCTION ? ' (PRODUCTION)' : ''}`);

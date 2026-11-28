@@ -39,5 +39,8 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   const infos = JSON.parse(readFileSync(args.find(a => !a.startsWith('--')), 'utf8'));
   const r = renseigner(html, infos);
   console.log('Remplis : ' + (r.remplis.join(', ') || 'aucun') + '\nRestent en attente : ' + ([...new Set(r.restants)].join(', ') || 'aucun'));
-  if (args.includes('--ecrire')) { writeFileSync(page, r.html); console.log('Page ecrite. Relire, puis valider.'); } else console.log('Apercu seulement (ajouter --ecrire pour ecrire).');
+  if (args.includes('--ecrire')) { writeFileSync(page, r.html); console.log('Page ecrite. Relire, puis valider.');
+    const interrupteur = join(dirname(fileURLToPath(import.meta.url)), '../../serveur/ouverture.js'), complet = r.restants.length === 0;
+    const src = readFileSync(interrupteur, 'utf8'); writeFileSync(interrupteur, src.replace(/MENTIONS_COMPLETES = (true|false)/, 'MENTIONS_COMPLETES = ' + complet));
+    console.log(complet ? 'Toutes les mentions sont renseignees : les paiements reels deviennent POSSIBLES cote code (il faudra encore les cles Stripe reelles et STRIPE_MODE_REEL).' : 'Des champs restent en attente : paiements reels toujours bloques.'); } else console.log('Apercu seulement (ajouter --ecrire pour ecrire).');
 }

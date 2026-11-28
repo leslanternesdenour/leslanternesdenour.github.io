@@ -18,6 +18,9 @@ test('GET /api/paiement/mode : « test » avec une clé de test, sans renvoyer a
 });
 
 test('GET /api/paiement/mode : « reel » seulement avec une clé réelle ET STRIPE_MODE_REEL=autorise', async () => {
+  // Tant que les mentions légales ne sont pas complètes (serveur/ouverture.js), même une clé réelle autorisée est refusée : pas d'ouverture commerciale prématurée.
+  const { MENTIONS_COMPLETES } = await import('../../serveur/ouverture.js');
+  if (!MENTIONS_COMPLETES) return assert.rejects(() => mode({ STRIPE_CLE_SECRETE: 'sk_live_fausse_valeur_de_test', STRIPE_MODE_REEL: 'autorise' }), /mentions légales/);
   const r = await mode({ STRIPE_CLE_SECRETE: 'sk_live_fausse_valeur_de_test', STRIPE_MODE_REEL: 'autorise' });
   assert.deepEqual(JSON.parse(r.corps), { mode: 'reel' });
   assert.doesNotMatch(r.corps, /sk_|pk_/);

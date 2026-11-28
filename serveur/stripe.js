@@ -3,6 +3,7 @@
 // c'est le seul interrupteur du passage aux paiements réels (voir docs/SOUTIEN-CAGNOTTE.md et les secrets du tableau de bord Cloudflare).
 // Version d'API de l'appel « don » (celle de la documentation Stripe du paiement intégré, ui_mode « embedded_page ») :
 // elle ne dépend pas de la version par défaut du compte. Doit rester cohérente avec le script chargé par /soutenir/ (soutenir/don.js).
+import { MENTIONS_COMPLETES } from './ouverture.js';
 export const VERSION_API_DON = '2026-11-18.endive';
 const enc = new TextEncoder();
 const hex = buf => [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
@@ -22,6 +23,7 @@ export function clientStripe(env, { fetcher = fetch } = {}) {
   const cle = env.STRIPE_CLE_SECRETE || '';
   if (!cle) return null;
   if (cle.startsWith('sk_live_') && env.STRIPE_MODE_REEL !== 'autorise') throw new Error('Clé Stripe RÉELLE refusée : le site doit rester en mode test sans accord du créateur.');
+  if (cle.startsWith('sk_live_') && !MENTIONS_COMPLETES) throw new Error('Clé Stripe RÉELLE refusée : les mentions légales de l\'éditeur ne sont pas toutes renseignées (conditions/index.html).');
   const formulaire = (o, p = '') => Object.entries(o).flatMap(([k, v]) => { const n = p ? `${p}[${k}]` : k; return v && typeof v === 'object' ? formulaire(v, n) : [[n, String(v)]]; });
   const appel = async (chemin, params = {}, methode = 'POST', version = null) => {
     const r = await fetcher('https://api.stripe.com/v1/' + chemin, { method: methode, headers: { Authorization: 'Bearer ' + cle, 'Content-Type': 'application/x-www-form-urlencoded', ...(version ? { 'Stripe-Version': version } : {}) },

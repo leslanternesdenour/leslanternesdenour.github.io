@@ -21,6 +21,23 @@ test('mentions legales : renseigner remplit seulement les champs fournis et echa
 
 test('mentions legales : tant qu\'un champ est en attente, la promotion en production est bloquee', () => {
   const garde = readFileSync(new URL('../migration/promouvoir.sh', import.meta.url), 'utf8');
-  assert.ok(garde.includes('\\[EN ATTENTE'));
+  assert.ok(garde.includes('tarifs/index.html') && !garde.includes('conditions/index.html'), 'la garde porte sur tarifs ; Conditions est protégée par la vue publique');
   assert.ok(/\[EN ATTENTE/.test(page));
+});
+test('ouverture commerciale : l\'interrupteur MENTIONS_COMPLETES est cohérent avec la page, et bloque les clés Stripe réelles', async () => {
+  const { MENTIONS_COMPLETES } = await import('../../serveur/ouverture.js');
+  assert.equal(MENTIONS_COMPLETES, champsEnAttente(page).length === 0, 'interrupteur incohérent avec conditions/index.html');
+  const { clientStripe } = await import('../../serveur/stripe.js');
+  if (!MENTIONS_COMPLETES) assert.throws(() => clientStripe({ STRIPE_CLE_SECRETE: 'sk_live_x', STRIPE_MODE_REEL: 'autorise' }), /mentions légales/);
+  assert.throws(() => clientStripe({ STRIPE_CLE_SECRETE: 'sk_live_x' }), /RÉELLE refusée/);
+  assert.doesNotThrow(() => clientStripe({ STRIPE_CLE_SECRETE: 'sk_test_x' }));
+});
+
+test('vue publique (production) : aucun « EN ATTENTE » visible, texte neutre, page complète inchangée', async () => {
+  const { vuePublique, MARQUEURS_PROVISOIRES, MENTION_A_VENIR } = await import('../legal/vue-publique.mjs');
+  const v = vuePublique(page);
+  assert.ok(!MARQUEURS_PROVISOIRES.test(v), 'marqueur provisoire restant'); assert.ok(!/EN ATTENTE/.test(v)); assert.ok(v.includes(MENTION_A_VENIR));
+  assert.match(v, /paiements ne sont pas encore ouverts/); assert.match(v, /jusqu'à 4 profils/, 'le contenu des conditions est conservé');
+  const rempli = renseigner(page, Object.fromEntries(CHAMPS.map(c => [c, 'x']))).html;
+  assert.equal(vuePublique(rempli), rempli);
 });
