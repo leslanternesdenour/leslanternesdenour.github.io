@@ -93,3 +93,41 @@ test('Codes d\'invitation : longs, uniques, seule l\'empreinte est stockée', as
   const c = [...codes][0]; assert.match(c, /^LDN_[A-Za-z0-9_-]{43}$/, '256 bits');
   const e = await empreinteCode(c); assert.match(e, /^[0-9a-f]{64}$/); assert.notEqual(e, c); assert.equal(e, await empreinteCode(c));
 });
+
+// ---- Correctif du 28/11/2026 : une date illisible ne donne JAMAIS un accès ; seul « fin: null » écrit explicitement est permanent ----
+import { dateStricte, accesOffertActif, abonnementActif } from '../../serveur/droits.js';
+
+test('dateStricte : absent, aucune date explicite, instant, illisible', () => {
+  assert.equal(dateStricte(undefined), undefined);
+  assert.equal(dateStricte(null), null);
+  assert.equal(dateStricte(T), T); assert.equal(dateStricte({ seconds: 10 }), 10000); assert.equal(dateStricte({ toMillis: () => 42 }), 42);
+  assert.equal(dateStricte(new Date(T)), T); assert.equal(dateStricte('2026-11-19T12:00:00Z'), T);
+  for (const x of ['demain', '', '   ', true, false, {}, [], NaN, Infinity, -Infinity, { seconds: 'x' }, { toMillis: () => { throw new Error('x'); } }, new Date('pas une date')])
+    assert.ok(Number.isNaN(dateStricte(x)), 'illisible : ' + String(x));
+});
+
+test('Accès offert : fin illisible = refusé (jamais permanent) ; fin null explicite = permanent ; fin absente = refusé', () => {
+  for (const fin of ['demain', true, '', {}, [], NaN, Infinity, { seconds: 'x' }]) assert.equal(accesOffertActif({ niveau: 'premium', debut: T - J, fin }, T), false, 'fin ' + String(fin));
+  assert.equal(accesOffertActif({ niveau: 'premium', debut: T - J, fin: null }, T), true, 'permanent explicite');
+  assert.equal(accesOffertActif({ niveau: 'premium', debut: T - J }, T), false, 'champ fin absent : pas un accès permanent explicite');
+  assert.equal(accesOffertActif({ niveau: 'premium', debut: T - J, fin: T + J }, T), true);
+  assert.equal(accesOffertActif({ niveau: 'premium', debut: T - J, fin: T }, T), false, 'fin = maintenant : expiré');
+  assert.equal(accesOffertActif({ niveau: 'premium', debut: T - J, fin: { seconds: (T + J) / 1000 } }, T), true, 'horodatage Firestore valide');
+  assert.equal(accesOffertActif({ niveau: 'premium', debut: T - J, fin: '2099-01-01T00:00:00Z' }, T), true, 'texte ISO valide');
+  // début illisible : refusé ; début absent ou null : accepté
+  assert.equal(accesOffertActif({ niveau: 'premium', debut: 'hier', fin: T + J }, T), false);
+  assert.equal(accesOffertActif({ niveau: 'premium', fin: T + J }, T), true); assert.equal(accesOffertActif({ niveau: 'premium', debut: null, fin: null }, T), true);
+  assert.equal(accesOffertActif({ niveau: 'premium', debut: T - J, fin: null, revoqueLe: T - 1 }, T), false, 'révoqué : refusé même permanent');
+});
+
+test('Droits calculés : un accès à date de fin illisible ne donne rien, un permanent explicite donne son niveau', () => {
+  assert.equal(d('u1', {}, { accesOfferts: [offert('famille', 'demain')] }).statut, 'gratuit');
+  assert.equal(d('u1', {}, { accesOfferts: [offert('famille', 'demain'), offert('premium', T + J)] }).niveau, 'premium', 'seul l\'accès lisible compte');
+  const p = d('u1', {}, { accesOfferts: [offert('famille', null)] }); assert.equal(p.niveau, 'famille'); assert.equal(p.expire, null);
+});
+
+test('Abonnement : période de fin illisible = refusé', () => {
+  for (const fin of ['demain', true, {}, NaN, Infinity, null]) assert.equal(abonnementActif(ab('premium_mensuel', 'active', fin), T), false, String(fin));
+  assert.equal(abonnementActif({ formule: 'premium_mensuel', statut: 'active' }, T), false, 'période absente');
+  assert.equal(abonnementActif(ab('premium_mensuel', 'active', T + J), T), true);
+});

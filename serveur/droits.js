@@ -22,6 +22,23 @@ export function enMs(d) {
   const t = Date.parse(d); return Number.isNaN(t) ? null : t;
 }
 
+// Lecture STRICTE d'une date de droit (correctif du 28/11/2026). Quatre issues, jamais confondues :
+//   undefined = champ absent ; null = « aucune date » écrit EXPLICITEMENT (seul cas qui signifie « permanent » pour une fin) ;
+//   nombre fini = instant en millisecondes ; NaN = date ILLISIBLE (texte quelconque, booléen, objet inconnu, infini…) → le droit est refusé.
+export function dateStricte(d) {
+  if (d === undefined) return undefined;
+  if (d === null) return null;
+  let t = NaN;
+  try {
+    if (typeof d === 'number') t = d;
+    else if (d instanceof Date) t = d.getTime();
+    else if (typeof d === 'string') t = d.trim() === '' ? NaN : Date.parse(d);
+    else if (typeof d === 'object' && typeof d.toMillis === 'function') t = d.toMillis();
+    else if (typeof d === 'object' && typeof d.seconds === 'number') t = d.seconds * 1000;
+  } catch (e) { t = NaN; }
+  return Number.isFinite(t) ? t : NaN;
+}
+
 export function estCreateur(uid, claims, env) {
   const attendu = env && typeof env.CREATOR_UID === 'string' ? env.CREATOR_UID.trim() : '';
   return attendu.length > 0 && uid === attendu && !!claims && claims.role === 'creator';
@@ -29,15 +46,17 @@ export function estCreateur(uid, claims, env) {
 
 export function accesOffertActif(acces, maintenant = Date.now()) {
   if (!acces || acces.revoqueLe) return false;
-  const debut = enMs(acces.debut), fin = enMs(acces.fin);
-  if (debut !== null && debut > maintenant) return false;
-  return fin === null || fin > maintenant;                       // fin null = permanent
+  const debut = dateStricte(acces.debut), fin = dateStricte(acces.fin);
+  if (Number.isNaN(debut) || Number.isNaN(fin)) return false;     // date illisible : JAMAIS d'accès (fail-closed)
+  if (fin === undefined) return false;                            // champ « fin » absent : pas un accès permanent explicite
+  if (typeof debut === 'number' && debut > maintenant) return false;
+  return fin === null || fin > maintenant;                        // fin === null écrit explicitement = permanent
 }
 
 export function abonnementActif(ab, maintenant = Date.now()) {
   if (!ab || !['active', 'trialing'].includes(ab.statut)) return false;
-  const fin = enMs(ab.finPeriode);
-  return fin !== null && fin > maintenant && !!FORMULES[ab.formule];
+  const fin = dateStricte(ab.finPeriode);
+  return typeof fin === 'number' && fin > maintenant && !!FORMULES[ab.formule];
 }
 
 // sources : { accesOfferts: [...], abonnement: {...} } lues dans Firestore par le serveur

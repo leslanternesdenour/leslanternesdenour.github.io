@@ -1,7 +1,7 @@
 // Tests d'intégration de l'API (vraies routes, vraie vérification des jetons RS256, vraies sessions HMAC, vraie signature Stripe ;
 // seules la base, le stockage et Stripe sont simulés en mémoire). node --test outils/tests/api.test.mjs
 import test from 'node:test'; import assert from 'node:assert/strict';
-import { traiter, _reinitialiserCompteurs } from '../../serveur/api.js';
+import { traiter, _reinitialiserCompteurs, majDroits } from '../../serveur/api.js';
 import { creerBase, instantane } from './base-testee.mjs';
 import { verifierJeton } from '../../serveur/jeton.js';
 import { clientStripe } from '../../serveur/stripe.js';
@@ -545,4 +545,120 @@ test('E-mails : la suppression du compte envoie une confirmation (sans jamais bl
   assert.equal((await instantane(base))['courriers/uid-em9'], undefined, 'tout est effacé');
   const d = await connecter('uid-em10', { verifie: true }); viderCourriel(); courrielTest.ko = true;
   assert.equal((await appel('DELETE', '/api/compte', { cookie: d })).s, 200, 'prestataire en panne : le compte est tout de même supprimé'); courrielTest.ko = false;
+});
+
+// ======================================================================
+// Correctif du 28/11/2026 (audit ECC) : révocation des sessions + dates de fin illisibles
+// ======================================================================
+const cookieDe = r => r.h.get('Set-Cookie').split(';')[0];
+
+test('Sessions : le Créateur révoque ses propres sessions ; l\'ancien cookie ne marche plus, la session en cours reste connectée', async () => {
+  const ancien = await connecter(CREATEUR, { role: 'creator' });
+  assert.equal((await appel('GET', '/api/admin/resume', { cookie: ancien })).s, 200, 'avant : le Créateur est reconnu');
+  const r = await appel('POST', '/api/admin/sessions/revoquer', { cookie: ancien, corps: {} });
+  assert.equal(r.s, 200); assert.equal(r.j.version, 1);
+  const neuf = cookieDe(r);
+  assert.equal((await appel('GET', '/api/admin/resume', { cookie: ancien })).s, 401, 'l\'ancien cookie (volé ou périmé) perd tous ses droits : traité comme non connecté');
+  assert.deepEqual((await appel('GET', '/api/moi', { cookie: ancien })).j, { connecte: false, statut: 'visiteur' });
+  assert.equal((await appel('GET', '/api/admin/resume', { cookie: neuf })).s, 200, 'la session ré-émise reste Créateur');
+  // une nouvelle connexion légitime reçoit la version courante et fonctionne
+  const reconnecte = await connecter(CREATEUR, { role: 'creator' });
+  assert.equal((await appel('GET', '/api/admin/resume', { cookie: reconnecte })).s, 200);
+  // deuxième révocation : la version continue d'augmenter
+  assert.equal((await appel('POST', '/api/admin/sessions/revoquer', { cookie: neuf, corps: {} })).j.version, 2);
+  assert.equal((await appel('GET', '/api/admin/resume', { cookie: reconnecte })).s, 401, 'toutes les sessions antérieures sont invalidées');
+});
+
+test('Sessions : la révocation d\'un autre compte coupe ses anciennes sessions, pas celles des autres, et il peut se reconnecter', async () => {
+  const adm = await connecter(CREATEUR, { role: 'creator' });
+  const a1 = await connecter('uid-rev1'), a2 = await connecter('uid-rev1'), autre = await connecter('uid-rev2');
+  const r = await appel('POST', '/api/admin/sessions/revoquer', { cookie: adm, corps: { uid: 'uid-rev1' } });
+  assert.equal(r.s, 200); assert.equal(r.h.get('Set-Cookie'), null, 'aucun cookie ré-émis pour un autre compte');
+  for (const c of [a1, a2]) assert.equal((await appel('GET', '/api/moi', { cookie: c })).j.connecte, false);
+  assert.equal((await appel('GET', '/api/moi', { cookie: autre })).j.connecte, true, 'les autres comptes ne sont pas touchés');
+  assert.equal((await appel('GET', '/api/admin/resume', { cookie: adm })).s, 200, 'le Créateur reste connecté');
+  assert.equal((await appel('GET', '/api/moi', { cookie: await connecter('uid-rev1') })).j.connecte, true, 'reconnexion légitime : acceptée');
+});
+
+test('Sessions : réservée au Créateur, connexion récente, cible valide', async () => {
+  const parent = await connecter('uid-rev3');
+  assert.equal((await appel('POST', '/api/admin/sessions/revoquer', { cookie: parent, corps: { uid: CREATEUR } })).s, 403, 'un parent ne peut pas révoquer les sessions du Créateur');
+  assert.equal((await appel('GET', '/api/admin/resume', { cookie: await connecter(CREATEUR, { role: 'creator' }) })).s, 200, 'le Créateur n\'a pas été touché');
+  const vieux = await connecter(CREATEUR, { role: 'creator', authAgo: 3600 });
+  assert.equal((await appel('POST', '/api/admin/sessions/revoquer', { cookie: vieux, corps: {} })).j.erreur, 'reconnexion-requise');
+  const adm = await connecter(CREATEUR, { role: 'creator' });
+  assert.equal((await appel('POST', '/api/admin/sessions/revoquer', { cookie: adm, corps: { uid: 'inconnu-xyz' } })).s, 404);
+  for (const mauvais of ['../x', 'a b', 12, ['x'], 'x'.repeat(200)]) assert.equal((await appel('POST', '/api/admin/sessions/revoquer', { cookie: adm, corps: { uid: mauvais } })).s, 400, JSON.stringify(mauvais).slice(0, 20));
+  assert.equal((await appel('POST', '/api/admin/sessions/revoquer', { corps: {} })).s, 401, 'sans session : refusé');
+});
+
+test('Sessions : cookies déjà émis (sans version) et comptes jamais révoqués restent valables ; la version est lue à chaque requête', async () => {
+  const c = await connecter('uid-rev4');
+  assert.equal((await appel('GET', '/api/moi', { cookie: c })).j.connecte, true);
+  const brut = await instantane(base); assert.equal(brut['sessions_etat/uid-rev4'], undefined, 'aucun document tant qu\'il n\'y a pas de révocation');
+  // révocation faite hors API (console Firestore) : effet immédiat
+  await base.ecrire('sessions_etat', 'uid-rev4', { version: 3 });
+  assert.equal((await appel('GET', '/api/moi', { cookie: c })).j.connecte, false);
+  // document présent mais illisible (saisie fautive dans la console) : session REFUSÉE (fail-closed), jamais « version 0 » silencieux ; les autres comptes ne sont pas touchés
+  const bruit = console.error; console.error = () => {};
+  try {
+    for (const [i, mauvais] of ['abc', -1, 1.5, null, 1e300, '3'].entries()) {
+      const uid = 'uid-rev5-' + i, cookie = await connecter(uid);
+      await base.ecrire('sessions_etat', uid, { version: mauvais });
+      assert.equal((await appel('GET', '/api/moi', { cookie })).j.connecte, false, 'version ' + JSON.stringify(mauvais) + ' : refusée');
+    }
+    assert.equal((await appel('GET', '/api/moi', { cookie: c })).j.connecte, false, 'rien ne change pour les autres');
+  } finally { console.error = bruit; }
+  const autre = await connecter('uid-rev5-ok'); await base.ecrire('sessions_etat', 'uid-rev5-ok', { version: 0 });
+  assert.equal((await appel('GET', '/api/moi', { cookie: autre })).j.connecte, true, 'version 0 écrite explicitement : valable');
+});
+
+test('Sessions : si la version ne peut pas être lue, la session est refusée (fail-closed), et elle revient quand la base répond', async () => {
+  const adm = await connecter(CREATEUR, { role: 'creator' });
+  const lire = base.lire; base.lire = async (col, id) => { if (col === 'sessions_etat') throw new Error('base indisponible'); return lire.call(base, col, id); };
+  const bruit = console.error; console.error = () => {};
+  try { assert.equal((await appel('GET', '/api/admin/resume', { cookie: adm })).s, 401); assert.equal((await appel('GET', '/api/moi', { cookie: adm })).j.connecte, false); }
+  finally { base.lire = lire; console.error = bruit; }
+  assert.equal((await appel('GET', '/api/admin/resume', { cookie: adm })).s, 200);
+});
+
+test('Administration : les lectures sensibles (comptes, invitations, accès, journal) exigent une connexion de moins de 12 h ; le reste reste lisible', async () => {
+  const frais = await connecter(CREATEUR, { role: 'creator', authAgo: 3600 });                  // 1 h : accepté
+  for (const ch of ['/api/admin/comptes', '/api/admin/invitations', '/api/admin/acces', '/api/admin/journal', '/api/admin/resume']) assert.equal((await appel('GET', ch, { cookie: frais })).s, 200, ch + ' à 1 h');
+  const vieux = await connecter(CREATEUR, { role: 'creator', authAgo: 13 * 3600 });             // 13 h
+  for (const ch of ['/api/admin/comptes', '/api/admin/comptes/uid-rev1', '/api/admin/invitations', '/api/admin/acces', '/api/admin/journal', '/api/admin/catalogue', '/api/admin/premium', '/api/admin/route-future-inconnue']) assert.equal((await appel('GET', ch, { cookie: vieux })).j.erreur, 'reconnexion-requise', ch + ' à 13 h (protégé par défaut)');
+  assert.equal((await appel('GET', '/api/admin/resume', { cookie: vieux })).s, 200, 'le résumé (sans donnée personnelle) reste lisible');
+  assert.equal((await appel('GET', '/api/admin/comptes', { cookie: await connecter('uid-rev6') })).s, 403, 'un parent reste refusé');
+});
+
+test('Dates de fin : illisible = aucun accès ; permanent explicite (null) conservé ; fin invalide refusée à l\'écriture', async () => {
+  const adm = await connecter(CREATEUR, { role: 'creator' }), u = await connecter('uid-dates');
+  const id = (await appel('POST', '/api/admin/acces', { cookie: adm, corps: { email: 'uid-dates@exemple.fr', niveau: 'premium', dureeJours: 30 } })).j.id;
+  const niveau = async () => (await appel('GET', '/api/moi', { cookie: u })).j.niveau;
+  assert.equal(await niveau(), 'premium', 'accès à durée limitée : actif');
+  for (const mauvais of ['demain', true, '', {}, [], 'null', 'Infinity', { seconds: 'x' }]) {
+    await base.maj('acces_offerts', id, { fin: mauvais }); await majDroits(ctx(), 'uid-dates');
+    assert.equal(await niveau(), 'gratuit', 'fin illisible ' + String(JSON.stringify(mauvais)) + ' : refusée');
+  }
+  await base.maj('acces_offerts', id, { fin: null }); await majDroits(ctx(), 'uid-dates');
+  assert.equal(await niveau(), 'premium', 'fin null écrite explicitement : permanent conservé');
+  await base.maj('acces_offerts', id, { fin: null, debut: 'hier-soir' }); await majDroits(ctx(), 'uid-dates');
+  assert.equal(await niveau(), 'gratuit', 'début illisible : refusé');
+  await base.maj('acces_offerts', id, { debut: maintenant - J, fin: maintenant + J }); await majDroits(ctx(), 'uid-dates');
+  assert.equal(await niveau(), 'premium', 'dates valides : accès rétabli');
+  // le serveur ne peut pas écrire une fin invalide
+  for (const mauvais of ['{"fin":1e999}', '{"fin":"demain"}', '{"fin":null}', '{"fin":0}', '{}', '{"fin":-5}', '{"fin":1e300}', '{"fin":"0x7fffffffffffff"}', '{"fin":"9999999999999"}', '{"fin":[]}', '{"fin":true}']) assert.equal((await appel('POST', `/api/admin/acces/${id}/prolonger`, { cookie: adm, corps: mauvais })).j.erreur, 'fin-invalide', mauvais);
+  assert.equal((await appel('POST', `/api/admin/acces/${id}/prolonger`, { cookie: adm, corps: { fin: maintenant + 30 * J } })).s, 200, 'fin valide (nombre, futur, moins de 10 ans) : acceptée');
+  assert.equal((await appel('POST', `/api/admin/acces/${id}/prolonger`, { cookie: adm, corps: { fin: maintenant + 20 * 366 * J } })).j.erreur, 'fin-invalide', 'plus de 10 ans : refusée');
+  assert.equal((await appel('POST', `/api/admin/acces/${id}/prolonger`, { cookie: adm, corps: { permanent: true } })).s, 200, 'permanent demandé explicitement : accepté');
+  assert.equal(await niveau(), 'premium');
+});
+
+test('RGPD : la suppression du compte efface aussi son état de sessions', async () => {
+  const adm = await connecter(CREATEUR, { role: 'creator' }); await connecter('uid-rev7');
+  await appel('POST', '/api/admin/sessions/revoquer', { cookie: adm, corps: { uid: 'uid-rev7' } });
+  assert.ok((await instantane(base))['sessions_etat/uid-rev7'], 'état créé par la révocation');
+  const c = await connecter('uid-rev7');
+  assert.equal((await appel('DELETE', '/api/compte', { cookie: c })).s, 200);
+  assert.equal((await instantane(base))['sessions_etat/uid-rev7'], undefined, 'effacé avec le compte');
 });
