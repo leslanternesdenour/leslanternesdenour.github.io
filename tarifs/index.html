@@ -61,6 +61,7 @@ ul{margin:0;padding-left:20px;color:#e9e2ff;line-height:1.6}
 <main>
   <h1>🏮 Les formules</h1>
   <p class="bandeau-sim cache" id="bandeau-sim">SIMULATION LOCALE — faux paiements (aucun service réel)</p>
+  <p class="bandeau-sim cache" id="bandeau-indisponible" role="status">Les paiements sont temporairement indisponibles. Rien ne peut être débité, et tes accès actuels (compte, jeux, abonnement déjà en cours) ne changent pas. Réessaie un peu plus tard.</p>
   <p class="bandeau-sim cache" id="bandeau-ferme" role="status">Les abonnements ouvriront bientôt : aucun paiement n'est possible pour le moment et rien ne peut être débité. Ton compte reste Gratuit, avec tous les jeux gratuits.</p>
   <p class="bandeau-sim cache" id="bandeau-test">MODE TEST — aucun paiement réel n'est possible. Prix provisoires.</p>
   <p style="text-align:center">Cette page est pour les parents.</p>
@@ -109,6 +110,7 @@ if (C.simulation()) $('bandeau-sim').classList.remove('cache');
 // Paiements fermés (production avant l'ouverture commerciale) : on le dit clairement et on désactive les boutons, au lieu de laisser remplir un formulaire qui ne peut pas aboutir.
 C.api('/api/paiement/mode').then(r => {
   if (r && r.mode === 'test') $('bandeau-test').classList.remove('cache');
+  if (r && r.mode === 'indisponible') { $('bandeau-indisponible').classList.remove('cache'); for (const b of document.querySelectorAll('.choisir')) { b.disabled = true; b.textContent = 'Indisponible'; } }
   if (r && r.mode === 'ferme') { $('bandeau-ferme').classList.remove('cache'); for (const b of document.querySelectorAll('.choisir')) { b.disabled = true; b.textContent = 'Bientôt disponible'; } }
 }).catch(() => {});
 if (new URLSearchParams(location.search).get('paiement') === 'annule') etat('Paiement annulé : rien n\'a été prélevé.');

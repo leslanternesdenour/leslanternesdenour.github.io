@@ -28,10 +28,11 @@ const courrielTest = { envoyes: [], ko: false, async envoyer(m) { if (this.ko) t
 let courrielActif = false;
 let lent = false;
 const baseLente = new Proxy(base, { get(t, k) { const v = t[k]; return typeof v === 'function' ? async (...a) => { if (lent && k === 'lire') await new Promise(r => setTimeout(r, 15)); return v.apply(t, a); } : v; } });
+let etatStripe = 'ok';
 const ctx = () => ({ env, base: baseLente, maintenant, courriel: courrielActif ? courrielTest : null,
   auth: { verifierIdToken: (t, m) => verifierJeton(t, { projet: PROJET, obtenirCle: async k => k === 'k1' ? cles.publicKey : null, maintenant: m }) },
   stockage: { async get(k) { return k in fichiers ? { body: fichiers[k], type: 'application/json' } : null; } },
-  stripe: clientStripe({ STRIPE_CLE_SECRETE: 'sk_test_local' }, { fetcher: fauxStripe }) });
+  ...(etatStripe === 'ok' ? { stripe: clientStripe({ STRIPE_CLE_SECRETE: 'sk_test_local' }, { fetcher: fauxStripe }) } : { stripe: null, stripeEtat: etatStripe }) });   // etatStripe : 'ok' | 'indisponible' (clé refusée) | 'ferme' (aucune clé)
 const O = 'https://preprod.exemple';
 async function appel(m, chemin, { corps, cookie, entetes = {} } = {}) {
   const h = { ...(m !== 'GET' ? { 'X-LDN': '1', Origin: O } : {}), ...(cookie ? { Cookie: cookie } : {}), ...entetes };
@@ -661,4 +662,89 @@ test('RGPD : la suppression du compte efface aussi son état de sessions', async
   const c = await connecter('uid-rev7');
   assert.equal((await appel('DELETE', '/api/compte', { cookie: c })).s, 200);
   assert.equal((await instantane(base))['sessions_etat/uid-rev7'], undefined, 'effacé avec le compte');
+});
+
+// ======================================================================
+// Stripe mal configuré (clé refusée) ou absent : SEULS les paiements sont fermés ; tout le reste continue, aucun droit n'est touché ni accordé.
+// ======================================================================
+async function avecStripe(etat, f) { const avant = etatStripe; etatStripe = etat; try { return await f(); } finally { etatStripe = avant; } }
+const CODES_FERMES = { indisponible: 'paiements-indisponibles', ferme: 'paiement-non-configure' };
+
+test('Stripe indisponible : le site continue (connexion, déconnexion, comptes, jeux et contenus selon les droits) et seuls les paiements sont fermés avec un message explicite', async () => {
+  // comptes et droits créés AVANT la panne, avec un Stripe qui fonctionne
+  const fam = await connecter('uid-sf-famille', { email: 'sf-famille@exemple.fr' }), prem = await connecter('uid-sf-premium', { email: 'sf-premium@exemple.fr' }), gra = await connecter('uid-sf-gratuit');
+  const adm = await connecter(CREATEUR, { role: 'creator' });
+  assert.equal((await webhook(abo('uid-sf-famille', 'price_fa', 'active', maintenant + 200 * J, 'evt_sf_1'))).s, 200);
+  assert.equal((await webhook(abo('uid-sf-premium', 'price_pm', 'active', maintenant + 20 * J, 'evt_sf_2'))).s, 200);
+  const avant = { fam: (await appel('GET', '/api/moi', { cookie: fam })).j, prem: (await appel('GET', '/api/moi', { cookie: prem })).j, gra: (await appel('GET', '/api/moi', { cookie: gra })).j };
+  assert.equal(avant.fam.niveau, 'famille'); assert.equal(avant.prem.niveau, 'premium'); assert.equal(avant.gra.statut, 'gratuit');
+  const photo = await instantane(base);
+  for (const etat of ['indisponible', 'ferme']) await avecStripe(etat, async () => {
+    // 1-3. le site, les connexions et déconnexions fonctionnent
+    assert.equal((await appel('GET', '/api/paiement/mode')).j.mode, etat);
+    const neuf = await connecter('uid-sf-neuf-' + etat, { email: 'sf-neuf-' + etat + '@exemple.fr' });
+    assert.equal((await appel('GET', '/api/moi', { cookie: neuf })).j.connecte, true, 'nouvelle inscription et connexion possibles');
+    assert.equal((await connecter('uid-sf-famille', { email: 'sf-famille@exemple.fr' })).startsWith('ldn_session='), true, 'reconnexion d\'un abonné possible');
+    assert.equal((await appel('POST', '/api/session/fin', { cookie: neuf })).s, 200, 'déconnexion possible');
+    // 4. droits existants intacts
+    assert.deepEqual({ ...(await appel('GET', '/api/moi', { cookie: fam })).j, profilActif: null }, avant.fam, 'droits identiques (le profil actif ne compte pas : un profil enfant est créé plus bas)'); assert.deepEqual((await appel('GET', '/api/moi', { cookie: prem })).j, avant.prem); assert.deepEqual((await appel('GET', '/api/moi', { cookie: gra })).j, avant.gra);
+    assert.equal((await appel('GET', '/api/admin/resume', { cookie: adm })).s, 200, 'le Créateur garde son administration');
+    assert.equal((await appel('GET', '/api/moi', { cookie: adm })).j.statut, 'creator');
+    // 5. jeux et contenus selon les droits habituels
+    assert.equal((await appel('GET', '/api/premium/voyage/camp/zone.json', { cookie: prem })).s, 200, 'contenu Premium ouvert au Premium');
+    assert.equal((await appel('GET', '/api/premium/voyage/camp/zone.json', { cookie: fam })).s, 200);
+    assert.equal((await appel('GET', '/api/premium/voyage/camp/zone.json', { cookie: gra })).s, 403, 'toujours fermé au compte Gratuit : une panne Stripe ne donne aucun accès');
+    assert.equal((await appel('GET', '/api/premium/voyage/camp/zone.json')).s, 401, 'visiteur');
+    assert.equal((await appel('GET', '/api/premium/voyage/village/zone.json')).s, 200, 'zone libre');
+    assert.equal((await appel('GET', '/api/premium/maisons/sons/jeu.js', { cookie: prem })).s, 403, 'aperçu Créateur toujours réservé');
+    assert.equal((await appel('GET', '/api/catalogue')).s, 200);
+    assert.equal((await appel('POST', '/api/enfants', { cookie: fam, corps: { surnom: 'Noor' + etat.slice(0, 2), tranche: '3-5', avatar: 'fille' } })).s, 201, 'profils enfants possibles');
+    // 6-7. paiements : tout est bloqué, avec un message explicite, sans rien écrire ni appeler Stripe
+    const appelsAvant = appelsStripe.length, memeCode = CODES_FERMES[etat];
+    const consent = { cgv: true, executionImmediate: true };
+    for (const [m, ch, corps, c] of [['POST', '/api/paiement/session', { formule: 'premium_mensuel', consentements: consent }, gra], ['POST', '/api/paiement/session', { formule: 'famille_annuel', consentements: consent }, neuf],
+      ['POST', '/api/abonnement/synchroniser', {}, prem], ['POST', '/api/abonnement/synchroniser', { sessionId: 'cs_test_abcdef123' }, gra], ['POST', '/api/abonnement/resilier', undefined, prem], ['POST', '/api/abonnement/portail', undefined, fam]]) {
+      const r = await appel(m, ch, { cookie: c, corps }); assert.equal(r.s, 503, ch); assert.equal(r.j.erreur, memeCode, ch);
+    }
+    assert.equal(appelsStripe.length, appelsAvant, 'aucun appel à Stripe');
+  });
+  // aucun document d'abonnement, de consentement d'achat ou d'événement créé ou modifié par les opérations de paiement refusées
+  const apres = await instantane(base), famille = k => /^(abonnements|stripe_clients|stripe_evenements|consentements_achat|acces_offerts)\//.test(k);
+  for (const k of Object.keys(photo).filter(famille)) assert.deepEqual(apres[k], photo[k], k);
+  assert.deepEqual(Object.keys(apres).filter(famille).sort(), Object.keys(photo).filter(famille).sort(), 'aucun nouvel abonnement, consentement ni événement');
+  // et tout reprend quand Stripe est de nouveau bien configuré
+  assert.equal((await appel('POST', '/api/paiement/session', { cookie: gra, corps: { formule: 'premium_mensuel', consentements: { cgv: true, executionImmediate: true } } })).s, 200);
+});
+
+test('Stripe indisponible : jamais de Premium accordé, jamais de droit retiré ou rendu permanent, à cause d\'une erreur Stripe', async () => {
+  const c = await connecter('uid-sf-g2', { email: 'sf-g2@exemple.fr' }), p = await connecter('uid-sf-p2', { email: 'sf-p2@exemple.fr' });
+  await webhook(abo('uid-sf-p2', 'price_pa', 'active', maintenant + 3 * J, 'evt_sf_p2'));
+  await avecStripe('indisponible', async () => {
+    // un webhook valide (signé) arrive pendant la panne : refusé SANS être enregistré, aucun droit accordé ; il sera traité quand la configuration sera corrigée
+    const r = await webhook(abo('uid-sf-g2', 'price_pm', 'active', maintenant + 30 * J, 'evt_sf_pendant')); assert.equal(r.s, 503); assert.equal(r.j.erreur, 'paiements-indisponibles');
+    assert.equal((await appel('GET', '/api/moi', { cookie: c })).j.statut, 'gratuit', 'aucun Premium accordé');
+    assert.equal(await base.lire('stripe_evenements', 'evt_sf_pendant'), null, 'événement non marqué comme traité : Stripe le renverra');
+    assert.equal(await base.lire('abonnements', 'uid-sf-g2'), null);
+    // l'abonné garde son droit jusqu'à la date prévue, ni plus ni moins
+    const moi = (await appel('GET', '/api/moi', { cookie: p })).j; assert.equal(moi.statut, 'abonne'); assert.equal(moi.expire, maintenant + 3 * J);
+  });
+  // Stripe corrigé : le même événement est alors traité normalement
+  assert.equal((await webhook(abo('uid-sf-g2', 'price_pm', 'active', maintenant + 30 * J, 'evt_sf_pendant'))).s, 200);
+  assert.equal((await appel('GET', '/api/moi', { cookie: c })).j.statut, 'abonne');
+  // séparation test / production inchangée : un événement réel reste refusé hors production, même après correction
+  assert.equal((await webhook({ ...abo('uid-sf-g2', 'price_pm'), livemode: true })).j.erreur, 'mode-reel-refuse');
+});
+
+test('Stripe indisponible : un abonnement échu n\'est pas prolongé, un accès offert permanent reste permanent, aucun accès n\'est supprimé', async () => {
+  const adm = await connecter(CREATEUR, { role: 'creator' }), echu = await connecter('uid-sf-echu', { email: 'sf-echu@exemple.fr' }), offert = await connecter('uid-sf-offert', { email: 'sf-offert@exemple.fr' });
+  await webhook(abo('uid-sf-echu', 'price_pm', 'active', maintenant + 1000, 'evt_sf_echu'));
+  await appel('POST', '/api/admin/acces', { cookie: adm, corps: { email: 'sf-offert@exemple.fr', niveau: 'famille', dureeJours: null } });
+  const avantOffert = (await appel('GET', '/api/moi', { cookie: offert })).j; assert.equal(avantOffert.statut, 'invite');
+  await avecStripe('indisponible', async () => {
+    assert.deepEqual((await appel('GET', '/api/moi', { cookie: offert })).j, avantOffert);
+    assert.equal((await appel('GET', '/api/moi', { cookie: echu })).j.statut, 'abonne');
+    maintenant += 2 * J;                                                                       // le temps passe pendant la panne : l'abonnement non renouvelé prend fin, normalement
+    try { assert.equal((await appel('GET', '/api/moi', { cookie: echu })).j.statut, 'gratuit', 'fin de période respectée : pas de prolongation à cause de la panne'); assert.deepEqual((await appel('GET', '/api/moi', { cookie: offert })).j, avantOffert, 'accès offert inchangé'); }
+    finally { maintenant -= 2 * J; }
+  });
 });

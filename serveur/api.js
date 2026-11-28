@@ -114,6 +114,8 @@ function exigerCreateur(ctx, session, { recent = false } = {}) {
 // Le cookie porte la version du moment de la connexion ; à CHAQUE requête, elle est comparée à la version attendue. Plus petite = révoquée.
 // Absence de document = version 0 : les cookies déjà émis (sans version) restent valables, aucune connexion légitime n'est coupée au déploiement.
 // Pour tout révoquer : POST /api/admin/sessions/revoquer (Créateur), ou, sans aucune session, augmenter « version » dans la console Firestore, ou changer le secret CREATOR_UID.
+// Paiements fermés : pas de clé Stripe (« paiement-non-configure ») ou clé refusée par le serveur (« paiements-indisponibles »). Dans les deux cas : 503, rien n'est écrit, aucun droit n'est modifié.
+function paiementsFermes(ctx) { return erreur(503, ctx.stripeEtat === 'indisponible' ? 'paiements-indisponibles' : 'paiement-non-configure'); }
 const COL_SESSIONS = 'sessions_etat';
 const FENETRE_LECTURE_ADMIN_S = 12 * 3600;   // lectures sensibles (e-mails, enfants, journal) : connexion de moins de 12 h (les écritures : 15 min)
 export async function versionSessionAttendue(ctx, uid) {
@@ -170,7 +172,7 @@ export async function traiter(req, ctx) {
     const session = await sessionNonRevoquee(ctx, await lireSession(lireCookie(req.headers.get('Cookie')), ctx.env.SESSION_SECRET, ctx.maintenant));
 
     // Mode des paiements, pour que les pages affichent le bon texte (jamais une valeur de clé) : « ferme » (pas de Stripe configuré), « test » ou « reel ».
-    if (chemin === '/api/paiement/mode' && m === 'GET') return json({ mode: !ctx.stripe ? 'ferme' : ctx.stripe.modeTest ? 'test' : 'reel' });
+    if (chemin === '/api/paiement/mode' && m === 'GET') return json({ mode: !ctx.stripe ? (ctx.stripeEtat === 'indisponible' ? 'indisponible' : 'ferme') : ctx.stripe.modeTest ? 'test' : 'reel' });
 
     // ----- session -----
     if (chemin === '/api/session' && m === 'POST') {
@@ -355,7 +357,7 @@ export async function traiter(req, ctx) {
 
     // ----- abonnement (Stripe, mode test) -----
     if (chemin === '/api/paiement/session' && m === 'POST') {
-      if (!ctx.stripe) return erreur(503, 'paiement-non-configure');
+      if (!ctx.stripe) return paiementsFermes(ctx);
       if (!session.emailVerifie) return erreur(403, 'email-non-verifie');
       const b = await corpsJson(req, 2000);
       const v = verifierSouscription({ droits: d, formule: b.formule }); if (!v.ok) return erreur(409, v.raison);
@@ -367,15 +369,17 @@ export async function traiter(req, ctx) {
       return json({ url: s.url });
     }
     if (chemin === '/api/abonnement/resilier' && m === 'POST') {
+      // Résiliation = opération de paiement : sans Stripe correctement configuré, elle est REFUSÉE (jamais un « résilié » affiché alors que Stripe continuerait à facturer). L'accès existant n'est pas modifié.
+      if (!ctx.stripe) return paiementsFermes(ctx);
       const ab = await ctx.base.lire('abonnements', session.uid);
       if (!ab || !abonnementActif(ab, ctx.maintenant)) return erreur(404, 'aucun-abonnement');
-      if (ctx.stripe) await ctx.stripe.resilierFinPeriode(ab.stripeAbonnement);
+      await ctx.stripe.resilierFinPeriode(ab.stripeAbonnement);
       await ctx.base.maj('abonnements', session.uid, { annulationFinPeriode: true, resilieLe: ctx.maintenant });
       await majDroits(ctx, session.uid, { claims: session.claims });
       return json({ ok: true, finAcces: ab.finPeriode });
     }
     if (chemin === '/api/abonnement/synchroniser' && m === 'POST') {
-      if (!ctx.stripe) return erreur(503, 'paiement-non-configure');
+      if (!ctx.stripe) return paiementsFermes(ctx);
       if (!session.emailVerifie) return erreur(403, 'email-non-verifie');
       const b = await corpsJson(req, 1000);
       if (b.sessionId === undefined) {   // sans identifiant : on relit l'abonnement déjà connu chez Stripe (renouvellement, résiliation, échec de paiement)
@@ -404,8 +408,9 @@ export async function traiter(req, ctx) {
       return json({ ok: true });
     }
     if (chemin === '/api/abonnement/portail' && m === 'POST') {
+      if (!ctx.stripe) return paiementsFermes(ctx);
       const ab = await ctx.base.lire('abonnements', session.uid);
-      if (!ctx.stripe || !ab || !ab.stripeClient) return erreur(404, 'aucun-abonnement');
+      if (!ab || !ab.stripeClient) return erreur(404, 'aucun-abonnement');
       return json({ url: (await ctx.stripe.creerPortail({ client: ab.stripeClient, retour: url.origin + '/compte/' })).url });
     }
 
@@ -640,6 +645,8 @@ async function enregistrerAbonnement(ctx, uid, o, supprime = false) {
 // ======================================================================
 // Webhooks Stripe : seule source de vérité des abonnements payants.
 async function webhookStripe(req, ctx) {
+  // Stripe mal configuré (clé refusée) : aucun événement n'est traité NI enregistré (Stripe le renverra, pendant plusieurs jours, une fois la configuration corrigée) ; aucun droit n'est touché.
+  if (ctx.stripeEtat === 'indisponible') return erreur(503, 'paiements-indisponibles');
   const corps = await req.text();
   if (!(await verifierSignatureStripe(corps, req.headers.get('Stripe-Signature'), ctx.env.STRIPE_SECRET_WEBHOOK, ctx.maintenant))) return erreur(400, 'signature');
   const ev = JSON.parse(corps);

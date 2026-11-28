@@ -2,10 +2,10 @@
 import test from 'node:test'; import assert from 'node:assert/strict';
 import { onRequest } from '../../functions/api/[[route]].js';
 const SECRET = 'SECRETXYZ-fragment-sensible-0123456789';
-const requete = () => new Request('https://x.pages.dev/api/me');
-async function appeler(env) {
+const requete = chemin => new Request('https://x.pages.dev' + (chemin || '/api/me'));
+async function appeler(env, chemin) {
   const journal = []; const orig = console.error; console.error = (...a) => journal.push(a.map(String).join(' '));
-  try { const r = await onRequest({ request: requete(), env }); return { statut: r.status, corps: await r.text(), journal: journal.join('\n') }; } finally { console.error = orig; }
+  try { const r = await onRequest({ request: requete(chemin), env }); return { statut: r.status, corps: await r.text(), journal: journal.join('\n') }; } finally { console.error = orig; }
 }
 const base = { SESSION_SECRET: 'x'.repeat(40), FIREBASE_PROJET: 'ldn-test' };
 test('secrets absents : 503 comptes-non-configures', async () => { const r = await appeler({}); assert.equal(r.statut, 503); assert.match(r.corps, /comptes-non-configures/); });
@@ -14,9 +14,16 @@ test('compte de service mal collé : 503 neutre, aucun fragment du secret nulle 
   assert.equal(r.statut, 503); assert.match(r.corps, /configuration-invalide/);
   assert.ok(!r.corps.includes('SECRETXYZ') && !r.journal.includes('SECRETXYZ') && !r.journal.includes('private_key'));
 });
-test('clé Stripe réelle refusée : 503 neutre, clé jamais répétée', async () => {
-  const r = await appeler({ ...base, FIREBASE_COMPTE_SERVICE: JSON.stringify({ project_id: 'p', client_email: 'a@b', private_key: 'k' }), STRIPE_CLE_SECRETE: 'sk_live_' + SECRET });
-  assert.equal(r.statut, 503); assert.ok(!(r.corps + r.journal).includes('SECRETXYZ'));
+test('clé Stripe refusée (réelle hors production, test en production, format inconnu) : SEULS les paiements sont fermés, le site répond, clé jamais répétée', async () => {
+  const compte = JSON.stringify({ project_id: 'p', client_email: 'a@b', private_key: 'k' });
+  for (const stripe of [{ STRIPE_CLE_SECRETE: 'sk_live_' + SECRET }, { STRIPE_CLE_SECRETE: 'sk_test_' + SECRET, ENVIRONNEMENT: 'production' }, { STRIPE_CLE_SECRETE: 'cle-' + SECRET }]) {
+    const r = await appeler({ ...base, FIREBASE_COMPTE_SERVICE: compte, ...stripe });
+    assert.notEqual(r.statut, 503, 'le site est toujours servi'); assert.ok(!(r.corps + r.journal).includes('SECRETXYZ'));
+    const mode = await appeler({ ...base, FIREBASE_COMPTE_SERVICE: compte, ...stripe }, '/api/paiement/mode');
+    assert.equal(mode.statut, 200); assert.deepEqual(JSON.parse(mode.corps), { mode: 'indisponible' }); assert.ok(!(mode.corps + mode.journal).includes('SECRETXYZ'));
+    assert.match(mode.journal, /Paiements désactivés/);
+    const moi = await appeler({ ...base, FIREBASE_COMPTE_SERVICE: compte, ...stripe }, '/api/moi'); assert.equal(moi.statut, 200); assert.deepEqual(JSON.parse(moi.corps), { connecte: false, statut: 'visiteur' });
+  }
 });
 
 import { onRequestGet, etatConfiguration } from '../../functions/api/sante.js';
