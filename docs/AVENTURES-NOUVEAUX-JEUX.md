@@ -12,6 +12,6 @@ Page derrière le compte parent (liste « fail-closed » du serveur, `_routes.js
 
 ## Ce qui reste à votre décision
 1. **Valider le contenu religieux** (Cinq prières ; sourates du Trésor ; sens « la Sincérité » pour Al-Ikhlâs) : `docs/CONTENUS-A-VALIDER.md`.
-2. **Doublon avec la maison Premium « cinq »** : `serveur/catalogue.js` prévoit une maison Premium « Défi des cinq prières » (aperçu). Ces trois jeux sont des versions simples, réservées aux comptes, **sans contenu du pack privé**. Si vous voulez garder « cinq » exclusivement Premium, retirer `lien` de l'entrée `cinq` dans `aventures/aventures.js` suffit à la remettre en « Bientôt ».
+2. **Décision du créateur (28/11/2026) : le Défi des cinq prières public est conservé.** **Doublon avec la maison Premium « cinq »** : `serveur/catalogue.js` prévoit une maison Premium « Défi des cinq prières » (aperçu). Ces trois jeux sont des versions simples, réservées aux comptes, **sans contenu du pack privé**. Si vous voulez garder « cinq » exclusivement Premium, retirer `lien` de l'entrée `cinq` dans `aventures/aventures.js` suffit à la remettre en « Bientôt ».
 3. **Voix** : aucune. Si vous en voulez, les 10 voix de Nour pourront être ajoutées (génération à votre accord, coût ElevenLabs).
 4. Les étoiles de ces trois jeux ne comptent pas encore dans le total du village (`monde/socle/recompenses.js`).
