@@ -21,7 +21,7 @@
 **Toujours en attente (nécessite la micro-entreprise, vos informations ou votre validation — rien n'a été inventé)**
 - `conditions/index.html` : renseigner les 13 emplacements une fois la micro-entreprise créée ; relecture juridique de la clause de rétractation.
 - Contenu religieux à valider (`docs/CONTENUS-A-VALIDER.md`), dont les trois nouveaux jeux ; décider si le « Défi des cinq prières » public doit rester (la maison Premium `cinq` existe dans le catalogue).
-- Pack Premium : toujours absent (R2 `ldn-premium` relié en preproduction ET en production depuis le 28/11, contenu à importer par vous via `/admin/` → Pack Premium ; le dossier d'origine `premium-lanternes` n'existe plus sur cette machine). Le Créateur n'est plus bloqué : ses zones s'ouvrent sans textes ni voix et un message l'indique.
+- Pack Premium du Grand Voyage : **RÉCUPÉRÉ le 28/11 depuis l'historique Git** (commit 1ea5dbf^, `outils/recuperation/reconstituer-pack-voyage.mjs`) et importé dans R2 `ldn-premium` (relié en preproduction ET en production) : 5 zones (camp, dunes, montagnes, wadi, rochers), 53 textes, 21 voix, 26 fichiers relus et identiques. **Perdu (jamais dans Git)** : la maison Premium « Chasse aux mots » (`maisons/mots/` : index.html, jeu.css, jeu.js, mots.json). Copie locale du pack : `C:Userszakarpremium-lanternes` (privée, hors dépôt).
 - Production : secrets de production (`SESSION_SECRET`, `FIREBASE_COMPTE_SERVICE`, `CREATOR_UID`, `EMAIL_CLE_API`, clés Stripe réelles), DMARC, réglages Cloudflare : voir la préparation ci-dessus.
 - Voix des trois nouveaux jeux : aucune (génération = dépense, à votre accord).
 

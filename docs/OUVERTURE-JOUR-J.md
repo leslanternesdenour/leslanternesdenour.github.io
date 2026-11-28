@@ -27,7 +27,7 @@
 
 ## Étape 4 — E-mails et Premium
 - E-mails : Cloudflare Production : secret `EMAIL_CLE_API` + `EMAIL_FOURNISSEUR=resend`, `EMAIL_EXPEDITEUR_ADRESSE=bonjour@leslanternesdenour.fr`, `EMAIL_EXPEDITEUR_NOM=Les Lanternes de Nour`. DNS : ajouter le DMARC (`docs/PREPARATION-OUVERTURE-COMMERCIALE.md` §3).
-- Premium : lier le bucket R2 `ldn-premium` à la production (nom de liaison `R2_PREMIUM`), puis importer le pack depuis l'écran « Importer » du créateur. Voir `outils/tests/fuite-premium.mjs` pour le contrôle de fuite.
+- Premium : le bucket R2 `ldn-premium` est **déjà lié** à la production (liaison `R2_PREMIUM`, depuis le 28/11) ; le pack du Grand Voyage (5 zones, 21 voix) y est **importé** (récupéré de l'historique Git, `outils/recuperation/reconstituer-pack-voyage.mjs`) ; seule la maison « Chasse aux mots » est à ré-importer si le créateur en retrouve les fichiers. Voir `outils/tests/fuite-premium.mjs` pour le contrôle de fuite.
 - Cloudflare zone : TLS 1.2, HTTPS permanent, HSTS par paliers, limitation de débit (§2 du même document).
 
 ## Étape 5 — Publier et contrôler
