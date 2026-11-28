@@ -1,6 +1,6 @@
 # Transfert de `preproduction` vers le site public — analyse du 28/11/2026
 
-**Rien n'a été publié.** `main` et `production` n'ont pas été touchées. Analyse en lecture seule + une construction de simulation (copie jetable, supprimée).
+**MISE À JOUR : publié le 28/11/2026 sur `production` (`e599477`), sur autorisation du créateur.** `main` (non déployée) n'a pas été touchée. Les Conditions publiques utilisent la « vue publique » (voir `docs/OUVERTURE-JOUR-J.md`). Contrôles en ligne : version `e599477`, jeux protégés (302 vers la connexion), paiements `ferme`, Premium 401 sans compte. Analyse initiale (avant publication) : Analyse en lecture seule + une construction de simulation (copie jetable, supprimée).
 
 ## 1. État des branches
 | Branche | Commit | Rôle |

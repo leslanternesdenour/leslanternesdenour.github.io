@@ -12,6 +12,7 @@
 - Carte de la grande route : repère « La Mecque » (drapeau + nom, rien de religieux) au bout de la piste ; étiquette « Village de Nour » plus coupée par le bord (ordinateur et téléphone) ; les « ❔ » ne se superposent plus en grappes ; message « Rien encore » du carnet Itinéraire sur toute la largeur.
 - Calendrier du Ramadan : le premier profil reprend le prénom et le genre du profil enfant du compte (l'âge reste à choisir : il n'est pas connu). Service worker v9.
 - Audits : chemins réglables (`PLAYWRIGHT_DIR`, `THREE_DIR`), mode d'emploi Windows dans `outils/audit-jeux/LISEZMOI.md`.
+**PUBLIÉ EN PRODUCTION le 28/11 (e599477)** : tout le contenu de preproduction (comptes obligatoires, jeux, Aventures, calendrier, route…). Paiements et Premium fermés par trois protections ; procédure de la micro-entreprise à l'ouverture : `docs/OUVERTURE-JOUR-J.md`.
 **Ajouté le 28/11 (après-midi)**
 - Mentions légales : page entièrement préparée (`conditions/index.html`), 13 emplacements « [EN ATTENTE : …] » (nom, statut, adresse, SIREN/SIRET, TVA, contact, directeur de publication, adresse de l'hébergeur, TVA des prix, prix confirmés, remboursement, relecture de la rétractation, médiateur) ; **rien d'inventé**. Outil `node outils/legal/renseigner.mjs --etat` / `infos.json --ecrire` ; `promouvoir.sh` refuse toujours tant qu'un emplacement reste ; test `mentions-legales.test.mjs`.
 - Contenus religieux relus : aucune erreur certaine ; liste à valider dans `docs/CONTENUS-A-VALIDER.md`.
