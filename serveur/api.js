@@ -108,6 +108,32 @@ function exigerCreateur(ctx, session, { recent = false } = {}) {
   return null;
 }
 
+// ---------- révocation des sessions (correctif du 28/11/2026) ----------
+// Le cookie de session est signé et dure 5 jours : sans contrôle côté serveur, un cookie volé (ou un rôle Créateur retiré) resterait valable.
+// Chaque compte a donc une « version de sessions » dans Firestore (collection sessions_etat, jamais lisible par un navigateur).
+// Le cookie porte la version du moment de la connexion ; à CHAQUE requête, elle est comparée à la version attendue. Plus petite = révoquée.
+// Absence de document = version 0 : les cookies déjà émis (sans version) restent valables, aucune connexion légitime n'est coupée au déploiement.
+// Pour tout révoquer : POST /api/admin/sessions/revoquer (Créateur), ou, sans aucune session, augmenter « version » dans la console Firestore, ou changer le secret CREATOR_UID.
+// Paiements fermés : pas de clé Stripe (« paiement-non-configure ») ou clé refusée par le serveur (« paiements-indisponibles »). Dans les deux cas : 503, rien n'est écrit, aucun droit n'est modifié.
+function paiementsFermes(ctx) { return erreur(503, ctx.stripeEtat === 'indisponible' ? 'paiements-indisponibles' : 'paiement-non-configure'); }
+const COL_SESSIONS = 'sessions_etat';
+const FENETRE_LECTURE_ADMIN_S = 12 * 3600;   // lectures sensibles (e-mails, enfants, journal) : connexion de moins de 12 h (les écritures : 15 min)
+export async function versionSessionAttendue(ctx, uid) {
+  const d = await ctx.base.lire(COL_SESSIONS, uid);
+  if (d === null || d === undefined) return 0;                                     // aucun document : jamais révoqué
+  if (!Number.isSafeInteger(d.version) || d.version < 0) throw new Error('version-invalide');   // document présent mais illisible (saisie manuelle fautive) : fail-closed, jamais « 0 » silencieux
+  return d.version;
+}
+// Renvoie la session si elle est toujours valable, sinon null. Fail-closed : si la version ne peut pas être lue, la session est refusée (jamais le contraire).
+async function sessionNonRevoquee(ctx, session) {
+  if (!session) return null;
+  try { return (Number.isInteger(session.version) ? session.version : 0) >= await versionSessionAttendue(ctx, session.uid) ? session : null; }
+  catch (e) { console.error('version-session-illisible', e && e.message); return null; }
+}
+function lectureAdminSensible(ctx, session) {
+  return connexionRecente(session, ctx.maintenant, FENETRE_LECTURE_ADMIN_S) ? null : erreur(401, 'reconnexion-requise');
+}
+
 // ---------- validation des profils enfants (minimisation RGPD) ----------
 function validerEnfant(b) {
   const surnom = String(b.surnom || '').trim();
@@ -143,10 +169,10 @@ export async function traiter(req, ctx) {
     if (chemin === '/api/stripe/webhook' && m === 'POST') return webhookStripe(req, ctx);
 
     if (m !== 'GET' && m !== 'HEAD' && !memeOrigine(req)) return erreur(403, 'origine');
-    const session = await lireSession(lireCookie(req.headers.get('Cookie')), ctx.env.SESSION_SECRET, ctx.maintenant);
+    const session = await sessionNonRevoquee(ctx, await lireSession(lireCookie(req.headers.get('Cookie')), ctx.env.SESSION_SECRET, ctx.maintenant));
 
     // Mode des paiements, pour que les pages affichent le bon texte (jamais une valeur de clé) : « ferme » (pas de Stripe configuré), « test » ou « reel ».
-    if (chemin === '/api/paiement/mode' && m === 'GET') return json({ mode: !ctx.stripe ? 'ferme' : ctx.stripe.modeTest ? 'test' : 'reel' });
+    if (chemin === '/api/paiement/mode' && m === 'GET') return json({ mode: !ctx.stripe ? (ctx.stripeEtat === 'indisponible' ? 'indisponible' : 'ferme') : ctx.stripe.modeTest ? 'test' : 'reel' });
 
     // ----- session -----
     if (chemin === '/api/session' && m === 'POST') {
@@ -165,7 +191,7 @@ export async function traiter(req, ctx) {
         await ctx.base.ecrire('familles', v.uid, famille);
         await majDroits(ctx, v.uid, { claims: v.claims });
       } else if (normaliserEmail(v.email) !== famille.email) await ctx.base.maj('familles', v.uid, { email: normaliserEmail(v.email) });
-      const valeur = await creerSession({ uid: v.uid, email: v.email, emailVerifie: v.emailVerifie, role: v.claims.role, authTime: v.authTime, fournisseur: v.fournisseur }, ctx.env.SESSION_SECRET, ctx.maintenant);
+      const valeur = await creerSession({ uid: v.uid, email: v.email, emailVerifie: v.emailVerifie, role: v.claims.role, authTime: v.authTime, fournisseur: v.fournisseur, version: await versionSessionAttendue(ctx, v.uid) }, ctx.env.SESSION_SECRET, ctx.maintenant);
       // Adresse tout juste vérifiée après une demande d'e-mail : UN message de confirmation, une seule fois (drapeau posé avant l'envoi).
       if (v.emailVerifie && ctx.courriel && famille.verifDemandeeLe && !famille.verifConfirmeeLe && v.email) {
         try { await ctx.base.maj('familles', v.uid, { verifConfirmeeLe: ctx.maintenant }); await ctx.courriel.envoyer({ a: v.email, ...modeles.confirmationVerification({ lienJeu: origineSite(url) + '/compte/' }) }); } catch (e) { /* la connexion ne doit jamais échouer à cause d'un e-mail */ }
@@ -331,7 +357,7 @@ export async function traiter(req, ctx) {
 
     // ----- abonnement (Stripe, mode test) -----
     if (chemin === '/api/paiement/session' && m === 'POST') {
-      if (!ctx.stripe) return erreur(503, 'paiement-non-configure');
+      if (!ctx.stripe) return paiementsFermes(ctx);
       if (!session.emailVerifie) return erreur(403, 'email-non-verifie');
       const b = await corpsJson(req, 2000);
       const v = verifierSouscription({ droits: d, formule: b.formule }); if (!v.ok) return erreur(409, v.raison);
@@ -343,15 +369,17 @@ export async function traiter(req, ctx) {
       return json({ url: s.url });
     }
     if (chemin === '/api/abonnement/resilier' && m === 'POST') {
+      // Résiliation = opération de paiement : sans Stripe correctement configuré, elle est REFUSÉE (jamais un « résilié » affiché alors que Stripe continuerait à facturer). L'accès existant n'est pas modifié.
+      if (!ctx.stripe) return paiementsFermes(ctx);
       const ab = await ctx.base.lire('abonnements', session.uid);
       if (!ab || !abonnementActif(ab, ctx.maintenant)) return erreur(404, 'aucun-abonnement');
-      if (ctx.stripe) await ctx.stripe.resilierFinPeriode(ab.stripeAbonnement);
+      await ctx.stripe.resilierFinPeriode(ab.stripeAbonnement);
       await ctx.base.maj('abonnements', session.uid, { annulationFinPeriode: true, resilieLe: ctx.maintenant });
       await majDroits(ctx, session.uid, { claims: session.claims });
       return json({ ok: true, finAcces: ab.finPeriode });
     }
     if (chemin === '/api/abonnement/synchroniser' && m === 'POST') {
-      if (!ctx.stripe) return erreur(503, 'paiement-non-configure');
+      if (!ctx.stripe) return paiementsFermes(ctx);
       if (!session.emailVerifie) return erreur(403, 'email-non-verifie');
       const b = await corpsJson(req, 1000);
       if (b.sessionId === undefined) {   // sans identifiant : on relit l'abonnement déjà connu chez Stripe (renouvellement, résiliation, échec de paiement)
@@ -380,8 +408,9 @@ export async function traiter(req, ctx) {
       return json({ ok: true });
     }
     if (chemin === '/api/abonnement/portail' && m === 'POST') {
+      if (!ctx.stripe) return paiementsFermes(ctx);
       const ab = await ctx.base.lire('abonnements', session.uid);
-      if (!ctx.stripe || !ab || !ab.stripeClient) return erreur(404, 'aucun-abonnement');
+      if (!ab || !ab.stripeClient) return erreur(404, 'aucun-abonnement');
       return json({ url: (await ctx.stripe.creerPortail({ client: ab.stripeClient, retour: url.origin + '/compte/' })).url });
     }
 
@@ -425,6 +454,7 @@ export async function supprimerToutesLesDonnees(ctx, uid) {
   await ctx.base.supprimer('courriers', uid);
   if (email) await ctx.base.supprimer('courriers', 'r' + await empreinteAdresse(email));   // données d'envoi : horodatages seulement, clé = empreinte de l'adresse
   await ctx.base.supprimer('droits', uid);
+  await ctx.base.supprimer(COL_SESSIONS, uid);
   await ctx.base.supprimer('abonnements', uid);
   await ctx.base.supprimer('familles', uid);
   await ctx.base.supprimerUtilisateur(uid);
@@ -438,6 +468,30 @@ async function administration(req, ctx, session, chemin, url) {
   const m = req.method, ecriture = m !== 'GET';
   const refus = exigerCreateur(ctx, session, { recent: ecriture }); if (refus) return refus;
   const apres = url.searchParams.get('apres');
+  // Lectures qui exposent des adresses e-mail, des surnoms d'enfants ou le journal : connexion de moins de 12 h (en plus de la version de session, déjà contrôlée).
+  // Liste blanche inversée : TOUTE lecture d'administration l'exige, sauf le résumé chiffré (aucune donnée personnelle). Une route ajoutée plus tard est donc protégée par défaut.
+  if (!ecriture && chemin !== '/api/admin/resume') {
+    const ancien = lectureAdminSensible(ctx, session); if (ancien) return ancien;
+  }
+
+  // Révocation des sessions d'un compte (par défaut : le Créateur lui-même). Toutes les anciennes sessions de la cible cessent de fonctionner.
+  // Si la cible est le Créateur lui-même, la session en cours est ré-émise avec la nouvelle version : il reste connecté sur cet appareil.
+  if (chemin === '/api/admin/sessions/revoquer' && m === 'POST') {
+    const b = await corpsJson(req, 500);
+    const cible = b.uid === undefined || b.uid === null || b.uid === '' ? session.uid : b.uid;
+    if (typeof cible !== 'string' || !/^[A-Za-z0-9_-]{1,128}$/.test(cible)) return erreur(400, 'uid-invalide');
+    if (cible !== session.uid && !(await ctx.base.lire('familles', cible))) return erreur(404, 'compte-introuvable');
+    // Contrôle (sans effet sur la course) : un document « version » illisible n'est JAMAIS remplacé par une valeur basse (les anciens cookies redeviendraient valables) ;
+    // il faut le corriger à la main dans la console Firestore (nombre entier).
+    try { await versionSessionAttendue(ctx, cible); } catch (e) { console.error('version-session-illisible', e && e.message); return erreur(409, 'etat-sessions-illisible'); }
+    // Incrémentation atomique côté base (transaction Firestore sur ce document) : deux révocations simultanées donnent deux versions différentes,
+    // la version ne peut jamais redescendre. La lecture ci-dessus ne sert qu'à détecter un document illisible.
+    const version = await ctx.base.incrementer(COL_SESSIONS, cible, 'version', { revoqueLe: ctx.maintenant });
+    await journal(ctx, 'sessions-revoquees', { cible: cible === session.uid ? 'soi-meme' : 'autre-compte' });
+    if (cible !== session.uid) return json({ ok: true, version });
+    const valeur = await creerSession({ uid: session.uid, email: session.email, emailVerifie: session.emailVerifie, role: session.claims && session.claims.role, authTime: session.authTime, fournisseur: session.fournisseur, version }, ctx.env.SESSION_SECRET, ctx.maintenant);
+    return json({ ok: true, version }, 200, { 'Set-Cookie': enteteCookie(valeur, { secure: url.protocol === 'https:' }) });
+  }
 
   if (chemin === '/api/admin/resume' && m === 'GET') {
     const abos = (await ctx.base.chercher('abonnements', 'statut', 'active', 10000)).concat(await ctx.base.chercher('abonnements', 'statut', 'trialing', 10000)).filter(a => abonnementActif(a.data, ctx.maintenant));
@@ -521,8 +575,9 @@ async function administration(req, ctx, session, chemin, url) {
       return json({ ok: true });
     }
     const b = await corpsJson(req, 500);
-    const fin = b.permanent === true ? null : Number(b.fin);
-    if (fin !== null && !(fin > ctx.maintenant)) return erreur(400, 'fin-invalide');
+    const permanent = b.permanent === true, fin = permanent ? null : b.fin;
+    // nombre JSON strict (ni texte, ni null implicite, ni NaN, ni Infinity), dans le futur, et au plus 10 ans (une date hors plage ferait échouer l'affichage)
+    if (!permanent && !(typeof fin === 'number' && Number.isFinite(fin) && fin > ctx.maintenant && fin <= ctx.maintenant + 10 * 366 * 86400000)) return erreur(400, 'fin-invalide');
     await ctx.base.maj('acces_offerts', r[1], { fin, revoqueLe: null, historique: [...(a.historique || []), { t: ctx.maintenant, action: fin === null ? 'permanent' : 'prolongation', fin }] });
     await majDroits(ctx, a.uid); await journal(ctx, 'acces-prolonge', { acces: r[1], uid: a.uid, fin });
     return json({ ok: true });
@@ -590,10 +645,16 @@ async function enregistrerAbonnement(ctx, uid, o, supprime = false) {
 // ======================================================================
 // Webhooks Stripe : seule source de vérité des abonnements payants.
 async function webhookStripe(req, ctx) {
+  // Stripe mal configuré (clé refusée) : aucun événement n'est traité NI enregistré (Stripe le renverra, pendant plusieurs jours, une fois la configuration corrigée) ; aucun droit n'est touché.
+  if (ctx.stripeEtat === 'indisponible') return erreur(503, 'paiements-indisponibles');
   const corps = await req.text();
   if (!(await verifierSignatureStripe(corps, req.headers.get('Stripe-Signature'), ctx.env.STRIPE_SECRET_WEBHOOK, ctx.maintenant))) return erreur(400, 'signature');
   const ev = JSON.parse(corps);
-  if (ev.livemode === true && (ctx.env.STRIPE_MODE_REEL !== 'autorise' || !MENTIONS_COMPLETES)) return erreur(400, 'mode-reel-refuse');
+  // Séparation test / réel : un événement RÉEL n'est accepté qu'en production (et seulement avec l'accord du créateur et les mentions légales complètes) ;
+  // la production n'accepte QUE des événements réels (un événement de test y donnerait un vrai accès Premium contre une carte de test).
+  const production = ctx.env.ENVIRONNEMENT === 'production';
+  if (ev.livemode === true && (ctx.env.STRIPE_MODE_REEL !== 'autorise' || !MENTIONS_COMPLETES || !production)) return erreur(400, 'mode-reel-refuse');
+  if (production && ev.livemode !== true) return erreur(400, 'mode-test-refuse');
   if (!(await ctx.base.creerSiAbsent('stripe_evenements', ev.id, { t: ctx.maintenant, type: ev.type }))) return json({ ok: true, doublon: true });   // chaque événement traité une seule fois
   const o = ev.data && ev.data.object || {};
   let uid = (o.metadata && o.metadata.uid) || o.client_reference_id || null;

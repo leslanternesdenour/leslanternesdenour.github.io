@@ -47,6 +47,7 @@ node outils/sauvegarde/verifier-sauvegarde.mjs --fichier="<fichier>.age" --cle-p
    ```
 3. Importer : `outils/sauvegarde/restauration.mjs importer export.json` (voir l'en-tête du fichier : l'import refuse une base non vide et un projet qui ne ressemble pas à un projet de test). `export.json` contient des données personnelles : à supprimer après l'exercice.
 4. `outils/sauvegarde/restauration.mjs comparer export.json` doit répondre « base identique à l'export ».
+5. **Sessions** : la sauvegarde contient `sessions_etat` (versions de révocation des sessions). Une restauration ne fait jamais redescendre une version, et, après un import réussi, l'outil **invalide toutes les sessions ouvertes avant la restauration** (chacun se reconnecte une fois) : une sauvegarde plus ancienne qu'une révocation ne peut donc pas rendre valable un cookie volé. `--garder-sessions` désactive cette étape (exercice sur un projet de test). Détails : `docs/SECURITE-SESSIONS-DROITS.md`.
 
 Les comptes de connexion se restaurent avec la sauvegarde `auth-…` (section suivante).
 

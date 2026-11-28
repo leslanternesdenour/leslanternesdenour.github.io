@@ -26,6 +26,10 @@ async function scenario(b) {
   const ids = []; let apres = null, pages = 0; do { const p = await b.lister('familles', { limite: 3, apres }); ids.push(...p.docs.map(d => d.id)); apres = p.suite; pages++; } while (apres); out.push(ids, pages);
   out.push((await b.chercher('familles', 'email', 'a@b.fr')).map(d => d.id).sort()); out.push((await b.lister('familles/u1/enfants', { limite: 10 })).docs.map(d => d.data.surnom));
   await b.supprimer('familles', 'u2'); await b.supprimer('familles', 'inexistant'); out.push(await b.lire('familles', 'u2'), await b.compter('familles'));
+  // sessions_etat : incrémentation atomique (écriture avec transformation « increment ») ; 10 appels simultanés = 10 valeurs distinctes ; champs extra conservés
+  out.push(await b.incrementer('sessions_etat', 's1', 'version', { revoqueLe: 1 }), await b.incrementer('sessions_etat', 's1', 'version', { revoqueLe: 2 }), await b.lire('sessions_etat', 's1'));
+  await b.ecrire('sessions_etat', 's3', { version: 'abc', note: 'x' }); out.push(await b.incrementer('sessions_etat', 's3', 'version', { revoqueLe: 4 }), await b.lire('sessions_etat', 's3'));
+  out.push((await Promise.all(Array.from({ length: 10 }, () => b.incrementer('sessions_etat', 's2', 'version', { revoqueLe: 3 })))).sort((x, y) => x - y), (await b.lire('sessions_etat', 's2')).version);
   return out;
 }
 test('baseFirestore (REST, émulateur officiel) se comporte exactement comme la base mémoire de référence', async () => {

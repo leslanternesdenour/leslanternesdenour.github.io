@@ -7,9 +7,11 @@
 //   compare : (variables de la cible) node outils/sauvegarde/restauration.mjs comparer export.json
 // Garde-fous : l'import refuse une base non vide, et refuse un projet dont le nom ne contient ni « test » ni « restauration »
 // sauf confirmation explicite (--cible-confirmee=<nom-du-projet>). Les clés de service restent sur l'ordinateur du propriétaire.
-import fs from 'fs';
+import fs from 'fs'; import path from 'path'; import { pathToFileURL } from 'url';
 
-export const COLLECTIONS = ['familles', 'droits', 'acces_offerts', 'invitations', 'abonnements', 'stripe_clients', 'stripe_evenements', 'consentements_achat', 'admin_logs', 'catalogue'];
+// « sessions_etat » : version de révocation des sessions de chaque compte (voir docs/SECURITE-SESSIONS-DROITS.md).
+// Une restauration NE DOIT JAMAIS faire redescendre une version (un cookie révoqué redeviendrait valable) : voir importer() et invaliderSessions().
+export const COLLECTIONS = ['familles', 'droits', 'sessions_etat', 'acces_offerts', 'invitations', 'abonnements', 'stripe_clients', 'stripe_evenements', 'consentements_achat', 'admin_logs', 'catalogue'];
 export const SOUS_COLLECTIONS = { familles: ['enfants'] };
 const FORMAT = 'ldn-export-1';
 
@@ -36,7 +38,31 @@ export async function importer(base, e, { forcer = false } = {}) {
   if (!e || e.format !== FORMAT) throw new Error('format d\'export inconnu');
   if (!forcer) for (const col of COLLECTIONS) if ((await base.compter(col)) > 0) throw new Error(`base cible non vide (${col}) : import refusé`);
   let n = 0;
-  for (const [col, docs] of Object.entries(e.collections)) for (const [id, data] of Object.entries(docs)) { await base.ecrire(col, id, data); n++; }
+  for (const [col, docs] of Object.entries(e.collections)) for (const [id, data] of Object.entries(docs)) {
+    if (col === 'sessions_etat') {
+      // Jamais de retour en arrière : si le document existe déjà (import forcé), on garde la version la plus HAUTE. Une version illisible dans la sauvegarde est ignorée.
+      // (une version illisible dans la sauvegarde est copiée telle quelle : le compte reste verrouillé, jamais libéré par erreur)
+      const actuel = await base.lire(col, id), v = (d) => d && Number.isSafeInteger(d.version) && d.version >= 0 ? d.version : -1;
+      // un document actuel illisible (verrouillé) n'est pas libéré non plus : on le garde tel quel
+      if (actuel && (v(actuel) < 0 || v(actuel) > v(data))) { n++; continue; }
+    }
+    await base.ecrire(col, id, data); n++;
+  }
+  return n;
+}
+
+// À lancer APRÈS une restauration : toutes les sessions ouvertes AVANT la restauration deviennent invalides, quelle que soit l'ancienneté de la sauvegarde
+// (une sauvegarde plus vieille qu'une révocation ferait sinon redevenir valable un cookie volé et révoqué).
+// Chaque compte reçoit la version max(version actuelle + 1, instant présent en ms) : l'instant présent dépasse toutes les versions déjà émises
+// (qui augmentent de 1 en 1 depuis 0), donc plus aucun ancien cookie n'est accepté ; les révocations suivantes continuent de +1. Tout le monde se reconnecte une fois.
+export async function invaliderSessions(base, { maintenant = Date.now() } = {}) {
+  const uids = new Set();
+  for (const col of ['familles', 'sessions_etat']) { let apres = null; do { const p = await base.lister(col, { limite: 300, apres }); for (const d of p.docs) uids.add(d.id); apres = p.suite; } while (apres); }
+  let n = 0;
+  for (const uid of uids) {
+    const actuel = await base.lire('sessions_etat', uid), v = actuel && Number.isSafeInteger(actuel.version) && actuel.version >= 0 ? actuel.version : 0;
+    await base.ecrire('sessions_etat', uid, { version: Math.max(v + 1, maintenant), revoqueLe: maintenant, cause: 'restauration' }); n++;
+  }
   return n;
 }
 
@@ -56,22 +82,28 @@ export function comparer(a, b) {
 }
 
 // ----- ligne de commande (vraie base Firestore) -----
-if (import.meta.url === 'file://' + process.argv[1]) {
+if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {   // (l'ancienne comparaison « file:// + chemin » était fausse sous Windows : la ligne de commande ne faisait rien)
   const [cmd, fichier] = process.argv.slice(2), opt = Object.fromEntries(process.argv.slice(2).filter(a => a.startsWith('--')).map(a => a.slice(2).split('=')));
   const projet = process.env.FIREBASE_PROJET, cleF = process.env.FIREBASE_COMPTE_SERVICE_FICHIER;
-  if (!['exporter', 'importer', 'comparer'].includes(cmd) || !projet || !cleF) {
-    console.error('Usage : FIREBASE_PROJET=… FIREBASE_COMPTE_SERVICE_FICHIER=… node outils/sauvegarde/restauration.mjs exporter|importer|comparer [export.json]'); process.exit(2);
+  if (!['exporter', 'importer', 'comparer', 'invalider-sessions'].includes(cmd) || !projet || !cleF) {
+    console.error('Usage : FIREBASE_PROJET=… FIREBASE_COMPTE_SERVICE_FICHIER=… node outils/sauvegarde/restauration.mjs exporter|importer|comparer|invalider-sessions [export.json]'); process.exit(2);
   }
   const { baseFirestore } = await import('../../serveur/base-firestore.js');
-  const base = baseFirestore({ projet, compte: JSON.parse(fs.readFileSync(cleF.replace(/^~/, process.env.HOME), 'utf8')) });
+  const base = baseFirestore({ projet, compte: JSON.parse(fs.readFileSync(cleF.replace(/^~/, process.env.HOME || process.env.USERPROFILE), 'utf8')) });
   if (cmd === 'exporter') { const e = await exporter(base); process.stdout.write(JSON.stringify(e)); console.error('export :', JSON.stringify(e.compte)); }
-  else {
+  else if (cmd === 'invalider-sessions') {   // à lancer après toute restauration dont l'invalidation automatique n'a pas eu lieu
+    console.error('sessions invalidées pour', await invaliderSessions(base), 'compte(s) : tout le monde se reconnecte une fois.'); process.exit(0);
+  } else {
     const e = JSON.parse(fs.readFileSync(fichier, 'utf8'));
     if (cmd === 'importer') {
       if (!/test|restauration/.test(projet) && opt['cible-confirmee'] !== projet) { console.error(`Refus : « ${projet} » ne ressemble pas à un projet de test. Relancer avec --cible-confirmee=${projet} si c'est voulu.`); process.exit(3); }
       console.error('documents importés :', await importer(base, e));
     }
     const d = comparer(e, await exporter(base));
-    console.error(d.length ? `✗ ${d.length} différence(s) : ` + JSON.stringify(d.slice(0, 10)) : '✓ base identique à l\'export'); process.exit(d.length ? 1 : 0);
+    console.error(d.length ? `✗ ${d.length} différence(s) : ` + JSON.stringify(d.slice(0, 10)) : '✓ base identique à l\'export');
+    // Après un import : toutes les sessions ouvertes avant la restauration sont invalidées (voir invaliderSessions), MÊME s'il y a des différences (le plus sûr).
+    // --garder-sessions pour un simple exercice sur un projet de test. Les comptes créés après la sauvegarde n'ont pas de version : pour les couvrir aussi, changer SESSION_SECRET.
+    if (cmd === 'importer' && !opt['garder-sessions']) console.error('sessions invalidées pour', await invaliderSessions(base), 'compte(s) : tout le monde se reconnecte une fois. (Comptes créés après la sauvegarde : changer SESSION_SECRET pour les couvrir.)');
+    process.exit(d.length ? 1 : 0);
   }
 }

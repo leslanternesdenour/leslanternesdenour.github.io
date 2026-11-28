@@ -21,7 +21,7 @@ test('GET /api/paiement/mode : « reel » seulement avec une clé réelle ET STR
   // Tant que les mentions légales ne sont pas complètes (serveur/ouverture.js), même une clé réelle autorisée est refusée : pas d'ouverture commerciale prématurée.
   const { MENTIONS_COMPLETES } = await import('../../serveur/ouverture.js');
   if (!MENTIONS_COMPLETES) return assert.rejects(() => mode({ STRIPE_CLE_SECRETE: 'sk_live_fausse_valeur_de_test', STRIPE_MODE_REEL: 'autorise' }), /mentions légales/);
-  const r = await mode({ STRIPE_CLE_SECRETE: 'sk_live_fausse_valeur_de_test', STRIPE_MODE_REEL: 'autorise' });
+  const r = await mode({ STRIPE_CLE_SECRETE: 'sk_live_fausse_valeur_de_test', STRIPE_MODE_REEL: 'autorise', ENVIRONNEMENT: 'production' });   // le réel n'existe qu'en production (séparation test / réel)
   assert.deepEqual(JSON.parse(r.corps), { mode: 'reel' });
   assert.doesNotMatch(r.corps, /sk_|pk_/);
 });

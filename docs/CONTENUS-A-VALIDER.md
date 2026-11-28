@@ -17,6 +17,7 @@ Règle respectée : aucune représentation de prophète (textes uniquement ; tes
 | Mystères du désert | `aventures/mysteres-desert/contenu.js` | Aucun contenu religieux (énigmes d'observation). Rien à valider. |
 | Page Conditions | `conditions/index.html` | Clause de rétractation (L221-28 13°) : relecture juridique avant ouverture commerciale. |
 | Halte de repos de la Route (8 textes courts, 2 âges) | `voyage/js/route/textes-halte.js` | Aucun contenu religieux ni fait historique inventé : matériaux et vivres de l'Arabie du VIIe siècle (tente en poils de chèvre, tapis de laine, outres, jarres, dattes, pain d'orge, palmiers). Un conseil de voyageur (boire souvent, à petites gorgées) et un fait (les dattes se gardent longtemps). Relecture de ton souhaitée, rien d'obligatoire. |
+| Portail de pierre vers la grande route (4 textes : nom, bouton « Franchir le portail », indice, panneau) | `voyage/js/route/portail-plan.js` (TEXTES_PORTAIL) | Textes sobres (pierre, lumière, piste) : aucun contenu religieux, aucun personnage historique, rien de punitif. Motifs du portail purement géométriques (briques, losanges), sans écriture. Marches : 3 blocs de pierre à 20, 40 et 60 cm, positions des personnages dans le même fichier. |
 
 ## Règle pour les jeux « Bientôt »
 Les trois cartes restantes de la page Aventures ne contiennent AUCUN texte coranique tapé, aucune sourate, aucun récit de prophète : voir `docs/AVENTURES-NOUVEAUX-JEUX.md`.

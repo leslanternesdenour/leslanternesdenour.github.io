@@ -30,7 +30,7 @@ import { creerCarteRoute } from './carte-route.js';
 import { creerHalte3D } from './halte-3d.js';
 import { GESTES_NOUR, etatHalte, dansHalte, centre as centreHalte } from './halte-plan.js';
 import { TEXTES_HALTE, BOUTONS_HALTE } from './textes-halte.js';
-import { devant as devantPortail, arrivee as arriveePortail, retourVillage, TEXTES_PORTAIL, ANCIENNE_MARCHE_ACTIVE } from './portail-plan.js';
+import { devant as devantPortail, arrivee as arriveePortail, retourVillage, sabloRetour, retourMonte, TEXTES_PORTAIL, ANCIENNE_MARCHE_ACTIVE } from './portail-plan.js';
 
 const SEUIL_Z = 10000;                                  // au-delà : on est dans le monde de la Route (le village ne dépasse jamais z = 400)
 const NOMS_ANIMAUX = { lezard: ['Lézard à queue épineuse', '🦎'], gerboise: ['Gerboise', '🐭'], renard: ['Renard des sables', '🦊'] };
@@ -63,7 +63,8 @@ export function creerRoute(ctx) {
 
   // le sol de la Route répond au même terrain.hauteur / terrain.matiere que le village : tous les systèmes (pas, ombres, monture…) fonctionnent sans changement
   const h0 = terrain.hauteur.bind(terrain), m0 = terrain.matiere.bind(terrain);
-  terrain.hauteur = (x, z) => z > SEUIL_Z ? monde.hauteur(x, z) : h0(x, z);
+  // au village, la pierre du portail (marches, socle) s'ajoute au sol : on marche SUR les marches, à leur vraie hauteur
+  terrain.hauteur = (x, z) => { if (z > SEUIL_Z) return monde.hauteur(x, z); const sol = h0(x, z), pierre = village.portail.hauteurPierre(x, z); return pierre > sol ? pierre : sol; };
   terrain.matiere = (x, z) => z > SEUIL_Z ? monde.matiere(x, z) : m0(x, z);
   const montrer = v => { monde.montrer(v); L.groupe.visible = v; V.montrer(v && villeVisible(J.x, J.z)); villeAffichee = v && villeVisible(J.x, J.z); M3.groupe.visible = v; G3.groupe.visible = v; H3.montrer(v); terrain.mesh.visible = !v; if (!v) for (const n of W.liste) n.e.racine.visible = false; };
   montrer(false);
@@ -324,9 +325,11 @@ export function creerRoute(ctx) {
     if (!R.decouvertes.includes('seuil')) { R.decouvertes.push('seuil'); enregistrer(); ui.bandeau(MESSAGES.decouvres, '🚏 ' + MESSAGES.grandeRoute); setTimeout(() => gagner('lieu:seuil', 50, 'Tu quittes le village : la grande route'), 900); }
   }
   function sortir() {
-    const p = retourVillage();       // on ressort devant le portail, dos à lui, face au village
+    // on ressort SUR la marche haute du portail, face à lui : la caméra, derrière, voit l'enfant. Sablo est de profil sur la marche basse (monté : il y est, l'enfant sur son dos)
+    const p = retourVillage();
     ui.fondu(); dans = false; J.x = p.x; J.z = p.z; J.a = p.a; J.vx = J.vz = 0;
-    if (ctx.monte()) { C.x = J.x; C.z = J.z; } else { C.x = J.x + 3; C.z = J.z - 2.5; C.vit = 0; C.venir = false; }
+    if (ctx.monte()) { const m = retourMonte(); J.x = C.x = m.x; J.z = C.z = m.z; J.a = C.a = m.a; C.vit = 0; }
+    else { const s = sabloRetour(); C.x = s.x; C.z = s.z; C.a = s.a; C.vit = 0; C.venir = false; }
     montrer(false); R.monde = 'village'; enregistrer(); ctx.surSaut();
     scene.fog.near = fog0.near; scene.fog.far = fog0.far;
   }

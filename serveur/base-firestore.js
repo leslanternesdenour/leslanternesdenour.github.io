@@ -78,6 +78,22 @@ export function baseFirestore({ projet, compte, fetcher = fetch, jeton = jetonGo
       if (r.status === 400 || r.status === 409 || r.status === 412) return false;
       if (!r.ok) throw new Error('Firestore ' + r.status); return true;
     },
+    // Incrémentation ATOMIQUE d'un compteur entier (+1), côté serveur Firestore (écriture avec transformation « increment », équivalente à une
+    // transaction sur ce seul document) : deux appels simultanés donnent deux valeurs différentes, jamais deux fois la même, jamais de retour en arrière.
+    // Les champs « extra » sont écrits dans la même opération (masque de champs : les autres champs du document sont conservés).
+    // Document ou champ absent (ou non numérique) : le champ vaut 1. Renvoie la nouvelle valeur ; lève une erreur si la réponse est illisible.
+    async incrementer(col, id, champ, extra = {}) {
+      if (String(id).includes('/') || !id) throw new Error('identifiant invalide');
+      const nom = `projects/${projet}/databases/(default)/documents/${col}/${id}`;
+      const r = await appel(racine + ':commit', { method: 'POST', body: JSON.stringify({ writes: [{
+        update: { name: nom, fields: champs(extra) },
+        updateMask: { fieldPaths: Object.keys(extra).filter(k => extra[k] !== undefined).map(k => '`' + k + '`') },
+        updateTransforms: [{ fieldPath: '`' + champ + '`', increment: { integerValue: '1' } }] }] }) });
+      const t = r && r.writeResults && r.writeResults[0] && r.writeResults[0].transformResults && r.writeResults[0].transformResults[0];
+      const n = t && 'integerValue' in t ? Number(t.integerValue) : NaN;
+      if (!Number.isSafeInteger(n)) throw new Error('incrementation illisible');
+      return n;
+    },
     async supprimer(col, id) { await appel(url(col, id), { method: 'DELETE' }); },
     async lister(col, { limite = 20, apres = null } = {}) {
       const { parent: p, coll } = parent(col);

@@ -27,6 +27,14 @@ export async function onRequest({ request, env }) {
   if (!env.SESSION_SECRET || !env.FIREBASE_PROJET || !env.FIREBASE_COMPTE_SERVICE)
     return new Response(JSON.stringify({ erreur: 'comptes-non-configures' }), { status: 503, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
   // Configuration invalide (JSON du compte de service mal collé, clé Stripe réelle refusée…) : réponse neutre, jamais de détail ni d'extrait du secret dans la réponse ou les journaux.
+  // Stripe est isolé : une clé absente, invalide ou du mauvais environnement ne ferme QUE les paiements (voir serveur/api.js). Comptes, connexions,
+  // droits existants, jeux et contenus continuent de fonctionner ; aucun droit n'est jamais accordé ni retiré à cause de Stripe.
+  let stripe = null, stripeEtat = 'ferme';
+  try { stripe = clientStripe(env); } catch (e) {
+    stripe = null; stripeEtat = 'indisponible';
+    // raison = phrase fixe de serveur/stripe.js (jamais la clé) ; tout autre message reste omis
+    console.error('Paiements désactivés : ' + (e && typeof e.message === 'string' && /^Clé Stripe/.test(e.message) && e.message.length < 200 ? e.message : 'configuration Stripe invalide (détail omis)'));
+  }
   let ctx;
   try {
     // La connexion à la base est gardée en mémoire, mais seulement tant que le secret et le projet sont les mêmes : un secret changé ou une clé révoquée sont toujours revérifiés.
@@ -36,7 +44,7 @@ export async function onRequest({ request, env }) {
       env, base,
       auth: { verifierIdToken: (jeton, maintenant) => verifierJeton(jeton, { projet: env.FIREBASE_PROJET, type: 'id', obtenirCle: cleGoogle, maintenant }) },
       stockage: stockagePremium(env),
-      stripe: clientStripe(env),
+      stripe, stripeEtat,                // paiements : null + « fermé » (pas de clé) ou « indisponible » (clé refusée) ; JAMAIS une raison de bloquer le reste du site
       courriel: creerCourriel(env)      // null tant que le prestataire d'e-mails n'est pas configuré : l'ancien envoi Firebase reste utilisé
     };
   } catch (e) {

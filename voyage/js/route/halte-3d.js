@@ -17,18 +17,18 @@ export function creerHalte3D({ scene, hauteur, colliders, ombres }) {
   const monter = (geo, m) => { const o = new THREE.Mesh(geo, m); o.position.set(c.x, y0, c.z); o.castShadow = ombres; o.receiveShadow = ombres; groupe.add(o); return o; };
   for (const o of obstacles()) colliders.push(o);
   const R = hasard(0x4a17e);
-  const g = [], gv = [];     // g : tout ce qui ne bouge pas ; gv : les palmes (elles ondulent au vent)
+  const g = [], gv = [], gt = [];     // g : tout ce qui ne bouge pas ; gv : les palmes (elles ondulent au vent)
 
   // ---- la grande tente en poils de chèvre (ouverte vers l'est) et son auvent ----
   { const t = E('tente'), x = t.dx, z = t.dz, noir = '#35291f', bande = '#8c775a';
     g.push(piece(B(), noir, { p: [x - 2.4, 1.1, z], s: [0.14, 2.2, 5.6], m: M.tissu }),                                           // le fond
       piece(B(), noir, { p: [x, 1.05, z - 2.75], s: [4.8, 2.1, 0.12], m: M.tissu }), piece(B(), noir, { p: [x, 1.05, z + 2.75], s: [4.8, 2.1, 0.12], m: M.tissu }),   // les côtés
-      piece(B(), noir, { p: [x, 2.3, z], s: [5.2, 0.14, 5.9], r: [0, 0, -0.05], m: M.tissu }),                                  // le toit, un peu incliné vers l'avant
-      piece(B(), bande, { p: [x, 2.38, z - 1.2], s: [5.25, 0.04, 0.35], r: [0, 0, -0.05], m: M.tissu }), piece(B(), bande, { p: [x, 2.38, z + 1.2], s: [5.25, 0.04, 0.35], r: [0, 0, -0.05], m: M.tissu }),   // les bandes claires
-      piece(B(), noir, { p: [x + 3.9, 2.12, z], s: [3.3, 0.1, 5.7], r: [0, 0, -0.1], m: M.tissu }),                             // l'auvent
-      piece(B(), bande, { p: [x + 3.9, 2.18, z], s: [3.3, 0.04, 0.3], r: [0, 0, -0.1], m: M.tissu }),
       piece(CYL(0.09, 0.11, 2.2, 6), '#6b4a30', { p: [x + 5.0, 1.05, z - 2.5], m: M.bois }), piece(CYL(0.09, 0.11, 2.2, 6), '#6b4a30', { p: [x + 5.0, 1.05, z + 2.5], m: M.bois }),   // les deux poteaux de l'auvent
       piece(CYL(0.1, 0.12, 2.4, 6), '#6b4a30', { p: [x - 0.2, 1.2, z - 1.0], m: M.bois }), piece(CYL(0.1, 0.12, 2.4, 6), '#6b4a30', { p: [x - 0.2, 1.2, z + 1.0], m: M.bois }));   // les mâts du milieu
+    gt.push(piece(B(), noir, { p: [x, 2.3, z], s: [5.2, 0.14, 5.9], r: [0, 0, -0.05], m: M.tissu }),                                  // le toit, un peu incliné vers l'avant
+      piece(B(), bande, { p: [x, 2.38, z - 1.2], s: [5.25, 0.04, 0.35], r: [0, 0, -0.05], m: M.tissu }), piece(B(), bande, { p: [x, 2.38, z + 1.2], s: [5.25, 0.04, 0.35], r: [0, 0, -0.05], m: M.tissu }),   // les bandes claires
+      piece(B(), noir, { p: [x + 3.9, 2.12, z], s: [3.3, 0.1, 5.7], r: [0, 0, -0.1], m: M.tissu }),                             // l'auvent
+      piece(B(), bande, { p: [x + 3.9, 2.18, z], s: [3.3, 0.04, 0.3], r: [0, 0, -0.1], m: M.tissu }));   // le toit, les bandes claires et l'auvent : un morceau à part, qui disparaît quand on est dessous (la caméra ne cache jamais l'enfant)
     // à l'intérieur : des coussins et un coffre de bois
     g.push(piece(B(), '#7a3b2e', { p: [x - 1.6, 0.18, z - 1.5], s: [1.1, 0.36, 0.8], r: [0, 0.2, 0], m: M.laine }), piece(B(), '#c9a26a', { p: [x - 1.5, 0.15, z + 0.5], s: [0.9, 0.3, 0.7], r: [0, -0.3, 0], m: M.laine }),
       piece(B(), '#6b4a30', { p: [x - 1.7, 0.35, z + 1.8], s: [1.2, 0.7, 0.7], m: M.bois }), piece(B(), '#3f2d1f', { p: [x - 1.7, 0.72, z + 1.8], s: [1.24, 0.08, 0.74], m: M.bois })); }
@@ -37,7 +37,7 @@ export function creerHalte3D({ scene, hauteur, colliders, ombres }) {
   for (const e of ELEMENTS.filter(o => o.type === 'tapis')) {
     const r = [0, e.rot || 0, 0];
     g.push(piece(B(), e.bord, { p: [e.dx, 0.03, e.dz], s: [e.l + 0.28, 0.05, e.w + 0.28], r, m: M.laine }), piece(B(), e.couleur, { p: [e.dx, 0.06, e.dz], s: [e.l, 0.05, e.w], r, m: M.laine }),
-      piece(B(), e.bord, { p: [e.dx, 0.09, e.dz], s: [e.l * 0.7, 0.03, e.w * 0.22], r, m: M.laine }), piece(B(), '#2b2320', { p: [e.dx, 0.09, e.dz], s: [e.l * 0.2, 0.035, e.w * 0.6], r, m: M.laine }));
+      piece(B(), e.bord, { p: [e.dx, 0.09, e.dz], s: [e.l * 0.7, 0.03, e.w * 0.22], r, m: M.laine }), piece(B(), '#6b2a22', { p: [e.dx, 0.09, e.dz], s: [e.l * 0.2, 0.035, e.w * 0.6], r, m: M.laine }));
   }
 
   // ---- le petit feu de caravaniers : des pierres, des bûches, un trépied et une marmite ----
@@ -112,7 +112,7 @@ export function creerHalte3D({ scene, hauteur, colliders, ombres }) {
   { const l = E('lanterne'); g.push(piece(CYL(0.06, 0.08, 1.9, 6), '#5a3f28', { p: [l.dx, 0.95, l.dz], m: M.bois }), piece(B(), '#5a3f28', { p: [l.dx + 0.25, 1.85, l.dz], s: [0.55, 0.05, 0.05], m: M.bois }));
     const m = new THREE.Mesh(SPH(0.17, 8, 6), lampe.mat); m.position.set(c.x + l.dx + 0.5, y0 + 1.68, c.z + l.dz); groupe.add(m); lampe.mesh = m; }
 
-  monter(fusion(g), mat); monter(fusion(gv), matVent);
+  monter(fusion(g), mat); monter(fusion(gv), matVent); const toit = monter(fusion(gt), mat);
 
   // ---- ce qui vit : les braises, le fanion ----
   const braise = new THREE.Mesh(new THREE.ConeGeometry(0.28, 0.55, 6), new THREE.MeshBasicMaterial({ color: '#ff9a3a', transparent: true, opacity: 0.92 }));
@@ -132,6 +132,7 @@ export function creerHalte3D({ scene, hauteur, colliders, ombres }) {
     // chaque image : n'anime que ce qui est proche ; ne dessine pas la halte quand elle est hors de vue (loin du joueur)
     animer(dt, t, joueur, nuit = 0) {
       const d = Math.hypot(joueur.x - c.x, joueur.z - c.z);
+      { const dx = joueur.x - c.x, dz = joueur.z - c.z; toit.visible = !(dx > -11.2 && dx < -2.2 && dz > -7 && dz < -1); }   // sous la tente ou son auvent : le toit s'efface (la caméra ne cache jamais l'enfant)
       proche = d < 420; groupe.visible = proche;
       if (!proche) return;
       lampe.mat.color.set(nuit > 0.35 ? '#ffd36b' : '#8a7a52'); if (lampe.mesh) lampe.mesh.scale.setScalar(nuit > 0.35 ? 1.25 : 1);
