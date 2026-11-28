@@ -6,6 +6,8 @@ import { Enfant } from '../personnages.js?v=4';
 import { RELAIS_VILLAGE as RELAIS, SEUIL_VILLAGE } from './donnees.js';
 import { creerPortail3D } from './portail-3d.js';
 import { hauteurPortail } from './portail-plan.js';
+import { creerPanneau3D } from './panneau-3d.js';
+import { PANNEAUX } from './panneaux-plan.js';
 
 const B = () => new THREE.BoxGeometry(1, 1, 1), DOD = r => new THREE.DodecahedronGeometry(r, 0), CYL = (a, b, h, s = 8) => new THREE.CylinderGeometry(a, b, h, s);
 
@@ -46,6 +48,9 @@ export function creerVillageRoute({ scene, H, colliders, ombres }) {
   // la pierre du portail pour le sol : le dessus EXACT des marches et du socle (jeu-route.js l'ajoute à terrain.hauteur : les pieds de l'enfant et de Sablo, la caméra et les ombres suivent)
   portail.hauteurPierre = (x, z) => { const o = hauteurPortail(x, z); return o > 0 ? portail.y0 + o : -Infinity; };
 
-  return { RELAIS, guide, groupe: gr, barriere, panneau: gr.userData.panneau, positionGuide: gr.userData.guide, seuil: { x: cx, z: cz }, portail,
-    animer(dt, t) { guide.animer(dt, 0, t); portail.animer(dt, t); } };
+  // le panneau de bois sculpté du portail de départ : « Route vers La Mecque », avec une flèche vers le portail (voir panneaux-plan.js)
+  const panneauDepart = creerPanneau3D({ scene, H, colliders, ombres, p: PANNEAUX.depart });
+
+  return { RELAIS, guide, groupe: gr, barriere, panneau: gr.userData.panneau, positionGuide: gr.userData.guide, seuil: { x: cx, z: cz }, portail, panneauDepart,
+    animer(dt, t) { guide.animer(dt, 0, t); portail.animer(dt, t); panneauDepart.animer(t); } };
 }

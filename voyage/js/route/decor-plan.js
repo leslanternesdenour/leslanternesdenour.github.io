@@ -1,7 +1,7 @@
 // Le semis du décor de La Route, tuile par tuile (pur, sans Three.js) : toujours le même pour la même tuile, léger, et la piste reste libre.
 // Le décor de chaque tuile est choisi selon la région (rochers à la sortie, buissons dans la plaine, palmiers à l'oasis…).
 import { TAILLE_TUILE } from './tuiles-plan.js';
-import { relief, distanceChemin, pointChemin, S_DEBUT, OASIS, CAMP, CITE, HALTE } from './relief.js';
+import { relief, distanceChemin, pointChemin, S_DEBUT, OASIS, CAMP, CITE, HALTE, PORTAIL_RETOUR } from './relief.js';
 import { lisse } from './bruit.js';
 import { regionA, LIEUX_ROUTE, positionDeLieu } from './donnees.js';
 
@@ -35,6 +35,7 @@ export function semerTuile(i, j) {
     const r = relief(s, t);
     if (type !== 'roseau' && (r.lac > 0.02 || r.dOasis < OASIS.lac + 3)) return false;
     if (r.dCamp < CAMP.r + 6) return false;
+    if (Math.hypot(s - PORTAIL_RETOUR.s, t - PORTAIL_RETOUR.t) < PORTAIL_RETOUR.r + 6) return false;     // le portail de retour : rien ne pousse sur ses marches
     if (Math.hypot(s - HALTE.s, t - HALTE.t) < HALTE.r + 4) return false;     // la halte de repos : son décor est dessiné à la main, aucun rocher ni buisson semé dedans
     for (const p of lieux()) if (Math.hypot(p.s - s, p.t - t) < 5) return false;
     return true;
@@ -61,7 +62,7 @@ export function semerTuile(i, j) {
   // le balisage de la grande piste : un poteau tous les 30 m, d'un côté puis de l'autre, bien visible de loin (bois, bande crème, sommet rouge) : l'enfant ne se perd pas
   for (let k = Math.ceil(Math.max(s0, S_DEBUT) / 30); k * 30 < s0 + TAILLE_TUILE; k++) {
     const s = k * 30, t = pointChemin(s).t + (k % 2 ? 4.5 : -4.5);
-    if (t < t0 || t >= t0 + TAILLE_TUILE || Math.hypot(s - CITE.s, t - CITE.t) < CITE.rayon + 20 || relief(s, t).lac > 0.02) continue;
+    if (t < t0 || t >= t0 + TAILLE_TUILE || Math.hypot(s - CITE.s, t - CITE.t) < CITE.rayon + 20 || relief(s, t).lac > 0.02 || Math.hypot(s - PORTAIL_RETOUR.s, t - PORTAIL_RETOUR.t) < 8) continue;     // pas de poteau contre le portail de retour
     sortie.push({ type: 'poteau', s, t: +t.toFixed(2), rot: 0, sc: 1, r: 0.2 }, { type: 'flamme', s, t: +t.toFixed(2), rot: 0, sc: 1, r: 0 });   // la flamme du poteau (allumée le soir seulement)
   }
   // un palmier ou un roseau ne doit pas être loin de l'eau : on retire ceux qui sont trop éloignés

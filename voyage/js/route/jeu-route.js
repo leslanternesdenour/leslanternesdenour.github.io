@@ -30,6 +30,10 @@ import { creerCarteRoute } from './carte-route.js';
 import { creerHalte3D } from './halte-3d.js';
 import { GESTES_NOUR, etatHalte, dansHalte, centre as centreHalte } from './halte-plan.js';
 import { TEXTES_HALTE, BOUTONS_HALTE } from './textes-halte.js';
+import { SITE_RETOUR, hauteurRetour, obstaclesRetour, devantRetour, poseRetour, sabloRetourRoute, monteRetourRoute, LIEU_RETOUR, TEXTES_RETOUR } from './retour-plan.js';
+import { PANNEAUX, TEXTES_PANNEAUX } from './panneaux-plan.js';
+import { creerPortail3D } from './portail-3d.js';
+import { creerPanneau3D } from './panneau-3d.js';
 import { devant as devantPortail, arrivee as arriveePortail, retourVillage, sabloRetour, retourMonte, TEXTES_PORTAIL, ANCIENNE_MARCHE_ACTIVE } from './portail-plan.js';
 
 const SEUIL_Z = 10000;                                  // au-delà : on est dans le monde de la Route (le village ne dépasse jamais z = 400)
@@ -45,6 +49,12 @@ export function creerRoute(ctx) {
   const age = () => ctx.age() === 'petits' ? '3-5' : '6-10';
   const monde = creerMondeRoute({ scene, Q: ctx.Q, TX: ctx.TX, ombres: ctx.ombres });
   const fixes = [];                                      // les obstacles des lieux (tentes, rochers…) : ne changent jamais
+  // le portail de RETOUR au village (au bout de la piste, côté village) : la pierre de ses marches s'ajoute au sol de la Route (monde.hauteur) AVANT tout ce qui se pose sur le sol :
+  // les pieds de Nour et de Sablo, la caméra et les pas suivent le dessus exact des marches, comme au portail du village
+  const hMonde0 = monde.hauteur, y0Retour = hMonde0(SITE_RETOUR.x, SITE_RETOUR.z);
+  monde.hauteur = (x, z) => { const h = hMonde0(x, z), o = hauteurRetour(x, z); return o > 0 && y0Retour + o > h ? y0Retour + o : h; };
+  const RP = creerPortail3D({ scene, H: hMonde0, colliders: fixes, ombres: ctx.ombres, site: SITE_RETOUR, obstacles: obstaclesRetour(), vue: 'village' });
+  const RS = creerPanneau3D({ scene, H: hMonde0, colliders: fixes, ombres: ctx.ombres, p: PANNEAUX.retour });          // le panneau de bois : « Retour au village »
   const L = creerLieux3D({ scene, hauteur: monde.hauteur, colliders: fixes, ombres: ctx.ombres, TX: ctx.TX });
   const V = creerVille3D({ scene, hauteur: monde.hauteur, ombres: ctx.ombres });          // la cité ancienne
   const H3 = creerHalte3D({ scene, hauteur: monde.hauteur, colliders: fixes, ombres: ctx.ombres });          // la halte de repos des caravaniers, au milieu de la Route
@@ -66,7 +76,7 @@ export function creerRoute(ctx) {
   // au village, la pierre du portail (marches, socle) s'ajoute au sol : on marche SUR les marches, à leur vraie hauteur
   terrain.hauteur = (x, z) => { if (z > SEUIL_Z) return monde.hauteur(x, z); const sol = h0(x, z), pierre = village.portail.hauteurPierre(x, z); return pierre > sol ? pierre : sol; };
   terrain.matiere = (x, z) => z > SEUIL_Z ? monde.matiere(x, z) : m0(x, z);
-  const montrer = v => { monde.montrer(v); L.groupe.visible = v; V.montrer(v && villeVisible(J.x, J.z)); villeAffichee = v && villeVisible(J.x, J.z); M3.groupe.visible = v; G3.groupe.visible = v; H3.montrer(v); terrain.mesh.visible = !v; if (!v) for (const n of W.liste) n.e.racine.visible = false; };
+  const montrer = v => { monde.montrer(v); L.groupe.visible = v; V.montrer(v && villeVisible(J.x, J.z)); villeAffichee = v && villeVisible(J.x, J.z); M3.groupe.visible = v; G3.groupe.visible = v; RP.groupe.visible = v; RS.groupe.visible = v; H3.montrer(v); terrain.mesh.visible = !v; if (!v) for (const n of W.liste) n.e.racine.visible = false; };
   montrer(false);
 
   // ---------- les lieux déjà faits (reprise d'une sauvegarde) ----------
@@ -305,6 +315,18 @@ export function creerRoute(ctx) {
     if (ui.passage) ui.passage(aller); else aller();
   }
   { const d = devantPortail(); habitants.ajouter({ id: 'route:portail', x: d.x, z: d.z, rayon: 3.6, label: TEXTES_PORTAIL.bouton, icone: '🚪', actif: () => !dans && !traversee, ouvrir: franchirPortail }); }
+  // les panneaux de bois des deux portails : on lit ce qui est écrit (une phrase courte, sans voix)
+  const lirePanneau = id => () => ui.dialogue({ titre: '🪧 ' + TEXTES_PANNEAUX[id].titre, texte: TEXTES_PANNEAUX[id][age() === '3-5' ? 'petit' : 'grand'], boutons: [{ txt: 'Merci !', fn: () => {} }] });
+  habitants.ajouter({ id: 'route:panneau-depart', x: PANNEAUX.depart.x, z: PANNEAUX.depart.z, rayon: 3.4, label: 'Lire le panneau', icone: '🪧', actif: () => !dans, ouvrir: lirePanneau('depart') });
+  habitants.ajouter({ id: 'route:panneau-retour', x: PANNEAUX.retour.x, z: PANNEAUX.retour.z, rayon: 3.4, label: 'Lire le panneau', icone: '🪧', actif: () => dans && !dansMaison, ouvrir: lirePanneau('retour') });
+  // le portail de RETOUR : on se place sur sa marche haute, on le franchit (une question douce : rien n'est perdu), un fondu, et l'on est devant le portail du village, avec toute sa progression
+  function retournerAuVillage() {
+    if (!dans || dansMaison || traversee) return;
+    ui.dialogue({ titre: '🚪 ' + TEXTES_RETOUR.nom, texte: TEXTES_RETOUR.dialogue[age() === '3-5' ? 'petit' : 'grand'], icone: '🏘️', boutons: [
+      { txt: TEXTES_RETOUR.oui, fn: () => { if (!dans || traversee) return; traversee = true; const aller = () => { try { sortir(true); } finally { traversee = false; } }; if (ui.passage) ui.passage(aller); else aller(); } },
+      { txt: TEXTES_RETOUR.non, fn: () => {} }] });
+  }
+  { const d = devantRetour(); habitants.ajouter({ id: 'route:portail-retour', x: d.x, z: d.z, rayon: 3.6, label: TEXTES_RETOUR.bouton, icone: '🚪', actif: () => dans && !dansMaison && !traversee, ouvrir: retournerAuVillage }); }
 
   // ---------- la carte de la Route ----------
   const carte = creerCarteRoute({
@@ -324,10 +346,10 @@ export function creerRoute(ctx) {
     ctx.arreterGuide(); ctx.surSaut();
     if (!R.decouvertes.includes('seuil')) { R.decouvertes.push('seuil'); enregistrer(); ui.bandeau(MESSAGES.decouvres, '🚏 ' + MESSAGES.grandeRoute); setTimeout(() => gagner('lieu:seuil', 50, 'Tu quittes le village : la grande route'), 900); }
   }
-  function sortir() {
+  function sortir(parPortail) {
     // on ressort SUR la marche haute du portail, face à lui : la caméra, derrière, voit l'enfant. Sablo est de profil sur la marche basse (monté : il y est, l'enfant sur son dos)
     const p = retourVillage();
-    ui.fondu(); dans = false; J.x = p.x; J.z = p.z; J.a = p.a; J.vx = J.vz = 0;
+    if (!parPortail) ui.fondu(); dans = false; J.x = p.x; J.z = p.z; J.a = p.a; J.vx = J.vz = 0;
     if (ctx.monte()) { const m = retourMonte(); J.x = C.x = m.x; J.z = C.z = m.z; J.a = C.a = m.a; C.vit = 0; }
     else { const s = sabloRetour(); C.x = s.x; C.z = s.z; C.a = s.a; C.vit = 0; C.venir = false; }
     montrer(false); R.monde = 'village'; enregistrer(); ctx.surSaut();
@@ -387,7 +409,7 @@ export function creerRoute(ctx) {
       return;
     }
     if (auRetourRoute(J.z)) { sortir(); return; }
-    monde.maj(J); monde.eclairer(nuit, t); H3.animer(dt, t, J, nuit); G3.maj(dt, t, J, carte.cap()); L.animer(dt, t, J); lanternesProches(); parcoursCollines();
+    monde.maj(J); monde.eclairer(nuit, t); H3.animer(dt, t, J, nuit); RP.animer(dt, t); RS.animer(t); G3.maj(dt, t, J, carte.cap()); L.animer(dt, t, J); lanternesProches(); parcoursCollines();
     tHors += dt; if (tHors > 1) { tHors = 0;
       // filet de sécurité : s'il se retrouve hors de la zone (ancienne sauvegarde, bug), on le ramène sur la piste
       if (!dansMaison && !zoneJouable(J.z - DEC, J.x)) { const p = pointChemin(Math.max(S_DEBUT, Math.min(S_FIN_TRANCHE, J.z - DEC))); J.x = p.t; J.z = DEC + p.s; J.vx = J.vz = 0; if (ctx.monte()) { C.x = J.x; C.z = J.z; } monde.preparer(J); ui.indice('🧭 ' + MESSAGES.ramene, 6000); } if (cooldownHors > 0) cooldownHors -= 1; else if (!dansMaison && loinDeLaPiste(J.z - DEC, J.x)) { cooldownHors = 40; ui.indice('🧭 ' + MESSAGES.horsPiste, 6000); } }
@@ -440,6 +462,12 @@ export function creerRoute(ctx) {
     pageCarnet: () => pageCarnetRoute({ route: R, badges: AV.badges || {}, age: age() }),
     sauver() { if (dans) memoriserPosition(etat, dansMaison ? dansMaison.retour : J); },
     procheEau: () => dans ? Math.max(0, 1 - (Math.hypot(J.x - OASIS.t, J.z - (DEC + OASIS.s)) - OASIS.lac) / 50) : null,
+    // le portail de retour : Nour sur la marche haute, face au portail ; Sablo de profil sur la marche basse (monté : sous lui) — pour les tests et pour « me guider » (jamais utilisé par le jeu autrement)
+    placerAuRetour() {
+      const p = poseRetour(); J.x = p.x; J.z = p.z; J.a = p.a; J.vx = J.vz = 0;
+      if (ctx.monte()) { const m = monteRetourRoute(); J.x = C.x = m.x; J.z = C.z = m.z; J.a = C.a = m.a; C.vit = 0; } else { const s = sabloRetourRoute(); C.x = s.x; C.z = s.z; C.a = s.a; C.vit = 0; C.venir = false; }
+      if (!dans) { dans = true; monde.preparer(J); montrer(true); } else monde.preparer(J);
+    },
     vers(s, t) { J.x = t; J.z = DEC + s; if (ctx.monte()) { C.x = J.x; C.z = J.z; } if (!dans) { dans = true; monde.preparer(J); montrer(true); } else monde.preparer(J); }   // pour les tests : aller à un endroit de la Route (jamais utilisé par le jeu)
   };
 }

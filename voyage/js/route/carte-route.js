@@ -4,6 +4,7 @@
 import { REGIONS_ROUTE, LIEUX_ROUTE, positionDeLieu, regionA } from './donnees.js';
 import { pointChemin, OASIS, S_FIN_TRANCHE } from './relief.js';
 import { LIEU_HALTE } from './halte-plan.js';
+import { LIEU_RETOUR } from './retour-plan.js';
 
 const S0 = -300, S1 = 6100, T0 = -800, T1 = 800;          // l'étendue de la carte (m)
 export function creerProjection(w, h, portrait) {
@@ -24,8 +25,8 @@ export function capVers(j, c) {
 
 export function creerCarteRoute({ route, age, joueur, surFermer, surOuvrir }) {
   let el = null, cv = null, ctx2 = null, info = null, ouverte = false, choisi = null, cap = null, elCap = null, tCap = 0, fond = null, fondTaille = '';
-  const lieuxCarte = () => [...LIEUX_ROUTE.filter(l => l.type !== 'objet' && l.type !== 'personnage'), LIEU_HALTE];   // + la halte de repos (à découvrir en passant, jamais comptée dans une mission)
-  const connu = l => route.decouvertes.includes(l.id) || route.repos.includes(l.id) || Object.values(route.missions).some(m => (m.faits || []).includes(l.id));
+  const lieuxCarte = () => [...LIEUX_ROUTE.filter(l => l.type !== 'objet' && l.type !== 'personnage'), LIEU_HALTE, LIEU_RETOUR];   // + la halte de repos (à découvrir en passant, jamais comptée dans une mission)
+  const connu = l => l.toujoursConnu || route.decouvertes.includes(l.id) || route.repos.includes(l.id) || Object.values(route.missions).some(m => (m.faits || []).includes(l.id));
 
   function construire() {
     el = document.createElement('div'); el.id = 'carte-route'; el.className = 'cache'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Carte ancienne de la grande route');
@@ -83,7 +84,22 @@ export function creerCarteRoute({ route, age, joueur, surFermer, surOuvrir }) {
     { const p = P(S0 + 20, 48); x.font = `bold ${Math.round(12 * d)}px Georgia, serif`; const lw = x.measureText('Village de Nour').width, m = 6 * d;
       const px = Math.min(Math.max(p.x, lw / 2 + m), w - lw / 2 - m);
       x.font = `${Math.round(24 * d)}px serif`; x.textAlign = 'center'; x.fillStyle = '#3a2a1a'; const py0 = Math.max(p.y, 26 * d); x.fillText('🏘️', Math.max(p.x, 16 * d), py0);
-      x.font = `bold ${Math.round(12 * d)}px Georgia, serif`; x.fillStyle = '#4a3320'; x.fillText('Village de Nour', px, py0 + 18 * d); }
+      x.font = `bold ${Math.round(12 * d)}px Georgia, serif`; x.fillStyle = '#4a3320';
+      if (P.portrait) { x.textAlign = 'left'; x.fillText('Village de Nour', Math.max(p.x, 16 * d) + 20 * d, py0 - 4 * d); x.textAlign = 'center'; } else x.fillText('Village de Nour', px, py0 + 18 * d); }
+    // le portail de RETOUR au village, à sa vraie place (retour-plan.js) : un petit portail de pierre, la légende « Retour au village », et une discrète flèche vers le village
+    { const pp = positionDeLieu(LIEU_RETOUR), p = P(pp.s, pp.t), sel = choisi && choisi.id === LIEU_RETOUR.id, u = 14 * d, q = P(pp.s - 1, pp.t);
+      let vx = q.x - p.x, vy = q.y - p.y; const vl = Math.hypot(vx, vy) || 1; vx /= vl; vy /= vl;                   // la direction du village sur la carte
+      if (sel) { x.beginPath(); x.arc(p.x, p.y - 0.8 * u, 2.4 * u, 0, 6.283); x.fillStyle = 'rgba(255,211,107,.55)'; x.fill(); }
+      x.fillStyle = '#3a2a1a'; x.fillRect(p.x - 1.2 * u, p.y - 1.75 * u, 2.4 * u, 1.9 * u);
+      x.fillStyle = '#e8d3a2'; x.fillRect(p.x - 1.05 * u, p.y - 1.4 * u, 0.7 * u, 1.45 * u); x.fillRect(p.x + 0.35 * u, p.y - 1.4 * u, 0.7 * u, 1.45 * u); x.fillRect(p.x - 1.2 * u, p.y - 1.7 * u, 2.4 * u, 0.34 * u);
+      x.fillStyle = '#f0a94e'; x.fillRect(p.x - 0.32 * u, p.y - 1.3 * u, 0.64 * u, 1.35 * u);
+      // la flèche, du portail vers le village
+      { const ax = p.x + vx * 2.1 * u, ay = p.y - 0.8 * u + vy * 2.1 * u, bx = ax + vx * 2.4 * u, by = ay + vy * 2.4 * u, nx = -vy, ny = vx;
+        x.strokeStyle = '#4a3320'; x.fillStyle = '#4a3320'; x.lineWidth = 2.4 * d; x.lineCap = 'round'; x.beginPath(); x.moveTo(ax, ay); x.lineTo(bx, by); x.stroke();
+        x.beginPath(); x.moveTo(bx + vx * 1.0 * u, by + vy * 1.0 * u); x.lineTo(bx + nx * 0.7 * u, by + ny * 0.7 * u); x.lineTo(bx - nx * 0.7 * u, by - ny * 0.7 * u); x.closePath(); x.fill(); }
+      x.font = `bold ${Math.round(13 * d)}px Georgia, serif`; const lt = LIEU_RETOUR.nom, lw = x.measureText(lt).width, pt = P.portrait;
+      const lx0 = pt ? Math.min(p.x + 1.7 * u + 5 * d, w - lw - 8 * d) : Math.min(Math.max(p.x, lw / 2 + 6 * d), w - lw / 2 - 6 * d), ly0 = pt ? p.y - 0.4 * u : p.y - 2.5 * u - 5 * d;
+      x.fillStyle = 'rgba(255,248,231,.9)'; x.fillRect(pt ? lx0 - 3 * d : lx0 - lw / 2 - 4 * d, ly0 - 11 * d, lw + (pt ? 6 : 8) * d, 16 * d); x.fillStyle = '#4a3320'; x.textAlign = pt ? 'left' : 'center'; x.fillText(lt, lx0, ly0); x.textAlign = 'center'; }
     // La Mecque, au bout de la piste : un repere toujours visible (le nom est deja dans le titre de la carte ; rien de religieux n'est montre ici)
     { const q = pointChemin(S_FIN_TRANCHE), p = P(S_FIN_TRANCHE, q.t), vu = route.decouvertes.includes('cite-place');
       x.textAlign = 'center'; x.font = `${Math.round(26 * d)}px serif`; x.fillStyle = '#3a2a1a'; x.fillText('🏁', Math.min(p.x, w - 18 * d), p.y);
@@ -94,6 +110,7 @@ export function creerCarteRoute({ route, age, joueur, surFermer, surOuvrir }) {
     // les lieux : découverts (icône) ou à explorer (point d'interrogation)
     const inconnus = [];   // les ❔ trop proches d'un autre ne sont pas redessines (grappes illisibles) ; ils restent touchables
     for (const l of lieuxCarte()) {
+      if (l.id === LIEU_RETOUR.id) continue;                  // dessiné plus haut, avec sa légende
       const pp = positionDeLieu(l), p = P(pp.s, pp.t), ok = connu(l), sel = choisi && choisi.id === l.id;
       if (!ok && !sel) { if (inconnus.some(q => Math.hypot(q.x - p.x, q.y - p.y) < 17 * d)) continue; inconnus.push(p); }
       x.font = `${Math.round((ok ? 22 : 16) * d)}px serif`; x.textAlign = 'center'; x.globalAlpha = ok ? 1 : 0.55;

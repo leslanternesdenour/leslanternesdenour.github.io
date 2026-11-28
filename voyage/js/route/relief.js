@@ -50,6 +50,8 @@ function interpoler(pts, s) {
   return pts[pts.length - 1][1];
 }
 export function pointChemin(s) { return { s, t: interpoler(PISTE, s) }; }
+// Le portail de RETOUR au village : à l'extrémité de la carte, derrière le point d'arrivée (s = -20), en travers de la piste, sol plat comme la halte (voir retour-plan.js)
+export const PORTAIL_RETOUR = { s: -62, t: interpoler(PISTE, -62), r: 12 };
 // distance approchée à la piste (la piste suit surtout s)
 export function distanceChemin(s, t) {
   const t0 = interpoler(PISTE, s), pente = (interpoler(PISTE, s + 1) - interpoler(PISTE, s - 1)) / 2;
@@ -113,7 +115,7 @@ export function relief(s, t, sansTerrasses = false) {
   h = melange(h, 0.6, plaza);
   for (const c of COLLINES_CITE) { const d = Math.hypot(s - c.s, t - c.t); h += c.h * Math.pow(Math.max(0, 1 - d / c.r), 1.2) * (1 + 0.2 * fbm(s * 0.05, t * 0.05, 2)); }
   if (!sansTerrasses) for (const T of TERRASSES) { const d = Math.hypot(s - T.s, t - T.t), m = lisse(T.r + 16, T.r, d); if (m > 0) h = melange(h, hauteurTerrasse(T), m); }
-  if (!sansTerrasses) for (const P of [PLATEAU_INTERIEURS, HAMEAU, HALTE]) { const d = Math.hypot(s - P.s, t - P.t); if (d < P.r + 24) { if (!hPlats.has(P)) hPlats.set(P, relief(P.s, P.t, true).h); h = melange(h, hPlats.get(P), lisse(P.r + 24, P.r, d)); } }
+  if (!sansTerrasses) for (const P of [PLATEAU_INTERIEURS, HAMEAU, HALTE, PORTAIL_RETOUR]) { const d = Math.hypot(s - P.s, t - P.t); if (d < P.r + 24) { if (!hPlats.has(P)) hPlats.set(P, relief(P.s, P.t, true).h); h = melange(h, hPlats.get(P), lisse(P.r + 24, P.r, d)); } }
   // le campement et l'oasis sont plats
   const camp = lisse(CAMP.r + 16, CAMP.r - 2, dCamp);
   h = melange(h, 0.5 + plaine * 0.1, camp);
