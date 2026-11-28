@@ -30,6 +30,7 @@ import { creerCarteRoute } from './carte-route.js';
 import { creerHalte3D } from './halte-3d.js';
 import { GESTES_NOUR, etatHalte, dansHalte, centre as centreHalte } from './halte-plan.js';
 import { TEXTES_HALTE, BOUTONS_HALTE } from './textes-halte.js';
+import { devant as devantPortail, arrivee as arriveePortail, retourVillage, TEXTES_PORTAIL, ANCIENNE_MARCHE_ACTIVE } from './portail-plan.js';
 
 const SEUIL_Z = 10000;                                  // au-delà : on est dans le monde de la Route (le village ne dépasse jamais z = 400)
 const NOMS_ANIMAUX = { lezard: ['Lézard à queue épineuse', '🦎'], gerboise: ['Gerboise', '🐭'], renard: ['Renard des sables', '🦊'] };
@@ -291,8 +292,18 @@ export function creerRoute(ctx) {
   }
   habitants.ajouter({ id: 'route:guide', x: pg.x, z: pg.z, rayon: 3.6, label: 'Parler', icone: '💬', ouvrir: parlerGuide });
   habitants.ajouter({ id: 'route:panneau', x: pp.x, z: pp.z, rayon: 3, label: 'Lire', icone: '🚏', ouvrir: () => ui.dialogue({ titre: '🚏 ' + MESSAGES.mecque,
-    texte: regionOuverte() ? 'Une très longue piste part d\'ici, vers le sud. Parle à Rachid pour préparer ton sac, puis suis la piste.' : 'Une très longue piste part d\'ici. ' + conditionsTexte() }) });
+    texte: regionOuverte() ? TEXTES_PORTAIL.panneau :'Une très longue piste part d\'ici. ' + conditionsTexte() }) });
   habitants.ajouter({ id: 'route:table', x: RELAIS_VILLAGE.x - 0.2, z: RELAIS_VILLAGE.z - 2.3, rayon: 3, label: 'Mon sac', icone: '🎒', ouvrir: ouvrirSac });
+  // le portail de pierre : on se place devant, on le franchit, on arrive au départ de la route (la Route doit être ouverte, comme avant)
+  let traversee = false;
+  function franchirPortail() {
+    if (dans || traversee) return;
+    if (!regionOuverte()) { ui.dialogue({ titre: GUIDE.titre, texte: GUIDE.fermeTexte, sous: conditionsTexte(), boutons: [{ txt: 'D\'accord !', fn: () => {} }] }); return; }
+    traversee = true;
+    const aller = () => { try { entrer(arriveePortail()); } finally { traversee = false; } };
+    if (ui.passage) ui.passage(aller); else aller();
+  }
+  { const d = devantPortail(); habitants.ajouter({ id: 'route:portail', x: d.x, z: d.z, rayon: 3.6, label: TEXTES_PORTAIL.bouton, icone: '🚪', actif: () => !dans && !traversee, ouvrir: franchirPortail }); }
 
   // ---------- la carte de la Route ----------
   const carte = creerCarteRoute({
@@ -302,9 +313,10 @@ export function creerRoute(ctx) {
   function ouvrirCarte() { if (!R.sac.carte && dans) R.sac.carte = true; carte.ouvrir(); }
 
   // ---------- passage d'un monde à l'autre : la brume cache la couture, on garde la même direction ----------
-  function entrer() {
-    const p = versLaRoute({ x: J.x, z: J.z, a: J.a });
-    ui.fondu(); dans = true; J.x = p.x; J.z = p.z;
+  function entrer(arrivee) {
+    const p = arrivee || versLaRoute({ x: J.x, z: J.z, a: J.a });
+    if (!arrivee) ui.fondu(); dans = true; J.x = p.x; J.z = p.z;
+    if (arrivee) { J.a = p.a; J.vx = J.vz = 0; J.vit = 0; C.a = p.a; }       // par le portail : sur l'axe de la piste, face à l'avant de la route
     if (ctx.monte()) { C.x = J.x; C.z = J.z; } else { C.x = J.x + 3; C.z = J.z - 2.5; C.vit = 0; C.venir = false; }
     monde.preparer(J); montrer(true); brumeVillage = false;
     R.monde = 'route'; memoriserPosition(etat, J); enregistrer();
@@ -312,8 +324,8 @@ export function creerRoute(ctx) {
     if (!R.decouvertes.includes('seuil')) { R.decouvertes.push('seuil'); enregistrer(); ui.bandeau(MESSAGES.decouvres, '🚏 ' + MESSAGES.grandeRoute); setTimeout(() => gagner('lieu:seuil', 50, 'Tu quittes le village : la grande route'), 900); }
   }
   function sortir() {
-    const p = versLeVillage({ x: J.x, z: J.z, a: J.a });
-    ui.fondu(); dans = false; J.x = p.x; J.z = p.z;
+    const p = retourVillage();       // on ressort devant le portail, dos à lui, face au village
+    ui.fondu(); dans = false; J.x = p.x; J.z = p.z; J.a = p.a; J.vx = J.vz = 0;
     if (ctx.monte()) { C.x = J.x; C.z = J.z; } else { C.x = J.x + 3; C.z = J.z - 2.5; C.vit = 0; C.venir = false; }
     montrer(false); R.monde = 'village'; enregistrer(); ctx.surSaut();
     scene.fog.near = fog0.near; scene.fog.far = fog0.far;
@@ -368,7 +380,7 @@ export function creerRoute(ctx) {
       const k = regionOuverte() ? lisse(285, 340, J.x) * (Math.abs(J.z - 50) < 90 ? 1 : 0) : 0;
       if (k > 0) { brumeVillage = true; scene.fog.far = fog0.far + (190 - fog0.far) * k; scene.fog.near = fog0.near * (1 - 0.6 * k); }
       else if (brumeVillage) { brumeVillage = false; scene.fog.near = fog0.near; scene.fog.far = fog0.far; }
-      if (regionOuverte() && auSeuilVillage(J.x, J.z)) entrer();
+      if (ANCIENNE_MARCHE_ACTIVE && regionOuverte() && auSeuilVillage(J.x, J.z)) entrer();     // l'ancienne entrée par la marche vers l'est est remplacée par le portail
       return;
     }
     if (auRetourRoute(J.z)) { sortir(); return; }

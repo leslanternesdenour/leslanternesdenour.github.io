@@ -200,6 +200,18 @@ async function demarrer() {
   const loumi = creerLoumi({ scene, terrain, ombres: !!Q.ombres, x: LOUMI_POS.x, z: LOUMI_POS.z, regard: NID_LOUMI.regard });
   decor.colliders.push({ x: LOUMI_POS.x, z: LOUMI_POS.z, r: 0.7 });
   // La Route vers La Mecque : un second monde chargé à la demande (aucun système du village n'est dupliqué : bourse, habitants, dialogues, régions, montures)
+  // Le passage par le portail de la grande route : un court fondu de lumière (0,5 s), le changement de monde caché dessous, puis la lumière se retire (1 s). Les commandes sont gelées le temps du passage.
+  function passage(changer) {
+    if (!$('fondu-route')) fondu();
+    const f = $('fondu-route'); interface_ouverte = true; ctl.bloque = true;
+    f.style.transition = 'opacity .45s ease'; f.style.opacity = '0.98';
+    setTimeout(() => {
+      try { changer(); } finally {
+        f.style.transition = 'none'; f.style.opacity = '0.98'; void f.offsetWidth; f.style.transition = 'opacity 1s ease'; f.style.opacity = '0';
+        setTimeout(() => { interface_ouverte = false; ctl.bloque = false; dernierEtatBoutons = ''; }, 350);
+      }
+    }, 480);
+  }
   function fondu() {
     let f = $('fondu-route'); if (!f) { f = document.createElement('div'); f.id = 'fondu-route'; f.style.cssText = 'position:fixed;inset:0;z-index:60;background:#ecd9ac;opacity:0;pointer-events:none'; document.body.appendChild(f); }
     f.style.transition = 'none'; f.style.opacity = '0.96'; void f.offsetWidth; f.style.transition = 'opacity 1s ease'; f.style.opacity = '0';
@@ -213,7 +225,7 @@ async function demarrer() {
     geste: (type, d) => enfant.faire(type, d),   // un petit geste de Nour (boire, s'asseoir…) demandé par la Route
     surSaut: () => { cam.cible.set(J.x, H(J.x, J.z) + 1.4, J.z); cam.distVue = null; cam.yawCible = cam.yaw = J.a + Math.PI; },
     ui: { dialogue: p => dialogue(p), decouvrir: d => decouvrir(d), bandeau: (a, b, silence) => { bandeau(a, b, silence); S.sonDecouverte(); }, indice: (h, ms) => montrerIndice(h, ms), dire: seg => direApres(seg),
-      lieu: t => { $('lieu').textContent = t; hud.temporaire($('lieu'), 4500); }, fondu,
+      lieu: t => { $('lieu').textContent = t; hud.temporaire($('lieu'), 4500); }, fondu, passage,
       carteOuverte: () => { fermerPanneaux(); interface_ouverte = true; ctl.bloque = true; }, carteFermee: () => { interface_ouverte = false; ctl.bloque = false; dernierEtatBoutons = ''; } } }) : null;
   etat.loumi = Object.assign({ rencontre: false, vus: [], rappels: {} }, etat.loumi || {});
   if (!etat.loumi.rappels || typeof etat.loumi.rappels !== 'object') etat.loumi.rappels = {};

@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import { piece, fusion, materiau, M } from '../formes.js?v=4';
 import { Enfant } from '../personnages.js?v=4';
 import { RELAIS_VILLAGE as RELAIS, SEUIL_VILLAGE } from './donnees.js';
+import { creerPortail3D } from './portail-3d.js';
 
 const B = () => new THREE.BoxGeometry(1, 1, 1), DOD = r => new THREE.DodecahedronGeometry(r, 0), CYL = (a, b, h, s = 8) => new THREE.CylinderGeometry(a, b, h, s);
 
@@ -39,6 +40,9 @@ export function creerVillageRoute({ scene, H, colliders, ombres }) {
   for (let i = 0; i < 6; i++) { const c = { x: cx, z: cz - 6 + i * 2.4, r: 1.7 }; cols.push(c); colliders.push(c); }
   const barriere = { mesh: eb, cols, ouvert: false, ouvrir() { if (this.ouvert) return; this.ouvert = true; scene.remove(eb); for (const c of cols) { const k = colliders.indexOf(c); if (k >= 0) colliders.splice(k, 1); } } };
 
-  return { RELAIS, guide, groupe: gr, barriere, panneau: gr.userData.panneau, positionGuide: gr.userData.guide, seuil: { x: cx, z: cz },
-    animer(dt, t) { guide.animer(dt, 0, t); } };
+  // le portail de pierre : on le franchit pour arriver directement au départ de la grande route (voir portail-plan.js)
+  const portail = creerPortail3D({ scene, H, colliders, ombres });
+
+  return { RELAIS, guide, groupe: gr, barriere, panneau: gr.userData.panneau, positionGuide: gr.userData.guide, seuil: { x: cx, z: cz }, portail,
+    animer(dt, t) { guide.animer(dt, 0, t); portail.animer(dt, t); } };
 }
