@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Les Bâtisseurs de l'oasis – Les Lanternes de Nour</title>
+<meta name="description" content="Plante des palmiers, trouve de l'eau et fais grandir ton oasis à ton rythme.">
+<meta name="theme-color" content="#191345">
+<link rel="icon" href="../../intro/favicon-48.png">
+<script src="../../monde/socle/sans-visage.js?v=1"></script>
+<link rel="stylesheet" href="../commun/mini.css?v=1">
+<style>:root{--c:#2f9aa8}
+.gourde{font-weight:900;font-size:22px;color:#0b5d70;margin:0 0 6px}.dunes{display:flex;gap:10px;margin:8px 0}.dunes button{flex:1;min-height:72px;font-size:36px;border-radius:20px;border:3px solid var(--c);background:#f3dfb5}
+.grille{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}.parcelle{aspect-ratio:1;min-height:84px;border-radius:22px;border:3px solid #b8935a;background:#e6c88a;font-size:clamp(38px,12vw,64px)}.parcelle.p3{background:#d5ecb8;border-color:#5a9a3a}.parcelle.p0{color:#b8935a}
+.oasis-zone{background:linear-gradient(#a9e0f0,#e6cf8f 55%);border-radius:26px;padding:14px;color:var(--nuit)}.oasis-zone .message{color:var(--nuit)}.oasis-zone .message.bien{color:#14602a}.oasis-zone .avert{color:#3a4a50}</style>
+</head>
+<body>
+<main>
+  <header><a class="retour" href="../">‹ Les Aventures</a><h1>🌴 Les Bâtisseurs de l'oasis</h1><p id="profil" class="bilan"></p></header>
+  <p id="bilan" class="bilan" aria-live="polite"></p>
+  <section class="oasis-zone" aria-label="Ton oasis">
+    <p class="gourde" id="gourde" aria-live="polite"></p>
+    <h2>1. Cherche l'eau</h2><p class="avert">Une source est cachée sous l'une des trois dunes.</p>
+    <div id="dunes" class="dunes"></div>
+    <h2>2. Fais grandir ton oasis</h2>
+    <div id="grille" class="grille" role="group" aria-label="Les neuf parcelles de l'oasis"></div>
+    <p id="msg" class="message" role="status" aria-live="polite"></p><p id="invites" class="message"></p>
+  </section>
+  <div class="actions"><button id="recommencer" type="button" class="secondaire">Recommencer une oasis</button></div>
+  <p class="note">Ton oasis est gardée pour ton profil. Aucune pression : les palmiers t'attendent, même si tu reviens demain.</p>
+</main>
+<script type="module" src="jeu.js?v=1"></script>
+<script src="../../compte/barre.js?v=3" defer data-menu="1" data-pos="bas-droite"></script>
+<script src="../../compte/acces-logique.js?v=1"></script><script src="../../compte/acces.js?v=2" defer></script>
+</body>
+</html>

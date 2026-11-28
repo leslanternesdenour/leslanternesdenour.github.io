@@ -12,13 +12,17 @@
 - Carte de la grande route : repère « La Mecque » (drapeau + nom, rien de religieux) au bout de la piste ; étiquette « Village de Nour » plus coupée par le bord (ordinateur et téléphone) ; les « ❔ » ne se superposent plus en grappes ; message « Rien encore » du carnet Itinéraire sur toute la largeur.
 - Calendrier du Ramadan : le premier profil reprend le prénom et le genre du profil enfant du compte (l'âge reste à choisir : il n'est pas connu). Service worker v9.
 - Audits : chemins réglables (`PLAYWRIGHT_DIR`, `THREE_DIR`), mode d'emploi Windows dans `outils/audit-jeux/LISEZMOI.md`.
-**Toujours bloquant pour une mise en ligne définitive (décisions ou informations du créateur — rien n'a été inventé)**
-- `conditions/index.html` : éditeur, statut juridique, adresse, SIREN, TVA, médiateur, politique de remboursement `[À COMPLÉTER]` ; le garde-fou de `promouvoir.sh` refuse la promotion tant qu'il en reste.
-- Contenu religieux « À VALIDER » (fiches de La Route, Kaaba, prononciations, devinettes) : à valider par une personne compétente.
-- Pack Premium : toujours absent (stockage R2 `ldn-premium` relié, contenu à importer par le créateur).
-- Production : secrets Cloudflare de production (`SESSION_SECRET`, `FIREBASE_COMPTE_SERVICE`, `CREATOR_UID`, `EMAIL_CLE_API`, clés Stripe) à poser avant de promouvoir les comptes ; DMARC à ajouter dans le DNS.
-- Jeux « Bientôt » de la page Aventures (Bâtisseurs de l'oasis, Trésor des sourates, Défi des cinq prières) et maisons Premium : non créés volontairement (contenu Premium hors dépôt public, contenu religieux à valider, voix sans crédit à dépenser).
-
+**Ajouté le 28/11 (après-midi)**
+- Mentions légales : page entièrement préparée (`conditions/index.html`), 13 emplacements « [EN ATTENTE : …] » (nom, statut, adresse, SIREN/SIRET, TVA, contact, directeur de publication, adresse de l'hébergeur, TVA des prix, prix confirmés, remboursement, relecture de la rétractation, médiateur) ; **rien d'inventé**. Outil `node outils/legal/renseigner.mjs --etat` / `infos.json --ecrire` ; `promouvoir.sh` refuse toujours tant qu'un emplacement reste ; test `mentions-legales.test.mjs`.
+- Contenus religieux relus : aucune erreur certaine ; liste à valider dans `docs/CONTENUS-A-VALIDER.md`.
+- Les trois jeux « Bientôt » sont jouables (Oasis, Trésor, Cinq prières) : `docs/AVENTURES-NOUVEAUX-JEUX.md`. Sans voix, sans dépense, derrière le compte parent.
+- Accès Premium vérifié (401 sans compte, stockage lié, 87/88 tests ; le dernier est impossible ici faute d'émulateur) ; configuration Cloudflare / DNS / séquence d'ouverture préparées (rien appliqué) : `docs/PREPARATION-OUVERTURE-COMMERCIALE.md`.
+**Toujours en attente (nécessite la micro-entreprise, vos informations ou votre validation — rien n'a été inventé)**
+- `conditions/index.html` : renseigner les 13 emplacements une fois la micro-entreprise créée ; relecture juridique de la clause de rétractation.
+- Contenu religieux à valider (`docs/CONTENUS-A-VALIDER.md`), dont les trois nouveaux jeux ; décider si le « Défi des cinq prières » public doit rester (la maison Premium `cinq` existe dans le catalogue).
+- Pack Premium : toujours absent (R2 `ldn-premium` relié, contenu à importer par vous).
+- Production : secrets de production (`SESSION_SECRET`, `FIREBASE_COMPTE_SERVICE`, `CREATOR_UID`, `EMAIL_CLE_API`, clés Stripe réelles), DMARC, réglages Cloudflare : voir la préparation ci-dessus.
+- Voix des trois nouveaux jeux : aucune (génération = dépense, à votre accord).
 
 ## P0 — Bloquant (empêche le fonctionnement ou la reprise)
 **Aucun bloquant technique identifié.** `preproduction` est accessible, propre et synchronisée ; la préproduction en ligne sert le dernier commit de code ; le build et le vérificateur sont verts. (Seul point de surveillance : si Cloudflare échoue encore avec « build failed to initialize in time », relancer le déploiement — voir `ETAT-TECHNIQUE-ACTUEL.md` § 3.)

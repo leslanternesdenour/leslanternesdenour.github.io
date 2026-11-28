@@ -13,8 +13,8 @@ test('garde : la page du village est protégée', () => {
 });
 
 test('garde : toutes les pages de jeu (village, Voyage, ablutions et prière 2D/3D, calendrier, Aventures, École arabe) sont protégées, avec ou sans barre finale ou index.html', () => {
-  for (const p of ['/monde', '/monde/index.html', '/voyage/', '/ablutions/', '/ablutions/jeu3d/', '/ablutions/jeu3d/index.html', '/priere/', '/priere/jeu3d', '/calendrier/', '/aventures/', '/aventures/chasse-aux-mots/', '/aventures/mysteres-desert/', '/aventures/quiz-nour', '/ecole-arabe/', '/ecole-arabe/lettres/', '/ecole-arabe/lecture/index.html', '/ecole-arabe/chiffres/', '/ecole-arabe/chiffres/index.html']) assert.equal(estPageProtegee(p), true, p);
-  assert.equal(PAGES_PROTEGEES.length, 15);
+  for (const p of ['/monde', '/monde/index.html', '/voyage/', '/ablutions/', '/ablutions/jeu3d/', '/ablutions/jeu3d/index.html', '/priere/', '/priere/jeu3d', '/calendrier/', '/aventures/', '/aventures/chasse-aux-mots/', '/aventures/mysteres-desert/', '/aventures/quiz-nour', '/aventures/oasis', '/aventures/tresor/', '/aventures/cinq-prieres', '/ecole-arabe/', '/ecole-arabe/lettres/', '/ecole-arabe/lecture/index.html', '/ecole-arabe/chiffres/', '/ecole-arabe/chiffres/index.html']) assert.equal(estPageProtegee(p), true, p);
+  assert.equal(PAGES_PROTEGEES.length, 18);
 });
 
 test('garde : l\'accueil, les pages publiques, l\'API et les ressources ne sont jamais protégés', () => {

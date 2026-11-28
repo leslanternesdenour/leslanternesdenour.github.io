@@ -45,32 +45,38 @@ input[type=text],select{width:100%;border-radius:14px;border:2px solid #3a2a7d;b
 .enfant button{font-size:15px;padding:8px 12px;box-shadow:0 3px 0 #d9952a}.enfant button.doux{box-shadow:0 3px 0 #120d33}
 .rangee{display:flex;gap:8px;flex-wrap:wrap}.rangee>*{flex:1}
 .bandeau-sim{background:#ff9fb2;color:#3d0613;font-weight:900;text-align:center;border-radius:14px;padding:8px}
-h3{color:#fff;margin:8px 0 0}li,p{color:#e9e2ff}
+h3{color:#fff;margin:8px 0 0}li,p{color:#e9e2ff}mark.attente{background:#f5b942;color:#2a1d00;border-radius:6px;padding:1px 6px;font-weight:800}nav.carte a{color:#ffd666}
 </style>
 </head>
 <body>
 <div id="deco" aria-hidden="true"></div>
 <main>
   <h1>📜 Conditions</h1>
-  <p class="bandeau-sim">BROUILLON EN PRÉPRODUCTION — texte à faire relire et compléter avant toute ouverture des paiements réels. Les mentions [À COMPLÉTER] sont volontairement vides.</p>
+  <p class="bandeau-sim" id="bandeau-attente">Page prête, informations de l'éditeur en attente. Les emplacements marqués « EN ATTENTE » seront renseignés à la création de l'activité professionnelle ; aucune information n'est inventée en attendant.</p>
+  <nav class="carte" aria-label="Sur cette page"><p><a href="#mentions">Mentions légales</a> · <a href="#utilisation">Conditions d'utilisation</a> · <a href="#vente">Conditions de vente</a> · <a href="../decouvrir/#confidentialite">Confidentialité et données</a></p></nav>
+  <section class="carte" id="mentions">
+    <h2>Mentions légales</h2>
+    <h3>Éditeur du site</h3><p>Nom ou raison sociale : <mark class="attente" data-champ="nom">[EN ATTENTE : nom ou raison sociale]</mark><br>Statut juridique : <mark class="attente" data-champ="statut">[EN ATTENTE : statut juridique]</mark><br>Adresse professionnelle : <mark class="attente" data-champ="adresse">[EN ATTENTE : adresse professionnelle]</mark><br>SIREN / SIRET : <mark class="attente" data-champ="siren">[EN ATTENTE : numéro SIREN / SIRET]</mark><br>TVA : <mark class="attente" data-champ="tva">[EN ATTENTE : régime de TVA et mention correspondante]</mark><br>Contact : <mark class="attente" data-champ="contact">[EN ATTENTE : adresse e-mail de contact]</mark></p>
+    <h3>Directeur de la publication</h3><p><mark class="attente" data-champ="directeur">[EN ATTENTE : nom du directeur de la publication]</mark></p>
+    <h3>Hébergement</h3><p>Le site est hébergé par Cloudflare, Inc. Adresse de l'hébergeur : <mark class="attente" data-champ="hebergeur-adresse">[EN ATTENTE : adresse de l'hébergeur, à reporter depuis cloudflare.com]</mark><br>Les comptes des familles sont gérés par Google Firebase (région Europe) et les paiements par Stripe.</p>
+    <h3>Propriété intellectuelle</h3><p>Les textes, images, personnages, voix et musiques du site sont mis à disposition pour un usage familial et privé. Toute reproduction ou diffusion sans accord préalable de l'éditeur est interdite.</p>
+  </section>
   <section class="carte" id="utilisation">
     <h2>Conditions d'utilisation</h2>
-    <h3>Éditeur</h3><p>Nom ou raison sociale : <mark>[À COMPLÉTER]</mark><br>Statut juridique : <mark>[À COMPLÉTER]</mark><br>Adresse : <mark>[À COMPLÉTER]</mark><br>SIREN / SIRET : <mark>[À COMPLÉTER]</mark><br>Directeur de la publication : <mark>[À COMPLÉTER]</mark><br>Contact : <mark>[À COMPLÉTER]</mark></p>
-    <h3>Hébergement et prestataires</h3><p>Hébergement du site : Cloudflare, Inc. Comptes des familles : Google Firebase (région Europe). Paiements : Stripe.</p>
     <h3>Le service</h3><p>Les Lanternes de Nour est un site éducatif pour les enfants de 3 à 10 ans, utilisé sous la responsabilité d'un parent. La présentation du village est accessible sans compte ; pour jouer, un parent crée un compte parent, avec jusqu'à 4 profils enfants. L'enfant n'a jamais de compte : son profil ne contient qu'un prénom ou surnom, une tranche d'âge et un personnage (ni nom de famille, ni date de naissance, ni photo). La progression de chaque enfant est enregistrée automatiquement dans le compte du parent.</p>
     <h3>Compte</h3><p>Le parent garde son mot de passe (ou l'accès à son compte Google) secret. Il peut modifier ou supprimer à tout moment chaque profil enfant, et supprimer son compte et toutes les données associées depuis l'Espace famille ; la suppression est définitive.</p>
-    <h3>Contenus</h3><p>Les contenus restent la propriété de l'éditeur. Ils sont mis à disposition pour un usage familial et privé.</p>
+    <h3>Respect des convictions des familles</h3><p>Les histoires des prophètes et des anges ne sont jamais représentées par des personnages. Chaque famille peut en outre choisir le mode « sans visage » dans les réglages, pour que les personnages du jeu n'aient pas de visage.</p>
   </section>
   <section class="carte" id="vente">
     <h2>Conditions de vente</h2>
-    <h3>Formules et prix</h3><p>Premium : 4,99 € par mois ou 39,99 € par an. Famille : 59,99 € par an. Prix en euros. <mark>[À COMPLÉTER : mention de TVA selon le régime de l'éditeur.]</mark> <mark>[À CONFIRMER : prix définitifs avant l'ouverture des paiements réels.]</mark></p>
+    <h3>Formules et prix</h3><p>Premium : 4,99 € par mois ou 39,99 € par an. Famille : 59,99 € par an. Prix en euros, TTC lorsque la TVA est applicable : <mark class="attente" data-champ="tva-prix">[EN ATTENTE : mention de TVA applicable aux prix, selon le régime de l'éditeur]</mark>. Prix indiqués à confirmer avant l'ouverture des paiements réels : <mark class="attente" data-champ="prix-confirmes">[EN ATTENTE : confirmation des prix définitifs]</mark>.</p>
     <h3>Paiement et renouvellement</h3><p>Le paiement est traité par Stripe : le site ne voit ni ne conserve les numéros de carte. L'abonnement se renouvelle automatiquement à la fin de chaque période, sauf résiliation.</p>
     <h3>Factures et moyen de paiement</h3><p>Les factures et reçus se consultent, et la carte se modifie, depuis l'Espace famille (« Moyen de paiement et factures »), sur le portail sécurisé de Stripe.</p>
-    <h3>Soutien (contributions libres)</h3><p>La page « Soutenir » permet une contribution libre et unique, de 1 € à 500 €, payée par Stripe. Ce n'est pas un abonnement : aucun prélèvement récurrent. Une contribution ne donne accès à aucun avantage Premium ni à aucune réduction d'impôt. <mark>[À COMPLÉTER : politique de remboursement des contributions.]</mark></p>
+    <h3>Soutien (contributions libres)</h3><p>La page « Soutenir » permet une contribution libre et unique, de 1 € à 500 €, payée par Stripe. Ce n'est pas un abonnement : aucun prélèvement récurrent. Une contribution ne donne accès à aucun avantage Premium ni à aucune réduction d'impôt. Remboursement des contributions : <mark class="attente" data-champ="remboursement">[EN ATTENTE : politique de remboursement des contributions]</mark>.</p>
     <h3>Résiliation</h3><p>Depuis l'Espace famille, en trois gestes. L'accès reste ouvert jusqu'à la fin de la période déjà payée, puis le compte repasse en Gratuit ; les progrès sont conservés.</p>
-    <h3>Droit de rétractation</h3><p>Le droit de rétractation de 14 jours ne s'applique pas lorsque le parent demande l'accès immédiat aux contenus numériques et renonce expressément à ce droit au moment de l'achat (article L221-28 13° du Code de la consommation). [À FAIRE RELIRE.]</p>
+    <h3>Droit de rétractation</h3><p>Le droit de rétractation de 14 jours ne s'applique pas lorsque le parent demande l'accès immédiat aux contenus numériques et renonce expressément à ce droit au moment de l'achat (article L221-28 13° du Code de la consommation). <mark class="attente" data-champ="relecture-retractation">[EN ATTENTE : relecture juridique de cette clause avant l'ouverture commerciale]</mark>.</p>
     <h3>Accès offerts</h3><p>Un accès offert par invitation ne donne lieu à aucun paiement. S'il prend fin, le compte repasse en Gratuit sans perte des progrès.</p>
-    <h3>Médiation</h3><p>[À COMPLÉTER : médiateur de la consommation choisi par l'éditeur.]</p>
+    <h3>Médiation de la consommation</h3><p>Médiateur de la consommation : <mark class="attente" data-champ="mediateur">[EN ATTENTE : médiateur choisi par l'éditeur, nom et coordonnées]</mark>.</p>
   </section>
   <p style="text-align:center"><a href="../decouvrir/#confidentialite">Confidentialité</a> · <a href="../compte/">Espace famille</a> · <a href="../">Retour au site</a></p>
 </main>
