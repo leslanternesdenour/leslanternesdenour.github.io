@@ -1,5 +1,5 @@
 // Don en ligne (paiement intégré Stripe) : logique pure, sans accès à la base ; Stripe est injecté (fetcher) pour les tests.
-import { clientStripe } from './stripe.js';
+import { clientStripe, modeCle } from './stripe.js';
 
 // Le montant est TOUJOURS revalidé côté serveur : on ne fait jamais confiance au navigateur.
 // Euros entiers de 1 à 500 (type nombre uniquement : « 5 » en texte, 2,5, NaN, tableaux, objets sont refusés).
@@ -25,7 +25,13 @@ export async function traiterDon(req, env, { fetcher = fetch } = {}) {
   if (req.method === 'GET') {
     const cle = String(env.STRIPE_CLE_PUBLIABLE || '');
     // Pas de clé = don pas encore ouvert : état normal, réponse calme (200) pour ne pas produire d'erreur serveur à chaque visite de la page.
-    return json({ cle: /^pk_(test|live)_[A-Za-z0-9]+$/.test(cle) ? cle : null });
+    // La clé publiable doit être du MÊME mode que l'environnement et que la clé secrète : jamais une clé réelle hors production, jamais une clé de test en production,
+    // jamais une clé publiable d'un mode avec une clé secrète de l'autre (le formulaire s'afficherait puis le paiement échouerait ou irait au mauvais compte).
+    const secrete = String(env.STRIPE_CLE_SECRETE || '').trim();
+    const modePk = /^pk_(test|live)_[A-Za-z0-9]+$/.test(cle) ? modeCle(cle) : null, modeSk = /^(sk|rk)_/.test(secrete) ? modeCle(secrete) : null;
+    const prod = env.ENVIRONNEMENT === 'production';
+    const coherent = modePk && (prod ? modePk === 'reel' : modePk === 'test') && (!secrete || modeSk === modePk);   // clé secrète présente mais illisible ou d'un autre mode : jamais exposée
+    return json({ cle: coherent ? cle : null });
   }
   if (!memeOrigine(req)) return json({ erreur: 'origine' }, 403);
   // Clé absente OU clé réelle refusée par clientStripe : même réponse neutre, jamais le détail ni un extrait de la clé.

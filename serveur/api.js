@@ -476,8 +476,12 @@ async function administration(req, ctx, session, chemin, url) {
     const cible = b.uid === undefined || b.uid === null || b.uid === '' ? session.uid : b.uid;
     if (typeof cible !== 'string' || !/^[A-Za-z0-9_-]{1,128}$/.test(cible)) return erreur(400, 'uid-invalide');
     if (cible !== session.uid && !(await ctx.base.lire('familles', cible))) return erreur(404, 'compte-introuvable');
-    const version = (await versionSessionAttendue(ctx, cible)) + 1;
-    await ctx.base.ecrire(COL_SESSIONS, cible, { version, revoqueLe: ctx.maintenant });
+    // Contrôle (sans effet sur la course) : un document « version » illisible n'est JAMAIS remplacé par une valeur basse (les anciens cookies redeviendraient valables) ;
+    // il faut le corriger à la main dans la console Firestore (nombre entier).
+    try { await versionSessionAttendue(ctx, cible); } catch (e) { console.error('version-session-illisible', e && e.message); return erreur(409, 'etat-sessions-illisible'); }
+    // Incrémentation atomique côté base (transaction Firestore sur ce document) : deux révocations simultanées donnent deux versions différentes,
+    // la version ne peut jamais redescendre. La lecture ci-dessus ne sert qu'à détecter un document illisible.
+    const version = await ctx.base.incrementer(COL_SESSIONS, cible, 'version', { revoqueLe: ctx.maintenant });
     await journal(ctx, 'sessions-revoquees', { cible: cible === session.uid ? 'soi-meme' : 'autre-compte' });
     if (cible !== session.uid) return json({ ok: true, version });
     const valeur = await creerSession({ uid: session.uid, email: session.email, emailVerifie: session.emailVerifie, role: session.claims && session.claims.role, authTime: session.authTime, fournisseur: session.fournisseur, version }, ctx.env.SESSION_SECRET, ctx.maintenant);
@@ -639,7 +643,11 @@ async function webhookStripe(req, ctx) {
   const corps = await req.text();
   if (!(await verifierSignatureStripe(corps, req.headers.get('Stripe-Signature'), ctx.env.STRIPE_SECRET_WEBHOOK, ctx.maintenant))) return erreur(400, 'signature');
   const ev = JSON.parse(corps);
-  if (ev.livemode === true && (ctx.env.STRIPE_MODE_REEL !== 'autorise' || !MENTIONS_COMPLETES)) return erreur(400, 'mode-reel-refuse');
+  // Séparation test / réel : un événement RÉEL n'est accepté qu'en production (et seulement avec l'accord du créateur et les mentions légales complètes) ;
+  // la production n'accepte QUE des événements réels (un événement de test y donnerait un vrai accès Premium contre une carte de test).
+  const production = ctx.env.ENVIRONNEMENT === 'production';
+  if (ev.livemode === true && (ctx.env.STRIPE_MODE_REEL !== 'autorise' || !MENTIONS_COMPLETES || !production)) return erreur(400, 'mode-reel-refuse');
+  if (production && ev.livemode !== true) return erreur(400, 'mode-test-refuse');
   if (!(await ctx.base.creerSiAbsent('stripe_evenements', ev.id, { t: ctx.maintenant, type: ev.type }))) return json({ ok: true, doublon: true });   // chaque événement traité une seule fois
   const o = ev.data && ev.data.object || {};
   let uid = (o.metadata && o.metadata.uid) || o.client_reference_id || null;

@@ -22,6 +22,7 @@ Fichiers :
 | `STRIPE_CLE_PUBLIABLE` | clé publiable (`pk_test_…`), qui est publique | idem |
 
 - Une clé réelle (`sk_live_…`) est **refusée** par le code tant que `STRIPE_MODE_REEL` ne vaut pas `autorise` (décision du créateur, voir `serveur/stripe.js`).
+- **Séparation test / réel (28/11/2026, appliquée par le code)** : une clé réelle (`sk_live_`, `rk_live_`) n'est acceptée que si `ENVIRONNEMENT = production` (en plus de `STRIPE_MODE_REEL=autorise` et des mentions légales complètes) ; une clé de test est refusée en production ; les événements de test sont refusés en production et les événements réels hors production. Voir `docs/SECURITE-SESSIONS-DROITS.md`.
 - La préproduction est un déploiement d'aperçu (« Preview ») : y mettre uniquement des clés de **test**, dans les secrets de l'environnement Preview, jamais ceux de la production.
 - Piège déjà rencontré : le tableau de bord ouvre l'environnement **Production** par défaut (reconnaissable à la ligne grisée `ENVIRONNEMENT = production`). Les clés de test doivent être dans l'environnement **Aperçu (Preview)** ; la production ne doit contenir aucune variable `STRIPE_*`.
 - Les secrets ne sont appliqués qu'à un **nouveau déploiement**. Un commit vide ne déclenche aucun build chez Cloudflare : il faut un vrai changement de fichier, ou « Réessayer le déploiement » dans le tableau de bord. Vérification sans afficher de clé : `GET /api/don/config` doit renvoyer `{"cle":"pk_test_…"}` au lieu de `{"cle":null}`.

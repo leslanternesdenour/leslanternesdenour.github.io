@@ -26,5 +26,7 @@ if (e && e.format === FORMAT_AUTH) {   // sauvegarde des comptes de connexion (A
   const recompte = Object.fromEntries(Object.entries(e.collections).map(([c, d]) => [c, Object.keys(d).length]));
   v('nombres de documents cohérents avec le journal de l\'export', JSON.stringify(recompte) === JSON.stringify(e.compte));
   console.log('documents par collection : ' + JSON.stringify(e.compte));
+  // Information (pas une erreur) : les sauvegardes d'avant le 28/11/2026 n'ont pas les versions de révocation des sessions ; la restauration invalide alors toutes les sessions (voir docs/SAUVEGARDES.md).
+  console.log(e.collections.sessions_etat ? '• versions de révocation des sessions (sessions_etat) : présentes' : '• versions de révocation des sessions (sessions_etat) : absentes de cette sauvegarde (ancien format) ; à la restauration, toutes les sessions seront invalidées');
 }
 console.log(ko ? `\n${ko} vérification(s) en échec.` : '\nSauvegarde saine et lisible avec votre clé.'); process.exit(ko ? 1 : 0);

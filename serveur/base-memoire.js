@@ -13,6 +13,14 @@ export function baseMemoire(initial = {}) {
     async ecrire(col, id, data) { d.set(cle(col, id), copie(data)); },
     async maj(col, id, partiel) { const k = cle(col, id); if (!d.has(k)) throw new Error('document absent : ' + k); d.set(k, { ...d.get(k), ...copie(partiel) }); },
     async creerSiAbsent(col, id, data) { const k = cle(col, id); if (d.has(k)) return false; d.set(k, copie(data)); return true; },
+    // Incrémentation ATOMIQUE d'un compteur entier (+1) ; les champs « extra » sont écrits dans la même opération. Renvoie la nouvelle valeur.
+    // Document ou champ absent (ou non numérique) : le champ vaut 1. Même contrat que Firestore (transformation « increment »).
+    async incrementer(col, id, champ, extra = {}) {
+      const k = cle(col, id), actuel = d.get(k) || {};
+      const v = typeof actuel[champ] === 'number' ? actuel[champ] + 1 : 1;
+      if (!Number.isSafeInteger(v)) throw new Error('incrementation illisible');
+      d.set(k, { ...actuel, ...copie(extra), [champ]: v }); return v;
+    },
     async supprimer(col, id) { d.delete(cle(col, id)); },
     // tri par identifiant ; « apres » = dernier identifiant de la page précédente
     async lister(col, { limite = 20, apres = null } = {}) {
