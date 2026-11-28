@@ -210,6 +210,7 @@ async function demarrer() {
     donner: (id, n, raison) => bourse.recompense(id, n, raison, ouDonner()),
     voixRoute: async () => { try { const [m, rc, r] = await Promise.all([import('./route/voix-route.js'), import('./route/voix-recits-a-valider.js').catch(() => ({ PHRASES_RECITS: [] })), fetch('../audio/route-voix.json', { cache: 'no-cache' }).then(x => x.json())]); ajouterPhrases([...m.PHRASES_ROUTE, ...rc.PHRASES_RECITS], r); } catch (e) { /* sans voix : le jeu reste jouable */ } },
     arreterGuide: () => { guide.arreter(); etat.guidage = null; enregistrer(); majGuidage(null); },
+    geste: (type, d) => enfant.faire(type, d),   // un petit geste de Nour (boire, s'asseoir…) demandé par la Route
     surSaut: () => { cam.cible.set(J.x, H(J.x, J.z) + 1.4, J.z); cam.distVue = null; cam.yawCible = cam.yaw = J.a + Math.PI; },
     ui: { dialogue: p => dialogue(p), decouvrir: d => decouvrir(d), bandeau: (a, b, silence) => { bandeau(a, b, silence); S.sonDecouverte(); }, indice: (h, ms) => montrerIndice(h, ms), dire: seg => direApres(seg),
       lieu: t => { $('lieu').textContent = t; hud.temporaire($('lieu'), 4500); }, fondu,
@@ -290,14 +291,18 @@ async function demarrer() {
   const date0 = () => new Date().toISOString().slice(0, 10);
   const lieuDe = type => type === 'boire' ? 'eau' : type === 'manger' ? 'foin' : 'litiere';
   const actionsLieu = { eau: 'boire', foin: 'manger' };
+  // Les lieux de soins : l'enclos de l'écurie au village ; la halte de repos (abreuvoir, mangeoire, abri de Sablo) au milieu de la Route.
+  const soinsLieux = () => (route && route.lieuxSoins && route.lieuxSoins()) || LIEUX_SOINS;
+  let soinApres = null;              // un soin demandé à dos de monture : on descend d'abord, puis le soin commence
   function interactionSoins() {
-    if (monte || sequence || interface_ouverte) return null;
+    const surRoute = !!(route && route.lieuxSoins && route.lieuxSoins());
+    if ((monte && !surRoute) || sequence || interface_ouverte) return null;
     let best = null;
-    for (const [id, l] of Object.entries(LIEUX_SOINS)) {
+    for (const [id, l] of Object.entries(soinsLieux())) {
       const d = Math.hypot(l.objet.x - J.x, l.objet.z - J.z); if (d > l.rayon || (best && best.d <= d)) continue;
       const type = id === 'litiere' ? (nuitActuelle ? 'dormir' : 'repos') : actionsLieu[id];
       const label = type === 'boire' ? 'Faire boire' : type === 'manger' ? 'Donner à manger' : type === 'dormir' ? 'Faire dormir' : 'Faire reposer';
-      best = { label, icone: l.icone, d, faire: () => lancerSoin(type, id) };
+      best = { label, icone: l.icone, d, faire: () => { if (monte) { soinApres = { type, id }; C.vit = 0; C.venir = false; C.rentre = false; sequence = { type: 'descendre', t: 0 }; } else lancerSoin(type, id); } };
     }
     return best;
   }
@@ -351,7 +356,7 @@ async function demarrer() {
   function avancerSoin(dt) {
     if (!soin) return;
     if (monte || sequence) { soin = null; return; }
-    const l = LIEUX_SOINS[soin.lieu];
+    const l = soinsLieux()[soin.lieu]; if (!l) { soin = null; return; }      // quitté la halte ou l'enclos : le soin s'arrête sans rien changer
     if (soin.phase === 'va') {
       const cib = etapeEnclos(C, l.stand), final = cib === l.stand;
       const ex = cib.x - C.x, ez = cib.z - C.z, dist = Math.hypot(ex, ez);
@@ -399,7 +404,7 @@ async function demarrer() {
   hudSoins.innerHTML = BESOINS.map(b => `<button class="besoin" data-b="${b}" aria-label="${INFOS[b].nom}"><span class="ib">${INFOS[b].icone}</span><span class="jauge"><i></i></span></button>`).join('');
   hudSoins.querySelectorAll('.besoin').forEach(btn => btn.onclick = () => {
     const b = btn.dataset.b, n = soins.niveau(AV.monture, b), m = monture(AV.monture);
-    montrerIndice(n < BAS ? `${m.nom} ${INFOS[b].texte}. ${b === 'soif' ? "L'abreuvoir est près du puits !" : b === 'faim' ? 'La mangeoire est près du puits !' : b === 'bienEtre' ? 'Fais-lui un câlin !' : 'La litière de paille est à côté du puits.'}` : `${INFOS[b].nom} : ${m.nom} va bien.`, 4500);
+    montrerIndice(n < BAS ? `${m.nom} ${INFOS[b].texte}. ${route && route.enRoute() ? (b === 'soif' ? "L'abreuvoir de la halte, au milieu de la Route, est fait pour ça !" : b === 'faim' ? 'La mangeoire de la halte, au milieu de la Route, est faite pour ça !' : b === 'bienEtre' ? 'Fais-lui un câlin !' : "L'abri de palmes, à la halte, est là pour qu'elle se repose.") : b === 'soif' ? "L'abreuvoir est près du puits !" : b === 'faim' ? 'La mangeoire est près du puits !' : b === 'bienEtre' ? 'Fais-lui un câlin !' : 'La litière de paille est à côté du puits.'}` : `${INFOS[b].nom} : ${m.nom} va bien.`, 4500);
   });
   // Les besoins : une petite carte au-dessus de la monture, seulement quand l'enfant est près d'elle (ou pendant un soin). Jamais de colonne à l'écran.
   const vS = new THREE.Vector3();
@@ -507,7 +512,7 @@ async function demarrer() {
         J.saut = { k, y: s.depuis.y + (H(cote.x, cote.z) - s.depuis.y) * k + Math.sin(k * Math.PI) * 0.6 };
         enfant.pose = k > 0.6 ? 'debout' : 'monte';
       } else if (s.t < t3) { J.saut = null; enfant.pose = 'debout'; chameau.agenouille = 1 - lisse(t2, t3, s.t); }
-      else { chameau.agenouille = 0; sequence = null; J.a = C.a; etat.monte = false; enregistrer(); }
+      else { chameau.agenouille = 0; sequence = null; J.a = C.a; etat.monte = false; enregistrer(); if (soinApres) { const p = soinApres; soinApres = null; lancerSoin(p.type, p.id); } }
     }
   }
   function finMontee() { etat.monte = true; enregistrer(); if (!etat.premiereMontee) { etat.premiereMontee = true; montrerIndice(ctl.tactile ? 'En route ! Maintiens 💨 pour galoper.' : `En route ! Maintiens <kbd>${touche('courir')}</kbd> pour galoper.`, 4500); } }

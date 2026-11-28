@@ -27,6 +27,9 @@ import { pageCarnetRoute } from './carnet-route.js';
 import { creerRecitUI } from './recit-ui.js';
 import { recit } from './recits-a-valider.js';
 import { creerCarteRoute } from './carte-route.js';
+import { creerHalte3D } from './halte-3d.js';
+import { GESTES_NOUR, etatHalte, dansHalte, centre as centreHalte } from './halte-plan.js';
+import { TEXTES_HALTE, BOUTONS_HALTE } from './textes-halte.js';
 
 const SEUIL_Z = 10000;                                  // au-delà : on est dans le monde de la Route (le village ne dépasse jamais z = 400)
 const NOMS_ANIMAUX = { lezard: ['Lézard à queue épineuse', '🦎'], gerboise: ['Gerboise', '🐭'], renard: ['Renard des sables', '🦊'] };
@@ -43,6 +46,7 @@ export function creerRoute(ctx) {
   const fixes = [];                                      // les obstacles des lieux (tentes, rochers…) : ne changent jamais
   const L = creerLieux3D({ scene, hauteur: monde.hauteur, colliders: fixes, ombres: ctx.ombres, TX: ctx.TX });
   const V = creerVille3D({ scene, hauteur: monde.hauteur, ombres: ctx.ombres });          // la cité ancienne
+  const H3 = creerHalte3D({ scene, hauteur: monde.hauteur, colliders: fixes, ombres: ctx.ombres });          // la halte de repos des caravaniers, au milieu de la Route
   const W = creerVoyageurs3D({ scene, hauteur: monde.hauteur, leger: !!ctx.Q.leger });   // ses voyageurs fictifs animés
   const I = creerInterieur3D({ scene, hauteur: monde.hauteur, ombres: ctx.ombres });   // la pièce d'une maison : invisible tant qu'on n'y entre pas
   const G3 = creerGuidage3D({ scene, hauteur: monde.hauteur });                                // les lumières dorées du guidage (destination choisie sur la carte)
@@ -60,7 +64,7 @@ export function creerRoute(ctx) {
   const h0 = terrain.hauteur.bind(terrain), m0 = terrain.matiere.bind(terrain);
   terrain.hauteur = (x, z) => z > SEUIL_Z ? monde.hauteur(x, z) : h0(x, z);
   terrain.matiere = (x, z) => z > SEUIL_Z ? monde.matiere(x, z) : m0(x, z);
-  const montrer = v => { monde.montrer(v); L.groupe.visible = v; V.montrer(v && villeVisible(J.x, J.z)); villeAffichee = v && villeVisible(J.x, J.z); M3.groupe.visible = v; G3.groupe.visible = v; terrain.mesh.visible = !v; if (!v) for (const n of W.liste) n.e.racine.visible = false; };
+  const montrer = v => { monde.montrer(v); L.groupe.visible = v; V.montrer(v && villeVisible(J.x, J.z)); villeAffichee = v && villeVisible(J.x, J.z); M3.groupe.visible = v; G3.groupe.visible = v; H3.montrer(v); terrain.mesh.visible = !v; if (!v) for (const n of W.liste) n.e.racine.visible = false; };
   montrer(false);
 
   // ---------- les lieux déjà faits (reprise d'une sauvegarde) ----------
@@ -129,6 +133,23 @@ export function creerRoute(ctx) {
     } });
     else if (l.type === 'cairn') ajouter(l.id, { ...base, rayon: 4, label: 'Lire', icone: '📜', ouvrir: () => dialogueLieu(l.id) });
   }
+
+  // ---------- la halte de repos : Nour peut boire, manger et se reposer ; rien n'est obligatoire, rien n'est puni ----------
+  const HH = etatHalte(R), txtH = k => TEXTES_HALTE[k][age() === '3-5' ? 'petit' : 'grand'];
+  const geste = (type, d) => { if (ctx.geste) ctx.geste(type, d); };
+  function gestePasse(g) {
+    if (g.id === 'halte-eau') { geste('boire', 2.2); HH.boire++; const gourde = !!R.sac.gourde; if (gourde) R.vu.gourdePleine = true; enregistrer();
+      setTimeout(() => ui.dialogue({ titre: '💧 ' + BOUTONS_HALTE.eau, texte: txtH('eau') + (gourde ? ' ' + txtH('gourde') : ''), icone: '💧' }), 1500); }
+    else if (g.id === 'halte-vivres') { geste('prendre', 1); HH.manger++; enregistrer();
+      setTimeout(() => ui.dialogue({ titre: '🥜 ' + BOUTONS_HALTE.vivres, texte: txtH('vivres'), icone: '🥜' }), 900); }
+    else {
+      geste('assis', 8); const premier = HH.repos === 0; HH.repos++; memoriserPosition(etat, J); enregistrer();
+      if (premier) setTimeout(() => gagner('halte:repos', 20, 'Une halte : se reposer'), 800);
+      setTimeout(() => ui.dialogue({ titre: '😌 ' + BOUTONS_HALTE.repos, texte: txtH('repos'), icone: '😌',
+        boutons: [{ txt: BOUTONS_HALTE.reprendre, fn: () => { geste(null); ui.indice('🐪 ' + txtH('repriseRoute'), 3000); } }, { txt: BOUTONS_HALTE.rester, fn: () => {} }] }), 1100);
+    }
+  }
+  for (const g of GESTES_NOUR) ajouter(g.id, { x: g.x, z: g.z, rayon: g.rayon, label: g.label, icone: g.icone, ouvrir: () => gestePasse(g) });
 
   // la voyageuse du campement (personnage fictif)
   function parlerVoyageuse() {
@@ -351,7 +372,7 @@ export function creerRoute(ctx) {
       return;
     }
     if (auRetourRoute(J.z)) { sortir(); return; }
-    monde.maj(J); monde.eclairer(nuit, t); G3.maj(dt, t, J, carte.cap()); L.animer(dt, t, J); lanternesProches(); parcoursCollines();
+    monde.maj(J); monde.eclairer(nuit, t); H3.animer(dt, t, J, nuit); G3.maj(dt, t, J, carte.cap()); L.animer(dt, t, J); lanternesProches(); parcoursCollines();
     tHors += dt; if (tHors > 1) { tHors = 0;
       // filet de sécurité : s'il se retrouve hors de la zone (ancienne sauvegarde, bug), on le ramène sur la piste
       if (!dansMaison && !zoneJouable(J.z - DEC, J.x)) { const p = pointChemin(Math.max(S_DEBUT, Math.min(S_FIN_TRANCHE, J.z - DEC))); J.x = p.t; J.z = DEC + p.s; J.vx = J.vz = 0; if (ctx.monte()) { C.x = J.x; C.z = J.z; } monde.preparer(J); ui.indice('🧭 ' + MESSAGES.ramene, 6000); } if (cooldownHors > 0) cooldownHors -= 1; else if (!dansMaison && loinDeLaPiste(J.z - DEC, J.x)) { cooldownHors = 40; ui.indice('🧭 ' + MESSAGES.horsPiste, 6000); } }
@@ -376,6 +397,7 @@ export function creerRoute(ctx) {
       if (dCamp < 30 && !R.decouvertes.includes('campement')) { decouvrirLieu('campement', 'lieu'); }
       if (dOasis < OASIS.r && !R.decouvertes.includes('oasis')) { decouvrirLieu('oasis', 'lieu'); premiereEtape(); }
     }
+    { const h = centreHalte(); if (!HH.vue && Math.hypot(J.x - h.x, J.z - h.z) < 38) { HH.vue = true; if (!R.decouvertes.includes('halte')) R.decouvertes.push('halte'); enregistrer(); ui.bandeau('Une halte de repos', '⛺ La halte des caravaniers', true); setTimeout(() => ui.indice(txtH('indice'), 5000), 2500); setTimeout(() => ui.indice(txtH('sablo'), 6000), 8500); } }
     carte.maj(dt);
   }
 
@@ -397,7 +419,9 @@ export function creerRoute(ctx) {
 
   return {
     ville: V, voyageurs: W, enRoute: () => dans, regionId: () => regionActuelle, facteurMarche: FACTEUR_MARCHE_ROUTE, ouvrirHistoire, fermerHistoire: () => recitUI.fermer(), histoireOuverte: () => recitUI.ouverte(), maj, bouger, ouvrirCarte, ouvrirSac, parlerGuide,
-    carte, monde, lieux3d: L, etat: R, fermerCarte: () => carte.fermer(), carteOuverte: () => carte.ouverte(),
+    carte, monde, lieux3d: L, halte3d: H3, etat: R,
+    // la halte : les lieux de soins de Sablo (l'abreuvoir, la mangeoire, l'abri), au même format que ceux de l'enclos de l'écurie ; null hors de la Route
+    lieuxSoins: () => dans && !dansMaison ? H3.soins : null, surLaHalte: () => dans && dansHalte(J.x, J.z, 6), fermerCarte: () => carte.fermer(), carteOuverte: () => carte.ouverte(),
     pageCarnet: () => pageCarnetRoute({ route: R, badges: AV.badges || {}, age: age() }),
     sauver() { if (dans) memoriserPosition(etat, dansMaison ? dansMaison.retour : J); },
     procheEau: () => dans ? Math.max(0, 1 - (Math.hypot(J.x - OASIS.t, J.z - (DEC + OASIS.s)) - OASIS.lac) / 50) : null,

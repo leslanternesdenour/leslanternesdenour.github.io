@@ -37,6 +37,8 @@ export const TERRASSES = [{ id: 'pied-nord', s: 5250, t: -390, r: 26 }, { id: 'p
 export const PLATEAU_INTERIEURS = { s: 6040, t: 0, r: 14 };
 // Le hameau des puits : un petit hameau caché dans les dunes, à l'écart de la grande piste, relié par un sentier (sol plat, comme le campement)
 export const HAMEAU = { s: 1950, t: 446, r: 30 };
+// La halte de repos des caravaniers : au milieu de la Route, un peu à l'écart de la piste (côté gauche), sol plat comme le campement et le hameau
+export const HALTE = { s: 2800, t: -10, r: 20 };
 const hPlats = new Map();   // la hauteur du terrain naturel au centre de chaque rond plat (calculée une fois)
 
 function interpoler(pts, s) {
@@ -111,7 +113,7 @@ export function relief(s, t, sansTerrasses = false) {
   h = melange(h, 0.6, plaza);
   for (const c of COLLINES_CITE) { const d = Math.hypot(s - c.s, t - c.t); h += c.h * Math.pow(Math.max(0, 1 - d / c.r), 1.2) * (1 + 0.2 * fbm(s * 0.05, t * 0.05, 2)); }
   if (!sansTerrasses) for (const T of TERRASSES) { const d = Math.hypot(s - T.s, t - T.t), m = lisse(T.r + 16, T.r, d); if (m > 0) h = melange(h, hauteurTerrasse(T), m); }
-  if (!sansTerrasses) for (const P of [PLATEAU_INTERIEURS, HAMEAU]) { const d = Math.hypot(s - P.s, t - P.t); if (d < P.r + 24) { if (!hPlats.has(P)) hPlats.set(P, relief(P.s, P.t, true).h); h = melange(h, hPlats.get(P), lisse(P.r + 24, P.r, d)); } }
+  if (!sansTerrasses) for (const P of [PLATEAU_INTERIEURS, HAMEAU, HALTE]) { const d = Math.hypot(s - P.s, t - P.t); if (d < P.r + 24) { if (!hPlats.has(P)) hPlats.set(P, relief(P.s, P.t, true).h); h = melange(h, hPlats.get(P), lisse(P.r + 24, P.r, d)); } }
   // le campement et l'oasis sont plats
   const camp = lisse(CAMP.r + 16, CAMP.r - 2, dCamp);
   h = melange(h, 0.5 + plaine * 0.1, camp);
