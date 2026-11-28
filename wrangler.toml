@@ -1,43 +1,21 @@
-# Configuration Cloudflare Pages (préproduction). Aucun secret ici : les secrets se règlent dans le tableau de bord Cloudflare.
+# Configuration Cloudflare Pages de la PRODUCTION (branche « main »). Aucun secret ici.
+# Ce fichier est la version « production » de wrangler.toml : il remplace wrangler.toml À LA MISE EN PRODUCTION (voir docs/MIGRATION-PRODUCTION.md).
+# Le build refuse « main » tant que ENVIRONNEMENT n'y vaut pas "production" (outils/construire.mjs).
 name = "lanternes-de-nour"
 pages_build_output_dir = "dist"
 compatibility_date = "2026-11-01"
 
 [vars]
-ENVIRONNEMENT = "preproduction"
-# Identifiant PUBLIC du projet Firebase (pas un secret).
+ENVIRONNEMENT = "production"
+# Identifiant PUBLIC du projet Firebase (pas un secret). Même projet que la préproduction : mêmes comptes, mêmes familles.
 FIREBASE_PROJET = "lanternes-de-nour"
-# Identifiants PUBLICS (pas des secrets) des 3 tarifs Stripe en MODE TEST, créés le 23/11/2026 : préproduction uniquement.
-# La production aura ses propres identifiants (mode réel), créés dans Stripe au moment de l'ouverture des paiements.
-STRIPE_PRIX_PREMIUM_MENSUEL = "price_1Uev94D88y9eITej7dv4VPA9"
-STRIPE_PRIX_PREMIUM_ANNUEL = "price_1Uev96D88y9eITejxWarVO7v"
-STRIPE_PRIX_FAMILLE_ANNUEL = "price_1Uev97D88y9eITejrIU7gGiF"
-# E-mails personnalisés (valeurs NON secrètes). Le SECRET EMAIL_CLE_API (clé du prestataire) se saisit dans le tableau de bord, type « Secret » : sans lui, l'envoi Firebase reste utilisé.
-EMAIL_FOURNISSEUR = "resend"
-EMAIL_EXPEDITEUR_ADRESSE = "bonjour@leslanternesdenour.fr"
-EMAIL_EXPEDITEUR_NOM = "Les Lanternes de Nour"
 
-# --- Raccordements (rien n'est activé ici ; voir _documentation/PREPRODUCTION_ACTIONS.md) ---
-# Avec ce fichier, Cloudflare le traite comme référence : les variables NON secrètes (identifiants publics) se déclarent ICI
-# (section [vars], je les ajoute pour vous), les SECRETS se saisissent dans le tableau de bord (type « Secret ») et ne sont jamais dans le dépôt.
-#   Variables publiques à ajouter ici : FIREBASE_PROJET, STRIPE_PRIX_PREMIUM_MENSUEL, STRIPE_PRIX_PREMIUM_ANNUEL, STRIPE_PRIX_FAMILLE_ANNUEL, VERSION_TEXTES
-#   Secrets (tableau de bord) : SESSION_SECRET, FIREBASE_COMPTE_SERVICE, CREATOR_UID, STRIPE_CLE_SECRETE (sk_test_ seulement), STRIPE_SECRET_WEBHOOK
-# Stockage privé Premium : liaison R2 « R2_PREMIUM » à ajouter ([[r2_buckets]]) UNIQUEMENT après votre décision d'activer R2 (moyen de paiement demandé).
-
-# --- Environnement PREVIEW (préproduction) : seul endroit où le stockage privé Premium est relié ---
-# Cloudflare n'hérite pas des [vars] du haut du fichier dans une section d'environnement : elles sont donc recopiées à l'identique ci-dessous
-# (valeurs NON secrètes uniquement). Les secrets (Stripe, Firebase, Resend, session) restent dans le tableau de bord et ne sont pas touchés.
-# La production n'a aucune liaison R2 tant qu'elle n'est pas décidée séparément.
-[env.preview.vars]
-ENVIRONNEMENT = "preproduction"
-FIREBASE_PROJET = "lanternes-de-nour"
-STRIPE_PRIX_PREMIUM_MENSUEL = "price_1Uev94D88y9eITej7dv4VPA9"
-STRIPE_PRIX_PREMIUM_ANNUEL = "price_1Uev96D88y9eITejxWarVO7v"
-STRIPE_PRIX_FAMILLE_ANNUEL = "price_1Uev97D88y9eITejrIU7gGiF"
-EMAIL_FOURNISSEUR = "resend"
-EMAIL_EXPEDITEUR_ADRESSE = "bonjour@leslanternesdenour.fr"
-EMAIL_EXPEDITEUR_NOM = "Les Lanternes de Nour"
-
-[[env.preview.r2_buckets]]
-binding = "R2_PREMIUM"
-bucket_name = "ldn-premium"
+# Secrets (tableau de bord Cloudflare, environnement « Production », type « Secret ») : SESSION_SECRET, FIREBASE_COMPTE_SERVICE, CREATOR_UID.
+# Paiement : NE PAS définir STRIPE_* en production tant que l'ouverture des paiements n'est pas décidée (le site affiche alors « Le paiement n'est pas encore ouvert »).
+# À L'OUVERTURE DES PAIEMENTS RÉELS (décision du créateur, après régularisation de l'activité et pages légales complètes) :
+#   1. Variables publiques, à ajouter ICI dans [vars] avec les identifiants créés dans Stripe en MODE RÉEL (ne jamais reprendre ceux du mode test) :
+#        STRIPE_PRIX_PREMIUM_MENSUEL = "<price_… réel>"   STRIPE_PRIX_PREMIUM_ANNUEL = "<price_… réel>"   STRIPE_PRIX_FAMILLE_ANNUEL = "<price_… réel>"
+#   2. Secrets (tableau de bord, environnement « Production », type « Secret ») : STRIPE_CLE_SECRETE (sk_live_…), STRIPE_CLE_PUBLIABLE (pk_live_…),
+#      STRIPE_SECRET_WEBHOOK (whsec_… du webhook https://leslanternesdenour.fr/api/stripe/webhook), puis STRIPE_MODE_REEL = autorise (interrupteur final).
+#   3. Le contrôle outils/migration/basculer-cloudflare.mjs (« aucune variable STRIPE_* en production ») est fait pour la bascule initiale : il doit être adapté à ce moment-là.
+# Stockage privé Premium (R2_PREMIUM) : non activé.
