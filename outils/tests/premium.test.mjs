@@ -137,6 +137,9 @@ test('« Voir comme » : réservé au Créateur, appliqué côté serveur, sans 
   const cat = (await appel('GET', '/api/catalogue', { cookie: c + '; ldn_vue=gratuit' })).j;
   assert.equal(cat.catalogue.voyage.camp.ouvert, false); assert.equal(cat.catalogue.voyage.village.ouvert, true); assert.equal(cat.vue, 'gratuit');
   assert.equal((await appel('GET', '/api/catalogue', { cookie: c })).j.catalogue.maisons.mots.ouvert, true, 'sans vue : Créateur voit tout');
+  assert.equal((await appel('GET', '/api/catalogue', { cookie: c })).j.createur, true, 'le Créateur réel est annoncé comme tel');
+  assert.notEqual(cat.createur, true, 'en vue simulée, jamais annoncé Créateur');
+  assert.notEqual((await appel('GET', '/api/catalogue')).j.createur, true, 'un visiteur n\'est jamais annoncé Créateur');
   // aucun compte réel modifié
   assert.equal(await base.lire('droits', 'uid-tricheur'), await base.lire('droits', 'uid-tricheur'), 'aucun document de droits créé par la vue');
   assert.equal((await appel('GET', '/api/admin/premium', { cookie: c + '; ldn_vue=gratuit' })).s, 200, 'l\'administration réelle reste celle du Créateur');

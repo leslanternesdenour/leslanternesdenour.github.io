@@ -21,7 +21,7 @@
 **Toujours en attente (nécessite la micro-entreprise, vos informations ou votre validation — rien n'a été inventé)**
 - `conditions/index.html` : renseigner les 13 emplacements une fois la micro-entreprise créée ; relecture juridique de la clause de rétractation.
 - Contenu religieux à valider (`docs/CONTENUS-A-VALIDER.md`), dont les trois nouveaux jeux ; décider si le « Défi des cinq prières » public doit rester (la maison Premium `cinq` existe dans le catalogue).
-- Pack Premium : toujours absent (R2 `ldn-premium` relié, contenu à importer par vous).
+- Pack Premium : toujours absent (R2 `ldn-premium` relié en preproduction ET en production depuis le 28/11, contenu à importer par vous via `/admin/` → Pack Premium ; le dossier d'origine `premium-lanternes` n'existe plus sur cette machine). Le Créateur n'est plus bloqué : ses zones s'ouvrent sans textes ni voix et un message l'indique.
 - Production : secrets de production (`SESSION_SECRET`, `FIREBASE_COMPTE_SERVICE`, `CREATOR_UID`, `EMAIL_CLE_API`, clés Stripe réelles), DMARC, réglages Cloudflare : voir la préparation ci-dessus.
 - Voix des trois nouveaux jeux : aucune (génération = dépense, à votre accord).
 

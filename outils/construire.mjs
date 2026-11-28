@@ -1,7 +1,7 @@
 // Construit le dossier publié « dist/ » pour Cloudflare Pages, à partir du dépôt, SANS modifier le dépôt.
 // Utilisation : node outils/construire.mjs        (préproduction : LDN_PREPROD=1 ajoute les outils d'écoute internes)
 // Le site GitHub Pages actuel n'est pas concerné : il continue de servir le dépôt tel quel.
-import fs from 'fs'; import path from 'path'; import { fileURLToPath } from 'url';
+import fs from 'fs'; import path from 'path'; import crypto from 'crypto'; import { fileURLToPath } from 'url';
 const RACINE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SORTIE = path.join(RACINE, 'dist');
 // Garde-fou de branche (Cloudflare Pages : CF_PAGES_BRANCH défini). Le MODE de publication n'est jamais deviné : il est DÉCLARÉ dans le wrangler.toml
@@ -62,6 +62,23 @@ if (PRODUCTION) {
   const cond = path.join(SORTIE, 'conditions/index.html');
   if (fs.existsSync(cond)) fs.writeFileSync(cond, vuePublique(fs.readFileSync(cond, 'utf8')));
   for (const p of ['conditions/index.html', 'tarifs/index.html']) { const f = path.join(SORTIE, p); if (fs.existsSync(f) && MARQUEURS_PROVISOIRES.test(fs.readFileSync(f, 'utf8'))) { console.error('Build refusé : ' + p + ' contient encore un marqueur provisoire ([EN ATTENTE], [À COMPLÉTER], brouillon).'); process.exit(1); } }
+}
+// Anti-copie périmée du Grand Voyage : Cloudflare garde les fichiers statiques 4 h dans le navigateur (réglage de zone, que _headers ne peut pas raccourcir).
+// Chaque import relatif de voyage/js/** et la page reçoivent donc ?v=<empreinte du contenu> : dès que le jeu change, le navigateur recharge TOUT le jeu, jamais un mélange ancien/nouveau.
+{
+  const dossier = path.join(SORTIE, 'voyage/js'), page = path.join(SORTIE, 'voyage/index.html');
+  if (fs.existsSync(dossier) && fs.existsSync(page)) {
+    const fichiers = []; (function lister(d) { for (const e of fs.readdirSync(d, { withFileTypes: true })) { const a = path.join(d, e.name); if (e.isDirectory()) lister(a); else if (a.endsWith('.js')) fichiers.push(a); } })(dossier);
+    fichiers.sort();
+    const h = crypto.createHash('sha1'); for (const f of fichiers) { h.update(path.relative(dossier, f)); h.update(fs.readFileSync(f)); } h.update(fs.readFileSync(path.join(SORTIE, 'voyage/voyage.css')));
+    const ID = h.digest('hex').slice(0, 10);
+    const RE = /(\bfrom\s*|\bimport\s*\(\s*|\bimport\s+)(['"])(\.{1,2}\/[^'"?]+\.js)(?:\?[^'"]*)?\2/g;
+    for (const f of fichiers) { const t = fs.readFileSync(f, 'utf8'), u = t.replace(RE, (m, a, q, c) => path.resolve(path.dirname(f), c).startsWith(dossier + path.sep) ? `${a}${q}${c}?v=${ID}${q}` : m); /* seuls les modules DU jeu : les modules partagés avec le village gardent leur propre ?v= */ if (u !== t) fs.writeFileSync(f, u); }
+    const html = fs.readFileSync(page, 'utf8');
+    const html2 = html.replace(/(js\/main\.js)(\?v=[^"']*)?/, `$1?v=${ID}`).replace(/(voyage\.css)(\?v=[^"']*)?/, `$1?v=${ID}`);
+    if (!html2.includes(`main.js?v=${ID}`)) { console.error('Build refusé : la page du Grand Voyage ne référence plus js/main.js.'); process.exit(1); }
+    fs.writeFileSync(page, html2); console.log(`Grand Voyage : version de cache ${ID} (${fichiers.length} modules)`);
+  }
 }
 // Quel commit est réellement en ligne ? (le dépôt est public : le numéro de commit n'est pas un secret)
 fs.writeFileSync(path.join(SORTIE, 'version.json'), JSON.stringify({ commit: process.env.CF_PAGES_COMMIT_SHA || 'local', branche: process.env.CF_PAGES_BRANCH || 'local' }) + '\n');
