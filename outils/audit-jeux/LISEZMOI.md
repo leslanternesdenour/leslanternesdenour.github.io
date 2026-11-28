@@ -29,3 +29,9 @@
 - L'accueil du site affiche d'abord l'**introduction plein écran** (bouton « Passer ») qui recouvre le pied de page.
 - Mystères du désert, énigme de mémoire : attendre le message « À toi ! » avant de cliquer (sinon les clics sont ignorés).
 - Les jeux utilisent le moteur 3D logiciel (swiftshader) : lents ; prévoir de longs délais.
+
+## Sous Windows (vérifié le 28/11/2026)
+- Variables : `PLAYWRIGHT_DIR` (dossier du module playwright) et `THREE_DIR` (dossier du module three 0.170), lues par `base.js`. Les captures restent écrites dans `/tmp/claude-0/aud` : sous Windows, créer `C:\tmp\claude-0\aud`.
+- Serveur : `node outils/construire.mjs` puis `node outils/serveur-preprod.mjs 8791` (sans `LDN_EMULATEUR`, les pages protégées ne bloquent pas : le garde laisse passer quand l'API des comptes répond 404).
+- Ne lancer qu'un script à la fois (rendu 3D logiciel très gourmand). Le parcours Ablutions 3D dure environ 15 minutes ; Mystères du désert environ 4 minutes.
+- Les boutons qui pulsent volontairement (« Suivant », « J'ai fini ») sont cliqués avec `{ force: true }` : sans cela Playwright les juge instables.

@@ -154,8 +154,9 @@ function guide(first){
 
 /* ---------- profils ---------- */
 function form(edit){if(edit&&!K())edit=false;   /* « Modifier » sans profil = créer le premier */
- const k=edit?K():{name:'',age:'',g:''};
- $('ov').innerHTML=`<div class="form"><h2>${edit?'Modifier':'Bienvenue !'}</h2><p>${edit?'':'Avant de commencer, présente-toi :'}</p>
+ /* premier profil : on reprend le prénom et le genre du profil enfant déjà choisi dans le compte famille (l'âge exact n'y est pas connu : l'enfant le choisit) */
+ let dep={name:'',age:'',g:''};if(!edit){try{const pa=JSON.parse(localStorage.getItem('ldn_profil_actif')||'null');if(pa&&typeof pa.surnom==='string')dep={name:pa.surnom.slice(0,20),age:'',g:pa.avatar==='garcon'?'g':pa.avatar==='fille'?'f':''}}catch(e){}}
+ const k=edit?K():dep; $('ov').innerHTML=`<div class="form"><h2>${edit?'Modifier':'Bienvenue !'}</h2><p>${edit?'':'Avant de commencer, présente-toi :'}</p>
  <label>Ton prénom<input id="fn" maxlength="20" value="${esc(k.name)}" placeholder="Prénom"></label>
  <label>Ton âge<select id="fa"><option value="">Choisis</option>${[3,4,5,6,7,8,9,10].map(a=>`<option ${+k.age===a?'selected':''}>${a}</option>`).join('')}</select></label>
  <label>Tu es<div class="seg"><button data-g="g" class="${k.g==='g'?'on':''}">Un garçon</button><button data-g="f" class="${k.g==='f'?'on':''}">Une fille</button></div></label>

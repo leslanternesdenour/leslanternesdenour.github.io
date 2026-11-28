@@ -6,7 +6,7 @@ const t = (nom, cond, d = '') => { T.tests++; if (cond) T.ok++; else T.echecs.pu
   const taille = process.argv[2] || 'pc';
   const { ctx, page, log } = await ouvrir(b, taille, '/calendrier/', { attente: 2500 });
   await page.evaluate(() => { localStorage.clear(); }); await page.reload(); await page.waitForTimeout(2000);
-  const lanternes = await page.$$('#grid button.l'); t('grille de 30 lanternes', lanternes.length === 30, lanternes.length);
+  const lanternes = await page.$$('#grid button.l'); t('avant la création du profil : pas encore de grille (le guide puis le formulaire passent d\'abord)', lanternes.length === 0, lanternes.length);
   await page.screenshot({ path: `/tmp/claude-0/aud/ram-${taille}-accueil.png`, fullPage: true });
   // premier lancement : création du profil
   t('carte de bienvenue (explication) au premier lancement', await page.isVisible('#gok'));
@@ -14,6 +14,7 @@ const t = (nom, cond, d = '') => { T.tests++; if (cond) T.ok++; else T.echecs.pu
   t('formulaire de profil au premier lancement', await page.isVisible('#fn'));
   await page.click('#go'); t("champs obligatoires : refus si vide", await page.isVisible('#fn'));
   await page.fill('#fn', 'Testeur'); await page.selectOption('#fa', '7'); await page.click('.seg button[data-g="g"]'); await page.click('#go'); await page.waitForTimeout(500);
+  t('grille de 30 lanternes une fois le profil créé', (await page.$$('#grid button.l')).length === 30);
   t('profil créé + salutation', /Testeur/.test(await page.textContent('#hello')));
   t('niveau actif (petite/grande lanterne)', (await page.$$eval('#lv1.on, #lv2.on', x => x.length)) === 1);
   await page.click('#lv2'); await page.waitForTimeout(200); t('passage en Grande lanterne', await page.$eval('#lv2', e => e.classList.contains('on')));

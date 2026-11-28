@@ -1,14 +1,14 @@
-/* Service worker du calendrier du Ramadan (PWA) — version 8.
+/* Service worker du calendrier du Ramadan (PWA) — version 9.
    Règles de sécurité (comptes, abonnements, accès offerts révocables) :
    - Seuls les fichiers PUBLICS et GRATUITS du site sont gardés pour le hors-ligne.
    - Jamais en cache : /api/ (dont /api/premium/), /admin/, /apercu/, /compte/, /premium/, les requêtes authentifiées, les réponses marquées
      « private » ou « no-store », les réponses d'erreur (401, 403…), les autres sites.
    - Purge : sur message { type: 'purger' } (déconnexion, changement de compte, changement de droits) et
      automatiquement dès qu'une réponse 401 ou 403 passe (accès révoqué ou expiré). */
-const VERSION = 'v8';
+const VERSION = 'v9';
 const COQUILLE = 'lanternes-' + VERSION;            // l'application du calendrier (toujours gratuite)
 const DYNAMIQUE = 'lanternes-dyn-' + VERSION;       // autres fichiers publics vus en ligne
-const FICHIERS = ['./', 'index.html', 'style.css?v=5', 'data.js?v=4', 'app.js?v=6', 'manifest.webmanifest',
+const FICHIERS = ['./', 'index.html', 'style.css?v=5', 'data.js?v=4', 'app.js?v=7', 'manifest.webmanifest',
   'icone.svg', 'icone-180.png', 'icone-192.png', 'icone-512.png'];
 const JAMAIS = /^\/(api|admin|apercu|compte|premium)(\/|$)/;
 
